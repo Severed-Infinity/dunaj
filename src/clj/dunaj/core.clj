@@ -35,8 +35,6 @@
             [dunaj.state]
             [dunaj.flow :refer [let]]
             [dunaj.threading]
-            [dunaj.threading.last]
-            [dunaj.threading.second]
             [dunaj.feature :refer [alter-meta!]]
             [dunaj.poly]
             [dunaj.coll :refer [second assoc]]

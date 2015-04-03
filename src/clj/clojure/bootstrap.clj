@@ -17,16 +17,11 @@
 (ns clojure.bootstrap
   "Bootstrapping Dunaj. Low level stuff, do not use."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.core :as cc :refer
-    [if when string? first rest and map identical? nth symbol empty?
-     pos? with-meta count remove name apply merge map? > count *ns*
-     map-indexed when-not namespace var intern seq int / inc drop def
-     identity vary-meta type == concat throw some butlast or meta conj
-     second = nnext false? get nil? not vec cons next condp if-not
-     recur keyword? string? boolean eval list symbol? io! str assoc
-     vector? cond not= true? false? reduce quote do]]))
+  (:refer-clojure :exclude
+   [defonce loop when-let if-let let fn defrecord defprotocol defmacro
+    defn record? deftype])
+  (:require [clojure.core :as cc]
+            [clojure.dunaj-deftype :as ddt]))
 
 ;;; Dunaj versions
 
@@ -108,10 +103,51 @@
    'char \C
    nil \O})
 
-(def ^:private ^java.lang.reflect.Field prima
-  (cc/doto (.getDeclaredField
-            clojure.lang.Compiler$FnMethod "primitiveTypes")
-    (.setAccessible true)))
+(def ^:private prima
+  #{"L", "D", "OL", "OD", "LO", "LL", "LD", "DO", "DL", "DD", 
+    "OOL", "OOD", "OLO", "OLL", "OLD", "ODO", "ODL", "ODD", 
+    "LOO", "LOL", "LOD", "LLO", "LLL", "LLD", "LDO", "LDL", "LDD", 
+    "DOO", "DOL", "DOD", "DLO", "DLL", "DLD", "DDO", "DDL", "DDD", 
+    "OOOL", "OOOD", "OOLO", "OOLL", "OOLD", "OODO", "OODL", "OODD", 
+    "OLOO", "OLOL", "OLOD", "OLLO", "OLLL", "OLLD", "OLDO", "OLDL", "OLDD", 
+    "ODOO", "ODOL", "ODOD", "ODLO", "ODLL", "ODLD", "ODDO", "ODDL", "ODDD", 
+    "LOOO", "LOOL", "LOOD", "LOLO", "LOLL", "LOLD", "LODO", "LODL", "LODD", 
+    "LLOO", "LLOL", "LLOD", "LLLO", "LLLL", "LLLD", "LLDO", "LLDL", "LLDD", 
+    "LDOO", "LDOL", "LDOD", "LDLO", "LDLL", "LDLD", "LDDO", "LDDL", "LDDD", 
+    "DOOO", "DOOL", "DOOD", "DOLO", "DOLL", "DOLD", "DODO", "DODL", "DODD", 
+    "DLOO", "DLOL", "DLOD", "DLLO", "DLLL", "DLLD", "DLDO", "DLDL", "DLDD", 
+    "DDOO", "DDOL", "DDOD", "DDLO", "DDLL", "DDLD", "DDDO", "DDDL", "DDDD", 
+    "OOOOL", "OOOOD", "OOOLO", "OOOLL", "OOOLD", "OOODO", "OOODL", "OOODD", 
+    "OOLOO", "OOLOL", "OOLOD", "OOLLO", "OOLLL", "OOLLD", "OOLDO", "OOLDL", 
+    "OOLDD", "OODOO", "OODOL", "OODOD", "OODLO", "OODLL", "OODLD", "OODDO", 
+    "OODDL", "OODDD", "OLOOO", "OLOOL", "OLOOD", "OLOLO", "OLOLL", "OLOLD", 
+    "OLODO", "OLODL", "OLODD", "OLLOO", "OLLOL", "OLLOD", "OLLLO", "OLLLL", 
+    "OLLLD", "OLLDO", "OLLDL", "OLLDD", "OLDOO", "OLDOL", "OLDOD", "OLDLO", 
+    "OLDLL", "OLDLD", "OLDDO", "OLDDL", "OLDDD", "ODOOO", "ODOOL", "ODOOD", 
+    "ODOLO", "ODOLL", "ODOLD", "ODODO", "ODODL", "ODODD", "ODLOO", "ODLOL", 
+    "ODLOD", "ODLLO", "ODLLL", "ODLLD", "ODLDO", "ODLDL", "ODLDD", "ODDOO", 
+    "ODDOL", "ODDOD", "ODDLO", "ODDLL", "ODDLD", "ODDDO", "ODDDL", "ODDDD", 
+    "LOOOO", "LOOOL", "LOOOD", "LOOLO", "LOOLL", "LOOLD", "LOODO", "LOODL", 
+    "LOODD", "LOLOO", "LOLOL", "LOLOD", "LOLLO", "LOLLL", "LOLLD", "LOLDO", 
+    "LOLDL", "LOLDD", "LODOO", "LODOL", "LODOD", "LODLO", "LODLL", "LODLD", 
+    "LODDO", "LODDL", "LODDD", "LLOOO", "LLOOL", "LLOOD", "LLOLO", "LLOLL", 
+    "LLOLD", "LLODO", "LLODL", "LLODD", "LLLOO", "LLLOL", "LLLOD", "LLLLO", 
+    "LLLLL", "LLLLD", "LLLDO", "LLLDL", "LLLDD", "LLDOO", "LLDOL", "LLDOD", 
+    "LLDLO", "LLDLL", "LLDLD", "LLDDO", "LLDDL", "LLDDD", "LDOOO", "LDOOL", 
+    "LDOOD", "LDOLO", "LDOLL", "LDOLD", "LDODO", "LDODL", "LDODD", "LDLOO", 
+    "LDLOL", "LDLOD", "LDLLO", "LDLLL", "LDLLD", "LDLDO", "LDLDL", "LDLDD", 
+    "LDDOO", "LDDOL", "LDDOD", "LDDLO", "LDDLL", "LDDLD", "LDDDO", "LDDDL", 
+    "LDDDD", "DOOOO", "DOOOL", "DOOOD", "DOOLO", "DOOLL", "DOOLD", "DOODO", 
+    "DOODL", "DOODD", "DOLOO", "DOLOL", "DOLOD", "DOLLO", "DOLLL", "DOLLD", 
+    "DOLDO", "DOLDL", "DOLDD", "DODOO", "DODOL", "DODOD", "DODLO", "DODLL", 
+    "DODLD", "DODDO", "DODDL", "DODDD", "DLOOO", "DLOOL", "DLOOD", "DLOLO", 
+    "DLOLL", "DLOLD", "DLODO", "DLODL", "DLODD", "DLLOO", "DLLOL", "DLLOD", 
+    "DLLLO", "DLLLL", "DLLLD", "DLLDO", "DLLDL", "DLLDD", "DLDOO", "DLDOL", 
+    "DLDOD", "DLDLO", "DLDLL", "DLDLD", "DLDDO", "DLDDL", "DLDDD", "DDOOO", 
+    "DDOOL", "DDOOD", "DDOLO", "DDOLL", "DDOLD", "DDODO", "DDODL", "DDODD", 
+    "DDLOO", "DDLOL", "DDLOD", "DDLLO", "DDLLL", "DDLLD", "DDLDO", "DDLDL", 
+    "DDLDD", "DDDOO", "DDDOL", "DDDOD", "DDDLO", "DDDLL", "DDDLD", "DDDDO", 
+    "DDDDL", "DDDDD"})
 
 (cc/defn primitive-type-hint
   "Returns primitive type hint (a symbol) for a given signature
@@ -344,8 +380,7 @@
            m-sigs (cc/fn [v] (cc/filter #(== (count %)
                                              (inc (count-argvec v)))
                                         (:method-sigs fn-sig)))
-           primitives? #(cc/contains? (.get prima nil)
-                                      (primitive-code %))]
+           primitives? #(cc/contains? prima (primitive-code %))]
     ;; TODO: optionally warn if primitive hints cannot be generated
     (map (cc/fn [[v & body]]
            (cc/let [coll (m-sigs v)
@@ -593,8 +628,9 @@
            (vec `(do)) ret
            (conj ret
                  `(~(if parasite?
-                      `clojure.core/defprotocol2
-                      `clojure.core/defprotocol) ~name ~@stripped)
+                      `clojure.dunaj-deftype/defprotocol2
+                      `clojure.dunaj-deftype/defprotocol)
+                   ~name ~@stripped)
                  #_(`(clojure.core/alter-var-root
                       (var ~name) assoc :on-interface
                       (eval (:on ~name)))))
@@ -630,7 +666,7 @@
                                    ~parasite?
                                    f#)
                                   (clojure.core/list
-                                   'clojure.core/satisfies?
+                                   'clojure.dunaj-deftype/satisfies?
                                    (clojure.core/symbol
                                     ~(clojure.core/name
                                       (clojure.core/ns-name
@@ -640,7 +676,8 @@
                               ~argvec
                               (clojure.core/or
                                (clojure.core/instance? ~parasite? ~'x)
-                               (clojure.core/satisfies? ~name ~'x))))
+                               (clojure.dunaj-deftype/satisfies?
+                                ~name ~'x))))
                      forbidden?
                      (cc/let [iname
                               (or (:on-interface (meta name))
@@ -685,7 +722,7 @@
                                :tsig dunaj.type/Predicate
                                :inline (clojure.core/fn [f#]
                                          (clojure.core/list
-                                          'clojure.core/satisfies?
+                                          'clojure.dunaj-deftype/satisfies?
                                           (clojure.core/symbol
                                            ~(clojure.core/name
                                              (clojure.core/ns-name
@@ -693,7 +730,8 @@
                                            (clojure.core/name '~name))
                                           f#))}
                               ~argvec
-                              (clojure.core/satisfies? ~name ~'x))))
+                              (clojure.dunaj-deftype/satisfies?
+                               ~name ~'x))))
                ret))
            (apply list ret)))
         (cc/let [out-sig? (cc/identical? :- (second sig))
@@ -804,7 +842,7 @@
           (java.lang.ref.WeakReference. ~name))
          ~@ret)
       `(do
-         (clojure.core/deftype2 ~(with-meta name m) ~@args)
+         (clojure.dunaj-deftype/deftype2 ~(with-meta name m) ~@args)
          (clojure.core/alter-var-root
           #'clojure.bootstrap/type-map assoc
           (quote ~classname)
@@ -860,7 +898,7 @@
                      (clojure.core/instance? ~classname ~'o))])
            ret (conj ret name)]
     `(do
-       (clojure.core/defrecord2 ~(with-meta name m) ~@args)
+       (clojure.dunaj-deftype/defrecord2 ~(with-meta name m) ~@args)
        (clojure.core/alter-var-root
         #'clojure.bootstrap/type-map
         assoc
@@ -1035,3 +1073,8 @@
          (var ~dest)
          (clojure.core/constantly ~source))
         nil)))
+
+(defmacro bare-ns
+  []
+  ;; TODO
+  )

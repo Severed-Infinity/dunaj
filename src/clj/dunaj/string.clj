@@ -47,7 +47,6 @@
    [dunaj.state :refer [IReference reset! ICloneable]]
    [dunaj.flow :refer [if let loop recur doto when cond when-not
                        if-let do delay]]
-   [dunaj.threading.last :as ->>]
    [dunaj.poly :refer [satisfies? defprotocol deftype]]
    [dunaj.coll :refer
     [IEmptyable IRed ISeq IEmptyAware ICapped IEditable IFlippable
@@ -907,10 +906,9 @@
   ([whitespace-fn :- Predicate,
     keep-whitespace? :- Boolean, shared? :- Boolean, string :- String]
    (let [f (fn [x :- ICharSequence] (whitespace-fn (.charAt x (i0))))]
-     (->> (partition-by whitespace-fn string)
-          (->>/when-not shared?
-            (map (fn [x :- ICharSequence] (.toString x))))
-          (->>/when-not keep-whitespace? (remove f))))))
+     (let [r (partition-by whitespace-fn string)
+           r (if shared? r (map (fn [x :- ICharSequence] (.toString x)) r))
+           r (if keep-whitespace? r (remove f r))]))))
 
 (defn replace :- String
   "Like `clojure.string/replace`, but accepts more coll types."

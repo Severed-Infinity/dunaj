@@ -58,11 +58,10 @@
   * `#{}` is equivalent to `(Maybe dunaj.coll/IPersistentSet)`
   ****"
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:refer-clojure :exclude
+   [defonce loop when-let if-let let fn defrecord defprotocol defmacro
+    defn record? deftype])
   (:require
-   [clojure.core :refer
-    [when satisfies? throw when-not reduce empty? = first map or if
-     second eval]]
    [clojure.bootstrap :refer
     [replace-var! deftype defprotocol defn def+ type-hint let
      defrecord v1 if-let primitive-type-hint common-type-hint]]))
