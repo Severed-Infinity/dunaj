@@ -678,18 +678,20 @@
   "Returns true if x satisfies the protocol"
   {:added "1.2"
    :tag Boolean}
-  [^clojure.dunaj_deftype.PRR protocol x]
-  (boolean (or (satisfies-direct? protocol x)
-               (let [c (class x)
-                     impl #(get (.-impls protocol) %)]
-                 (or (impl c)
-                     (let [arr ^objects (.-satisfies-dispatch protocol)]
-                       (and c arr
-                            (let [l (alength arr)]
-                              (loop [i 0]
-                                (cond (== i l) false
-                                      (instance? ^java.lang.Class (aget arr i) x) true
-                                      :else (recur (unchecked-inc i))))))))))))
+  [protocol x]
+  (if-not (instance? clojure.dunaj_deftype.PRR protocol)
+    (clojure.core/satisfies? protocol x)
+    (boolean (or (satisfies-direct? protocol x)
+                 (let [c (class x)
+                       impl #(get (.-impls ^clojure.dunaj_deftype.PRR protocol) %)]
+                   (or (impl c)
+                       (let [arr ^objects (.-satisfies-dispatch ^clojure.dunaj_deftype.PRR protocol)]
+                         (and c arr
+                              (let [l (alength arr)]
+                                (loop [i 0]
+                                  (cond (== i l) false
+                                        (instance? ^java.lang.Class (aget arr i) x) true
+                                        :else (recur (unchecked-inc i)))))))))))))
 
 (defn -cache-protocol-fn [^clojure.lang.AFunction pf x ^Class c ^clojure.lang.IFn interf]
   (let [cache  (.__methodImplCache pf)
@@ -1127,29 +1129,32 @@
                 atype
                 (:on-class atype))]
     (doseq [[proto mmap] (partition 2 proto+mmaps)]
-      (when-not (protocol? proto)
-        (throw (IllegalArgumentException.
-                (str proto " is not a protocol"))))
-      (when (and (:forbid-extensions proto)
-                 (not (implements? proto atype)))
-        (throw (IllegalArgumentException.
-                (str "Extensions are forbidden for protocol " (:var proto)))))
-      (when (and (not (:marker proto)) (not array?) (implements? proto atype))
-        (throw (IllegalArgumentException. 
-                (str vac " already directly implements " (:on-interface proto) " for protocol:"  
-                     (:var proto)))))
-      (if array?
-        (-reset-methods (alter-var-root (:var proto) assoc-in [:impls atype] mmap))
+      (if-not (instance? clojure.dunaj_deftype.PRR protocol)
+        (clojure.core/extend atype proto mmap)
         (do
-          (when-not (identical? java.lang.Object atype)
-            (alter-var-root (:var proto) update-in [:satisfies-dispatch] conj-arr atype))
-          (if-not (implements? proto atype)
+          (when-not (protocol? proto)
+            (throw (IllegalArgumentException.
+                    (str proto " is not a protocol"))))
+          (when (and (:forbid-extensions proto)
+                     (not (implements? proto atype)))
+            (throw (IllegalArgumentException.
+                    (str "Extensions are forbidden for protocol " (:var proto)))))
+          (when (and (not (:marker proto)) (not array?) (implements? proto atype))
+            (throw (IllegalArgumentException. 
+                    (str vac " already directly implements " (:on-interface proto) " for protocol:"  
+                         (:var proto)))))
+          (if array?
             (-reset-methods (alter-var-root (:var proto) assoc-in [:impls atype] mmap))
-            (if (empty? mmap)
-              (alter-var-root (:var proto) update-in [:marker-types] conj atype)
-              (throw (IllegalArgumentException. 
-                      (str vac " already directly implements " (:on-interface proto) " for marker protocol:"  
-                           (:var proto) ". Maybe you wanted to just mark the type?"))))))))))
+            (do
+              (when-not (identical? java.lang.Object atype)
+                (alter-var-root (:var proto) update-in [:satisfies-dispatch] conj-arr atype))
+              (if-not (implements? proto atype)
+                (-reset-methods (alter-var-root (:var proto) assoc-in [:impls atype] mmap))
+                (if (empty? mmap)
+                  (alter-var-root (:var proto) update-in [:marker-types] conj atype)
+                  (throw (IllegalArgumentException. 
+                          (str vac " already directly implements " (:on-interface proto) " for marker protocol:"  
+                               (:var proto) ". Maybe you wanted to just mark the type?"))))))))))))
 
 (defn- emit-impl [[p fs]]
   [p (zipmap (map #(-> % first name keyword) fs)

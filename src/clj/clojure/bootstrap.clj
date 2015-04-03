@@ -822,7 +822,7 @@
                      ~argvec
                      (clojure.core/instance? ~classname ~'x))])
            ret (if (and alias? (several? args))
-                 (conj ret `(clojure.core/extend-type ~classname
+                 (conj ret `(clojure.dunaj-deftype/extend-type ~classname
                               ~@(rest args)))
                  ret)
            ret (conj ret name)]

@@ -75,7 +75,8 @@
   {:added v1
    :see '[extend! deftype extends?]
    :category "Primary"
-   :tsig (Fn [Boolean Protocol Any])})
+   :tsig (Fn [Boolean Protocol Any])}
+  clojure.dunaj-deftype/satisfies?)
 
 ;;; Types and records
 
