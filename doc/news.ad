@@ -1,3 +1,8 @@
+2015/04/02 ::
+Blog post: http://blog.wagjo.com/set.html[Universal and Complement Sets]
++
+Dunaj is full of small useful features and improvements. One of such features is the introduction of universal and complement sets, an addition which enables the representation of identity elements in reduction functions that handle set items.
+
 2015/03/20 ::
 Dunaj v0.3.7 has been released
 +
