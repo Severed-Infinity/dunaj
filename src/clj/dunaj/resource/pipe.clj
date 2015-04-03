@@ -42,7 +42,7 @@
    [dunaj.string :refer [string?]]
    [dunaj.error :refer [IException IFailAware IFailable try catch
                         throw fail! error fragile opened-fragile]]
-   [dunaj.state.var :refer [def]]
+   [dunaj.state.var :refer [def+]]
    [dunaj.coll.recipe :refer [keep]]
    [dunaj.coll.util :refer [merge]]
    [dunaj.coll.default]

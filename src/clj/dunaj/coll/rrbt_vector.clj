@@ -74,7 +74,6 @@
    [dunaj.coll.helper :refer
     [fold-sectionable prepare-ordered-section advance-fn]]
    [dunaj.error :refer [throw index-out-of-bounds]]
-   [dunaj.state.var :refer [def]]
    [dunaj.coll.vector-section :refer
     [IReversedVectorSectionHelper IVectorSectionHelper
      reversed-vector-section vector-section]]

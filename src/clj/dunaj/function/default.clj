@@ -30,7 +30,7 @@
                        IConvolutionFactory assoc hit update]]
    [dunaj.function :refer
     [IMemoizationFactory default-memoization-factory apply fn]]
-   [dunaj.state.var :refer [reset-root! defalias def]]
+   [dunaj.state.var :refer [reset-root! defalias]]
    [dunaj.state.basic :refer [atom box]]
    [dunaj.coll.tuple :refer [pair key val]]
    [dunaj.coll.default :refer [map-factory]]
