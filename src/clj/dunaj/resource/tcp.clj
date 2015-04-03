@@ -39,7 +39,7 @@
    [dunaj.uri :refer [Uri uri? uri]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.identifier :refer [Keyword keyword name symbol]]
-   [dunaj.state.var :refer [def declare]]
+   [dunaj.state.var :refer [def+ declare]]
    [dunaj.coll.default :refer [vec]]
    [dunaj.coll.recipe :refer [keep map interpose concat]]
    [dunaj.coll.util :refer [every? merge merge-with unpacked batched]]
@@ -65,7 +65,7 @@
 
 ;;;; Implementation details
 
-(def ^:private default-tcp-batch-size :- Integer
+(def+ ^:private default-tcp-batch-size :- Integer
   "Default size for tcp batch."
   8192)
 
@@ -83,7 +83,7 @@
     (reduce #(assoc % (keyword (second %2)) (or (nth %2 3) "true"))
             {} params)))
 
-(def ^:private boolean-map :- {String Boolean}
+(def+ ^:private boolean-map :- {String Boolean}
   {"0" false "1" true "F" false "T" true "false" false "true" true})
 
 (defn ^:private tcp-server-uri->map :- KeywordMap
@@ -310,7 +310,7 @@
 
 ;;;; Public API
 
-(def tcp-server-factory :- IAcquirableFactory
+(def+ tcp-server-factory :- IAcquirableFactory
   "TCP server resource factory.
   Current options are:
 
@@ -328,7 +328,7 @@
    :see '[tcp-server accept! tcp-factory]}
   (->TcpServerResourceFactory nil nil nil nil nil nil nil nil))
 
-(def tcp-factory :- IAcquirableFactory
+(def+ tcp-factory :- IAcquirableFactory
   "TCP resource factory.
   Current options are:
 

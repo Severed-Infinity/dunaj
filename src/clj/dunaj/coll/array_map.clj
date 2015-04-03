@@ -70,14 +70,14 @@
                               fold* reduce-unpacked* advance-fn]]
    [dunaj.host.array :refer
     [array-manager array to-array aget acount adapt]]
-   [dunaj.state.var :refer [def declare]]
+   [dunaj.state.var :refer [def+ declare]]
    [dunaj.coll.tuple :refer [pair]]
    [dunaj.coll.hamt-map]))
 
 
 ;;;; Implementation details
 
-(def ^:private array-field :- java.lang.reflect.Field
+(def+ ^:private array-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.PersistentArrayMap "array")
     (.setAccessible true)))
 
@@ -196,7 +196,7 @@
   IMutableMap
   IInvocable)
 
-(def empty-array-map :- ArrayMap
+(def+ empty-array-map :- ArrayMap
   "An empty array map."
   {:added v1
    :see '[array-map-factory dunaj.coll.hamt-map/empty-hamt-map
@@ -245,7 +245,7 @@
   (-from-interleaved [factory a b c d e f g h more]
     (apply assoc empty-array-map a b c d e f g h more)))
 
-(def array-map-factory :- (U ICollectionFactory IConvolutionFactory)
+(def+ array-map-factory :- (U ICollectionFactory IConvolutionFactory)
   "An Array Map factory instance.
   Currently there are no options.
 

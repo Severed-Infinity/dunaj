@@ -49,7 +49,7 @@
    [dunaj.host.array :refer [array-manager array]]
    [dunaj.error :refer [throw illegal-state unsupported-operation]]
    [dunaj.macro :refer [defmacro gensym]]
-   [dunaj.state.var :refer [Var var var? declare def]]
+   [dunaj.state.var :refer [Var var var? declare def+]]
    [dunaj.state.basic :refer [unsynchronized-reference]]
    [dunaj.identifier :refer
     [name symbol namespace keyword? symbol? keyword]]
@@ -196,7 +196,7 @@
   [i]
   (->ArgToken i))
 
-(def clj-fn
+(def+ clj-fn
   "A token for CLJ anon fn"
   (sentinel))
 
@@ -503,11 +503,11 @@
         (i== x (iSMALL_T)) \u0009
         :else (perror "invalid escape character " (char x))))
 
-(def clj-string-literal
+(def+ clj-string-literal
   "Function which returns a CLJ String Literal Tokenizer Machine."
   (string-literal-constructor (constantly false) from-escape true))
 
-(def clj-character-map
+(def+ clj-character-map
   {"newline" \newline
    "return" \return
    "space" \space
@@ -812,12 +812,12 @@
 
 ;;;; Printer
 
-(def clj-bs-batch (string-to-batch! "\\b"))
-(def clj-ff-batch (string-to-batch! "\\f"))
-(def clj-backspace-batch (string-to-batch! "\\backspace"))
-(def clj-formfeed-batch (string-to-batch! "\\formfeed"))
+(def+ clj-bs-batch (string-to-batch! "\\b"))
+(def+ clj-ff-batch (string-to-batch! "\\f"))
+(def+ clj-backspace-batch (string-to-batch! "\\backspace"))
+(def+ clj-formfeed-batch (string-to-batch! "\\formfeed"))
 
-(def ^:private zeroes "0000")
+(def+ ^:private zeroes "0000")
 
 (defn ^:private to-escape
   "Returns batch containing escape sequence or nil, if no
@@ -1520,7 +1520,7 @@
 
 ;;;; Public API
 
-(def clj
+(def+ clj
   "A CLJ formatter factory."
   {:added v1
    :see '[lazy-clj pretty-clj]}
@@ -1528,13 +1528,13 @@
    :keep false nil nil nil 1000000 1000000 1000000
    default-ns-resolver true false false))
 
-(def lazy-clj
+(def+ lazy-clj
   "A lazy CLJ formatter factory."
   {:added v1
    :see '[clj pretty-clj]}
   (assoc clj :lazy? true))
 
-(def clj-colorer-map
+(def+ clj-colorer-map
   {:limit cyan
    :host magenta
    :special-form bold-red
@@ -1547,7 +1547,7 @@
    :core bold-cyan
    :char bold-green})
 
-(def pretty-clj
+(def+ pretty-clj
   "A CLJ printer factory with pretty printing."
   {:added v1
    :see '[lazy-clj clj]}

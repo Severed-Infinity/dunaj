@@ -27,12 +27,12 @@
    [dunaj.host.batch :refer [batch-on]]
    [dunaj.char :refer [Char]]
    [dunaj.string :refer [String MutableString]]
-   [dunaj.state.var :refer [def]]))
+   [dunaj.state.var :refer [def+]]))
 
 
 ;;;; Implementation details
 
-(def ^:private cha :- java.lang.reflect.Field
+(def+ ^:private cha :- java.lang.reflect.Field
   "Makes internal String char array public."
   (doto (.getDeclaredField java.lang.String "value")
     (.setAccessible true)))
@@ -42,7 +42,7 @@
   [s :- String]
   (.get cha s))
 
-(def ^:private cam :- ArrayManager
+(def+ ^:private cam :- ArrayManager
   (array-manager (keyword->class :char)))
 
 
@@ -80,7 +80,7 @@
        (batch-on arr (i0) l)
        (do (.copyToBatch cam arr batch (i0) l) nil)))))
 
-(def string-cat-batch!
+(def+ string-cat-batch!
   "Returns the catenation of mutable string `_ms_` with the
   [`_begin_`, `_end_`) section of a `_batch_`, using array in
   `_state_` reference as a intermediate array in cases where

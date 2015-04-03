@@ -55,7 +55,7 @@
    [dunaj.macro :refer [defmacro gensym]]
    [dunaj.error :refer [throw ex-info illegal-state]]
    [dunaj.state.basic :refer [unsynchronized-reference]]
-   [dunaj.state.var :refer [Var var def]]
+   [dunaj.state.var :refer [Var var def+]]
    [dunaj.coll.recipe :refer [partition throwing-cap map take-while]]
    [dunaj.coll.lazy-seq :refer [lazy-seq]]
    [dunaj.coll.cons-seq :refer [cons]]
@@ -69,7 +69,7 @@
 
 (defsentinel nothing)
 
-(def ^:private ^:dynamic *max-lazy-level-limit* 200)
+(def+ ^:private ^:dynamic *max-lazy-level-limit* 200)
 
 
 ;;;; Public API
@@ -270,7 +270,7 @@
         (ignore? config) machine
         :else (perror m " has reached eof.")))
 
-(def max-lazy-level-limit :- Var
+(def+ max-lazy-level-limit :- Var
   "A dynamic var holding maximum level limit in lazy parsers.
   Used to prevent blowing the stack."
   {:added v1
@@ -587,7 +587,7 @@
   ILazyParserMachine
   (-parse-seq [this seq parents] (pair this seq)))
 
-(def ignore-token :- IgnoreParser
+(def+ ignore-token :- IgnoreParser
   "A parser machine which ignores itself."
   {:added v1
    :category "Primary"}

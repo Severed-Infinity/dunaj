@@ -53,7 +53,7 @@
    [dunaj.string :refer [->str]]
    [dunaj.error :refer
     [throw unsupported-operation illegal-argument]]
-   [dunaj.state.var :refer [declare def]]))
+   [dunaj.state.var :refer [declare def+]]))
 
 
 ;;;; Public API
@@ -230,7 +230,7 @@
   ((get-method clojure.pprint/simple-dispatch
                clojure.lang.IPersistentVector) x))
 
-(def U :- UniversalSet
+(def+ U :- UniversalSet
   "Universal set 𝕌."
   {:added v1
    :see '[set-complement finite?]

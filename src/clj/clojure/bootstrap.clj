@@ -22,17 +22,17 @@
    [clojure.core :as cc :refer
     [if when string? first rest and map identical? nth symbol empty?
      pos? with-meta count remove name apply merge map? > count *ns*
-     map-indexed when-not namespace var intern seq int / inc drop
+     map-indexed when-not namespace var intern seq int / inc drop def
      identity vary-meta type == concat throw some butlast or meta conj
      second = nnext false? get nil? not vec cons next condp if-not
      recur keyword? string? boolean eval list symbol? io! str assoc
-     vector? cond not= true? false? reduce]]))
+     vector? cond not= true? false? reduce quote do]]))
 
 ;;; Dunaj versions
 
-(cc/def v1 "1.0")
+(def v1 "1.0")
 
-(cc/def vc "0.3.7")
+(def vc "0.3.8")
 
 ;;; Helpers
 
@@ -87,7 +87,7 @@
 
 ;;; Type signatures
 
-(cc/def ^:private primitive-hints
+(def ^:private primitive-hints
   {java.lang.Byte 'byte
    java.lang.Short 'short
    java.lang.Integer 'int
@@ -97,7 +97,7 @@
    java.lang.Boolean 'boolean
    java.lang.Character 'char})
 
-(cc/def ^:private primitive-code-map
+(def ^:private primitive-code-map
   {'byte \B
    'short \S
    'int \I
@@ -108,7 +108,7 @@
    'char \C
    nil \O})
 
-(cc/def ^:private ^java.lang.reflect.Field prima
+(def ^:private ^java.lang.reflect.Field prima
   (cc/doto (.getDeclaredField
             clojure.lang.Compiler$FnMethod "primitiveTypes")
     (.setAccessible true)))
@@ -373,11 +373,11 @@
            m (cc/if-let [oh (type-hint esig)]
                (if (:tag m)
                  m
-                 (assoc m :tag (cc/list 'clojure.core/quote oh)))
+                 (assoc m :tag (cc/list `quote oh)))
                m)
            m (if (:tsig m)
                (assoc m :qtsig
-                      (cc/list 'clojure.core/quote (:tsig m)))
+                      (cc/list `quote (:tsig m)))
                m)
            name (with-meta name m)]
     `(clojure.core/defonce ~name ~@args)))
@@ -395,11 +395,11 @@
            m (cc/if-let [oh (type-hint esig)]
                (if (:tag m)
                  m
-                 (assoc m :tag (cc/list 'clojure.core/quote oh)))
+                 (assoc m :tag (cc/list `quote oh)))
                m)
            m (if (:tsig m)
                (assoc m :qtsig
-                      (cc/list 'clojure.core/quote (:tsig m)))
+                      (cc/list `quote (:tsig m)))
                m)
            args (butlast args)
            aliased (if (several? args)
@@ -413,13 +413,13 @@
                                       0)))
                      (symbol (cc/name aliased) (cc/name name))
                      aliased)
-           m (assoc m :alias (cc/list 'clojure.core/quote aliased))]
+           m (assoc m :alias (cc/list `quote aliased))]
     `(clojure.core/let
          [var# (var ~aliased)
           n# (with-meta '~name (merge (meta var#) ~m))]
        (if (.hasRoot var#) (intern *ns* n# @var#) (intern *ns* n#)))))
 
-(cc/defmacro def
+(cc/defmacro def+
   "Like clojure.core/def, but with support for type signatures and
   unified syntax."
   [name & args]
@@ -438,14 +438,14 @@
            m (cc/if-let [oh (type-hint esig)]
                (if (:tag m)
                  m
-                 (assoc m :tag (cc/list 'clojure.core/quote oh)))
+                 (assoc m :tag (cc/list `quote oh)))
                m)
            m (if (:tsig m)
                (assoc m :qtsig
-                      (cc/list 'clojure.core/quote (:tsig m)))
+                      (cc/list `quote (:tsig m)))
                m)
            name (with-meta name m)]
-    `(clojure.core/def ~name ~@args)))
+    `(def ~name ~@args)))
 
 (cc/defmacro defn
   "Like clojure.core/defn, but with support for type signatures."
@@ -476,14 +476,14 @@
                m)
            m (if (:tsig m)
                (assoc m :qtsig
-                      (cc/list 'clojure.core/quote (:tsig m)))
+                      (cc/list `quote (:tsig m)))
                m)
            fdecl (strip-sigs-fdecl fdecl)
            esig (cc/eval (:tsig m))
            m (cc/if-let [oh (fn-type-hint esig)]
                (if (:tag m)
                  m
-                 (assoc m :tag (cc/list 'clojure.core/quote oh)))
+                 (assoc m :tag (cc/list `quote oh)))
                m)
            name (with-meta name nil)
            fdecl (if esig (decorate-methods fdecl esig) fdecl)]
@@ -518,18 +518,18 @@
                m)
            m (if (:tsig m)
                (assoc m :qtsig
-                      (cc/list 'clojure.core/quote (:tsig m)))
+                      (cc/list `quote (:tsig m)))
                m)
            fdecl (strip-sigs-fdecl fdecl)
            esig (cc/eval (:tsig m))
            m (cc/if-let [oh (fn-type-hint esig)]
                (if (:tag m)
                  m
-                 (assoc m :tag (cc/list 'clojure.core/quote oh)))
+                 (assoc m :tag (cc/list `quote oh)))
                m)
            name (with-meta name nil)
            fdecl (if esig (decorate-methods fdecl esig) fdecl)]
-    `(clojure.core/let [v# (clojure.core/def ~name)]
+    `(clojure.core/let [v# (def ~name)]
        (clojure.core/when-not (.hasRoot v#)
          (defn ~name ~@fdecl)))))
 
@@ -590,7 +590,7 @@
                  forbidden? (:forbid-extensions (meta name))
                  soft? (not (:distinct (meta name)))]
           (cc/as->
-           (vec `(clojure.core/do)) ret
+           (vec `(do)) ret
            (conj ret
                  `(~(if parasite?
                       `clojure.core/defprotocol2
@@ -615,7 +615,7 @@
                                     " satisfies `" name "` "
                                     "protocol, `false` otherwise.")
                               {:added ~(:added mn)
-                               :see ~(list 'clojure.core/quote
+                               :see ~(list `quote
                                            (clojure.core/vec
                                             (cons name (:see mn))))
                                :category ~(:category mn)
@@ -657,7 +657,7 @@
                                       name "` "
                                       "protocol, `false` otherwise.")
                                 {:added ~(:added mn)
-                                 :see ~(list 'clojure.core/quote
+                                 :see ~(list `quote
                                              (clojure.core/vec
                                               (cons name (:see mn))))
                                  :category ~(:category mn)
@@ -677,7 +677,7 @@
                                     " satisfies `" name "` "
                                     "protocol, `false` otherwise.")
                               {:added ~(:added mn)
-                               :see ~(list 'clojure.core/quote
+                               :see ~(list `quote
                                            (clojure.core/vec
                                             (cons name (:see mn))))
                                :category ~(:category mn)
@@ -718,7 +718,7 @@
                      m)
                  m (if (:tsig m)
                      (assoc m :qtsig
-                            (cc/list 'clojure.core/quote (:tsig m)))
+                            (cc/list `quote (:tsig m)))
                      m)
                  args (map strip-sigs-vec args)
                  om m
@@ -749,10 +749,10 @@
                m)
            m (if (:tsig m)
                (assoc m :qtsig
-                      (cc/list 'clojure.core/quote (:tsig m)))
+                      (cc/list `quote (:tsig m)))
                m)
            m (assoc m :fields
-                    (cc/list 'clojure.core/quote stripped-vec))
+                    (cc/list `quote stripped-vec))
            args (if alias? args (cons stripped-vec (rest args)))
            esig (cc/eval (:tsig m))
            args (if (and (not alias?) esig)
@@ -772,7 +772,7 @@
                            "an instance of `" name
                            "` type, `false` otherwise.")
                      {:added ~(:added m)
-                      :see ~(list 'clojure.core/quote
+                      :see ~(list `quote
                                   (clojure.core/vec
                                    (cons name (eval (:see m)))))
                       :category ~(:category m)
@@ -789,9 +789,9 @@
                  ret)
            ret (conj ret name)]
     (if alias?
-      `(clojure.core/do
-         (def ~name)
-         (def ~(with-meta name m)
+      `(do
+         (def+ ~name)
+         (def+ ~(with-meta name m)
            {:on '~classname
             :on-class ~classname
             :clojure.core/type true
@@ -800,14 +800,14 @@
             :var (var ~name)})
          (clojure.core/alter-var-root
           #'clojure.bootstrap/type-map assoc
-          (clojure.core/quote ~classname)
+          (quote ~classname)
           (java.lang.ref.WeakReference. ~name))
          ~@ret)
-      `(clojure.core/do
+      `(do
          (clojure.core/deftype2 ~(with-meta name m) ~@args)
          (clojure.core/alter-var-root
           #'clojure.bootstrap/type-map assoc
-          (clojure.core/quote ~classname)
+          (quote ~classname)
           (java.lang.ref.WeakReference. ~name))
          ~@ret))))
 
@@ -826,10 +826,10 @@
                m)
            m (if (:tsig m)
                (assoc m :qtsig
-                      (cc/list 'clojure.core/quote (:tsig m)))
+                      (cc/list `quote (:tsig m)))
                m)
            m (assoc m :fields
-                    (cc/list 'clojure.core/quote stripped-vec))
+                    (cc/list `quote stripped-vec))
            args (cons stripped-vec (rest args))
            esig (cc/eval (:tsig m))
            args (if esig
@@ -847,7 +847,7 @@
                            "an instance of `" name
                            "` record, `false` otherwise.")
                      {:added ~(:added m)
-                      :see ~(list 'clojure.core/quote
+                      :see ~(list `quote
                                   (clojure.core/vec
                                    (cons name (eval (:see m)))))
                       :category ~(:category m)
@@ -859,12 +859,12 @@
                      ~argvec
                      (clojure.core/instance? ~classname ~'o))])
            ret (conj ret name)]
-    `(clojure.core/do
+    `(do
        (clojure.core/defrecord2 ~(with-meta name m) ~@args)
        (clojure.core/alter-var-root
         #'clojure.bootstrap/type-map
         assoc
-        (clojure.core/quote ~classname)
+        (quote ~classname)
         (java.lang.ref.WeakReference. ~name))
        ~@ret)))
 
@@ -905,7 +905,7 @@
            m (cc/if-let [oh (fn-type-hint esig)]
                (if (:tag m)
                  m
-                 (assoc m :tag (cc/list 'clojure.core/quote oh)))
+                 (assoc m :tag (cc/list `quote oh)))
                m)
            name (with-meta name nil)
            fdecl (if esig (decorate-methods fdecl esig) fdecl)]
@@ -985,7 +985,7 @@
        (not= :object (pt ~form))
        (str "form " '~form " does not yield a primitive")))
   ([form & more]
-     `(clojure.core/do
+     `(do
         (assert-primitive ~form)
         ~@(cc/map #(cc/list `assert-primitive %) more))))
 
@@ -998,8 +998,8 @@
               (or (true? r#) (false? r#))))
        (str "form " '~form " does not yield a boolean primitive")))
   ([form & more]
-     `(clojure.core/do (assert-boolean ~form)
-                       ~@(cc/map #(cc/list `assert-boolean %) more))))
+     `(do (assert-boolean ~form)
+          ~@(cc/map #(cc/list `assert-boolean %) more))))
 
 (cc/defmacro assert-int
   "Asserts that forms return primitive int values."
@@ -1009,8 +1009,8 @@
          (and (= :int (pt r#))))
        (str "form " '~form " does not yield an int primitive")))
   ([form & more]
-     `(clojure.core/do (assert-int ~form)
-                       ~@(cc/map #(cc/list `assert-int %) more))))
+     `(do (assert-int ~form)
+          ~@(cc/map #(cc/list `assert-int %) more))))
 
 ;;; dev helpers
 
@@ -1020,20 +1020,18 @@
   (if (empty? rq)
     `(clojure.core/comment)
     `(clojure.core/require
-      ~@(cc/map #(cc/list 'clojure.core/quote %) rq))))
+      ~@(cc/map #(cc/list `quote %) rq))))
 
 (defmacro replace-var!
   "Replaces `_dest_` var root with `_source_` value."
   ([dest]
-     (cc/let [source (cc/symbol (cc/name dest))]
-       `(clojure.core/do
-          (clojure.core/alter-var-root
-           (clojure.core/var ~dest)
+   (cc/let [source (cc/symbol (cc/name dest))]
+     `(do (clojure.core/alter-var-root
+           (var ~dest)
            (clojure.core/constantly ~source))
           nil)))
   ([dest source]
-     `(clojure.core/do
-        (clojure.core/alter-var-root
-         (clojure.core/var ~dest)
+   `(do (clojure.core/alter-var-root
+         (var ~dest)
          (clojure.core/constantly ~source))
         nil)))

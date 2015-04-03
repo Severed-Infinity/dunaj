@@ -24,8 +24,9 @@
    [clojure.core :refer
     [recur if apply count when when-not throw reduce partition
      extend-protocol]]
-   [clojure.bootstrap :refer [defmacro defprotocol deftype defn def v1
-                              replace-var! milliseconds loop let fn]]
+   [clojure.bootstrap :refer
+    [defmacro defprotocol deftype defn def+ v1
+     replace-var! milliseconds loop let fn]]
    [dunaj.type :refer [Any Fn Va]]
    [dunaj.boolean :refer [Boolean boolean]]
    [dunaj.math :refer [Integer odd?]]
@@ -34,7 +35,7 @@
 
 ;;;; Implementation details
 
-(def ^:private ^:dynamic *io-thread* nil)
+(def+ ^:private ^:dynamic *io-thread* nil)
 
 
 ;;;; Public API

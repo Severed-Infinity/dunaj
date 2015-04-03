@@ -30,7 +30,7 @@
   (:require
    [clojure.core :refer
     [aget . throw ->> -> declare set! first second atom]]
-   [clojure.bootstrap :refer [def defn defrecord defalias defmacro
+   [clojure.bootstrap :refer [def+ defn defrecord defalias defmacro
                               v1 not-implemented]]
    [clojure.bridge]
    [dunaj.type :refer [Maybe Any AnyFn Fn U Predicate]]
@@ -74,7 +74,7 @@
 
 ;;;; Implementation details
 
-(def ^:private cha :- java.lang.reflect.Field
+(def+ ^:private cha :- java.lang.reflect.Field
   "Makes internal String char array public."
   (doto (.getDeclaredField java.lang.String "value")
     (.setAccessible true)))
@@ -84,7 +84,7 @@
   [s :- java.lang.String]
   (.get cha s))
 
-(def ^:private sbcha :- java.lang.reflect.Field
+(def+ ^:private sbcha :- java.lang.reflect.Field
   "Makes internal StringBuilder char array public."
   {:added v1}
   (doto (.getDeclaredField java.lang.AbstractStringBuilder "value")
@@ -489,7 +489,7 @@
   ;; Abstract types
   ICharSequence)
 
-(def empty-string :- String
+(def+ empty-string :- String
   "An empty string."
   {:added v1
    :category "Primary"
@@ -643,7 +643,7 @@
                 (conj! (sn c)) (conj! (sn d)))]
       (settle! (clojure.core/reduce #(conj! % (sn %2)) t more)))))
 
-(def string-factory :- ICollectionFactory
+(def+ string-factory :- ICollectionFactory
   "A string factory."
   {:added v1
    :category "Primary"

@@ -35,7 +35,7 @@
   (:require
    [clojure.core :refer [if when-not do let]]
    [clojure.bootstrap :refer
-    [defprotocol defalias defn defonce v1 def defrecord fn defmacro]]
+    [defprotocol defalias defn defonce v1 def+ defrecord fn defmacro]]
    [dunaj.type :refer [Predicate Fn Any Va Unknown R]]
    [dunaj.boolean :refer [Boolean]]
    [dunaj.host.int :refer [Int iint iadd imul i31 i0 i1]]
@@ -73,7 +73,7 @@
   [sname]
   (let [pname (clojure.core/symbol
                (clojure.core/str (clojure.core/name sname) \?))]
-    `(do (def ~sname {:private true} (sentinel))
+    `(do (def+ ~sname {:private true} (sentinel))
          (defn ~pname :- Boolean {:private true} [x#]
            (identical? ~sname x#)))))
 
@@ -149,7 +149,7 @@
    :tsig (Fn [Integer IComparable Any])
    :category "Comparison"})
 
-(def natural-comparator :- (Fn [Integer Any Any])
+(def+ natural-comparator :- (Fn [Integer Any Any])
   "A comparator which uses object's natural ordering
   (implemented with `IComparable`) for comparison."
   {:added v1
@@ -237,7 +237,7 @@
   (-next-basis [factory old val]
     (iadd (iint old) (hash val))))
 
-(def ordered-hash-factory :- (R IIncrementalHashFactory)
+(def+ ordered-hash-factory :- (R IIncrementalHashFactory)
   "An incremental hash factory for ordered collections."
   {:added v1
    :see '[unordered-hash-factory basis-seed next-basis
@@ -245,7 +245,7 @@
    :category "Hashing"}
   (->OrderedHashFactory))
 
-(def unordered-hash-factory :- (R IIncrementalHashFactory)
+(def+ unordered-hash-factory :- (R IIncrementalHashFactory)
   "An incremental hash factory for unordered collections."
   {:added v1
    :see '[ordered-hash-factory basis-seed next-basis

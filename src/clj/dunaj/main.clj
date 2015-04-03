@@ -36,7 +36,7 @@
    [dunaj.namespace :refer [resolve]]
    [dunaj.identifier :refer [Keyword name symbol]]
    [dunaj.macro :refer [defmacro]]
-   [dunaj.state.var :refer [declare def var]]
+   [dunaj.state.var :refer [declare def+ var]]
    [dunaj.coll.default :refer [->map]]
    [dunaj.coll.util :refer [dored doseq some]]
    [dunaj.format :refer [print parse print-one]]
@@ -159,7 +159,7 @@
                              (stack-element-str el)
                              "[trace missing]"))))))))
 
-(def repl-requires :- Any
+(def+ repl-requires :- Any
   "A sequence of lib specs that are applied to `require`
   by default when a new command-line REPL is started."
   '[])

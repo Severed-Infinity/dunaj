@@ -52,7 +52,7 @@
    [dunaj.error :refer [throw illegal-state ex-info]]
    [dunaj.poly :refer [satisfies?]]
    [dunaj.state :refer [reset! IReference]]
-   [dunaj.state.var :refer [Var def declare]]
+   [dunaj.state.var :refer [Var def+ declare]]
    [dunaj.identifier :refer [INamed name symbol keyword symbol]]
    [dunaj.char :refer [Char char]]
    [dunaj.string :refer [->str empty-string str index-of string?]]
@@ -113,15 +113,15 @@
 
 ;;; special tokens
 
-(def edn-bracket-close
+(def+ edn-bracket-close
   "A token for EDN close bracket ']'"
   (sentinel))
 
-(def edn-brace-close
+(def+ edn-brace-close
   "A token for EDN close brace '}'"
   (sentinel))
 
-(def edn-par-close
+(def+ edn-par-close
   "A token for EDN close parentheses ')'"
   (sentinel))
 
@@ -355,13 +355,13 @@
         (i== x (iSMALL_T)) \u0009
         :else (perror "invalid escape character " (char x))))
 
-(def edn-string-literal
+(def+ edn-string-literal
   "Function which returns an EDN String Literal Tokenizer Machine."
   (string-literal-constructor (constantly false) from-escape true))
 
 ;;; character literal
 
-(def edn-character-map
+(def+ edn-character-map
   {"newline" \newline
    "return" \return
    "space" \space
@@ -636,20 +636,20 @@
   (-print-between! [this bm batch parents]
     (print! batch bm state \space)))
 
-(def edn-true-batch (string-to-batch! "true"))
-(def edn-false-batch (string-to-batch! "false"))
-(def edn-nil-batch (string-to-batch! "nil"))
-(def edn-quote-batch (string-to-batch! "\\\""))
-(def edn-backslash-batch (string-to-batch! "\\\\"))
-(def edn-ht-batch (string-to-batch! "\\t"))
-(def edn-lf-batch (string-to-batch! "\\n"))
-(def edn-cr-batch (string-to-batch! "\\r"))
-(def edn-space-batch (string-to-batch! "\\space"))
-(def edn-tab-batch (string-to-batch! "\\tab"))
-(def edn-newline-batch (string-to-batch! "\\newline"))
-(def edn-return-batch (string-to-batch! "\\return"))
-(def edn-level-limit-batch (string-to-batch! "#"))
-(def edn-item-limit-batch (string-to-batch! "..."))
+(def+ edn-true-batch (string-to-batch! "true"))
+(def+ edn-false-batch (string-to-batch! "false"))
+(def+ edn-nil-batch (string-to-batch! "nil"))
+(def+ edn-quote-batch (string-to-batch! "\\\""))
+(def+ edn-backslash-batch (string-to-batch! "\\\\"))
+(def+ edn-ht-batch (string-to-batch! "\\t"))
+(def+ edn-lf-batch (string-to-batch! "\\n"))
+(def+ edn-cr-batch (string-to-batch! "\\r"))
+(def+ edn-space-batch (string-to-batch! "\\space"))
+(def+ edn-tab-batch (string-to-batch! "\\tab"))
+(def+ edn-newline-batch (string-to-batch! "\\newline"))
+(def+ edn-return-batch (string-to-batch! "\\return"))
+(def+ edn-level-limit-batch (string-to-batch! "#"))
+(def+ edn-item-limit-batch (string-to-batch! "..."))
 
 ;;; printer for EDN map
 
@@ -721,7 +721,7 @@
 
 ;;; printing strings
 
-(def ^:private zeroes "0000")
+(def+ ^:private zeroes "0000")
 
 (defn ^:private to-escape
   "Returns batch containing escape sequence or nil, if no
@@ -838,9 +838,9 @@
 
 ;;; instant printer
 
-(def ^:private tludf @#'clojure.instant/thread-local-utc-date-format)
+(def+ ^:private tludf @#'clojure.instant/thread-local-utc-date-format)
 
-(def ^:private tlutf
+(def+ ^:private tlutf
   @#'clojure.instant/thread-local-utc-timestamp-format)
 
 (extend-protocol! IEdnPrinter
@@ -1431,24 +1431,24 @@
 
 ;;;; Public API
 
-(def edn :- (I IParserFactory IPrinterFactory)
+(def+ edn :- (I IParserFactory IPrinterFactory)
   "An EDN formatter factory."
   {:added v1
    :see '[lazy-edn pretty-edn]}
   (->EdnFormatterFactory
    :keep false nil nil nil 1000000 1000000 1000000))
 
-(def lazy-edn :- IParserFactory
+(def+ lazy-edn :- IParserFactory
   "A lazy EDN formatter factory."
   {:added v1
    :see '[edn pretty-edn]}
   (assoc edn :lazy? true))
 
-(def edn-colorer-map
+(def+ edn-colorer-map
   {:limit cyan
    :char cyan})
 
-(def pretty-edn :- IPrinterFactory
+(def+ pretty-edn :- IPrinterFactory
   "JSON printer factory with pretty printing."
   {:added v1
    :see '[edn lazy-edn]}
@@ -1488,8 +1488,8 @@
  (parse lazy-edn (cons \[ (cc/cycle [\1 \space])))
 
  ;; benchmark
- (def s (cc/slurp "examples/dunaj.coll.tuple.edn"))
- (def s (str (cc/take 50000 (cc/repeat \[)))) ;; stack overflow
+ (def+ s (cc/slurp "examples/dunaj.coll.tuple.edn"))
+ (def+ s (str (cc/take 50000 (cc/repeat \[)))) ;; stack overflow
 
  (cc/time (count (first (vec (parse edn s)))))
  (cc/time (count (first (seq (parse edn s)))))
@@ -1504,7 +1504,7 @@
 
  ;; Printer
 
- (def coll
+ (def+ coll
    (vec (parse edn (cc/slurp "examples/dunaj.coll.tuple.edn"))))
 
  (= (str (print edn [coll]))
@@ -1519,7 +1519,7 @@
 
  ;; Pretty Printer
 
- (def coll
+ (def+ coll
    (vec (parse edn (cc/slurp "examples/dunaj.coll.tuple.edn"))))
 
  (cc/defn dopp [x] (cc/println (str (print pretty-edn x))))
@@ -1528,7 +1528,7 @@
  (dopp coll)
  (cc/println (dops coll))
 
- (def sample
+ (def+ sample
    {:long-string "This string gets truncated in our marvelous pretty
                   printer."
     :level-limit '[pretty #{printer {limits (number [1 2 3] of (3)
@@ -1540,7 +1540,7 @@
     :numbers #{0 -42 3.1415M 12345N}
     :characters `(\f \o \o \newline \space \b \a \r)})
 
- (def sample
+ (def+ sample
    {:long-string "This string gets truncated in our marvelous pretty
                   printer."
     " :item-limit" (vec (cc/range 10000 200000 ))})

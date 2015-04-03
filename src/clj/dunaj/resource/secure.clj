@@ -47,7 +47,7 @@
    [dunaj.string :refer [String string? ->str]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.uri :refer [Uri uri? uri]]
-   [dunaj.state.var :refer [def declare]]
+   [dunaj.state.var :refer [def+ declare]]
    [dunaj.coll.util :refer [every? merge batched reduce-batched]]
    [dunaj.host.array :refer [array aget]]
    [dunaj.host.batch :refer [provide-batch-size item-types-match?]]
@@ -66,7 +66,7 @@
 
 ;;;; Implementation details
 
-(def ^:private batch-overhead :- Int
+(def+ ^:private batch-overhead :- Int
   "Default overhead size for TLS batches."
   (iint 100))
 
@@ -144,7 +144,7 @@
   [eng :- javax.net.ssl.SSLEngine]
   (loop [] (when-let [t (.getDelegatedTask eng)] (.run t) (recur))))
 
-(def ^:private nh
+(def+ ^:private nh
   javax.net.ssl.SSLEngineResult$HandshakeStatus/NOT_HANDSHAKING)
 
 (defreleasable ^:private SecureResource
@@ -562,7 +562,7 @@
          nil direct-buffers? true nil nil nil false executor
          executor-fn non-blocking?)))))
 
-(def trust-all :- javax.net.ssl.X509TrustManager
+(def+ trust-all :- javax.net.ssl.X509TrustManager
   "A trust manager that accepts any certificate."
   (proxy [javax.net.ssl.X509TrustManager] []
     (getAcceptedIssuers [this]
@@ -573,7 +573,7 @@
 
 ;;;; Public API
 
-(def secure-factory :- IAcquirableFactory
+(def+ secure-factory :- IAcquirableFactory
   "TLS resource factory. Passable thread local in non-blocking mode,
   otherwise thread safe except for multiple concurrent reads (or
   writes). Current options are:

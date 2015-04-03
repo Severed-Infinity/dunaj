@@ -42,7 +42,7 @@
      seq postponed postponed? reduced?]]
    [dunaj.function :refer [apply fn]]
    [dunaj.coll.helper :refer [reduce* advance-fn]]
-   [dunaj.state.var :refer [def]]
+   [dunaj.state.var :refer [def+]]
    [dunaj.coll.empty-list]
    [dunaj.coll.bvt-vector]))
 
@@ -73,7 +73,7 @@
   ;; Abstract types
   IPersistentList)
 
-(def empty-batched-queue :- BatchedQueue
+(def+ empty-batched-queue :- BatchedQueue
   "An empty batched queue."
   {:added v1
    :see '[batched-queue-factory dunaj.coll.empty-list/empty-list
@@ -102,7 +102,7 @@
   (-from-items [factory a b c d more]
     (apply conj empty-batched-queue a b c d more)))
 
-(def batched-queue-factory :- ICollectionFactory
+(def+ batched-queue-factory :- ICollectionFactory
   "A Batched Queue factory instance.
   Currently there are no options.
 

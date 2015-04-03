@@ -124,15 +124,28 @@
   attribute map, which are merged with vars metadata.
 
   Throws an exception if `_name_` symbol is already in the namespace
-  and not mapped to an interned var."
+  and not mapped to an interned var.
+
+  WARNING: Use `def+` instead of `def` in dunaj lite."
   {:added v1
    :indent :all
    :highlight :def
    :named true
    :tsig Macro
    :arglists '([name] [name def-arguments init])
-   :see '[defonce declare defalias]}
-  clojure.bootstrap/def)
+   :see '[defonce declare defalias def+]}
+  clojure.bootstrap/def+)
+
+(cb/defalias def+
+  "Like def, but can be used in dunaj lite."
+  {:added v1
+   :indent :all
+   :highlight :def
+   :named true
+   :tsig Macro
+   :arglists '([name] [name def-arguments init])
+   :see '[defonce declare defalias def]}
+  clojure.bootstrap/def+)
 
 (cb/defalias defalias
   "Defines a var with the same root binding and metadata as the

@@ -25,13 +25,13 @@
             [dunaj.function :refer [defn]]
             [dunaj.macro :refer [defmacro]]
             [dunaj.error :refer [throw]]
-            [dunaj.state.var :refer [defalias def reset-root! var]]
+            [dunaj.state.var :refer [defalias def+ reset-root! var]]
             [dunaj.env :refer [pr! color print!]]))
 
 
 ;;;; Implementation details
 
-(def ^:private trace false)
+(def+ ^:private trace false)
 
 
 ;;;; Public API
@@ -95,7 +95,7 @@
    :highlight :flow}
   clojure.bootstrap/assert-int)
 
-(def toggle-assert :- clojure.lang.Var
+(def+ toggle-assert :- clojure.lang.Var
   "A dynamic var which toggles assertions."
   {:added v1
    :see '[assert]}

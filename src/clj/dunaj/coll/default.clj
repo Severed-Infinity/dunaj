@@ -31,7 +31,7 @@
      -from-interleaved assoc]]
    [dunaj.function :refer [Function defn]]
    [dunaj.identifier :refer [Keyword]]
-   [dunaj.state.var :refer [replace-var! defalias def]]
+   [dunaj.state.var :refer [replace-var! defalias def+]]
    [dunaj.coll.empty-list :as el]
    [dunaj.coll.cons-seq :as cs :refer [cons]]
    [dunaj.coll.linked-list :as ll]
@@ -71,7 +71,7 @@
 
 ;;;; Public API
 
-(def seq-factory :- ICollectionFactory
+(def+ seq-factory :- ICollectionFactory
   "A seq factory instance.
   Currently there are no options.
 

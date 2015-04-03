@@ -64,7 +64,7 @@
     [fold-sectionable fold-every reduce* fold* reduce-unpacked*]]
    [dunaj.host.array :refer
     [array-manager array to-array aget acount adapt]]
-   [dunaj.state.var :refer [def]]
+   [dunaj.state.var :refer [def+]]
    [dunaj.set :refer [U set-complement]]
    [dunaj.coll.tuple :refer [pair key]]
    [dunaj.coll.hamt-map]))
@@ -80,7 +80,7 @@
   [f]
   (fn [val p :- java.util.Map$Entry] (f val (key p))))
 
-(def ^:private impl-field :- java.lang.reflect.Field
+(def+ ^:private impl-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.APersistentSet "impl")
     (.setAccessible true)))
 
@@ -88,7 +88,7 @@
   [x :- clojure.lang.APersistentSet]
   (.get impl-field x))
 
-(def ^:private mutable-impl-field :- java.lang.reflect.Field
+(def+ ^:private mutable-impl-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.ATransientSet "impl")
     (.setAccessible true)))
 
@@ -144,7 +144,7 @@
   IMutableSet
   IInvocable)
 
-(def empty-hamt-set :- HamtSet
+(def+ empty-hamt-set :- HamtSet
   "An empty HAMT set."
   {:added v1
    :see '[dunaj.coll.default/empty-set dunaj.coll.util/into
@@ -169,7 +169,7 @@
           t (-> t (conj! a) (conj! b) (conj! c) (conj! d))]
       (settle! (reduce conj! t more)))))
 
-(def hamt-set-factory :- ICollectionFactory
+(def+ hamt-set-factory :- ICollectionFactory
   "A HAMT set factory instance.
   Currently there are no options.
 

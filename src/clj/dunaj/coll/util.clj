@@ -55,7 +55,7 @@
    [dunaj.host.array :refer
     [array-manager to-array array array-manager-from object-array]]
    [dunaj.macro :refer [defmacro macroexpand]]
-   [dunaj.state.var :refer [def defalias replace-var!]]
+   [dunaj.state.var :refer [def+ defalias replace-var!]]
    [dunaj.coll.bvt-vector :refer [bvt-vector-factory]]
    [dunaj.coll.tuple :refer [key val pair]]))
 
@@ -350,7 +350,7 @@
   [pred :- AnyFn, coll :- []]
   (reduce #(if-let [x (pred %2)] (reduced x) %) nil coll))
 
-(def not-any?
+(def+ not-any?
   "Returns `true` if no item from `_coll_` satisfies `_pred_`,
   otherwise returns `false`."
   {:added v1
@@ -360,7 +360,7 @@
    :see '[some every? not-every?]}
   (comp not some))
 
-(def not-every?
+(def+ not-every?
   "Returns `true` if at least one item from `_coll_` does not satisfy
   `_pred_`, otherwise returns `false`."
   {:added v1

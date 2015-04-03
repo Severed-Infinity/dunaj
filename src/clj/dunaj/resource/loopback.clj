@@ -50,7 +50,7 @@
    [dunaj.identifier :refer [Keyword]]
    [dunaj.state.weak :refer [weak]]
    [dunaj.state.basic :refer [atom]]
-   [dunaj.state.var :refer [Var var var? def declare alter-root!]]
+   [dunaj.state.var :refer [Var var var? def+ declare alter-root!]]
    [dunaj.error :refer [IException ex-info illegal-argument throw npe
                         try unsupported-operation fail-aware? error]]
    [dunaj.uri :refer [Uri uri uri?]]
@@ -66,7 +66,7 @@
 
 ;;;; Implementation details
 
-(def ^:private default-loopback-size :- Integer
+(def+ ^:private default-loopback-size :- Integer
   "Default size for loopback buffer."
   8192)
 
@@ -127,7 +127,7 @@
 
 ;;;; Public API
 
-(def loopback-factory :- IAcquirableFactory
+(def+ loopback-factory :- IAcquirableFactory
   "Loopback resource factory. Thread safe."
   {:added v1
    :see '[loopback]}

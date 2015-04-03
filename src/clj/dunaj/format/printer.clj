@@ -56,7 +56,7 @@
    [dunaj.error :refer
     [throw illegal-argument illegal-state unsupported-operation]]
    [dunaj.identifier :refer [INamed Keyword name symbol symbol?]]
-   [dunaj.state.var :refer [Var def]]
+   [dunaj.state.var :refer [Var def+]]
    [dunaj.state.basic :refer [unsynchronized-reference]]
    [dunaj.string :refer [->str str empty-string string? camel-case]]
    [dunaj.format :refer [default-formatter-batch-size]]
@@ -209,103 +209,103 @@
   [config :- {}]
   (boolean (:color? config)))
 
-(def default-color :- AnyBatch
+(def+ default-color :- AnyBatch
   "A default ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[0m"))
 
-(def black :- AnyBatch
+(def+ black :- AnyBatch
   "Black ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[30m"))
 
-(def red :- AnyBatch
+(def+ red :- AnyBatch
   "Red ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[31m"))
 
-(def green :- AnyBatch
+(def+ green :- AnyBatch
   "Green ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[32m"))
 
-(def yellow :- AnyBatch
+(def+ yellow :- AnyBatch
   "Yellow ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[33m"))
 
-(def blue :- AnyBatch
+(def+ blue :- AnyBatch
   "Blue ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[34m"))
 
-(def magenta :- AnyBatch
+(def+ magenta :- AnyBatch
   "Magenta ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[35m"))
 
-(def cyan :- AnyBatch
+(def+ cyan :- AnyBatch
   "Cyan ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[36m"))
 
-(def white :- AnyBatch
+(def+ white :- AnyBatch
   "White ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[37m"))
 
-(def bold-black :- AnyBatch
+(def+ bold-black :- AnyBatch
   "Bold black ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[1;30m"))
 
-(def bold-red :- AnyBatch
+(def+ bold-red :- AnyBatch
   "Bold red ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[1;31m"))
 
-(def bold-green :- AnyBatch
+(def+ bold-green :- AnyBatch
   "Bold green ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[1;32m"))
 
-(def bold-yellow :- AnyBatch
+(def+ bold-yellow :- AnyBatch
   "Bold yellow ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[1;33m"))
 
-(def bold-blue :- AnyBatch
+(def+ bold-blue :- AnyBatch
   "Bold blue ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[1;34m"))
 
-(def bold-magenta :- AnyBatch
+(def+ bold-magenta :- AnyBatch
   "Bold magenta ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[1;35m"))
 
-(def bold-cyan :- AnyBatch
+(def+ bold-cyan :- AnyBatch
   "Bold cyan ANSI color."
   {:added v1
    :category "Colorer"}
   (string-to-batch! "\033[1;36m"))
 
-(def bold-white :- AnyBatch
+(def+ bold-white :- AnyBatch
   "Bold white ANSI color."
   {:added v1
    :category "Colorer"}
@@ -333,7 +333,7 @@
 ;; :invalid
 ;; :default
 
-(def ^:private default-colorer-map :- KeywordMap
+(def+ ^:private default-colorer-map :- KeywordMap
   "Default colorer map for ANSI compatible outputs."
   {:identifier magenta
    :string green

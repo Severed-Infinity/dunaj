@@ -21,7 +21,7 @@
   (:api bare)
   (:require
    [clojure.core :refer [var try throw]]
-   [clojure.bootstrap :refer [defmacro defalias def v1]]
+   [clojure.bootstrap :refer [defmacro defalias def+ v1]]
    [dunaj.type :refer [Fn Any I Macro]]
    [dunaj.boolean :refer [and]]
    [dunaj.host.number :refer [long]]
@@ -131,10 +131,10 @@
          (catch java.util.concurrent.TimeoutException e
            timeout-val))))
 
-(def ^:dynamic ^:private *default-future-executor* :- ITaskExecutor
+(def+ ^:dynamic ^:private *default-future-executor* :- ITaskExecutor
   clojure.lang.Agent/soloExecutor)
 
-(def default-future-executor :- clojure.lang.Var
+(def+ default-future-executor :- clojure.lang.Var
   "A dynamic var holding default future executor."
   {:added v1
    :see '[future future-call dunaj.concurrent.parallel/pmap

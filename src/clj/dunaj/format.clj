@@ -40,7 +40,7 @@
    [dunaj.function :refer [defn]]
    [dunaj.host.array :refer [to-array]]
    [dunaj.error :refer [throw illegal-argument unsupported-operation]]
-   [dunaj.state.var :refer [Var var def]]
+   [dunaj.state.var :refer [Var var def+]]
    [dunaj.coll.cons-seq :refer [cons]]
    [dunaj.coll.tuple :refer [tuple]]))
 
@@ -59,14 +59,14 @@
               "Collection must contain only one item.")))
     val))
 
-(def ^:dynamic ^:private *default-formatter-batch-size* :- Integer
+(def+ ^:dynamic ^:private *default-formatter-batch-size* :- Integer
   "Default batch size for formatters."
   32)
 
 
 ;;;; Public API
 
-(def default-formatter-batch-size :- Var
+(def+ default-formatter-batch-size :- Var
   "A dynamic var holding default formatter batch size."
   {:added v1}
   (var *default-formatter-batch-size*))

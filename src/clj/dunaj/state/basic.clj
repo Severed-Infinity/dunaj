@@ -31,7 +31,7 @@
    [dunaj.concurrent.thread :refer
     [IThreadLocal IPassableThreadLocal
      Thread current-thread ensure-thread-local]]
-   [dunaj.state.var :refer [def replace-var! defalias declare]]))
+   [dunaj.state.var :refer [replace-var! defalias declare]]))
 
 
 ;;;; Public API

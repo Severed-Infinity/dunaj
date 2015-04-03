@@ -45,7 +45,7 @@
    [dunaj.error :refer
     [IException IFailAware IFailable try catch throw fail! error
      fragile opened-fragile unsupported-operation]]
-   [dunaj.state.var :refer [def]]
+   [dunaj.state.var :refer [def+]]
    [dunaj.coll.recipe :refer [keep]]
    [dunaj.coll.util :refer [merge]]
    [dunaj.coll.default]
@@ -164,7 +164,7 @@
           r (assoc this :selector-provider sp)]
       (->SelectorResource sel r nil))))
 
-(def ^:const ^:private ALL_OPTS
+(def+ ^:const ^:private ALL_OPTS
   (iint
    (bit/or java.nio.channels.SelectionKey/OP_READ
            java.nio.channels.SelectionKey/OP_WRITE
@@ -235,7 +235,7 @@
            (when-let [k (.keyFor ch (.-sel selector))]
              (.cancel ^java.nio.channels.SelectionKey k))))
 
-(def selector-factory :- IAcquirableFactory
+(def+ selector-factory :- IAcquirableFactory
   "Selector resource factory."
   {:added v1
    :category "Primary"}

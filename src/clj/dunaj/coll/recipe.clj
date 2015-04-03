@@ -68,7 +68,7 @@
    [dunaj.string :refer [String empty-string MutableString]]
    [dunaj.identifier :refer [Keyword]]
    [dunaj.error :refer [throw ex-info illegal-argument]]
-   [dunaj.state.var :refer [declare def replace-var!]]
+   [dunaj.state.var :refer [declare def+ replace-var!]]
    [dunaj.state.basic :refer [unsynchronized-reference]]
    [dunaj.buffer :refer [sliding-buffer buffer]]
    [dunaj.coll.util :refer [some into every? doall recipe]]
@@ -117,7 +117,7 @@
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef] (combinef)))
 
-(def empty-recipe :- IRed
+(def+ empty-recipe :- IRed
   "An empty recipe."
   {:added v1
    :see '[throwing-recipe]}
@@ -3159,10 +3159,10 @@
     (transfold*
      coll reduce* pool n (foldable-lines) combinef reducef)))
 
-(def ^:private lbm :- BatchManager
+(def+ ^:private lbm :- BatchManager
   (batch-manager (keyword->class :char)))
 
-(def ^:private lam :- ArrayManager
+(def+ ^:private lam :- ArrayManager
   (array-manager (keyword->class :char)))
 
 (deftype BLWrap
@@ -3179,7 +3179,7 @@
          #(bl-advance (unsafe-advance! ret) arr-ref fval part))
         :else (->BLWrap ret arr-ref fval part)))
 
-(def ^:dynamic ^:private *default-lines-batch-size*
+(def+ ^:dynamic ^:private *default-lines-batch-size*
   32)
 
 (defn ^:private provide-capacity! :- nil

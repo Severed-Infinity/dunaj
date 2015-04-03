@@ -77,7 +77,7 @@
    [dunaj.host.array :refer [aget array-manager adapt]]
    [dunaj.coll.helper :refer
     [fold-sectionable prepare-ordered-section reduce* advance-fn]]
-   [dunaj.state.var :refer [def]]
+   [dunaj.state.var :refer [def+]]
    [dunaj.coll.vector-section :refer
     [IReversedVectorSectionHelper IVectorSectionHelper
      reversed-vector-section]]))
@@ -167,7 +167,7 @@
         (af init (.arrayFor vec nend)
             (idec (idiv nend (i32))) (iand nend (i31)))))))
 
-(def ^:private oam (array-manager java.lang.Object))
+(def+ ^:private oam (array-manager java.lang.Object))
 
 (extend-protocol! IRed
   clojure.lang.ArraySeq
@@ -281,7 +281,7 @@
   IMutableStacked
   IInvocable)
 
-(def empty-bvt-vector :- BvtVector
+(def+ empty-bvt-vector :- BvtVector
   "An empty BVT vector."
   {:added v1
    :see '[bvt-vector-factory
@@ -309,7 +309,7 @@
           t (-> t (conj! a) (conj! b) (conj! c) (conj! d))]
          (settle! (reduce conj! t more)))))
 
-(def bvt-vector-factory :- ICollectionFactory
+(def+ bvt-vector-factory :- ICollectionFactory
   "A BVT vector factory instance.
   Currently there are no options.
 

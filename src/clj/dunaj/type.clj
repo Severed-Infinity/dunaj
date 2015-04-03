@@ -64,7 +64,7 @@
     [when satisfies? throw when-not reduce empty? = first map or if
      second eval]]
    [clojure.bootstrap :refer
-    [replace-var! deftype defprotocol defn def type-hint let
+    [replace-var! deftype defprotocol defn def+ type-hint let
      defrecord v1 if-let primitive-type-hint common-type-hint]]))
 
 
@@ -86,7 +86,7 @@
   "A record for type signature that represents any type."
   [])
 
-(def Any :- AnySignature
+(def+ Any :- AnySignature
   "A type signature representing any type."
   {:added v1}
   (->AnySignature))
@@ -95,22 +95,22 @@
   "A record for type signature that represents any type."
   [])
 
-(def Unknown :- UnknownSignature
+(def+ Unknown :- UnknownSignature
   "A type signature representing unknown type."
   {:added v1}
   (->UnknownSignature))
 
-(def Signature :- Unknown
+(def+ Signature :- Unknown
   "A type signature for type signatures. :)"
   {:added v1}
   Any)
 
-(def TypeHint :- Signature
+(def+ TypeHint :- Signature
   "A type signature for host type hints."
   {:added v1}
   clojure.lang.Symbol) ;; JVM HOST
 
-(def Macro :- Signature
+(def+ Macro :- Signature
   "A placeholder indicating that var holds a macro and that the type
   signature is not missing. Is used mainly in defalias constructs."
   {:added v1}
@@ -122,7 +122,7 @@
   field."
   [method-sigs :- [[Signature]]])
 
-(def AnyFn :- Signature
+(def+ AnyFn :- Signature
   "Returns a type signature for a function with unspecified
   invoke method signatures."
   (->FnSignature nil))
@@ -194,12 +194,12 @@
   [sig :- Signature]
   (->VariadicSignature sig))
 
-(def Predicate :- Signature
+(def+ Predicate :- Signature
   "A type signature for one-argument predicate."
   {:added v1}
   (Fn [java.lang.Boolean Any]))  ;; JVM HOST
 
-(def KeywordMap :- Signature
+(def+ KeywordMap :- Signature
   "A type signature for map where keys are keywords."
   {:added v1}
   {clojure.lang.Keyword Any})

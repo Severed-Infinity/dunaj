@@ -32,7 +32,7 @@
    [dunaj.string :refer [String str]]
    [dunaj.identifier :refer [Symbol]]
    [dunaj.macro :refer [defmacro]]
-   [dunaj.state.var :refer [Var defalias var def defonce declare]]
+   [dunaj.state.var :refer [Var defalias var def+ defonce declare]]
    [dunaj.uri :refer [Uri uri]]
    [dunaj.concurrent.thread :refer [pass!]]
    [dunaj.coll.tuple :refer [key]]
@@ -55,7 +55,7 @@
       (pass! nil)
       grab-scope))
 
-(def ^:private ^:dynamic *out* :- IWritable
+(def+ ^:private ^:dynamic *out* :- IWritable
   (key out-w-scope))
 
 (defonce ^:private err-w-scope
@@ -64,7 +64,7 @@
       (pass! nil)
       grab-scope))
 
-(def ^:private ^:dynamic *err* :- IWritable
+(def+ ^:private ^:dynamic *err* :- IWritable
   (key err-w-scope))
 
 (defonce ^:private in-w-scope
@@ -73,19 +73,19 @@
       (pass! nil)
       grab-scope))
 
-(def ^:private ^:dynamic *in* :- IWritable
+(def+ ^:private ^:dynamic *in* :- IWritable
   (key in-w-scope))
 
-(def ^:private ^:dynamic *color* :- Boolean
+(def+ ^:private ^:dynamic *color* :- Boolean
   false)
 
-(def ^:private ^:dynamic *meta* :- Boolean
+(def+ ^:private ^:dynamic *meta* :- Boolean
   false)
 
-(def ^:private ^:dynamic *default-printer* :- IPrinterFactory
+(def+ ^:private ^:dynamic *default-printer* :- IPrinterFactory
   clj)
 
-(def ^:private ^:dynamic *default-pretty-printer* :- IPrinterFactory
+(def+ ^:private ^:dynamic *default-pretty-printer* :- IPrinterFactory
   pretty-clj)
 
 (declare host-newline)
@@ -164,7 +164,7 @@
   []
   (version (clojure.core/clojure-version)))
 
-(def data-readers :- Var
+(def+ data-readers :- Var
   "A dynamic var which stores current data readers mappings, excluding
   default ones, created by the system."
   {:added v1
@@ -172,28 +172,28 @@
    :see '[default-data-reader-fn]}
   (var clojure.core/*data-readers*))
 
-(def default-data-reader-fn :- Var
+(def+ default-data-reader-fn :- Var
   "A dynamic var which stores default data reader fn."
   {:added v1
    :category "Primary"
    :see '[data-readers]}
   (var clojure.core/*default-data-reader-fn*))
 
-(def out :- Var
+(def+ out :- Var
   "A dynamic var holding default output resource."
   {:added v1
    :category "Console"
    :see '[print! out! err in flush!]}
   (var *out*))
 
-(def err :- Var
+(def+ err :- Var
   "A dynamic var holding default error resource."
   {:added v1
    :category "Console"
    :see '[err! in out]}
   (var *err*))
 
-(def in :- Var
+(def+ in :- Var
   "A dynamic var holding default input resource."
   {:added v1
    :category "Console"
@@ -208,7 +208,7 @@
   []
   (dunaj.resource/flush! *out*))
 
-(def host-newline :- String
+(def+ host-newline :- String
   "A host newline string."
   {:added v1
    :category "Console"
@@ -233,7 +233,7 @@
   [coll]
   (write! *err* coll))
 
-(def color :- Var
+(def+ color :- Var
   "A dynamic var holding color flag used in pretty printing."
   {:added v1
    :category "Console"
@@ -248,7 +248,7 @@
   [& body]
   `(dunaj.state.var/with-bindings {color true} ~@body))
 
-(def meta :- Var
+(def+ meta :- Var
   "A dynamic var holding meta flag used in pretty printing."
   {:added v1
    :category "Console"
@@ -263,7 +263,7 @@
   [& body]
   `(dunaj.state.var/with-bindings {meta true} ~@body))
 
-(def default-printer :- Var
+(def+ default-printer :- Var
   "A dynamic var holding default printer factory used in pr! and prn!
   functions."
   {:added v1
@@ -271,7 +271,7 @@
    :see '[default-pretty-printer pr! prn!]}
   (var *default-printer*))
 
-(def default-pretty-printer :- Var
+(def+ default-pretty-printer :- Var
   "A dynamic var holding default pretty printer factory used in
   pretty! function."
   {:added v1

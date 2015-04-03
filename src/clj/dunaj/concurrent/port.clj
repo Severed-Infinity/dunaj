@@ -45,20 +45,20 @@
    [dunaj.time :refer [IDuration]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.error :refer [IException]]
-   [dunaj.state.var :refer [Var var def]]))
+   [dunaj.state.var :refer [Var var def+]]))
 
 
 ;;;; Implementation details
 
 ;; TODO: should we put all default executors in Dunaj as delays
 ;;       in order to be more lazy with these pools?
-(def ^:dynamic ^:private *default-port-executor* :- IExecutor
+(def+ ^:dynamic ^:private *default-port-executor* :- IExecutor
   @clojure.core.async.impl.dispatch/executor)
 
 
 ;;;; Public API
 
-(def PortVal :- Signature
+(def+ PortVal :- Signature
   "A type signature for values that can be processed by a port."
   {:added v1
    :see '[<!! <! >!! >! put! take!]
@@ -67,7 +67,7 @@
 
 ;; Implementation for most vars is provided in clojure.core.async
 
-(def default-port-executor :- Var
+(def+ default-port-executor :- Var
   "Dynamic var holding default port executor.
 
   NOTE: Not yet fully integrated."
@@ -767,7 +767,7 @@
   ;; (put! master [ref old new])
   (put! master [nil old new]))
 
-(def ^:private reference-mults :- java.util.Map
+(def+ ^:private reference-mults :- java.util.Map
   (java.util.Collections/synchronizedMap (java.util.WeakHashMap.)))
 
 (defn ^:private provide-mult!
@@ -816,7 +816,7 @@
 
 ;;; Mix
 
-(def Mix :- Signature
+(def+ Mix :- Signature
   "A type signature for Mix object."
   {:added v1
    :see '[mix]

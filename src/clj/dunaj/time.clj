@@ -23,7 +23,7 @@
    [clojure.core :refer [var format]]
    [clojure.instant :refer [validated parse-timestamp]]
    [clojure.bootstrap :refer
-    [replace-var! def defprotocol deftype defrecord v1 fn defn]]
+    [replace-var! def+ defprotocol deftype defrecord v1 fn defn]]
    [dunaj.type :refer [U Any AnyFn Fn]]
    [dunaj.boolean :refer [Boolean and]]
    [dunaj.math :refer [subtract dec quot neg? INumerical rem num trunc
@@ -45,13 +45,13 @@
   (let [s (->str "000000000" val)]
     (slice s (subtract (count s) digits))))
 
-(def ^:private construct-calendar :- AnyFn
+(def+ ^:private construct-calendar :- AnyFn
   @#'clojure.instant/construct-calendar)
 
-(def ^:private thread-local-utc-date-format :- AnyFn
+(def+ ^:private thread-local-utc-date-format :- AnyFn
   @#'clojure.instant/thread-local-utc-date-format)
 
-(def ^:private thread-local-utc-timestamp-format :- AnyFn
+(def+ ^:private thread-local-utc-timestamp-format :- AnyFn
   @#'clojure.instant/thread-local-utc-timestamp-format)
 
 
@@ -157,7 +157,7 @@
                     nanoseconds offset-sign offset-hours
                     offset-minutes)))
 
-(def basic-instant-factory :- IInstantFactory
+(def+ basic-instant-factory :- IInstantFactory
   "A factory for basic instants."
   {:added v1
    :see '[instant IIntantFactory]}
@@ -192,7 +192,7 @@
                years months days hours minutes seconds nanoseconds
                offset-sign offset-hours offset-minutes))))
 
-(def date-instant-factory :- IInstantFactory
+(def+ date-instant-factory :- IInstantFactory
   "A `java.util.Date` instant factory."
   {:added v1
    :see '[instant IIntantFactory]}
@@ -229,7 +229,7 @@
      years months days hours minutes seconds nanoseconds
      offset-sign offset-hours offset-minutes)))
 
-(def calendar-instant-factory :- IInstantFactory
+(def+ calendar-instant-factory :- IInstantFactory
   "A `java.util.Calendar` instant factory."
   {:added v1
    :see '[instant IIntantFactory]}
@@ -272,7 +272,7 @@
       ;; nanos must be set separately, passed 0 above
       (.setNanos nanoseconds))))
 
-(def timestamp-instant-factory :- IInstantFactory
+(def+ timestamp-instant-factory :- IInstantFactory
   "A `java.sql.Timestamp` instant factory."
   {:added v1
    :see '[instant IIntantFactory]}
@@ -280,10 +280,10 @@
 
 ;;; Constructor
 
-(def ^:dynamic ^:private *default-instant-factory* :- IInstantFactory
+(def+ ^:dynamic ^:private *default-instant-factory* :- IInstantFactory
   basic-instant-factory)
 
-(def default-instant-factory :- clojure.lang.Var ;; JVM Host
+(def+ default-instant-factory :- clojure.lang.Var ;; JVM Host
   "A dynamic var holding default instant factory."
   {:added v1
    :see '[instant IIntantFactory]}

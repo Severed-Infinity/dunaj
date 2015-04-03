@@ -41,7 +41,7 @@
     [IException exception? throw illegal-state ex-data]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.namespace :refer [resolve all publics]]
-   [dunaj.state.var :refer [defalias def var with-bindings]]
+   [dunaj.state.var :refer [defalias def+ var with-bindings]]
    [dunaj.concurrent.thread :refer [Thread current-thread]]
    [dunaj.coll.util :refer [doseq sort-by recipe dored sort]]
    [dunaj.coll.recipe :refer
@@ -75,25 +75,25 @@
 
 ;;;; Public API
 
-(def ^:dynamic *1 :- Any
+(def+ ^:dynamic *1 :- Any
   "Bound in a repl thread to the most recent value printed."
   {:added v1
    :see '[*2 *3 *e]}
   nil)
 
-(def ^:dynamic *2 :- Any
+(def+ ^:dynamic *2 :- Any
   "Bound in a repl thread to the second most recent value printed."
   {:added v1
    :see '[*1 *3 *e]}
   nil)
 
-(def ^:dynamic *3 :- Any
+(def+ ^:dynamic *3 :- Any
   "Bound in a repl thread to the third most recent value printed."
   {:added v1
    :see '[*2 *1 *e]}
   nil)
 
-(def ^:dynamic *e :- (Maybe IException)
+(def+ ^:dynamic *e :- (Maybe IException)
   "Bound in a repl thread to the most recent exception
   caught by the repl."
   {:added v1

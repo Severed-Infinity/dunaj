@@ -30,7 +30,7 @@
             [dunaj.coll :refer [first item-type seq next empty? conj]]
             [dunaj.function :refer [fn defn]]
             [dunaj.host.array :refer [aset-char! array-manager]]
-            [dunaj.state.var :refer [def]]
+            [dunaj.state.var :refer [def+]]
             [dunaj.macro :refer [defmacro]]
             [dunaj.concurrent.port :refer [close!]])
   (:gen-class
@@ -64,7 +64,7 @@
 
 (defn -flush [this])
 
-(def ^:private cam :- ArrayManager
+(def+ ^:private cam :- ArrayManager
   (array-manager (keyword->class :char)))
 
 (defn -write-char<>-int-int [this carr off len]

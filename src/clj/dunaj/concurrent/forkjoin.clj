@@ -25,7 +25,7 @@
   (:api bare)
   (:require [clojure.core :refer [var throw]]
             [clojure.core.reducers :refer [coll-fold]]
-            [clojure.bootstrap :refer [def v1 replace-var!]]
+            [clojure.bootstrap :refer [def+ v1 replace-var!]]
             [dunaj.type :refer [Fn Any AnyFn U Maybe]]
             [dunaj.boolean :refer [and or not Boolean true?]]
             [dunaj.host :refer [class-instance?]]
@@ -43,18 +43,18 @@
 
 ;;;; Implementation details
 
-(def ^:dynamic ^:private *default-fold-size* :- Integer
+(def+ ^:dynamic ^:private *default-fold-size* :- Integer
   512)
 
-(def ^:dynamic ^:private *default-fold-pool*
+(def+ ^:dynamic ^:private *default-fold-pool*
   :- java.util.concurrent.ForkJoinPool
   ;;(java.util.concurrent.ForkJoinPool.)
   @clojure.core.reducers/pool)
 
-(def ^:private reducing-function :- AnyFn
+(def+ ^:private reducing-function :- AnyFn
   @#'dunaj.coll/reducing-function)
 
-(def ^:private reduce* :- AnyFn
+(def+ ^:private reduce* :- AnyFn
   @#'dunaj.coll/reduce*)
 
 
@@ -165,14 +165,14 @@
     [this reduce-fn :- AnyFn, pool :- ForkJoinPool, n :- Integer,
      combinef :- AnyFn, reducef :- AnyFn]))
 
-(def default-fold-size :- clojure.lang.Var
+(def+ default-fold-size :- clojure.lang.Var
   "A dynamic var holding a default fold size."
   {:added v1
    :see '[fold transfold]
    :category "Folds"}
   (var *default-fold-size*))
 
-(def default-fold-pool :- clojure.lang.Var
+(def+ default-fold-pool :- clojure.lang.Var
   "A dynamic var holding a default forkjoin pool."
   {:added v1
    :see '[dunaj.coll.helper/fold* dunaj.coll.helper/transfold*]

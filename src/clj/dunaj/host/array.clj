@@ -41,7 +41,7 @@
   (:require
    [clojure.core :refer
     [str declare get first second throw every? interpose pr-str map]]
-   [clojure.bootstrap :refer [deftype defn defalias def v1]]
+   [clojure.bootstrap :refer [deftype defn defalias def+ v1]]
    [dunaj.type :refer [Fn Va U Any Maybe Predicate Macro]]
    [dunaj.boolean :refer [Boolean and or not]]
    [dunaj.host :refer [Class ArrayManager AnyArray Array
@@ -72,7 +72,7 @@
 
 ;;;; Implementation details
 
-(def ^:private ams :- {Class ArrayManager} @#'dunaj.host/ams)
+(def+ ^:private ams :- {Class ArrayManager} @#'dunaj.host/ams)
 
 (defn ^:private array?* :- Predicate
   [arrf :- Any]
@@ -261,7 +261,7 @@
   [x :- Any]
   (.isArray (class x)))
 
-(def byte-array? :- Predicate
+(def+ byte-array? :- Predicate
   "Returns `true` if `_x_` is a byte array, `false` otherwise."
   {:added v1
    :category "Primitives"
@@ -269,7 +269,7 @@
    :see '[bytes byte-array]}
   (array?* byte-array))
 
-(def short-array? :- Predicate
+(def+ short-array? :- Predicate
   "Returns `true` if `_x_` is a short array, `false` otherwise."
   {:added v1
    :category "Primitives"
@@ -277,7 +277,7 @@
    :see '[shorts short-array]}
   (array?* short-array))
 
-(def int-array? :- Predicate
+(def+ int-array? :- Predicate
   "Returns `true` if `_x_` is an array, `false` otherwise."
   {:added v1
    :category "Primitives"
@@ -285,7 +285,7 @@
    :see '[ints int-array]}
   (array?* int-array))
 
-(def long-array? :- Predicate
+(def+ long-array? :- Predicate
   "Returns `true` if `_x_` is a long array, `false` otherwise."
   {:added v1
    :category "Primitives"
@@ -293,7 +293,7 @@
    :see '[longs long-array]}
   (array?* long-array))
 
-(def float-array? :- Predicate
+(def+ float-array? :- Predicate
   "Returns `true` if `_x_` is a float array, `false` otherwise."
   {:added v1
    :category "Primitives"
@@ -301,7 +301,7 @@
    :see '[floats float-array]}
   (array?* float-array))
 
-(def double-array? :- Predicate
+(def+ double-array? :- Predicate
   "Returns `true` if `_x_` is a double array, `false` otherwise."
   {:added v1
    :category "Primitives"
@@ -309,7 +309,7 @@
    :see '[doubles double-array]}
   (array?* double-array))
 
-(def boolean-array? :- Predicate
+(def+ boolean-array? :- Predicate
   "Returns `true` if `_x_` is a boolean array, `false` otherwise."
   {:added v1
    :category "Primitives"
@@ -317,7 +317,7 @@
    :see '[booleans boolean-array]}
   (array?* boolean-array))
 
-(def char-array? :- Predicate
+(def+ char-array? :- Predicate
   "Returns `true` if `_x_` is a char array, `false` otherwise."
   {:added v1
    :category "Primitives"
@@ -325,7 +325,7 @@
    :see '[chars char-array]}
   (array?* char-array))
 
-(def object-array? :- Predicate
+(def+ object-array? :- Predicate
   "Returns `true` if `_x_` is an object array, `false` otherwise."
   {:added v1
    :category "Primary"

@@ -30,7 +30,7 @@
    [clojure.core :refer
     [do case if reify gensym symbol str = with-meta not nil? when or
      if-let cond]]
-   [clojure.bootstrap :refer [defmacro deftype defalias defn def let
+   [clojure.bootstrap :refer [defmacro deftype defalias defn def+ let
                               v1 primitive-type-hint defrecord]]
    [dunaj.type :refer
     [Macro Fn Any Maybe Signature TypeHint IHintedSignature]]
@@ -411,13 +411,13 @@
   (^java.nio.Buffer copy [^java.nio.Buffer src
                           arr ^int offset ^int length]))
 
-(def AnyBatch :- Signature
+(def+ AnyBatch :- Signature
   "A type signature representing batch."
   {:added v1
    :see '[Batch BatchManager dunaj.host.batch/batch-manager]}
   java.nio.Buffer) ;; JVM HOST
 
-(def ^:private batch-sigs :- {Any Signature}
+(def+ ^:private batch-sigs :- {Any Signature}
   ;; JVM HOST
   {'byte java.nio.ByteBuffer
    'short java.nio.ShortBuffer
@@ -439,7 +439,7 @@
   [sig :- Signature]
   (or (batch-sigs (primitive-type-hint sig)) AnyBatch))
 
-(def BatchManager :- Signature
+(def+ BatchManager :- Signature
   "A type signature representing batch manager.
 
   Batch manager provides following host methods:
@@ -490,7 +490,7 @@
        (copy [_ ~gbuf ~garr offset# length#]
          (.get ~tgbuf ~tgarr offset# length#)))))
 
-(def ^:private bms :- {Class BatchManager}
+(def+ ^:private bms :- {Class BatchManager}
   {java.lang.Byte/TYPE
    (mk-bm byte java.nio.ByteBuffer java.lang.Byte/TYPE)
    java.lang.Character/TYPE
@@ -530,10 +530,10 @@
   IHintedSignature
   (-type-hint [this] type-hint))
 
-(def ^:private any-array-hint :- TypeHint
+(def+ ^:private any-array-hint :- TypeHint
   'objects) ;; JVM HOST
 
-(def ^:private array-hints :- {Any TypeHint}
+(def+ ^:private array-hints :- {Any TypeHint}
   ;; JVM HOST
   {'byte 'bytes
    'short 'shorts
@@ -544,7 +544,7 @@
    'boolean 'booleans
    'char 'chars})
 
-(def AnyArray :- ArraySignature
+(def+ AnyArray :- ArraySignature
   "A type signature for heterogeneous host arrays or host arrays
   with unspecified item type."
   {:added v1
@@ -564,7 +564,7 @@
     (->ArraySignature sig ph)
     (->ArraySignature sig any-array-hint)))
 
-(def ArrayManager :- Signature
+(def+ ArrayManager :- Signature
   "A type signature representing array manager.
 
   Array manager provides following host methods:
@@ -610,7 +610,7 @@
        (sort [_ ~garr]
          (java.util.Arrays/sort ~tgarr)))))
 
-(def ^:private ams :- {Class ArrayManager}
+(def+ ^:private ams :- {Class ArrayManager}
   {java.lang.Byte/TYPE
    (mk-am byte java.lang.Byte/TYPE java.nio.ByteBuffer)
    java.lang.Character/TYPE

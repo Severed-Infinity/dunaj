@@ -29,7 +29,7 @@
      sequential? conj assoc map? list? vector? set? double? seq?
      counted? provide-sequential next update pop peek]]
    [dunaj.function :refer [Function fn defn identity apply]]
-   [dunaj.state.var :refer [Var var var? declare def]]
+   [dunaj.state.var :refer [Var var var? declare def+]]
    [dunaj.identifier :refer [INamed name keyword? symbol? named?]]
    [dunaj.string :refer [->str empty-string str index-of string?]]
    [dunaj.coll.cons-seq :refer [cons]]
@@ -141,7 +141,7 @@
 
 ;;;; Public API
 
-(def html :- IPrinterFactory
+(def+ html :- IPrinterFactory
   "A HTML printer factory. Currently there are no options."
   {:added v1}
   (->HtmlPrinterFactory))

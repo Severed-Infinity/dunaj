@@ -19,7 +19,7 @@
   {:authors ["Jozef Wagner"]}
   (:api bare)
   (:require
-   [clojure.bootstrap :refer [defmacro def v1]]
+   [clojure.bootstrap :refer [defmacro def+ v1]]
    [dunaj.type :refer [Any KeywordMap Maybe U AnyFn]]
    [dunaj.boolean :refer [Boolean and not xor]]
    [dunaj.math :refer [Integer zero? rem]]
@@ -41,7 +41,7 @@
 
 ;;;; Implementation details
 
-(def ^:private state->keyword :- {Any Keyword}
+(def+ ^:private state->keyword :- {Any Keyword}
   {java.lang.Thread$State/NEW :new
    java.lang.Thread$State/BLOCKED :blocked
    java.lang.Thread$State/RUNNABLE :runnable
@@ -62,19 +62,19 @@
 
 ;;;; Public API
 
-(def ^:const max-priority :- Integer
+(def+ ^:const max-priority :- Integer
   "A thread maximum priority constant."
   {:added v1
    :see '[min-priority default-priority thread Thread]}
   java.lang.Thread/MAX_PRIORITY)
 
-(def ^:const min-priority :- Integer
+(def+ ^:const min-priority :- Integer
   "A thread minimum priority constant."
   {:added v1
    :see '[max-priority default-priority thread Thread]}
   java.lang.Thread/MIN_PRIORITY)
 
-(def ^:const default-priority :- Integer
+(def+ ^:const default-priority :- Integer
   "A thread default priority constant."
   {:added v1
    :see '[min-priority max-priority thread Thread]}

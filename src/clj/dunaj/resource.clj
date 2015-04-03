@@ -85,7 +85,7 @@
    [dunaj.identifier :refer [Keyword]]
    [dunaj.state.weak :refer [weak]]
    [dunaj.state.basic :refer [atom]]
-   [dunaj.state.var :refer [Var var var? def declare alter-root!]]
+   [dunaj.state.var :refer [Var var var? def+ declare alter-root!]]
    [dunaj.error :refer
     [IException ex-info illegal-argument throw
      try unsupported-operation npe fail-aware? error]]
@@ -100,15 +100,15 @@
 
 ;;;; Implementation details
 
-(def ^:dynamic *resource-providers*
+(def+ ^:dynamic *resource-providers*
   "Registered resource providers."
   {})
 
-(def ^:dynamic ^:private *scope*
+(def+ ^:dynamic ^:private *scope*
   "Dynamic Var for current scope."
   nil)
 
-(def ^:dynamic ^:private *scope-thread*
+(def+ ^:dynamic ^:private *scope-thread*
   "Dynamic Var for current scope home thread."
   nil)
 

@@ -45,7 +45,7 @@
    [clojure.core :as cc :refer
     [. if ratio? assert apply hash-map cond -> = binding when-not
      if-not recur seq first rest and declare nil? throw double long]]
-   [clojure.bootstrap :refer [defalias defn def fn loop let v1
+   [clojure.bootstrap :refer [defalias defn def+ fn loop let v1
                               defprotocol not-implemented defmacro]]
    [dunaj.type :refer [Fn Maybe U Any Va Signature]]
    [dunaj.boolean :refer [Boolean not or]]
@@ -59,7 +59,7 @@
 
 ;;;; Public API
 
-(def Number :- Signature
+(def+ Number :- Signature
   "A type signature for numbers."
   {:added v1
    :see '[number? Integer Float Decimal Rational INumerical num]
@@ -76,7 +76,7 @@
   [x :- Any]
   (class-instance? java.lang.Number x))
 
-(def Integer :- Signature
+(def+ Integer :- Signature
   "A type signature for integer numbers.
 
   IMPORTANT: This is not a host Integer type, but rather a type
@@ -104,7 +104,7 @@
       (class-instance? java.math.BigInteger x)
       (class-instance? java.lang.Short x)))
 
-(def Float :- Signature
+(def+ Float :- Signature
   "A type signature for floating point numbers.
 
   IMPORTANT: This is not a host Float type, but rather a type
@@ -126,7 +126,7 @@
   (or (class-instance? java.lang.Double x)
       (class-instance? java.lang.Float x)))
 
-(def Decimal :- Signature
+(def+ Decimal :- Signature
   "A type signature for decimal numbers."
   {:added v1
    :see '[decimal? Number Integer Float Rational
@@ -143,7 +143,7 @@
   [x :- Any]
   (class-instance? java.math.BigDecimal x))
 
-(def Rational :- Signature
+(def+ Rational :- Signature
   "A type signature for rational numbers (not just Clojure ratios)."
   {:added v1
    :see '[rational? Number Integer Float Decimal]
@@ -586,7 +586,7 @@
 
 ;;; Rounding
 
-(def ^:private rounding-mode :- {clojure.lang.Keyword RoundingMode}
+(def+ ^:private rounding-mode :- {clojure.lang.Keyword RoundingMode}
   "A translation map for rounding modes."
   {:ceiling RoundingMode/CEILING
    :floor RoundingMode/FLOOR
@@ -597,7 +597,7 @@
    :down RoundingMode/DOWN
    :unnecessary RoundingMode/UNNECESSARY})
 
-(def PrecisionConfig :- Signature
+(def+ PrecisionConfig :- Signature
   "A type signature for precision config."
   {:added v1
    :see '[round with-precision]
@@ -794,13 +794,13 @@
 
 ;;; Constants
 
-(def ^:const ^java.lang.Double pi :- Float
+(def+ ^:const ^java.lang.Double pi :- Float
   "The `PI` constant as defined by the host."
   {:added v1
    :see '[e dunaj.math.angle/deg]}
   Math/PI)
 
-(def ^:const ^java.lang.Double e :- Float
+(def+ ^:const ^java.lang.Double e :- Float
   "The `e` constant as defined by the host."
   {:added v1
    :see '[pi exp expm1 log log1p log10]}

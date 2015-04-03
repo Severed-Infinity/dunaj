@@ -30,7 +30,7 @@
   (:require
    [clojure.core :refer
     [methods prefers symbol throw get map? some cons remove ->>]]
-   [clojure.bootstrap :refer [defalias def v1 type-map defn fn]]
+   [clojure.bootstrap :refer [defalias def+ v1 type-map defn fn]]
    [dunaj.type :refer [Signature Required Fn Any U Va Macro]]
    [dunaj.boolean :refer [Boolean boolean or and]]
    [dunaj.host :refer [Class class class? class-instance? supers]]
@@ -42,7 +42,7 @@
 
 ;;;; Public API
 
-(def Protocol :- Signature
+(def+ Protocol :- Signature
   "Type signature for protocols."
   {:added v1
    :see '[defprotocol protocol? satisfies?]
@@ -79,7 +79,7 @@
 
 ;;; Types and records
 
-(def Type :- Signature
+(def+ Type :- Signature
   "Type signature for types."
   {:added v1
    :see '[deftype type? type-instance?]
@@ -115,7 +115,7 @@
   [x :- Any]
   (class-instance? clojure.lang.IType x))
 
-(def Record :- Signature
+(def+ Record :- Signature
   "Type signature for records."
   {:added v1
    :see '[record? defrecord record-instance?]

@@ -19,7 +19,7 @@
    [clojure.core :refer [extend-protocol map into]]
    [clojure.stacktrace]
    [clojure.bootstrap :refer
-    [defprotocol defn defalias def defmacro v1 not-implemented]]
+    [defprotocol defn defalias defmacro v1 not-implemented]]
    [dunaj.type :refer [Fn Maybe KeywordMap]]
    [dunaj.boolean :refer [Boolean]]
    [dunaj.host :refer [bean->map class]]

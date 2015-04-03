@@ -51,7 +51,7 @@
    [dunaj.string :refer [String ->str]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.identifier :refer [Keyword]]
-   [dunaj.state.var :refer [Var var def]]
+   [dunaj.state.var :refer [Var var def+]]
    [dunaj.coll.util :refer [merge recipe]]
    [dunaj.coll.recipe :refer [map concat*]]
    [dunaj.format :refer [IParserFactory IPrinterFactory parse print
@@ -61,11 +61,11 @@
 
 ;;;; Implementation details
 
-(def ^:dynamic ^:private *default-malformed-mode* :- Keyword
+(def+ ^:dynamic ^:private *default-malformed-mode* :- Keyword
   "Default malformed mode."
   :replace)
 
-(def ^:dynamic ^:private *default-unmappable-mode* :- Keyword
+(def+ ^:dynamic ^:private *default-unmappable-mode* :- Keyword
   "Default unmappable mode."
   :replace)
 
@@ -424,20 +424,20 @@
   (charset-formatter* (java.nio.charset.Charset/forName charset)
                       opts))
 
-(def utf-8 :- (I IParserFactory IPrinterFactory)
+(def+ utf-8 :- (I IParserFactory IPrinterFactory)
   "UTF-8 charset formatter factory."
   {:added v1
    :see '[utf-16 default-charset charset-formatter]}
   (charset-formatter* java.nio.charset.StandardCharsets/UTF_8 nil))
 
-(def utf-16 :- (I IParserFactory IPrinterFactory)
+(def+ utf-16 :- (I IParserFactory IPrinterFactory)
   "UTF-16 charset formatter factory which supports byte-order mark
   when decoding and defaults to and encodes in the big endian."
   {:added v1
    :see '[utf-8 charset-formatter default-charset]}
   (charset-formatter* java.nio.charset.StandardCharsets/UTF_16 nil))
 
-(def default-charset :- (I IParserFactory IPrinterFactory)
+(def+ default-charset :- (I IParserFactory IPrinterFactory)
   "A default charset formatter factory as specified by host."
   {:added v1
    :see '[charset-formatter utf-8 utf-16]}

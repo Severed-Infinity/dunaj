@@ -58,7 +58,7 @@
 
 ;;;; Implementation details
 
-(def ^:private default-pipe-batch-size :- Integer
+(def+ ^:private default-pipe-batch-size :- Integer
   "Default size for pipe batch."
   8192)
 
@@ -152,7 +152,7 @@
 
 ;;;; Public API
 
-(def pipe-factory :- IAcquirableFactory
+(def+ pipe-factory :- IAcquirableFactory
   "Pipe resource factory.
   Current options are:
 

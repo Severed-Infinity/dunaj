@@ -43,7 +43,7 @@
   (:api bare)
   (:require
    [clojure.core :refer [throw var satisfies? str]]
-   [clojure.bootstrap :as cb :refer [defalias defprotocol def v1]]
+   [clojure.bootstrap :as cb :refer [defalias defprotocol def+ v1]]
    [dunaj.type :refer [Fn Any AnyFn I U Va Predicate Signature Macro]]
    [dunaj.boolean :refer [Boolean and boolean]]
    [dunaj.flow :refer [if cond let if-let]]
@@ -54,7 +54,7 @@
 
 ;;;; Implementation details
 
-(def ^:private ^:dynamic *default-memoization-factory* nil)
+(def+ ^:private ^:dynamic *default-memoization-factory* nil)
 
 
 ;;;; Public API
@@ -205,7 +205,7 @@
 
 ;;; Definition
 
-(def Function :- Signature
+(def+ Function :- Signature
   "A type signature for Function.
 
   Functions provide following functionality:
@@ -447,7 +447,7 @@
     "Returns a memoized version of a function `_f_`."
     [this f :- AnyFn]))
 
-(def default-memoization-factory :- clojure.lang.Var
+(def+ default-memoization-factory :- clojure.lang.Var
   "A dynamic var holding default memoization factory."
   {:added v1
    :see '[memoize IMemoizationFactory]

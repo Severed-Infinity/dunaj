@@ -53,7 +53,7 @@
    [dunaj.char :refer [Char char]]
    [dunaj.string :refer
     [String MutableString ->str empty-string str string?]]
-   [dunaj.state.var :refer [def]]
+   [dunaj.state.var :refer [def+]]
    [dunaj.coll.default :refer [empty-vec empty-map vec]]
    [dunaj.coll.cons-seq :refer [cons]]
    [dunaj.coll.lazy-seq-map :refer [lazy-seq->map]]
@@ -171,7 +171,7 @@
         (i== x (iSMALL_T)) \u0009
         :else (perror "invalid escape character " (char x))))
 
-(def json-string-literal
+(def+ json-string-literal
   "Function which returns a JSON String Literal Tokenizer Machine."
   (string-literal-constructor
    invalid-json-string-element? from-escape false))
@@ -232,21 +232,21 @@
   (-print-between! [this bm batch parents]
     (print! batch bm state \space)))
 
-(def json-true-batch (string-to-batch! "true"))
-(def json-false-batch (string-to-batch! "false"))
-(def json-null-batch (string-to-batch! "null"))
-(def json-quote-batch (string-to-batch! "\\\""))
-(def json-backslash-batch (string-to-batch! "\\\\"))
-(def json-slash-batch (string-to-batch! "\\/"))
-(def json-bs-batch (string-to-batch! "\\b"))
-(def json-ht-batch (string-to-batch! "\\t"))
-(def json-lf-batch (string-to-batch! "\\n"))
-(def json-ff-batch (string-to-batch! "\\f"))
-(def json-cr-batch (string-to-batch! "\\r"))
-(def json-ls-batch (string-to-batch! "\\u2028"))
-(def json-ps-batch (string-to-batch! "\\u2029"))
-(def json-level-limit-batch (string-to-batch! "#"))
-(def json-item-limit-batch (string-to-batch! "..."))
+(def+ json-true-batch (string-to-batch! "true"))
+(def+ json-false-batch (string-to-batch! "false"))
+(def+ json-null-batch (string-to-batch! "null"))
+(def+ json-quote-batch (string-to-batch! "\\\""))
+(def+ json-backslash-batch (string-to-batch! "\\\\"))
+(def+ json-slash-batch (string-to-batch! "\\/"))
+(def+ json-bs-batch (string-to-batch! "\\b"))
+(def+ json-ht-batch (string-to-batch! "\\t"))
+(def+ json-lf-batch (string-to-batch! "\\n"))
+(def+ json-ff-batch (string-to-batch! "\\f"))
+(def+ json-cr-batch (string-to-batch! "\\r"))
+(def+ json-ls-batch (string-to-batch! "\\u2028"))
+(def+ json-ps-batch (string-to-batch! "\\u2029"))
+(def+ json-level-limit-batch (string-to-batch! "#"))
+(def+ json-item-limit-batch (string-to-batch! "..."))
 
 ;;; printer for JSON object
 
@@ -296,7 +296,7 @@
 
 ;;; printing strings
 
-(def ^:private zeroes :- String "0000")
+(def+ ^:private zeroes :- String "0000")
 
 (defn ^:private to-escape
   "Returns batch containing escape sequence or nil, if no
@@ -719,7 +719,7 @@
 
 ;;;; Public API
 
-(def json :- (I IParserFactory IPrinterFactory)
+(def+ json :- (I IParserFactory IPrinterFactory)
   "A JSON formatter factory."
   {:added v1
    :see '[lazy-json pretty-json]}
@@ -727,16 +727,16 @@
    identity default-key-encode-fn (fn [k v] v) (fn [k v] v) false true
    true true :keep false nil 1000000 1000000 1000000))
 
-(def lazy-json :- IParserFactory
+(def+ lazy-json :- IParserFactory
   "A Lazy JSON formatter factory."
   {:added v1
    :see '[json pretty-json]}
   (assoc json :lazy? true))
 
-(def json-colorer-map :- {}
+(def+ json-colorer-map :- {}
   {:limit cyan})
 
-(def pretty-json :- IPrinterFactory
+(def+ pretty-json :- IPrinterFactory
   "JSON printer factory with pretty printing."
   {:added v1
    :see '[json lazy-json]}
@@ -776,9 +776,9 @@
   (clojure.core/require '[dunaj.resource.http])
   (clojure.core/require '[dunaj.resource :refer [slurp with-scope]])
 
-  (def url "https://www.googleapis.com/freebase/v1/topic/m/0fkf28")
-  (def s (with-scope (str (slurp url))))
-  (def s (str (cc/take 50000 (cc/repeat \[)))) ;; stack overflow
+  (def+ url "https://www.googleapis.com/freebase/v1/topic/m/0fkf28")
+  (def+ s (with-scope (str (slurp url))))
+  (def+ s (str (cc/take 50000 (cc/repeat \[)))) ;; stack overflow
 
   (cc/time (count (vec (parse json s))))
   (cc/time (count (seq (parse json s))))
@@ -798,7 +798,7 @@
 
   ;; channel parser
 
-  (def c (dp/chan 10 (parse json)))
+  (def+ c (dp/chan 10 (parse json)))
 
   (dp/thread (loop [x (dp/<!! c)]
                (if (nil? x)
@@ -815,7 +815,7 @@
 
   ;; Printer
 
-  (def coll (parse-whole json s))
+  (def+ coll (parse-whole json s))
 
   (= (str (print json [coll]))
      (apply ->str (seq (print json [coll])))

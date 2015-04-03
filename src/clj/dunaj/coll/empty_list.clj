@@ -40,7 +40,7 @@
     [ISequential IEmptyable IRed ISeq IEmptyAware IPeekable ICounted
      ICollectionFactory ISeqable IPersistentCollection IPersistentList
      first]]
-   [dunaj.state.var :refer [def]]))
+   [dunaj.state.var :refer [def+]]))
 
 
 ;;;; Public API
@@ -65,7 +65,7 @@
   ISeq
   IPersistentList)
 
-(def empty-list :- EmptyList
+(def+ empty-list :- EmptyList
   "An empty list. Same as `()`.
   Note that if is often more idiomatic to use `nil` instead of
   (any form of) empty list or collection."

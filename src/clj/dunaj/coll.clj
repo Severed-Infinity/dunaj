@@ -146,7 +146,7 @@
      with-meta lazy-seq gensym cons]]
    [clojure.core.protocols :refer [coll-reduce]]
    [clojure.bootstrap :refer
-    [defn replace-var! defalias def fn v1 defmacro strip-sigs-vec]]
+    [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec]]
    [dunaj.type :refer [Fn Any Va Maybe AnyFn U Signature]]
    [dunaj.boolean :refer [Boolean boolean and or not]]
    [dunaj.host :refer [. class class-instance? set! AnyBatch Class]]
@@ -458,7 +458,7 @@
 
 ;;; Transducers
 
-(def Transducer :- Signature
+(def+ Transducer :- Signature
   "A type signature for transducers."
   {:added v1
    :category "Primary"}

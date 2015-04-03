@@ -97,7 +97,7 @@
      equiv-ordered reduce* advance-fn]]
    [dunaj.string :refer [->str]]
    [dunaj.error :refer [throw index-out-of-bounds illegal-argument]]
-   [dunaj.state.var :refer [def declare]]
+   [dunaj.state.var :refer [def+ declare]]
    [dunaj.coll.vector-section :refer
     [IReversedVectorSectionHelper IVectorSectionHelper
      reversed-vector-section vector-section]]
@@ -528,7 +528,7 @@
   [t :- (U nil Class Type)]
   (->PrimitiveVector (vector-of (class->keyword (provide-class t)))))
 
-(def empty-int-vec :- PrimitiveVector
+(def+ empty-int-vec :- PrimitiveVector
   "An empty primitive int vector.
 
   NOTE: This var is specific to JVM host."
@@ -542,7 +542,7 @@
           dunaj.coll/conj dunaj.coll/edit]}
   (empty-primitive-vector-of :int))
 
-(def empty-long-vec :- PrimitiveVector
+(def+ empty-long-vec :- PrimitiveVector
   "An empty primitive long vector.
 
   NOTE: This var is specific to JVM host."
@@ -556,7 +556,7 @@
           dunaj.coll/conj dunaj.coll/edit]}
   (empty-primitive-vector-of :long))
 
-(def empty-float-vec :- PrimitiveVector
+(def+ empty-float-vec :- PrimitiveVector
   "An empty primitive float vector.
 
   NOTE: This var is specific to JVM host."
@@ -570,7 +570,7 @@
           dunaj.coll/conj dunaj.coll/edit]}
   (empty-primitive-vector-of :float))
 
-(def empty-double-vec :- PrimitiveVector
+(def+ empty-double-vec :- PrimitiveVector
   "An empty primitive double vector.
 
   NOTE: This var is specific to JVM host."
@@ -584,7 +584,7 @@
           dunaj.coll/conj dunaj.coll/edit]}
   (empty-primitive-vector-of :double))
 
-(def empty-byte-vec :- PrimitiveVector
+(def+ empty-byte-vec :- PrimitiveVector
   "An empty primitive byte vector.
 
   NOTE: This var is specific to JVM host."
@@ -598,7 +598,7 @@
           dunaj.coll/conj dunaj.coll/edit]}
   (empty-primitive-vector-of :byte))
 
-(def empty-short-vec :- PrimitiveVector
+(def+ empty-short-vec :- PrimitiveVector
   "An empty primitive short vector.
 
   NOTE: This var is specific to JVM host."
@@ -612,7 +612,7 @@
           dunaj.coll/conj dunaj.coll/edit]}
   (empty-primitive-vector-of :short))
 
-(def empty-char-vec :- PrimitiveVector
+(def+ empty-char-vec :- PrimitiveVector
   "An empty primitive char vector.
 
   NOTE: This var is specific to JVM host."
@@ -676,7 +676,7 @@
   [t :- (U nil Class Type)]
   (->PrimitiveVectorFactory t))
 
-(def int-vec-factory :- ICollectionFactory
+(def+ int-vec-factory :- ICollectionFactory
   "A primitive int vector factory instance.
   Currently there are no options.
 
@@ -704,7 +704,7 @@
           dunaj.coll/->collection]}
   (primitive-vector-factory-of :int))
 
-(def long-vec-factory :- ICollectionFactory
+(def+ long-vec-factory :- ICollectionFactory
   "A primitive long vector factory instance.
   Currently there are no options.
 
@@ -729,7 +729,7 @@
           dunaj.coll/->collection]}
   (primitive-vector-factory-of :long))
 
-(def float-vec-factory :- ICollectionFactory
+(def+ float-vec-factory :- ICollectionFactory
   "A primitive float vector factory instance.
   Currently there are no options.
 
@@ -754,7 +754,7 @@
           dunaj.coll/->collection]}
   (primitive-vector-factory-of :float))
 
-(def double-vec-factory :- ICollectionFactory
+(def+ double-vec-factory :- ICollectionFactory
   "A primitive double vector factory instance.
   Currently there are no options.
 
@@ -779,7 +779,7 @@
           dunaj.coll/->collection]}
   (primitive-vector-factory-of :double))
 
-(def byte-vec-factory :- ICollectionFactory
+(def+ byte-vec-factory :- ICollectionFactory
   "A primitive byte vector factory instance.
   Currently there are no options.
 
@@ -804,7 +804,7 @@
           dunaj.coll/->collection]}
   (primitive-vector-factory-of :byte))
 
-(def short-vec-factory :- ICollectionFactory
+(def+ short-vec-factory :- ICollectionFactory
   "A primitive short vector factory instance.
   Currently there are no options.
 
@@ -829,7 +829,7 @@
           dunaj.coll/->collection]}
   (primitive-vector-factory-of :short))
 
-(def char-vec-factory :- ICollectionFactory
+(def+ char-vec-factory :- ICollectionFactory
   "A primitive char vector factory instance.
   Currently there are no options.
 

@@ -76,7 +76,7 @@
      coll->iterator strip-reduced]]
    [dunaj.host.array :refer
     [array-manager array to-array aget acount adapt]]
-   [dunaj.state.var :refer [def declare]]
+   [dunaj.state.var :refer [def+ declare]]
    [dunaj.coll.tuple :refer [pair]]
    [dunaj.coll.hamt-map]))
 
@@ -87,7 +87,7 @@
   [f]
   (fn [val a b] (f val (pair a b))))
 
-(def ^:private left-node-method :- java.lang.reflect.Method
+(def+ ^:private left-node-method :- java.lang.reflect.Method
   (doto (.getDeclaredMethod
          clojure.lang.PersistentTreeMap$Node
          "left" nil)
@@ -97,7 +97,7 @@
   [x :- clojure.lang.PersistentTreeMap$Node]
   (.invoke left-node-method x nil))
 
-(def ^:private right-node-method :- java.lang.reflect.Method
+(def+ ^:private right-node-method :- java.lang.reflect.Method
   (doto (.getDeclaredMethod
          clojure.lang.PersistentTreeMap$Node
          "right" nil)
@@ -633,7 +633,7 @@
     (apply assoc (empty-rbt-sorted-map comparator)
            a b c d e f g h more)))
 
-(def rbt-sorted-map-factory
+(def+ rbt-sorted-map-factory
   :- (U ICollectionFactory IConvolutionFactory)
   "A RBT sorted map factory instance.
   Factory has following configuration options:

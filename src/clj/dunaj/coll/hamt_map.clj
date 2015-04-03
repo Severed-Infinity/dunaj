@@ -68,7 +68,7 @@
      advance-fn]]
    [dunaj.host.array :refer
     [array-manager array to-array aget acount adapt]]
-   [dunaj.state.var :refer [def]]
+   [dunaj.state.var :refer [def+]]
    [dunaj.coll.tuple :refer [pair]]))
 
 
@@ -80,7 +80,7 @@
 
 ;;; PersistentHashMap
 
-(def ^:private root-field :- java.lang.reflect.Field
+(def+ ^:private root-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.PersistentHashMap "root")
     (.setAccessible true)))
 
@@ -88,7 +88,7 @@
   [x :- clojure.lang.PersistentHashMap]
   (.get root-field x))
 
-(def ^:private has-null-field :- java.lang.reflect.Field
+(def+ ^:private has-null-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.PersistentHashMap "hasNull")
     (.setAccessible true)))
 
@@ -96,7 +96,7 @@
   [x :- clojure.lang.PersistentHashMap]
   (boolean (.get has-null-field x)))
 
-(def ^:private null-value-field :- java.lang.reflect.Field
+(def+ ^:private null-value-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.PersistentHashMap "nullValue")
     (.setAccessible true)))
 
@@ -106,7 +106,7 @@
 
 ;;; TransientHashMap
 
-(def ^:private mutable-root-field :- java.lang.reflect.Field
+(def+ ^:private mutable-root-field :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$TransientHashMap "root")
     (.setAccessible true)))
@@ -115,7 +115,7 @@
   [x :- clojure.lang.PersistentHashMap$TransientHashMap]
   (.get mutable-root-field x))
 
-(def ^:private mutable-has-null-field :- java.lang.reflect.Field
+(def+ ^:private mutable-has-null-field :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$TransientHashMap
          "hasNull")
@@ -125,7 +125,7 @@
   [x :- clojure.lang.PersistentHashMap$TransientHashMap]
   (boolean (.get mutable-has-null-field x)))
 
-(def ^:private mutable-null-value-field :- java.lang.reflect.Field
+(def+ ^:private mutable-null-value-field :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$TransientHashMap
          "nullValue")
@@ -137,7 +137,7 @@
 
 ;;; ArrayNode
 
-(def ^:private an-array-field :- java.lang.reflect.Field
+(def+ ^:private an-array-field :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$ArrayNode "array")
     (.setAccessible true)))
@@ -146,7 +146,7 @@
   [x :- clojure.lang.PersistentHashMap$ArrayNode]
   (.get an-array-field x))
 
-(def ^:private oam :- ArrayManager
+(def+ ^:private oam :- ArrayManager
   (array-manager java.lang.Object))
 
 (deftype ArrayNode
@@ -166,7 +166,7 @@
 
 ;;; BitmapIndexedNode
 
-(def ^:private bi-array-field :- java.lang.reflect.Field
+(def+ ^:private bi-array-field :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$BitmapIndexedNode
          "array")
@@ -201,7 +201,7 @@
 
 ;;; HashCollisionNode
 
-(def ^:private ^java.lang.reflect.Field hc-array-field
+(def+ ^:private ^java.lang.reflect.Field hc-array-field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$HashCollisionNode "array")
     (.setAccessible true)))
@@ -315,7 +315,7 @@
   IMutableMap
   IInvocable)
 
-(def empty-hamt-map :- HamtMap
+(def+ empty-hamt-map :- HamtMap
   "An empty HAMT map."
   {:added v1
    :see '[hamt-map-factory dunaj.coll.array-map/empty-array-map
@@ -361,7 +361,7 @@
   (-from-interleaved [factory a b c d e f g h more]
     (apply assoc empty-hamt-map a b c d e f g h more)))
 
-(def hamt-map-factory :- (U ICollectionFactory IConvolutionFactory)
+(def+ hamt-map-factory :- (U ICollectionFactory IConvolutionFactory)
   "A HAMT map factory instance.
   Currently there are no options.
 

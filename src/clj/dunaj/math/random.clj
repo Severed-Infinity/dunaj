@@ -81,7 +81,7 @@
                              select-item-type item-types-match?]]
    [dunaj.identifier :refer [Keyword name]]
    [dunaj.error :refer [throw index-out-of-bounds]]
-   [dunaj.state.var :refer [Var var def]]
+   [dunaj.state.var :refer [Var var def+]]
    [dunaj.coll.default :refer [->map]]
    [dunaj.coll.util :refer [merge]]
    [dunaj.coll.recipe :refer [->ObjectWrap cloning-advance]]))
@@ -94,7 +94,7 @@
   []
   (java.util.concurrent.ThreadLocalRandom/current))
 
-(def ^:dynamic ^:private *default-rng-batch-size* :- Integer
+(def+ ^:dynamic ^:private *default-rng-batch-size* :- Integer
   32)
 
 (defn ^:private reduce-batched-rng
@@ -156,7 +156,7 @@
                  ret
                  (f ret (mu/add origin xr))))))))
 
-(def ^:private double-unit :- java.lang.reflect.Field
+(def+ ^:private double-unit :- java.lang.reflect.Field
   "Makes internal DOUBLE_UNIT field public. >= JDK8 only"
   (doto (.getDeclaredField java.util.Random "DOUBLE_UNIT")
     (.setAccessible true)))
@@ -166,7 +166,7 @@
   []
   (.get double-unit nil))
 
-(def ^:private DOUBLE_UNIT
+(def+ ^:private DOUBLE_UNIT
   (get-double-unit))
 
 ;; ported from JDK sources
@@ -200,7 +200,7 @@
     storing the configuration of the rng."
     [this]))
 
-(def default-rng-batch-size :- Var
+(def+ default-rng-batch-size :- Var
   "A var holding a default rng batch size."
   {:added v1
    :see '[dunaj.coll/IBatchedRed]}
@@ -230,7 +230,7 @@
     (->LocalRng (java.util.concurrent.ThreadLocalRandom/current)
                 (current-thread))))
 
-(def thread-local-rng :- IRngFactory
+(def+ thread-local-rng :- IRngFactory
   "A thread local random number generator factory.
   Has no options. Is thread local."
   {:added v1
@@ -260,7 +260,7 @@
     (->SeedableRng
      (if seed (java.util.Random. seed) (java.util.Random.)))))
 
-(def seedable-rng :- IRngFactory
+(def+ seedable-rng :- IRngFactory
   "A seedable random number generator factory.
 
   Thread safe, but slower compared to other rngs. Supported options:
@@ -306,7 +306,7 @@
                        (java.util.SplittableRandom. seed)
                        (java.util.SplittableRandom.)))))
 
-(def splittable-rng :- IRngFactory
+(def+ splittable-rng :- IRngFactory
   "A splittable random number generator factory, useful in fork-join
   tasks. Split can be performed with
   `<<dunaj.state.api.ad#clone,dunaj.state/clone>>` function.
@@ -356,7 +356,7 @@
            :else (java.security.SecureRandom.))
      this)))
 
-(def secure-rng :- IRngFactory
+(def+ secure-rng :- IRngFactory
   "A secure random number generator factory.
 
   Is thread safe, may block if amount of entropy provided by system

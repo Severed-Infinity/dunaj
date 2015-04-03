@@ -77,7 +77,7 @@
      coll->iterator]]
    [dunaj.host.array :refer
     [array-manager array to-array aget acount adapt]]
-   [dunaj.state.var :refer [def declare]]
+   [dunaj.state.var :refer [def+ declare]]
    [dunaj.coll.tuple :refer [pair]]
    [dunaj.coll.hamt-map]
    [dunaj.coll.hamt-set]
@@ -93,7 +93,7 @@
   [f]
   (fn [val a b] (f val a)))
 
-(def ^:private ^java.lang.reflect.Field impl-field
+(def+ ^:private ^java.lang.reflect.Field impl-field
   (doto (.getDeclaredField clojure.lang.APersistentSet "impl")
     (.setAccessible true)))
 
@@ -416,7 +416,7 @@
                 (conj a) (conj b) (conj c) (conj d))]
       (reduce conj t more))))
 
-(def rbt-sorted-set-factory :- ICollectionFactory
+(def+ rbt-sorted-set-factory :- ICollectionFactory
   "A RBT sorted set factory instance.
   Factory has following configuration options:
 

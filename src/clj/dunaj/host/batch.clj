@@ -34,7 +34,7 @@
   (:api bare)
   (:require
    [clojure.core :refer [assert throw get var declare]]
-   [clojure.bootstrap :refer [def v1 deftype replace-var!]]
+   [clojure.bootstrap :refer [def+ v1 deftype replace-var!]]
    [dunaj.type :refer [U Maybe AnyFn Any Fn]]
    [dunaj.boolean :refer [Boolean not and or]]
    [dunaj.host :refer
@@ -63,18 +63,18 @@
 
 ;;;; Implementation details
 
-(def ^:private bms :- {Class BatchManager} @#'dunaj.host/bms)
+(def+ ^:private bms :- {Class BatchManager} @#'dunaj.host/bms)
 
-(def ^:private ^:dynamic *default-batch-size* 32)
+(def+ ^:private ^:dynamic *default-batch-size* 32)
 
-(def ^:private ^:dynamic *max-batch-size* 8192)
+(def+ ^:private ^:dynamic *max-batch-size* 8192)
 
-(def ^:private default-item-type :- Class
+(def+ ^:private default-item-type :- Class
   "A default item type used when no concrete type is specified
   in the batch creation process."
   java.lang.Byte/TYPE)
 
-(def ^:private mark-field :- java.lang.reflect.Field
+(def+ ^:private mark-field :- java.lang.reflect.Field
   (doto (.getDeclaredField java.nio.Buffer "mark")
     (.setAccessible true)))
 
@@ -242,14 +242,14 @@
           rret (._finish this other)]
       (->BatchWrap (._combine r lret rret) nil nil))))
 
-(def default-batch-size :- clojure.lang.Var
+(def+ default-batch-size :- clojure.lang.Var
   "A dynamic var holding default batch size."
   {:added v1
    :see '[provide-batch-size dunaj.coll.util/reduce-batched batch]}
   (var *default-batch-size*))
 
 ;; TODO: upper limit causes problems e.g. in color stripper
-#_(def max-batch-size :- clojure.lang.Var
+#_(def+ max-batch-size :- clojure.lang.Var
   "A dynamic var holding maximum batch size."
   {:added v1
    :see '[default-batch-size provide-batch-size batch]}

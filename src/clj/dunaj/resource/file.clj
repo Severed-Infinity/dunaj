@@ -39,7 +39,7 @@
      current-thread ensure-thread-local]]
    [dunaj.string :refer [String string?]]
    [dunaj.uri :refer [Uri uri uri? absolute? resolve]]
-   [dunaj.state.var :refer [def declare]]
+   [dunaj.state.var :refer [def+ declare]]
    [dunaj.error :refer [IException IFailAware IFailable opened-fragile
                         try catch throw fail! error fragile]]
    [dunaj.coll.recipe :refer [keep]]
@@ -54,7 +54,7 @@
 
 ;;;; Implementation details
 
-(def ^:private default-file-batch-size :- Integer
+(def+ ^:private default-file-batch-size :- Integer
   "Default size for file batch."
   8192)
 
@@ -84,7 +84,7 @@
                       rp (.getPath fs (.toString wduri) ea)]
                   (.resolve rp (.toString x))))))
 
-(def ^:private oom :- KeywordMap
+(def+ ^:private oom :- KeywordMap
   "A Keyword -> OpenOption translation map."
   {:append java.nio.file.StandardOpenOption/APPEND
    :create java.nio.file.StandardOpenOption/CREATE
@@ -260,7 +260,7 @@
 
 ;;;; Public API
 
-(def file-factory :- (I IImmutableReadable IAcquirableFactory)
+(def+ file-factory :- (I IImmutableReadable IAcquirableFactory)
   "A file resource factory. Passable thread local.
   Current options are:
 

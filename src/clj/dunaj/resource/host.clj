@@ -47,7 +47,7 @@
    [dunaj.concurrent.port :refer [<!! chan close! tap!]]
    [dunaj.string :refer [String string?]]
    [dunaj.uri :refer [Uri uri uri? absolute? resolve]]
-   [dunaj.state.var :refer [def declare]]
+   [dunaj.state.var :refer [def+ declare]]
    [dunaj.state.basic :refer [local atom]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.error :refer
@@ -69,7 +69,7 @@
 
 ;;;; Implementation details
 
-(def ^:private default-host-batch-size :- Integer
+(def+ ^:private default-host-batch-size :- Integer
   "Default size for host batch."
   8192)
 
@@ -463,7 +463,7 @@
 
 ;;;; Public API
 
-(def classpath-factory :- (I IImmutableReadable IAcquirableFactory)
+(def+ classpath-factory :- (I IImmutableReadable IAcquirableFactory)
   "Classpath resource factory. Passable thread local.
   Current options are:
 
@@ -482,7 +482,7 @@
   [uri :- (U nil String Uri) & {:as opts}]
   (merge classpath-factory (assoc opts :uri uri)))
 
-(def output-stream-factory :- IAcquirableFactory
+(def+ output-stream-factory :- IAcquirableFactory
   "OutputStream backed resource factory. Passable thread local.
   Current options are:
 
@@ -502,7 +502,7 @@
   [stream :- java.io.OutputStream & {:as opts}]
   (merge output-stream-factory (assoc opts :stream stream)))
 
-(def input-stream-factory :- IAcquirableFactory
+(def+ input-stream-factory :- IAcquirableFactory
   "InputStream backed resource factory. Passable thread local.
   Current options are:
 
@@ -522,7 +522,7 @@
   [stream :- java.io.InputStream & {:as opts}]
   (merge input-stream-factory (assoc opts :stream stream)))
 
-(def writer-factory :- IAcquirableFactory
+(def+ writer-factory :- IAcquirableFactory
   "Writer backed resource factory. Passable thread local.
   Current options are:
 
@@ -542,7 +542,7 @@
   [wr :- java.io.Writer & {:as opts}]
   (merge writer-factory (assoc opts :writer wr)))
 
-(def reader-factory :- IAcquirableFactory
+(def+ reader-factory :- IAcquirableFactory
   "Reader backed resource factory. Passable thread local.
   Current options are:
 

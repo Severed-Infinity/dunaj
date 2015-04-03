@@ -49,7 +49,7 @@
      counted? settle! conj!]]
    [dunaj.function :refer [fn]]
    [dunaj.coll.helper :refer [advance-fn]]
-   [dunaj.state.var :refer [def]]
+   [dunaj.state.var :refer [def+]]
    [dunaj.coll.bvt-vector :refer [empty-bvt-vector]]
    [dunaj.coll.empty-list :refer [empty-list]]))
 
@@ -95,7 +95,7 @@
   IMutableCollection
   (-conj! [this x] (set! tv (-conj! tv x)) this))
 
-(def reversed-list-builder :- IEditable
+(def+ reversed-list-builder :- IEditable
   "An editable type for efficiently building list from non-reversible
   collections."
   (reify
@@ -126,7 +126,7 @@
   (-from-items [factory a b c d more]
     (conj (-from-coll factory more) d c b a)))
 
-(def linked-list-factory :- ICollectionFactory
+(def+ linked-list-factory :- ICollectionFactory
   "A Linked List factory instance.
   Currently there are no options.
 

@@ -97,7 +97,7 @@
    [dunaj.string :refer [->str]]
    [dunaj.identifier :refer [symbol? symbol]]
    [dunaj.error :refer [throw index-out-of-bounds illegal-argument]]
-   [dunaj.state.var :refer [def declare]]
+   [dunaj.state.var :refer [def+ declare]]
    [dunaj.coll.empty-list]
    [dunaj.coll.cons-seq]
    [dunaj.coll.bvt-vector :refer
@@ -108,7 +108,7 @@
 
 ;;; Taken and adapted from clj-tuple by Zachary Tellman, MIT license.
 
-(def revlist clojure.core/reverse)
+(def+ revlist clojure.core/reverse)
 
 (defn ^:private walk
   "Like `clojure.walk/walk`, but preserves metadata."
@@ -129,10 +129,10 @@
   [f form]
   (walk (partial postwalk f) f form))
 
-(def ^:private gensym-regex
+(def+ ^:private gensym-regex
   #"(_|[a-zA-Z0-9\-\'\*]+)#?_+(\d+_*#?)+(auto__)?$")
 
-(def ^:private unified-gensym-regex
+(def+ ^:private unified-gensym-regex
   #"([a-zA-Z0-9\-\'\*]+)#__\d+__auto__$")
 
 (defn ^:private unified-gensym? [s]
@@ -424,7 +424,7 @@
 
 ;;;; Public API
 
-(def empty-tuple :- Tuple0
+(def+ empty-tuple :- Tuple0
   "An empty tuple."
   {:added v1
    :category "Primary"
@@ -495,7 +495,7 @@
   (-from-items [factory a b c d] (->Tuple4 a b c d))
   (-from-items [factory a b c d more] (apply tuple a b c d more)))
 
-(def tuple-factory :- ICollectionFactory
+(def+ tuple-factory :- ICollectionFactory
   "A tuple factory instance.
   Currently there are no options.
 

@@ -50,7 +50,7 @@
    [dunaj.macro :refer [defmacro]]
    [dunaj.identifier :refer [Keyword keyword name symbol]]
    [dunaj.state.basic :refer [atom]]
-   [dunaj.state.var :refer [def declare]]
+   [dunaj.state.var :refer [def+ declare]]
    [dunaj.coll.default :refer [vec]]
    [dunaj.coll.recipe :refer
     [keep map take-nth partition-by interpose concat]]
@@ -76,7 +76,7 @@
 
 ;;;; Implementation details
 
-(def ^:private default-datagram-batch-size :- Integer
+(def+ ^:private default-datagram-batch-size :- Integer
   "Default size for datagram batch."
   2048)
 
@@ -202,7 +202,7 @@
     (reduce #(assoc % (keyword (second %2)) (or (nth %2 3) "true"))
             {} params)))
 
-(def ^:private boolean-map :- {String Boolean}
+(def+ ^:private boolean-map :- {String Boolean}
   {"0" false "1" true "F" false "T" true "false" false "true" true})
 
 (defn ^:private uri->map* :- KeywordMap
@@ -374,7 +374,7 @@
      multicast-group -1 nil
      (when-not (empty? params) params) nil)))
 
-(def ^:private bbm :- BatchManager
+(def+ ^:private bbm :- BatchManager
   (batch-manager (keyword->class :byte)))
 
 (defn ^:private provide-batch :- (Batch java.lang.Byte)
@@ -684,7 +684,7 @@
 
 ;;;; Public API
 
-(def bare-udp-factory :- IAcquirableFactory
+(def+ bare-udp-factory :- IAcquirableFactory
   "A connectionless UDP resource factory.
   Current options are:
 
@@ -711,7 +711,7 @@
    nil :inet nil nil nil nil false
    nil nil nil nil nil true payload->array-coll nil false))
 
-(def udp-factory :- IAcquirableFactory
+(def+ udp-factory :- IAcquirableFactory
   "An UDP resource factory.
   Current options are:
 
@@ -740,7 +740,7 @@
    nil :inet nil nil nil nil nil nil false
    nil nil nil nil nil true payload->array-coll nil false))
 
-(def multicast-factory :- IAcquirableFactory
+(def+ multicast-factory :- IAcquirableFactory
   "A resource factory for multicast.
   Current options are:
 

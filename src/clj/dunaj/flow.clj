@@ -23,7 +23,7 @@
   (:require
    [clojure.core :refer [locking list list* var throw satisfies?]]
    [clojure.bootstrap :refer
-    [defalias defmacro defprotocol deftype defn def v1 replace-var!]]
+    [defalias defmacro defprotocol deftype defn v1 replace-var!]]
    [dunaj.type :refer [Macro Fn Va Any]]
    [dunaj.host :refer [set!]]
    [dunaj.compare :refer [nil?]]

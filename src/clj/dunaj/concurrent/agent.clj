@@ -64,15 +64,15 @@
             [dunaj.concurrent :refer [IExecutor]]
             [dunaj.time :refer [IDuration milliseconds nanoseconds]]
             [dunaj.error :refer [IFailAware IErrorHandleable]]
-            [dunaj.state.var :refer [Var def defalias var]]))
+            [dunaj.state.var :refer [Var def+ defalias var]]))
 
 
 ;;;; Implementation details
 
-(def ^:dynamic ^:private *default-send-off-executor* :- IExecutor
+(def+ ^:dynamic ^:private *default-send-off-executor* :- IExecutor
   clojure.lang.Agent/soloExecutor)
 
-(def ^:dynamic ^:private *default-send-executor* :- IExecutor
+(def+ ^:dynamic ^:private *default-send-executor* :- IExecutor
   clojure.lang.Agent/pooledExecutor)
 
 (defn ^:private shutdown-pool! :- nil
@@ -200,7 +200,7 @@
    :tsig (Fn [Agent IExecutor Agent AnyFn (Va Any)])}
   clojure.core/send-via)
 
-(def default-send-executor :- Var
+(def+ default-send-executor :- Var
   "A dynamic var holding default `send!` executor."
   {:added v1
    :see '[send! default-send-off-executor send-via! send-off!]}
@@ -223,7 +223,7 @@
   [a :- Agent, f :- AnyFn & args :- Any]
   (apply send-via! *default-send-executor* a f args))
 
-(def default-send-off-executor :- Var
+(def+ default-send-off-executor :- Var
   "A dynamic var holding default `send-off!` executor."
   {:added v1
    :see '[send-off! default-send-executor send-via! send!]}

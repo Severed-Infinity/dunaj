@@ -35,7 +35,7 @@
      take-while drop-while vector? cons hash-map second contains?
      list? concat]]
    [clojure.bootstrap :refer
-    [defmacro v1 def not-implemented strip-sigs-vec get-sigs-vec]]
+    [defmacro v1 def+ not-implemented strip-sigs-vec get-sigs-vec]]
    [dunaj.type :refer [Any AnyFn Fn Maybe U]]
    [dunaj.boolean :refer [Boolean and or not false? true? boolean]]
    [dunaj.host :refer [Class provide-class class-instance?]]
@@ -105,7 +105,7 @@
   [x :- Any]
   (if (reduced? x) @x x))
 
-(def reducing-function
+(def+ reducing-function
   "Returns a reducing function created from augmented reducing
   function `_r_`."
   {:added v1
@@ -115,7 +115,7 @@
    :see '[dunaj.coll/reducing]}
   @#'dunaj.coll/reducing-function)
 
-(def reduce*
+(def+ reduce*
   "Returns the result of reduction of `_coll_` with `_reducef_`,
   starting with `_init_`. Returns `_init_` if `_coll_` is `nil` or
   empty.
@@ -129,10 +129,10 @@
   @#'dunaj.coll/reduce*)
 
 ;; TODO: add it to the public API?
-(def red->seq* :- Any
+(def+ red->seq* :- Any
   @#'dunaj.coll/red->seq*)
 
-(def reduce-unpacked*
+(def+ reduce-unpacked*
   "Returns the result of unpacked reduction of `_coll_` with
   `_reducef_`, starting with `_init_`.
   Returns `_init_` if `_coll_` is `nil` or empty.
@@ -145,7 +145,7 @@
    :category "Reducers"}
   @#'dunaj.coll/reduce-unpacked*)
 
-(def reduce-batched*
+(def+ reduce-batched*
   "Returns the result of batched reduction of `_coll_` with
   `_reducef_`, starting with `_init_`.
   Returns `_init_` if `_coll_` is `nil` or empty.
@@ -175,7 +175,7 @@
    (let [rf (fn [ret batch] (reduce* batch reducef ret))]
      (reduce-batched* item-type size-hint coll rf init))))
 
-(def reduce-augmented*
+(def+ reduce-augmented*
   "Returns a result of the reduction of `_coll_` with `_reduce-fn_`
   function taking `coll` `reducef` `init` in that order
   (e.g. `reduce*`), and with the augmented reducing function `_r_`
@@ -190,7 +190,7 @@
    :category "Reducers"}
   @#'dunaj.coll/reduce-augmented*)
 
-(def transduce*
+(def+ transduce*
   "Returns a result of the reduction of `_coll_` with `_reduce-fn_`
   function and with the classic reducing function `_reducef_`,
   initial value `_init_` (which defaults to `(_reducef_)` if not
@@ -205,7 +205,7 @@
    :category "Reducers"}
   @#'dunaj.coll/transduce*)
 
-(def fold*
+(def+ fold*
   "Returns result of performing fold on a collection
   `_coll_`, using forkjoin `_pool_` for executing tasks, dividing
   until collection length is equal or less than `_n_`. Uses
@@ -221,7 +221,7 @@
    :category "Folds"}
   @#'dunaj.concurrent.forkjoin/fold*)
 
-(def fold-augmented*
+(def+ fold-augmented*
   "Returns result of performing fold on a collection
   `_coll_`, using forkjoin `_pool_` for executing tasks, dividing
   until collection length is equal or less than `_n_`. Uses
@@ -277,7 +277,7 @@
     (fold* coll reduce-unpacked* pool n combinef reducef)
     (fold* coll reduce* pool n combinef (unpacked-fn reducef))))
 
-(def transfold*
+(def+ transfold*
   "Returns result of performing fold on a collection
   `_coll_`, using forkjoin `_pool_` for executing tasks, dividing
   until collection length is equal or less than `_n_`. Uses
@@ -377,7 +377,7 @@
                    #(~fname (unsafe-advance! ~ret) ~@args))
         ~@cond-body))))
 
-(def finish-advance
+(def+ finish-advance
   "Returns the result of calling `-finish` on the augmented reducing
   function `_r_`, while correctly handling potentionally postponed
   result `ret`.
@@ -391,7 +391,7 @@
    :see '[advance-fn cloned-advance-fn reduced-advance]}
   @#'dunaj.coll/finish-advance)
 
-(def reduced-advance
+(def+ reduced-advance
   "Returns the reduced result based on `ret`, which may also be
   a reduced value, while correctly handling potentionally postponed
   result. Can control whether the result should be reduced or not

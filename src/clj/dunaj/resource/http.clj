@@ -52,7 +52,7 @@
    [dunaj.uri :refer [Uri uri? uri]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.identifier :refer [Keyword keyword name symbol named?]]
-   [dunaj.state.var :refer [def declare]]
+   [dunaj.state.var :refer [def+ declare]]
    [dunaj.coll.default :refer [vec]]
    [dunaj.coll.recipe :refer
     [keep map take-nth partition-by interpose concat]]
@@ -84,7 +84,7 @@
 
 ;;;; Implementation details
 
-(def ^:private default-http-batch-size :- Integer
+(def+ ^:private default-http-batch-size :- Integer
   "Default size for http batch."
   8192)
 
@@ -240,7 +240,7 @@
         (fragile this (.getInputStream c))
         res))))
 
-(def key->proxy-type
+(def+ key->proxy-type
   {:direct java.net.Proxy$Type/DIRECT
    :http java.net.Proxy$Type/HTTP
    :socks java.net.Proxy$Type/SOCKS})
@@ -317,7 +317,7 @@
 
 ;;;; Public API
 
-(def http-factory :- HttpResourceFactory
+(def+ http-factory :- HttpResourceFactory
   "Http(s) resource factory.
   Current options are:
 
