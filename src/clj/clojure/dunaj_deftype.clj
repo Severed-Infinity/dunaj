@@ -825,7 +825,7 @@
   `(do
      (alter-var-root (var ~name) merge 
                      (assoc ~opts
-                       ::protocol true
+                       :clojure.core/protocol true
                        :sigs '~sigs 
                        :var (var ~name)
                        :forbid-extensions ~forbid-extensions?
@@ -891,7 +891,7 @@
         `(#'assert-same-protocol (var ~name) '~(map :name (vals sigs))))
      (alter-var-root (var ~name) merge 
                      (assoc ~opts
-                       ::protocol true
+                       :clojure.core/protocol true
                        :sigs '~sigs 
                        :forbid-extensions ~forbid-extensions?
                        :var (var ~name))))))
@@ -938,7 +938,7 @@
   `(do
      (alter-var-root (var ~name) merge 
                      (assoc ~opts
-                       ::protocol true
+                       :clojure.core/protocol true
                        :marker '~imarker
                        :marker-interface ~imarker
                        :marker-types #{}
@@ -1010,7 +1010,7 @@
         `(#'assert-same-protocol (var ~name) '~(map :name (vals sigs))))
      (alter-var-root (var ~name) merge 
                      (assoc ~opts
-                       ::protocol true
+                       :clojure.core/protocol true
                        :marker '~imarker
                        :marker-interface ~imarker
                        :marker-types #{}

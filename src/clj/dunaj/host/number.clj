@@ -18,10 +18,13 @@
   "Coercions to host number types."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require [clojure.bootstrap :refer [defalias v1]]
-            [dunaj.type :refer [Fn Any]]
-            [dunaj.math :refer [Number]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require [clojure.bootstrap :refer [defalias v1]]
+           [dunaj.type :refer [Fn Any]]
+           [dunaj.math :refer [Number]])
+ (:import [java.lang String]))
 
 
 ;;;; Public API

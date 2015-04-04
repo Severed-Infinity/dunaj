@@ -16,12 +16,12 @@
   Precision as implemented by host."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Hyperbolic"]}
-  (:api bare)
-  (:require [clojure.core :refer [.]]
-            [clojure.bootstrap :refer [defn v1 fn]]
-            [dunaj.math :refer [Float]])
-  (:import [java.lang Math]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
 
+(bare-ns
+ (:require [clojure.bootstrap :refer [defn v1 fn]]
+           [dunaj.math :refer [Float]])
+ (:import [java.lang Math String]))
 
 ;;;; Public API
 

@@ -40,21 +40,23 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Comparison" "Operations" "Rounding"]}
-  (:api bare)
-  (:require
-   [clojure.core :as cc :refer
-    [. if ratio? assert apply hash-map cond -> = binding when-not
-     if-not recur seq first rest and declare nil? throw double long]]
-   [clojure.bootstrap :refer [defalias defn def+ fn loop let v1
-                              defprotocol not-implemented defmacro]]
-   [dunaj.type :refer [Fn Maybe U Any Va Signature]]
-   [dunaj.boolean :refer [Boolean not or]]
-   [dunaj.host :refer [class-instance?]]
-   [dunaj.host.int :refer [iint]])
-  (:import
-   [java.lang Math]
-   [java.math BigDecimal MathContext RoundingMode BigInteger]
-   [clojure.lang BigInt Numbers]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :as cc :refer
+   [ratio? assert apply hash-map cond -> = binding when-not
+    if-not seq first rest and declare nil? double long]]
+  [clojure.bootstrap :refer [defalias defn def+ fn loop let v1
+                             defprotocol not-implemented defmacro]]
+  [dunaj.type :refer [Fn Maybe U Any Va Signature]]
+  [dunaj.boolean :refer [Boolean not or]]
+  [dunaj.host :refer [class-instance?]]
+  [dunaj.host.int :refer [iint]])
+ (:import
+  [java.lang Math String]
+  [java.math BigDecimal MathContext RoundingMode BigInteger]
+  [clojure.lang BigInt Numbers]))
 
 
 ;;;; Public API
@@ -812,7 +814,7 @@
 (clojure.core/require
  '[clojure.bootstrap :refer [assert-boolean assert-primitive]])
 
-(assert-boolean
+#_(assert-boolean
  (number? 5)
  (integer? 5)
  (float? 5)

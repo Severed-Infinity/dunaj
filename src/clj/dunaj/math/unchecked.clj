@@ -28,11 +28,14 @@
     unchecked operations with fastest performance."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require [clojure.core :refer [reduce . let]]
-            [clojure.bootstrap :refer [defalias defn v1]]
-            [dunaj.type :refer [Fn Va]]
-            [dunaj.math :refer [Number]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require [clojure.core :refer [reduce let]]
+           [clojure.bootstrap :refer [defalias defn v1]]
+           [dunaj.type :refer [Fn Va]]
+           [dunaj.math :refer [Number]])
+ (:import [java.lang String]))
 
 
 ;;;; Public API

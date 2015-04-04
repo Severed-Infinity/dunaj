@@ -42,7 +42,7 @@
 
 ;;;; Public API
 
-(defmacro new
+#_(defmacro new
   "Returns a new object constructed by calling constructor of the
   class named by `_classname_`, passing `_args_` evaluated from
   left to right into the constructor."
@@ -52,7 +52,7 @@
   [classname & args]
   `(clojure.core/new ~@args))
 
-(defmacro set!
+#_(defmacro set!
   "Assigns evaluated `_expr_` to the field identified by
   `_field-access-form_`. Returns `nil`.
 
@@ -64,7 +64,7 @@
   [field-access-form expr]
   `(do (clojure.core/set! ~field-access-form ~expr) nil))
 
-(defmacro .
+#_(defmacro .
   "The '.' macro is the basis for access to host.
   It can be considered a member-access operator, and/or read
   as 'in the scope of'.
@@ -146,7 +146,7 @@
 
 ;;; Class
 
-#_(deftype Class
+(deftype Class+
   "A host class type."
   {:added v1
    :see '[class class-instance?]

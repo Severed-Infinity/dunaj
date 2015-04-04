@@ -19,18 +19,19 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Mutation" "Auxiliary"]}
-  (:api bare)
-  (:require
-   [clojure.core :refer
-    [recur if apply count when when-not throw reduce partition
-     extend-protocol]]
-   [clojure.bootstrap :refer
-    [defmacro defprotocol deftype defn def+ v1
-     replace-var! milliseconds loop let fn]]
-   [dunaj.type :refer [Any Fn Va]]
-   [dunaj.boolean :refer [Boolean boolean]]
-   [dunaj.math :refer [Integer odd?]]
-   [dunaj.compare :refer [identical?]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [apply count when when-not reduce partition]]
+  [clojure.dunaj-deftype :refer [extend-protocol]]
+  [clojure.bootstrap :refer
+   [defmacro defprotocol deftype defn def+ v1
+    replace-var! milliseconds loop let fn]]
+  [dunaj.type :refer [Any Fn Va]]
+  [dunaj.boolean :refer [Boolean boolean]]
+  [dunaj.math :refer [Integer odd?]]
+  [dunaj.compare :refer [identical?]]))
 
 
 ;;;; Implementation details
@@ -396,7 +397,7 @@
 
 (clojure.core/require '[clojure.bootstrap :refer [assert-boolean]])
 
-(assert-boolean
+#_(assert-boolean
  (reference? 3)
  (blocking-reference? 'f)
  (pending? nil))

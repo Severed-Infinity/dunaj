@@ -7,11 +7,26 @@ Changes
   type hints in clojure.core
 ** http://dev.clojure.org/jira/browse/CLJ-1232
 ** http://dev.clojure.org/jira/browse/CLJ-1514
+** Most needed classes: String, Class
 * more verbose ns declaration
 ** no :api declaration
 * no additional primitive types
 ** mainly boolean and int are missed
+** iloop behaves the same as loop
 * slower than Dunaj
+* changes in types
+** Class+ instead of Class
+
+TODO
 
 * more boilerplate for custom collection types
 ** handling of Seqable, Indexed, Counted, Lookup
+* check unchecked math tweaks in Compiler and how to go around this
+
+=== Details
+
+* dunaj.host
+** . macro
+** set! macro
+** Class type
+** new macro

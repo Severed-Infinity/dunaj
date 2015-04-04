@@ -60,8 +60,9 @@
   {:authors ["Jozef Wagner"]}
   (:refer-clojure :exclude
    [defonce loop when-let if-let let fn defrecord defprotocol defmacro
-    defn record? deftype])
+    defn record? deftype satisfies?])
   (:require
+   [clojure.dunaj-deftype :refer [satisfies?]]
    [clojure.bootstrap :refer
     [replace-var! deftype defprotocol defn def+ type-hint let
      defrecord v1 if-let primitive-type-hint common-type-hint]]))

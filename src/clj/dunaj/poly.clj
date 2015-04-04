@@ -26,18 +26,21 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Multimethods"]}
-  (:api bare)
-  (:require
-   [clojure.core :refer
-    [methods prefers symbol throw get map? some cons remove ->>]]
-   [clojure.bootstrap :refer [defalias def+ v1 type-map defn fn]]
-   [dunaj.type :refer [Signature Required Fn Any U Va Macro]]
-   [dunaj.boolean :refer [Boolean boolean or and]]
-   [dunaj.host :refer [Class class class? class-instance? supers]]
-   [dunaj.compare :refer [identical?]]
-   [dunaj.state :refer [ICloneable]]
-   [dunaj.flow :refer [if let when-let]]
-   [dunaj.feature :refer [IConfig meta]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer
+   [methods prefers symbol get map? some cons remove ->>]]
+  [clojure.bootstrap :refer [defalias def+ v1 type-map defn fn]]
+  [dunaj.type :refer [Signature Required Fn Any U Va Macro]]
+  [dunaj.boolean :refer [Boolean boolean or and]]
+  [dunaj.host :refer [Class+ class class? class-instance? supers]]
+  [dunaj.compare :refer [identical?]]
+  [dunaj.state :refer [ICloneable]]
+  [dunaj.flow :refer [if let when-let]]
+  [dunaj.feature :refer [IConfig meta]])
+ (:import [java.lang Class]))
 
 
 ;;;; Public API
@@ -163,11 +166,11 @@
    :inline
    (fn [c x]
      `(clojure.core/let [c# ~c
-                         c# (clojure.core/if (clojure.core/class? c#)
+                         c# (if (clojure.core/class? c#)
                               c#
                               (:on-class c#))]
-        (clojure.lang.Util/isInstance ^java.lang.Class c# ~x)))}
-  [type :- (U Class Type), x :- Any]
+        (dunaj.lang.Util/isInstance ^java.lang.Class c# ~x)))}
+  [type :- (U Class+ Type), x :- Any]
   (let [c (if (class? type) type (:on-class type))]
     (class-instance? ^java.lang.Class c x)))
 
@@ -176,7 +179,7 @@
   {:added v1
    :see '[dunaj.host/ensure-class]
    :category "Primary"}
-  [type :- (U Class Type), x :- Any]
+  [type :- (U Class+ Type), x :- Any]
   (if (instance? type x)
     x
     (throw (java.lang.IllegalArgumentException.
@@ -272,9 +275,9 @@
   {:added v1
    :see '[extend! extend-type! extenders satisfies? extend!]
    :category "Primary"}
-  [protocol :- Protocol, type :- (U Class Type)]
+  [protocol :- Protocol, type :- (U Class+ Type)]
   (let [c (if (class? type) type (:on-class type))
-        ef #(clojure.core/extends? protocol %)
+        ef #(clojure.dunaj-deftype/extends? protocol %)
         rf #(identical? java.lang.Object %)]
     (->> (supers c) (remove rf) (cons c) (some ef) boolean)))
 
@@ -320,8 +323,8 @@
    :category "Primary"
    :indent 1
    :highlight :def
-   :tsig (Fn [nil (U Class Type) (Va Any)])}
-  clojure.core/extend)
+   :tsig (Fn [nil (U Class+ Type) (Va Any)])}
+  clojure.dunaj-deftype/extend)
 
 (defalias extend-protocol!
   "Useful when you want to provide several implementations of the
@@ -357,7 +360,7 @@
    :indent 1
    :highlight :def
    :tsig Macro}
-  clojure.core/extend-protocol)
+  clojure.dunaj-deftype/extend-protocol)
 
 (defalias extend-type!
   "A macro that expands into an `extend!` call. Useful when you are
@@ -387,7 +390,7 @@
    :indent 1
    :highlight :def
    :tsig Macro}
-  clojure.core/extend-type)
+  clojure.dunaj-deftype/extend-type)
 
 (defalias extenders
   "Returns a collection of the types/classes explicitly extending
@@ -395,7 +398,8 @@
   {:added v1
    :see '[extend-protocol! extend-type! extend! satisfies? extends?]
    :category "Primary"
-   :tsig (Fn [[(U Type Class) Protocol]])})
+   :tsig (Fn [[(U Type Class+) Protocol]])}
+  clojure.dunaj-deftype/extenders)
 
 ;;; Multimethods
 

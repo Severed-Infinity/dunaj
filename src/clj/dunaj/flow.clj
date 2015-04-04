@@ -19,15 +19,18 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Conditionals" "Iteration" "Evaluation"]}
-  (:api bare)
-  (:require
-   [clojure.core :refer [locking list list* var throw satisfies?]]
-   [clojure.bootstrap :refer
-    [defalias defmacro defprotocol deftype defn v1 replace-var!]]
-   [dunaj.type :refer [Macro Fn Va Any]]
-   [dunaj.host :refer [set!]]
-   [dunaj.compare :refer [nil?]]
-   [dunaj.state :refer [IReference IPending]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [locking list list*]]
+  [clojure.dunaj-deftype :refer [satisfies?]]
+  [clojure.bootstrap :refer
+   [defalias defmacro defprotocol deftype defn v1 replace-var!]]
+  [dunaj.type :refer [Macro Fn Va Any]]
+  [dunaj.compare :refer [nil?]]
+  [dunaj.state :refer [IReference IPending]])
+ (:import [java.lang String]))
 
 
 ;;;; Public API
@@ -440,7 +443,7 @@
  '[dunaj.host.int :refer [iint]]
  '[dunaj.math :refer [==]])
 
-(assert-boolean
+#_(assert-boolean
  (let [] false)
  ;; (letfn [] false) ;; letfn inside let binding autoboxes, bug?
  (if nil false false)

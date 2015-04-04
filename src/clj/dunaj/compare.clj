@@ -31,15 +31,18 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Comparison" "Hashing"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer [if when-not do let]]
-   [clojure.bootstrap :refer
-    [defprotocol defalias defn defonce v1 def+ defrecord fn defmacro]]
-   [dunaj.type :refer [Predicate Fn Any Va Unknown R]]
-   [dunaj.boolean :refer [Boolean]]
-   [dunaj.host.int :refer [Int iint iadd imul i31 i0 i1]]
-   [dunaj.math :refer [Integer]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [when-not let]]
+  [clojure.bootstrap :refer
+   [defprotocol defalias defn defonce v1 def+ defrecord fn defmacro]]
+  [dunaj.type :refer [Predicate Fn Any Va Unknown R]]
+  [dunaj.boolean :refer [Boolean]]
+  [dunaj.host.int :refer [Int iint iadd imul i31 i0 i1]]
+  [dunaj.math :refer [Integer]])
+ (:import [java.lang String]))
 
 
 ;;;; Public API
@@ -344,7 +347,7 @@
 (clojure.core/require
  '[clojure.bootstrap :refer [assert-primitive assert-boolean]])
 
-(assert-boolean
+#_(assert-boolean
  (nil? nil)
  (nil? 'd)
  (identical? 'f 'f)
@@ -356,7 +359,7 @@
  (not= :x 'x)
  (distinct? 1 2))
 
-(assert-primitive
+#_(assert-primitive
  (hash 3)
  (hash [:foo])
  (compare 1 2)
