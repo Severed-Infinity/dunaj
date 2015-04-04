@@ -92,6 +92,7 @@
    :tsig Predicate
    :category "Primary"
    :see '[boolean? true? boolean dunaj.compare/nil?]
+   :inline (fn [x] (clojure.core/list 'dunaj.lang.Util/isFalse x))
    :doc "Returns `true` if `_x_` is `false`, otherwise returns
         `false`.
 
@@ -101,6 +102,7 @@
   {:added v1
    :tsig Predicate
    :category "Primary"
+   :inline (fn [x] (clojure.core/list 'dunaj.lang.Util/isTrue x))
    :see '[boolean? false? boolean dunaj.compare/nil?]
    :doc "Returns `true` if `_x_` is `true`, otherwise returns
         `false`."})

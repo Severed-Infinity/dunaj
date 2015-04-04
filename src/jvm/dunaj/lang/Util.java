@@ -48,4 +48,20 @@ public class Util{
         return (Character.class == c) || (Character.TYPE == c);
     }
 
+    static public boolean isFalse(boolean b){
+	return b == false;
+    }
+
+    static public boolean isFalse(Object b){
+        return b == Boolean.FALSE;
+    }
+
+    static public boolean isTrue(boolean b){
+	return b == true;
+    }
+
+    static public boolean isTrue(Object b){
+        return b == Boolean.TRUE;
+    }
+
 }
