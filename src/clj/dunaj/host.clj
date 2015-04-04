@@ -144,7 +144,9 @@
 ;;; Class
 
 (deftype Class
-  "A host class type."
+  "A host class type.
+
+  WARNING: When using dunaj-lite, this type is called Class+."
   {:added v1
    :see '[class class-instance?]
    :predicate 'class?}

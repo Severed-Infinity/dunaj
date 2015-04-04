@@ -22,6 +22,9 @@
   defprotocol does, and no longer implicitly imports created class
   into the namespace (a somewhat controversial change from Clojure).
 
+  WARNING: When using dunaj-lite, some functions defined here works
+  only on types and protocols created with respective dunaj variants.
+
   NOTE: Documentation needs more work."
   {:authors ["Jozef Wagner"]
    :additional-copyright true
@@ -50,7 +53,10 @@
   {(Required :clojure.core/protocol) true})
 
 (defn protocol? :- Boolean
-  "Returns `true` if `_x_` is a protocol, otherwise returns `false`."
+  "Returns `true` if `_x_` is a protocol, otherwise returns `false`.
+
+  WARNING: When using dunaj-lite, this function works
+  only on types and protocols created with respective dunaj variants."
   {:added v1
    :see '[Protocol protocol? satisfies?]
    :category "Primary"}
@@ -87,7 +93,10 @@
   {(Required :clojure.core/type) true})
 
 (defn type? :- Boolean
-  "Returns `true` if `_x_` is a type, otherwise returns `false`."
+  "Returns `true` if `_x_` is a type, otherwise returns `false`.
+
+  WARNING: When using dunaj-lite, this function works
+  only on types and protocols created with respective dunaj variants."
   {:added v1
    :see '[Type deftype type-instance?]
    :category "Primary"}
@@ -124,7 +133,10 @@
 
 (defn record? :- Boolean
   "Returns `true` if `_x_` is a record (a record type,
-  not instance of a record), otherwise returns `false`."
+  not instance of a record), otherwise returns `false`.
+
+  WARNING: When using dunaj-lite, this function works
+  only on types and protocols created with respective dunaj variants."
   {:added v1
    :see '[Record defrecord record-instance? type?]
    :category "Primary"}
@@ -245,7 +257,10 @@
 
 (defn type :- Any
   "Returns the `:type` metadata of `_x_`, or its type if none.
-  Returns `nil` if type cannot be found."
+  Returns `nil` if type cannot be found.
+
+  WARNING: When using dunaj-lite, this function works
+  only on types and protocols created with respective dunaj variants."
   {:added v1
    :see '[dunaj.host/class]
    :category "Primary"}
@@ -267,7 +282,10 @@
 
 (defn extends? :- Boolean
   "Returns `true` if `type` extends `protocol`. Also accepts class
-  instead of type."
+  instead of type.
+
+  WARNING: When using dunaj-lite, this function works
+  only on types and protocols created with respective dunaj variants."
   {:added v1
    :see '[extend! extend-type! extenders satisfies? extend!]
    :category "Primary"}
@@ -390,7 +408,10 @@
 
 (defalias extenders
   "Returns a collection of the types/classes explicitly extending
-  `_protocol_`."
+  `_protocol_`.
+
+  WARNING: When using dunaj-lite, this function works
+  only on types and protocols created with respective dunaj variants."
   {:added v1
    :see '[extend-protocol! extend-type! extend! satisfies? extends?]
    :category "Primary"
