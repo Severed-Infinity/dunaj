@@ -48,12 +48,14 @@
      "See also <<dunaj.bit.api.ad#Logic, bitwise logic operators>>."]]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer [if seq recur first inc rest odd? cons]]
-   [clojure.bootstrap :refer
-    [defalias deftype defmacro v1 defn let fn]]
-   [dunaj.type :refer [Fn Any Predicate Macro Va]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require   
+  [clojure.core :refer [seq first inc rest odd? cons]]
+  [clojure.bootstrap :refer
+   [defalias deftype defmacro v1 defn let fn]]
+  [dunaj.type :refer [Fn Any Predicate Macro Va]]))
 
 
 ;;;; Public API
@@ -285,7 +287,7 @@
 (clojure.core/require
  '[clojure.bootstrap :refer [assert-boolean assert-primitive]])
 
-(assert-boolean
+#_(assert-boolean
  (boolean? "foo")
  (boolean? true)
  (boolean? 3)
@@ -308,7 +310,7 @@
  (nand 3 false false nil)
  (nor nil false nil))
 
-(assert-primitive
+#_(assert-primitive
  (boolean? "foo")
  (boolean? true)
  (boolean 5)

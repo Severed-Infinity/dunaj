@@ -22,12 +22,13 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Comparison" "Operations"
                 "Bitwise" "Numbers" "ASCII"]}
-  (:api bare)
-  (:require [clojure.core :refer [. fn]]
-            [clojure.bootstrap :refer [deftype defmacro defn v1]]
-            [dunaj.type :refer [Any]]
-            [dunaj.boolean :refer [Boolean]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
 
+(bare-ns
+ (:require [clojure.core :refer [fn]]
+           [clojure.bootstrap :refer [deftype defmacro defn v1]]
+           [dunaj.type :refer [Any]]
+           [dunaj.boolean :refer [Boolean]]))
 
 ;;;; Public API
 
@@ -1196,7 +1197,7 @@
    :indent 1
    :let-bindings true}
   [bindings & exprs]
-  `(clojure.bootstrap/iloop ~bindings ~@exprs))
+  `(clojure.bootstrap/loop ~bindings ~@exprs))
 
 (defn iint :- Int
   "Returns int coercion of `_x_`. Subject to rounding or truncation."
@@ -1601,19 +1602,18 @@
 
 (clojure.core/require
  '[clojure.bootstrap :refer [assert-int assert-boolean]])
-(clojure.core/require '[clojure.core :refer [if recur]])
 
-(iloop [x (i10)]
+#_(iloop [x (i10)]
   (assert-int x)
   (if (izero? x) nil (recur (idec x))))
 
-(assert-int
+#_(assert-int
  (i0)
  (imin (i0) (i1))
  (imin 1 2)
  (idigit->int (iint \3))
  (iSMALL_A))
 
-(assert-boolean
+#_(assert-boolean
  (ipos? 4)
  (ihexa? (iint \A)))

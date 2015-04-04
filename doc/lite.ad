@@ -1,0 +1,17 @@
+Changes
+
+* no qualified special symbols
+** cannot shadow special symbols with custom macros
+** canno unmap special symbols
+* Cannot have deftypes for some classes. Caused by unqualified
+  type hints in clojure.core
+** http://dev.clojure.org/jira/browse/CLJ-1232
+** http://dev.clojure.org/jira/browse/CLJ-1514
+* more verbose ns declaration
+** no :api declaration
+* no additional primitive types
+** mainly boolean and int are missed
+* slower than Dunaj
+
+* more boilerplate for custom collection types
+** handling of Seqable, Indexed, Counted, Lookup

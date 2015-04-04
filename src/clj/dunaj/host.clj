@@ -25,17 +25,20 @@
   NOTE: Documentation needs more work."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer
-    [do case if reify gensym symbol str = with-meta not nil? when or
-     if-let cond]]
-   [clojure.bootstrap :refer [defmacro deftype defalias defn def+ let
-                              v1 primitive-type-hint defrecord]]
-   [dunaj.type :refer
-    [Macro Fn Any Maybe Signature TypeHint IHintedSignature]]
-   [dunaj.boolean :refer [Boolean]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
 
+(bare-ns
+ (:require
+  [clojure.core :refer
+   [case reify gensym symbol str = with-meta not nil? when or
+    if-let cond]]
+  [clojure.dunaj-deftype]
+  [clojure.bootstrap :refer [defmacro deftype defalias defn def+ let
+                             v1 primitive-type-hint defrecord]]
+  [dunaj.type :refer
+   [Macro Fn Any Maybe Signature TypeHint IHintedSignature]]
+  [dunaj.boolean :refer [Boolean]])
+ (:import [java.lang String Class]))
 
 ;;;; Public API
 
@@ -143,7 +146,7 @@
 
 ;;; Class
 
-(deftype Class
+#_(deftype Class
   "A host class type."
   {:added v1
    :see '[class class-instance?]
@@ -386,7 +389,7 @@
    :highlight :def
    :indent :all
    :named true}
-  clojure.core/definterface2)
+  clojure.dunaj-deftype/definterface2)
 
 ;;; Misc
 
@@ -478,9 +481,9 @@
         tgarr (with-meta garr {:tag (symbol (str ts "s"))})]
     `(reify dunaj.host.BatchManager
        (itemType [_] ~ets)
-       (wrap [_ ~garr offset# length#]
-         (clojure.core/. ~bts ~'wrap ~tgarr offset# length#))
-       (allocate [_ size#] (clojure.core/. ~bts ~'allocate size#))
+       (~'wrap [_ ~garr offset# length#]
+         (. ~bts ~'wrap ~tgarr offset# length#))
+       (allocate [_ size#] (. ~bts ~'allocate size#))
        (readOnly [_ ~gbuf] (.asReadOnlyBuffer ~tgbuf))
        (get [_ ~gbuf] (.get ~tgbuf))
        (get [_ ~gbuf index#] (.get ~tgbuf index#))

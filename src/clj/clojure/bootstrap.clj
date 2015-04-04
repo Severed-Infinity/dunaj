@@ -642,7 +642,7 @@
                                category)
                     category (when category
                                (str (cc/name category) " "))
-                    argvec ^{:tag 'boolean} ['x]]
+                    argvec ['x]]
              (if predicate
                (cond (and parasite? soft?)
                      (conj ret
@@ -803,7 +803,7 @@
                        (first args)
                        (symbol (str ns-part "." name)))
            name (with-meta name {:tsig (:tsig m)})
-           argvec ^{:tag 'boolean} ['x]
+           argvec ['x]
            ret (if predicate
                  [`(clojure.bootstrap/defn ~(cc/eval predicate)
                      ~(str "Returns `true` if object `_x_` is "
@@ -878,7 +878,7 @@
            ns-part (clojure.core/namespace-munge *ns*)
            classname (symbol (str ns-part "." name))
            name (with-meta name {:tsig (:tsig m)})
-           argvec ^{:tag 'boolean} ['o]
+           argvec ['o]
            ret (if predicate
                  [`(clojure.bootstrap/defn ~(cc/eval predicate)
                      ~(str "Returns `true` if object `_x_` is"
@@ -1032,9 +1032,12 @@
   ([form]
      `(clojure.core/assert
        (clojure.core/let [r# ~form]
-         (and (= :boolean (pt r#))
-              (or (true? r#) (false? r#))))
-       (str "form " '~form " does not yield a boolean primitive")))
+         (clojure.core/and
+          (clojure.core/= :boolean (pt r#))
+          (clojure.core/or (clojure.core/true? r#)
+                           (clojure.core/false? r#))))
+       (clojure.core/str
+        "form " '~form " does not yield a boolean primitive")))
   ([form & more]
      `(do (assert-boolean ~form)
           ~@(cc/map #(cc/list `assert-boolean %) more))))
@@ -1074,7 +1077,17 @@
          (clojure.core/constantly ~source))
         nil)))
 
-(defmacro bare-ns
-  []
-  ;; TODO
-  )
+(cc/defn remove-mappings! [ns]
+  (cc/doseq [[s _] (cc/ns-map ns)]
+    (cc/ns-unmap ns s)))
+
+(cc/defmacro bare-ns
+  [& decls]
+  (let [gen-decl 
+        (fn [[kn & args]]
+          (apply list (symbol "clojure.core" (name kn)) 
+                 (map #(list `quote %) args)))
+        gen-decls #(map gen-decl %)]
+    `(do
+       (remove-mappings! cc/*ns*)
+       ~@(gen-decls decls))))

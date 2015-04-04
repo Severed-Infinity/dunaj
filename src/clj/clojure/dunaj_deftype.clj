@@ -1129,7 +1129,7 @@
                 atype
                 (:on-class atype))]
     (doseq [[proto mmap] (partition 2 proto+mmaps)]
-      (if-not (instance? clojure.dunaj_deftype.PRR protocol)
+      (if-not (instance? clojure.dunaj_deftype.PRR proto)
         (clojure.core/extend atype proto mmap)
         (do
           (when-not (protocol? proto)
