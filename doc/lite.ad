@@ -16,6 +16,13 @@ Changes
 * slower than Dunaj
 * changes in types
 ** Class+ instead of Class
+* no custom capacity hint in `edit`
+* fewer support for ICounted
+* if ILookup, must also implement
+** c.l.ILookup/valAt
+** something from c.l.Associative, c.l.IPersistentSet, j.l.Map or j.l.Set
+* if IIndexed, must also implement
+** 2 args c.l.IIndexed/nth
 
 TODO
 

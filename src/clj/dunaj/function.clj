@@ -40,16 +40,20 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Transformations" "Memoization"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer [throw var satisfies? str]]
-   [clojure.bootstrap :as cb :refer [defalias defprotocol def+ v1]]
-   [dunaj.type :refer [Fn Any AnyFn I U Va Predicate Signature Macro]]
-   [dunaj.boolean :refer [Boolean and boolean]]
-   [dunaj.flow :refer [if cond let if-let]]
-   [dunaj.coll :refer
-    [ICollectionFactory IConvolutionFactory assoc conj]]
-   [dunaj.feature :refer [meta update-meta]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [str]]
+  [clojure.dunaj-deftype :refer [satisfies?]]
+  [clojure.bootstrap :as cb :refer [defalias defprotocol def+ v1]]
+  [dunaj.type :refer [Fn Any AnyFn I U Va Predicate Signature Macro]]
+  [dunaj.boolean :refer [Boolean and boolean]]
+  [dunaj.flow :refer [cond let if-let]]
+  [dunaj.coll :refer
+   [ICollectionFactory IConvolutionFactory assoc conj]]
+  [dunaj.feature :refer [meta update-meta]])
+ (:import [java.lang String]))
 
 
 ;;;; Implementation details

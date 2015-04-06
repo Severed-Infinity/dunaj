@@ -139,25 +139,28 @@
                 "Mutable" "Factory"]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer
-    [throw extend-protocol satisfies? partition apply assert str meta
-     with-meta lazy-seq gensym cons]]
-   [clojure.core.protocols :refer [coll-reduce]]
-   [clojure.bootstrap :refer
-    [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec]]
-   [dunaj.type :refer [Fn Any Va Maybe AnyFn U Signature]]
-   [dunaj.boolean :refer [Boolean boolean and or not]]
-   [dunaj.host :refer [. class class-instance? set! AnyBatch Class]]
-   [dunaj.host.int :refer [iinc i0 iint]]
-   [dunaj.math :refer [Integer > == zero? odd?]]
-   [dunaj.compare :refer [sentinel nil? identical? defsentinel]]
-   [dunaj.state :refer [IReference]]
-   [dunaj.flow :refer
-    [if if-not cond let when-not when loop recur if-let]]
-   [dunaj.threading :refer [->]]
-   [dunaj.poly :refer [Type deftype defprotocol identical-type?]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer
+   [partition apply assert str meta with-meta lazy-seq gensym cons]]
+  [clojure.dunaj-deftype :refer [satisfies? extend-protocol]]
+  [clojure.core.protocols :refer [coll-reduce]]
+  [clojure.bootstrap :refer
+   [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec
+    not-implemented]]
+  [dunaj.type :refer [Fn Any Va Maybe AnyFn U Signature]]
+  [dunaj.boolean :refer [Boolean boolean and or not]]
+  [dunaj.host :refer [class class-instance? AnyBatch Class+]]
+  [dunaj.host.int :refer [iinc i0 iint]]
+  [dunaj.math :refer [Integer > == zero? odd?]]
+  [dunaj.compare :refer [sentinel nil? identical? defsentinel]]
+  [dunaj.state :refer [IReference]]
+  [dunaj.flow :refer [if-not cond let when-not when loop if-let]]
+  [dunaj.threading :refer [->]]
+  [dunaj.poly :refer [Type deftype defprotocol identical-type?]])
+ (:import [java.lang String]))
 
 
 ;;;; Implementation details
@@ -214,18 +217,18 @@
    ret #(throw (java.lang.UnsupportedOperationException.)) uadvancef))
 
 (defn advance :- Any
-  "Continues with the reduction of a `_postponed_` result and returns
+   "Continues with the reduction of a `_postponed_` result and returns
   the reduced result, applying same rules as in the `reduce`
   function. May again return another postponed object. Usually much
   slower than `unsafe-advance!`, but can be called multiple times
   for same postponed object. May not always be supported."
-  {:added v1
-   :inline (fn [x] `((.-advancef
-                     ~(with-meta x {:tag 'dunaj.coll.Postponed}))))
-   :category "Primary"
-   :see '[postponed unsafe-advance! dunaj.coll.helper/advance-fn]}
-  [postponed :- Postponed]
-  ((.-advancef postponed)))
+   {:added v1
+    :inline (fn [x] `((.-advancef
+                      ~(with-meta x {:tag 'dunaj.coll.Postponed}))))
+    :category "Primary"
+    :see '[postponed unsafe-advance! dunaj.coll.helper/advance-fn]}
+   [postponed :- Postponed]
+   ((.-advancef postponed)))
 
 (defn unsafe-advance! :- Any
   "Continues with the reduction of a `_postponed_` result and returns
@@ -322,7 +325,7 @@
     references and care must be taken to correctly handle
     postponed results returned from underlying collection,
     if the implementation has one."
-    [this item-type :- (U nil Class Type),
+    [this item-type :- (U nil Class+ Type),
      size-hint :- (Maybe Integer), reducef :- (Fn [Any Any AnyBatch]),
      init :- Any]))
 
@@ -383,7 +386,7 @@
 (defn ^:private reduce-batched* :- Any
   ([coll :- [], reducef :- AnyFn, init :- Any]
    (if (nil? coll) init (-reduce-batched coll nil nil reducef init)))
-  ([item-type :- (U nil Class Type), size-hint :- (Maybe Integer),
+  ([item-type :- (U nil Class+ Type), size-hint :- (Maybe Integer),
     coll :- [], reducef :- AnyFn, init :- Any]
    (if (nil? coll)
        init
@@ -862,6 +865,7 @@
    :predicate 'counted?
    :see '[count full-aware? empty-aware?]
    :on-interface clojure.lang.Counted
+   :forbid-extensions true
    :category "Features"}
   (-count :- Integer
     "Returns the size of `_this_`, in constant time."
@@ -876,14 +880,14 @@
   [coll :- []]
   (cond (class-instance? clojure.lang.Counted coll)
         (.count ^clojure.lang.Counted coll)
-        (satisfies? ICounted coll) (-count coll)
+        ;;(satisfies? ICounted coll) (-count coll)
         ;; reduce is faster than c.c.count on seqs
         :else (reduce (fn [ret _] (iinc ret)) (i0) coll)))
 
 ;; c.c.count is patched to support ICounted extensions in c.l.RT
 ;; Support ICounted in old code, slower but supports protocol
 ;; extensions
-(replace-var! clojure.core/counted?)
+;;(replace-var! clojure.core/counted?)
 
 (defn several? :- Boolean
   "Returns `true` if `_coll_` contains more than one item, returns
@@ -1158,7 +1162,7 @@
 ;; c.c.contains? is patched to support ILookup in c.l.RT
 ;; c.c.get is patched to support ILookup in c.l.RT
 
-(defalias get-in
+(defn get-in
   "Returns the value in a nested associative structure,
   where `_ks_` is a sequence of keys. Returns `nil` if the key
   is not present, or the `_not-found_` value if supplied."
@@ -1166,7 +1170,19 @@
    :see '[get nth contains? lookup?]
    :category "Features"
    :tsig (Fn [Any Any [Any]]
-             [Any Any [Any] Any])})
+             [Any Any [Any] Any])}
+  ([m ks]
+   (reduce get m ks))
+  ([m ks not-found]
+   (loop [sentinel (java.lang.Object.)
+          m m
+          ks (seq ks)]
+     (if ks
+       (let [m (get m (first ks) sentinel)]
+         (if (identical? sentinel m)
+           not-found
+           (recur sentinel m (next ks))))
+       m))))
 
 ;;; Indexed collections
 
@@ -1179,6 +1195,7 @@
    :see '[nth]
    :category "Features"
    :predicate 'indexed?
+   :forbid-extensions true
    :on-interface clojure.lang.Indexed}
   (-nth :- Any
     "Returns item at `_index_` position, or returns `_not-found_`
@@ -1416,12 +1433,12 @@
    :see '[item-type]
    :category "Features"
    :predicate 'homogeneous?}
-  (-item-type :- (U nil Class Type)
+  (-item-type :- (U nil Class+ Type)
     "Returns type of items in `_this_` homogeneous collection. Returns
     `nil` if `_this_` can produce items of any requested type."
     [this]))
 
-(defn item-type :- (U nil Class Type)
+(defn item-type :- (U nil Class+ Type)
   "Returns type of items in `_coll_` homogeneous collection. Returns
   `nil` if `_coll_` can produce items of any requested type.
   Throws if `_coll_` is not homogeneous."
@@ -1447,7 +1464,7 @@
     This operation must be (amortized) constant time if `_this_`
     is a persistent collection."
     {:on 'asTransient}
-    [this capacity-hint :- (Maybe Integer)]))
+    [this]))
 
 ;; c.l.IEditableCollection is patched to support two arg version
 
@@ -1459,9 +1476,10 @@
    :see '[settle! editable?]
    :category "Features"}
   ([coll :- IEditable]
-   (-edit coll nil))
+   (-edit coll))
   ([coll :- IEditable, capacity-hint :- (Maybe Integer)]
-   (-edit coll capacity-hint)))
+   (when capacity-hint (not-implemented))
+   (-edit coll)))
 
 ;;; Mutable collections
 

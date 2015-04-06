@@ -470,7 +470,7 @@
                 (if (instance? clojure.lang.MapEquivalence m#) m# (into {} m#)))))
        (def ~name {:on '~classname
                    :on-class ~classname
-                   ::record true}))))
+                   :clojure.core/record true}))))
 
 (defn record?
   "Returns true if x is a record"
@@ -589,7 +589,7 @@
          {:on '~classname
           :on-class ~classname
           :tsig ~(:tsig (meta name))
-          ::type true}))))
+          :clojure.core/type true}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;; protocols ;;;;;;;;;;;;;;;;;;;;;;;;
 
