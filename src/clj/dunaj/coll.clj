@@ -421,25 +421,27 @@
           dunaj.coll.util/reduce-unpacked
           dunaj.coll.util/reduce-batched]}
   ([reducef :- AnyFn, coll :- []]
-     (reduce reducef (reducef) coll))
+   (reduce reducef (reducef) coll))
   ([reducef :- AnyFn, init :- Any, coll :- []]
-     (strip-reduced (reduce* coll reducef init))))
+   (strip-reduced (reduce* coll reducef init))))
 
 (defn reduce-orig :- Any
   ([f :- AnyFn, coll :- Any]
-     ;; class instance as we want to preseve c.c/reduce semantics
-     ;; with c.l collection classes
-     (if-not (class-instance? dunaj.coll.IRed coll)
-       (coll-reduce coll f)
-       (let [so (sentinel)
-             delayed-fn #(if (identical? so %1) %2 (f %1 %2))
-             res (strip-reduced (-reduce coll delayed-fn so))]
-         ;; must avoid iterating twice over the coll
-         (strip-reduced (if (identical? so res) (f) res)))))
+   ;; class instance as we want to preseve c.c/reduce semantics
+   ;; with c.l collection classes
+   (if-not (class-instance? dunaj.coll.IRed coll)
+     ;; TODO: check for IReduce?
+     (coll-reduce coll f)
+     (let [so (sentinel)
+           delayed-fn #(if (identical? so %1) %2 (f %1 %2))
+           res (strip-reduced (-reduce coll delayed-fn so))]
+       ;; must avoid iterating twice over the coll
+       (strip-reduced (if (identical? so res) (f) res)))))
   ([f :- AnyFn, init :- Any, coll :- Any]
-     (if (class-instance? dunaj.coll.IRed coll)
-       (strip-reduced (-reduce coll f init))
-       (coll-reduce coll f init))))
+   (if (class-instance? dunaj.coll.IRed coll)
+     (strip-reduced (-reduce coll f init))
+     ;; TODO: check for IReduceInit?
+     (coll-reduce coll f init))))
 
 ;; Replace original reduce so that the old code will work
 ;; with new collections
@@ -615,10 +617,10 @@
   augmented reducing function `_r_` and with initial value `_init_`,
   which defaults to `(-init r)`. May return reduced object."
   ([coll :- IRed, reduce-fn :- AnyFn, r :- IReducing]
-     (reduce-augmented* coll reduce-fn r (._init r)))
+   (reduce-augmented* coll reduce-fn r (._init r)))
   ([coll :- IRed, reduce-fn :- AnyFn, r :- IReducing, init :- Any]
-     (-> (reduce-fn coll (reducing-function r) (._wrap r init))
-         (finish-advance r))))
+   (-> (reduce-fn coll (reducing-function r) (._wrap r init))
+       (finish-advance r))))
 
 (defn reduce-augmented :- Any
   "Returns a result of the reduction of `_coll_` with the augmented
@@ -629,9 +631,9 @@
           dunaj.coll.helper/reduce-augmented*]
    :category "Primary"}
   ([r :- IReducing, coll :- IRed]
-     (strip-reduced (reduce-augmented* coll reduce* r (._init r))))
+   (strip-reduced (reduce-augmented* coll reduce* r (._init r))))
   ([r :- IReducing, init :- Any, coll :- IRed]
-     (strip-reduced (reduce-augmented* coll reduce* r init))))
+   (strip-reduced (reduce-augmented* coll reduce* r init))))
 
 (defn reduce-one-augmented :- Any
   "Returns a result of the reduction of one `_item_` with
@@ -643,11 +645,11 @@
           dunaj.coll.helper/reduce-augmented*]
    :category "Primary"}
   ([r :- IReducing, item :- Any]
-     (reduce-one-augmented r (._init r) item))
+   (reduce-one-augmented r (._init r) item))
   ([r :- IReducing, init :- Any, item :- Any]
-     (-> (._step r (._wrap r init) item)
-         (finish-advance r)
-         strip-reduced)))
+   (-> (._step r (._wrap r init) item)
+       (finish-advance r)
+       strip-reduced)))
 
 (defn ^:private transduce* :- Any
   "Returns a result of the reduction of `_coll_` with `_reduce-fn_`
@@ -657,11 +659,11 @@
   May return a reduced or postponed result."
   ([coll :- IRed, reduce-fn, :- AnyFn,
     xform :- AnyFn, reducef :- AnyFn]
-     (reduce-augmented* coll reduce-fn (xform (reducing reducef))))
+   (reduce-augmented* coll reduce-fn (xform (reducing reducef))))
   ([coll :- IRed, reduce-fn :- AnyFn,
     xform :- AnyFn, reducef :- AnyFn, init :- Any]
-     (reduce-augmented* coll reduce-fn
-                        (xform (reducing reducef init)))))
+   (reduce-augmented* coll reduce-fn
+                      (xform (reducing reducef init)))))
 
 (defn transduce :- Any
   "Returns a result of the reduction of `_coll_` with the classic
@@ -673,9 +675,9 @@
           dunaj.coll.helper/defxform]
    :category "Primary"}
   ([xform :- AnyFn, reducef :- AnyFn, coll :- IRed]
-     (reduce-augmented (xform (reducing reducef)) coll))
+   (reduce-augmented (xform (reducing reducef)) coll))
   ([xform :- AnyFn, reducef :- AnyFn, init :- Any, coll :- IRed]
-     (reduce-augmented (xform (reducing reducef init)) coll)))
+   (reduce-augmented (xform (reducing reducef init)) coll)))
 
 (defn transduce-one :- Any
   "Returns a result of the reduction of one `_item_` with the classic
@@ -687,9 +689,9 @@
           dunaj.coll.helper/defxform]
    :category "Primary"}
   ([xform :- AnyFn, reducef :- AnyFn, item :- Any]
-     (reduce-one-augmented (xform (reducing reducef)) item))
+   (reduce-one-augmented (xform (reducing reducef)) item))
   ([xform :- AnyFn, reducef :- AnyFn, init :- Any, item :- Any]
-     (reduce-one-augmented (xform (reducing reducef init)) item)))
+   (reduce-one-augmented (xform (reducing reducef init)) item)))
 
 ;;; Seq
 
@@ -765,9 +767,9 @@
    :see '[first second seq rest]
    :category "Primary"}
   ([coll :- []]
-     (first (first coll)))
+   (first (first coll)))
   ([coll :- [], not-found :- Any]
-     (first (first coll) not-found)))
+   (first (first coll) not-found)))
 
 (defn second :- Any
   "Returns the second item of the collection `_coll_`, or `nil` if
@@ -1195,14 +1197,14 @@
    :see '[get get-in contains? indexed?]
    :category "Features"}
   ([coll :- [], index :- Integer]
-     (when-not (nil? coll)
-       (let [nothing (sentinel)
-             r (nth coll index nothing)]
-         (if (identical? r nothing)
-           (throw (java.lang.IndexOutOfBoundsException.))
-           r))))
+   (when-not (nil? coll)
+     (let [nothing (sentinel)
+           r (nth coll index nothing)]
+       (if (identical? r nothing)
+         (throw (java.lang.IndexOutOfBoundsException.))
+         r))))
   ([coll :- [], index :- Integer, not-found :- Any]
-     (if (nil? coll) not-found (-nth coll index not-found))))
+   (if (nil? coll) not-found (-nth coll index not-found))))
 
 ;; c.c.nth is patched to support ILookup in c.l.RT
 
