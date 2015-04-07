@@ -18,21 +18,24 @@
   "Symbolic identifiers and related protocols."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer
-    [defalias defprotocol defn deftype replace-var! v1 scratch]]
-   [dunaj.type :refer [Maybe Fn U]]
-   [dunaj.boolean :refer [Boolean and]]
-   [dunaj.host.int :refer [i== iCOLON i0 i1 iint]]
-   [dunaj.compare :refer [IHash IComparable =]]
-   [dunaj.flow :refer [if cond]]
-   [dunaj.feature :refer [IMeta IPersistentMeta]]
-   [dunaj.poly :refer [extend-protocol!]]
-   [dunaj.coll :refer [first slice]]
-   [dunaj.function :refer [IInvocable]]
-   [dunaj.string :refer [String ICanonical ReversedStringSection
-                         StringSection str string?]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer
+   [defalias defprotocol defn deftype replace-var! v1 scratch]]
+  [dunaj.type :refer [Maybe Fn U]]
+  [dunaj.boolean :refer [Boolean and]]
+  [dunaj.host.int :refer [i== iCOLON i0 i1 iint]]
+  [dunaj.compare :refer [IHash IComparable =]]
+  [dunaj.flow :refer [cond]]
+  [dunaj.feature :refer [IMeta IPersistentMeta]]
+  [dunaj.poly :refer [extend-protocol!]]
+  [dunaj.coll :refer [first slice]]
+  [dunaj.function :refer [IInvocable]]
+  [dunaj.string :refer [ICanonical ReversedStringSection
+                        StringSection str string?]])
+ (:import [java.lang String]))
 
 
 ;;;; Implementation details

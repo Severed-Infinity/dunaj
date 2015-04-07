@@ -14,21 +14,24 @@
   "Error handling, exceptions."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Exceptions"]}
-  (:api bare)
-  (:require
-   [clojure.core :refer [extend-protocol map into]]
-   [clojure.stacktrace]
-   [clojure.bootstrap :refer
-    [defprotocol defn defalias defmacro v1 not-implemented]]
-   [dunaj.type :refer [Fn Maybe KeywordMap]]
-   [dunaj.boolean :refer [Boolean]]
-   [dunaj.host :refer [bean->map class]]
-   [dunaj.flow :refer [let when]]
-   [dunaj.state :refer [IReference]]
-   [dunaj.function :refer [fn comp]]
-   [dunaj.host.array :refer [adapt]]
-   [dunaj.string :refer [String hyphen-case]]
-   [dunaj.identifier :refer [INamed keyword namespace name]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [extend-protocol map into]]
+  [clojure.stacktrace]
+  [clojure.bootstrap :refer
+   [defprotocol defn defalias defmacro v1 not-implemented]]
+  [dunaj.type :refer [Fn Maybe KeywordMap]]
+  [dunaj.boolean :refer [Boolean]]
+  [dunaj.host :refer [bean->map class]]
+  [dunaj.flow :refer [let when]]
+  [dunaj.state :refer [IReference]]
+  [dunaj.function :refer [fn comp]]
+  [dunaj.host.array :refer [adapt]]
+  [dunaj.string :refer [hyphen-case]]
+  [dunaj.identifier :refer [INamed keyword namespace name]])
+ (:import [java.lang String]))
 
 
 ;;;; Public API
@@ -129,7 +132,7 @@
    (-fail! x exception))
   ([x :- IFailable, exception :- IException, throw? :- Boolean]
    (-fail! x exception)
-   (when throw? (clojure.core/throw exception))))
+   (when throw? (throw exception))))
 
 (defmacro fragile
   "Wraps `_body_` in a try-catch which makes `_x_` failed if exception
@@ -138,9 +141,9 @@
    :category "Primary"
    :see '[opened-fragile fail!]}
   [x & body]
-  `(clojure.core/try
+  `(try
     ~@body
-    (clojure.core/catch java.lang.Exception e# (fail! ~x e# true))))
+    (catch java.lang.Exception e# (fail! ~x e# true))))
 
 (defmacro opened-fragile
   "Like fragile, but ensures stateful object `x` is also opened."
@@ -148,7 +151,7 @@
    :category "Primary"
    :see '[fragile dunaj.state/ensure-open]}
   [x & body]
-  `(clojure.core/do (dunaj.state/ensure-open ~x) (fragile ~x ~@body)))
+  `(do (dunaj.state/ensure-open ~x) (fragile ~x ~@body)))
 
 ;;; Operations
 
@@ -303,7 +306,7 @@
 
 ;;; try-catch
 
-(defmacro try
+#_(defmacro try
   "The `_exprs_` are evaluated and, if no exceptions occur, the
   value of the last is returned. If an exception occurs and catch
   clauses are provided, each is examined in turn and the first for
@@ -321,9 +324,9 @@
    :indent 0
    :highlight :flow}
   [& exprs]
-  `(clojure.core/try ~@exprs))
+  `(try ~@exprs))
 
-(defmacro catch
+#_(defmacro catch
   "A catch clause."
   {:added v1
    :category "Primary"
@@ -333,7 +336,7 @@
   [ex-type ex & body]
   (not-implemented "catch outside try block."))
 
-(defmacro finally
+#_(defmacro finally
   "A finally clause."
   {:added v1
    :category "Primary"
@@ -343,7 +346,7 @@
   [& body]
   (not-implemented "finally outside try block."))
 
-(defmacro throw
+#_(defmacro throw
   "The `_expr_` is evaluated and thrown, therefore it should yield an
   instance of `IException`."
   {:added v1
@@ -351,4 +354,4 @@
    :see '[try catch finally]
    :highlight :flow}
   [expr]
-  `(clojure.core/throw ~expr))
+  `(throw ~expr))

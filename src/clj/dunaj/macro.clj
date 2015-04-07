@@ -18,14 +18,16 @@
   "Macros. &nbsp; icon:magic[]"
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [defalias v1 not-implemented]]
-   [dunaj.type :refer [Fn Any Macro]]
-   [dunaj.boolean :refer [Boolean]]
-   [dunaj.function :refer [defn]]
-   [dunaj.string :refer [String]]
-   [dunaj.identifier :refer [Symbol]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [defalias v1 not-implemented]]
+  [dunaj.type :refer [Fn Any Macro]]
+  [dunaj.boolean :refer [Boolean]]
+  [dunaj.function :refer [defn]]
+  [dunaj.identifier :refer [Symbol]])
+ (:import [java.lang String]))
 
 
 ;;;; Public API

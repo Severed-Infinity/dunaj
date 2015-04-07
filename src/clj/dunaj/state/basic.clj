@@ -18,20 +18,21 @@
   "Atom, Box, Local and other basic reference types."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer [reset! compare-and-set!]]
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any Fn Va Maybe]]
-   [dunaj.host :refer [set!]]
-   [dunaj.state :refer [IReference IAtomic IMutable ICloneable]]
-   [dunaj.feature :refer [IMeta]]
-   [dunaj.poly :refer [deftype]]
-   [dunaj.function :refer [defn]]
-   [dunaj.concurrent.thread :refer
-    [IThreadLocal IPassableThreadLocal
-     Thread current-thread ensure-thread-local]]
-   [dunaj.state.var :refer [replace-var! defalias declare]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [reset! compare-and-set!]]
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any Fn Va Maybe]]
+  [dunaj.state :refer [IReference IAtomic IMutable ICloneable]]
+  [dunaj.feature :refer [IMeta]]
+  [dunaj.poly :refer [deftype]]
+  [dunaj.function :refer [defn]]
+  [dunaj.concurrent.thread :refer
+   [IThreadLocal IPassableThreadLocal
+    Thread current-thread ensure-thread-local]]
+  [dunaj.state.var :refer [replace-var! defalias declare]]))
 
 
 ;;;; Public API

@@ -245,7 +245,8 @@
   {:added v1
    :see '[deftype]
    :category "Primary"
-   :tsig Macro})
+   :tsig Macro}
+  clojure.dunaj-deftype/reify)
 
 (defn type :- Any
   "Returns the `:type` metadata of `_x_`, or its type if none.

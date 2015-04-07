@@ -23,19 +23,21 @@
   root binding unbound."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer [var-set constantly throw]]
-   [clojure.bootstrap :as cb :refer [defmacro deftype defn v1]]
-   [dunaj.type :refer [Fn Any Va AnyFn Maybe Macro]]
-   [dunaj.boolean :refer [Boolean]]
-   [dunaj.state :refer [IReference IMutable ICloneable]]
-   [dunaj.flow :refer [when when-let]]
-   [dunaj.feature :refer [IMeta]]
-   [dunaj.function :refer [IInvocable]]
-   [dunaj.string :refer [String]]
-   [dunaj.identifier :refer
-    [Symbol INamed INamespaced name namespace]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [var-set constantly]]
+  [clojure.bootstrap :as cb :refer [defmacro deftype defn v1]]
+  [dunaj.type :refer [Fn Any Va AnyFn Maybe Macro]]
+  [dunaj.boolean :refer [Boolean]]
+  [dunaj.state :refer [IReference IMutable ICloneable]]
+  [dunaj.flow :refer [when when-let]]
+  [dunaj.feature :refer [IMeta]]
+  [dunaj.function :refer [IInvocable]]
+  [dunaj.identifier :refer
+   [Symbol INamed INamespaced name namespace]])
+ (:import [java.lang String]))
 
 
 ;;;; Implementation details
@@ -107,7 +109,7 @@
 
 ;;; Global vars definitions
 
-(cb/defalias def
+#_(cb/defalias def
   "Defines a var and returns it. The var definition process creates
   and interns or locates a global var with given `_name_` and a
   namespace of the value of the current namespace.
@@ -183,7 +185,7 @@
 
 ;;; Global vars manipulation
 
-(defmacro var
+#_(defmacro var
   "The symbol must resolve to a global var, and the Var object itself
   (not its value) is returned.
   The reader macro #'x expands to (var x)."
@@ -215,7 +217,7 @@
    :see '[replace-var]}
   ([dest source-var]
    `(clojure.core/alter-var-root
-     (clojure.core/var ~dest)
+     (var ~dest)
      (clojure.core/constantly @~source-var))))
 
 (defalias bindings

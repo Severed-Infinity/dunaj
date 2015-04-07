@@ -182,7 +182,7 @@
     `(future-call (clojure.core/or
                    ~(:executor m)
                    (clojure.core/var-get default-future-executor))
-                  (^{:once true} clojure.core/fn* [] ~@body))))
+                  (^{:once true} fn* [] ~@body))))
 
 ;;; Promise
 

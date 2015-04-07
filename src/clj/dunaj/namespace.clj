@@ -21,26 +21,29 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Mappings"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer
-    [set map list into first second find-ns chunked-seq? chunk-first
-     chunk-next persistent! transient ns-name all-ns create-ns throw
-     remove-ns gensym ns-unmap ns-aliases the-ns]]
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any Fn AnyFn U Maybe Va I]]
-   [dunaj.boolean :refer [Boolean and not]]
-   [dunaj.host :refer [Class class-instance?]]
-   [dunaj.compare :refer [nil? =]]
-   [dunaj.state :refer [IMutable IReference IAtomic ICloneable]]
-   [dunaj.flow :refer [let loop recur if do]]
-   [dunaj.poly :refer [reify]]
-   [dunaj.coll :refer [ILookup conj seq seq? rest next]]
-   [dunaj.function :refer [fn defn]]
-   [dunaj.string :refer [String ->str]]
-   [dunaj.identifier :refer [Symbol symbol? name]]
-   [dunaj.macro :refer [defmacro]]
-   [dunaj.state.var :refer [Var defalias]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer
+   [set map list into first second find-ns chunked-seq? chunk-first
+    chunk-next persistent! transient ns-name all-ns create-ns
+    remove-ns gensym ns-unmap ns-aliases the-ns]]
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any Fn AnyFn U Maybe Va I]]
+  [dunaj.boolean :refer [Boolean and not]]
+  [dunaj.host :refer [Class+ class-instance?]]
+  [dunaj.compare :refer [nil? =]]
+  [dunaj.state :refer [IMutable IReference IAtomic ICloneable]]
+  [dunaj.flow :refer [let loop doto]]
+  [dunaj.poly :refer [reify]]
+  [dunaj.coll :refer [ILookup conj seq seq? rest next]]
+  [dunaj.function :refer [fn defn]]
+  [dunaj.string :refer [->str]]
+  [dunaj.identifier :refer [Symbol symbol? name]]
+  [dunaj.macro :refer [defmacro]]
+  [dunaj.state.var :refer [Var defalias def+]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -69,9 +72,15 @@
     (persistent! (reduce1 clojure.core/conj! (transient to) from))
     (reduce1 conj to from)))
 
-(defn ^:private ^java.util.concurrent.atomic.AtomicReference get-ar
-  [symbol]
-  (.-aliases ^clojure.lang.Namespace (the-ns symbol)))
+(def+ ^:private ar :- java.lang.reflect.Field
+  "Makes internal aliases ref public."
+  (doto (.getDeclaredField clojure.lang.Namespace "aliases")
+    (.setAccessible true)))
+
+(defn ^:private get-ar :- java.util.concurrent.atomic.AtomicReference
+  "Returns char array from a string."
+  [sym]
+  (.get ar (the-ns sym)))
 
 (defn ^:private ns->sym
   [m]
@@ -151,8 +160,8 @@
   {:added v1
    :category "Mappings"
    :see '[mappings intern! refer! unmap!]
-   :tsig (Fn [(U Var Class) Symbol Symbol]
-             [(U Var Class) Symbol ILookup Symbol])}
+   :tsig (Fn [(U Var Class+) Symbol Symbol]
+             [(U Var Class+) Symbol ILookup Symbol])}
   clojure.core/ns-resolve)
 
 (defalias mappings
@@ -161,7 +170,7 @@
   {:added v1
    :category "Mappings"
    :see '[refers imports interns publics aliases intern!]
-   :tsig (Fn [{Symbol (U Var Class)} Symbol])}
+   :tsig (Fn [{Symbol (U Var Class+)} Symbol])}
   clojure.core/ns-map)
 
 (defalias refers
@@ -179,7 +188,7 @@
   {:added v1
    :category "Mappings"
    :see '[refers mappings interns publics aliases intern!]
-   :tsig (Fn [{Symbol Class} Symbol])}
+   :tsig (Fn [{Symbol Class+} Symbol])}
   clojure.core/ns-imports)
 
 (defalias interns
@@ -253,14 +262,14 @@
    :see '[unmap! intern! refer! create! dunaj.env/current-ns]}
   [ns & import-symbols-or-lists]
   (let [specs (map #(if (and (seq? %)
-                             (= 'clojure.core/quote (first %)))
+                             (= `quote (first %)))
                       (second %)
                       %)
                    import-symbols-or-lists)
         ns-symbol ns
         ns (gensym)]
     `(let [~ns (clojure.core/the-ns ~ns-symbol)]
-       ~@(map #(list `clojure.core/. ns 'importClass
+       ~@(map #(list `. ns 'importClass
                      (clojure.lang.RT/classForName %))
                 (reduce1 (fn [v spec]
                           (if (symbol? spec)
@@ -288,7 +297,7 @@
    :category "Mappings"
    :see '[unmap! intern! import! create! dunaj.env/current-ns]
    :tsig (Fn [nil Symbol Symbol (Va Any)])}
-  clojure.core/refer*)
+  clojure.dunaj-deftype/refer*)
 
 (defn unmap! :- nil
   "Removes the mappings for the `_symbol_` from the namespace named by
