@@ -18,24 +18,26 @@
   "Instants (RFC 3339) and duration protocol."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer [var format]]
-   [clojure.instant :refer [validated parse-timestamp]]
-   [clojure.bootstrap :refer
-    [replace-var! def+ defprotocol deftype defrecord v1 fn defn]]
-   [dunaj.type :refer [U Any AnyFn Fn]]
-   [dunaj.boolean :refer [Boolean and]]
-   [dunaj.math :refer [subtract dec quot neg? INumerical rem num trunc
-                       Integer integer? decimal? multiply Decimal]]
-   [dunaj.math.precise :as dmp]
-   [dunaj.host.number :refer [bigdec long]]
-   [dunaj.compare :refer [IHash IEquiv = hash nil?]]
-   [dunaj.flow :refer [let if doto cond]]
-   [dunaj.threading :refer [->]]
-   [dunaj.coll :refer [slice count]]
-   [dunaj.string :refer
-    [String ->str canonical ICanonical -canonical]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [format]]
+  [clojure.instant :refer [validated parse-timestamp]]
+  [clojure.bootstrap :refer
+   [replace-var! def+ defprotocol deftype defrecord v1 fn defn]]
+  [dunaj.type :refer [U Any AnyFn Fn]]
+  [dunaj.boolean :refer [Boolean and]]
+  [dunaj.math :refer [subtract dec quot neg? INumerical rem num trunc
+                      Integer integer? decimal? multiply Decimal]]
+  [dunaj.math.precise :as dmp]
+  [dunaj.host.number :refer [bigdec long]]
+  [dunaj.compare :refer [IHash IEquiv = hash nil?]]
+  [dunaj.flow :refer [let doto cond]]
+  [dunaj.threading :refer [->]]
+  [dunaj.coll :refer [slice count]]
+  [dunaj.string :refer [->str canonical ICanonical -canonical]])
+ (:import [java.lang String]))
 
 
 ;;;; Implementation details

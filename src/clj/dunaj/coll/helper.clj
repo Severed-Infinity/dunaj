@@ -28,34 +28,37 @@
      characteristics of original collection. That way Dunaj can
      provide more features for processed collections apart from
      `IRed`."]]}
-  (:api bare)
-  (:require
-   [clojure.core :refer
-    [throw str gensym for keyword? list symbol map? conj count first
-     take-while drop-while vector? cons hash-map second contains?
-     list? concat]]
-   [clojure.bootstrap :refer
-    [defmacro v1 def+ not-implemented strip-sigs-vec get-sigs-vec]]
-   [dunaj.type :refer [Any AnyFn Fn Maybe U]]
-   [dunaj.boolean :refer [Boolean and or not false? true? boolean]]
-   [dunaj.host :refer [Class provide-class class-instance?]]
-   [dunaj.host.int :refer [Int iinc iadd imul i0 i-1 i1 i31 iloop i2
-                           imax idiv i== iint i<= izero? ione? i< i>]]
-   [dunaj.math :refer [Integer == neg? > zero?]]
-   [dunaj.compare :refer [nil? = identical? compare]]
-   [dunaj.flow :refer [if do let cond recur when when-not loop]]
-   [dunaj.feature :refer [assoc-meta]]
-   [dunaj.poly :refer
-    [Type extend-protocol! defprotocol deftype satisfies?]]
-   [dunaj.coll :refer
-    [Reduced IHomogeneous IRed ICounted ISectionable IBatchedRed
-     IUnpackedRed reduced? reduced red? section rest -section
-     sequential? -reduce-batched -reduce reduce -reduce-unpacked
-     sectionable? seq counted? item-type postponed IReducing
-     postponed? advance unsafe-advance!]]
-   [dunaj.function :refer [defn fn apply comp identity]]
-   [dunaj.concurrent.forkjoin :refer
-    [IFoldable -fold fold fork join invoke ForkJoinPool folding]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer
+   [str gensym for keyword? list symbol map? conj count first
+    take-while drop-while vector? cons hash-map second contains?
+    list? concat]]
+  [clojure.bootstrap :refer
+   [defmacro v1 def+ not-implemented strip-sigs-vec get-sigs-vec]]
+  [dunaj.type :refer [Any AnyFn Fn Maybe U]]
+  [dunaj.boolean :refer [Boolean and or not false? true? boolean]]
+  [dunaj.host :refer [Class+ provide-class class-instance?]]
+  [dunaj.host.int :refer [Int iinc iadd imul i0 i-1 i1 i31 iloop i2
+                          imax idiv i== iint i<= izero? ione? i< i>]]
+  [dunaj.math :refer [Integer == neg? > zero?]]
+  [dunaj.compare :refer [nil? = identical? compare]]
+  [dunaj.flow :refer [do let cond recur when when-not loop when-let]]
+  [dunaj.feature :refer [assoc-meta]]
+  [dunaj.poly :refer
+   [Type extend-protocol! defprotocol deftype satisfies?]]
+  [dunaj.coll :refer
+   [Reduced IHomogeneous IRed ICounted ISectionable IBatchedRed ISeq
+    IUnpackedRed reduced? reduced red? section rest -section ISeqable
+    sequential? -reduce-batched -reduce reduce -reduce-unpacked
+    sectionable? seq counted? item-type postponed IReducing
+    postponed? advance unsafe-advance!]]
+  [dunaj.function :refer [defn fn apply comp identity]]
+  [dunaj.concurrent.forkjoin :refer
+   [IFoldable -fold fold fork join invoke ForkJoinPool folding]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -74,8 +77,8 @@
 
 (defn ^:private item-types-match? :- Boolean
   "Returns `true` if item types match, `false` otherwise."
-  [requested-type :- (U nil Class Type),
-   available-type :- (U nil Class Type)]
+  [requested-type :- (U nil Class+ Type),
+   available-type :- (U nil Class+ Type)]
   (or (nil? available-type)
       (nil? requested-type)
       (identical? requested-type available-type)
@@ -131,6 +134,13 @@
 ;; TODO: add it to the public API?
 (def+ red->seq* :- Any
   @#'dunaj.coll/red->seq*)
+
+(defn red-to-seq :- (Maybe ISeq)
+  "Returns nil or a non-empty seq from a given reducible coll."
+  {:added v1
+   :category "Reducers"}
+  [coll :- []]
+  (when-let [r (-reduce coll #(postponed %2) nil)] (red->seq* r)))
 
 (def+ reduce-unpacked*
   "Returns the result of unpacked reduction of `_coll_` with
@@ -249,7 +259,7 @@
    :see '[fold* fold-augmented* fold-unpacked* transfold*
           reduce-augmented* reduce* reduce-batched* reduce-unpacked*]
    :category "Folds"}
-  [coll :- [], requested-type :- (U nil Class Type),
+  [coll :- [], requested-type :- (U nil Class+ Type),
    size-hint :- (Maybe Integer), pool :- ForkJoinPool,
    n :- Integer, combinef :- AnyFn, reducef :- AnyFn]
   (if (and (satisfies? IBatchedRed coll)
@@ -461,6 +471,8 @@
        (-inner-coll [this] ~coll)
        IRed
        (-reduce [this# f# init#] (dunaj.coll/-reduce ~coll f# init#))
+       ISeqable
+       (-seq [this#] (red-to-seq this#))
        IFoldable
        (-fold [this# reduce-fn# pool# n# combinef# reducef#]
          (dunaj.concurrent.forkjoin/-fold
@@ -522,10 +534,10 @@
         to (gensym "to__")
         bs []
         bs (if (nil? c) (conj bs c? `(counted? ~to)) bs)
-        bs (if (nil? b) (conj bs b? `(clojure.core/satisfies?
+        bs (if (nil? b) (conj bs b? `(clojure.dunaj-deftype/satisfies?
                                       dunaj.coll/IBatchedRed ~to)) bs)
         bs (if (nil? u)
-             (conj bs u? `(clojure.core/satisfies?
+             (conj bs u? `(clojure.dunaj-deftype/satisfies?
                            dunaj.coll/IUnpackedRed ~to))
              bs)
         bs (if (nil? s) (conj bs s? `(sectionable? ~to)) bs)
@@ -581,13 +593,17 @@
   (let [c? (if (nil? oc) (and (counted? coll) (counted? to)) oc)
         b? (if (nil? ob)
              (and
-              (clojure.core/satisfies? dunaj.coll/IBatchedRed coll)
-              (clojure.core/satisfies? dunaj.coll/IBatchedRed to))
+              (clojure.dunaj-deftype/satisfies?
+               dunaj.coll/IBatchedRed coll)
+              (clojure.dunaj-deftype/satisfies?
+               dunaj.coll/IBatchedRed to))
              ob)
         u? (if (nil? ou)
              (and
-              (clojure.core/satisfies? dunaj.coll/IUnpackedRed coll)
-              (clojure.core/satisfies? dunaj.coll/IUnpackedRed to))
+              (clojure.dunaj-deftype/satisfies?
+               dunaj.coll/IUnpackedRed coll)
+              (clojure.dunaj-deftype/satisfies?
+               dunaj.coll/IUnpackedRed to))
              ou)
         s? (if (nil? os)
              (and (sectionable? coll) (sectionable? to))
@@ -881,6 +897,8 @@
   IRed
   (-reduce [this reducef init]
     (transduce* coll reduce* xform reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (if foldable?
@@ -998,7 +1016,7 @@
         (fn [~r]
           (let ~(or (:let bm) [])
             (if (class-instance? dunaj.coll.IReducing ~r)
-              ~(cons 'clojure.core/do (rest (:xform bm)))
+              ~(cons `do (rest (:xform bm)))
               (let [traits# :- XTraits ~r
                     ~tc (.-count traits#)
                     ~ts (.-section traits#)

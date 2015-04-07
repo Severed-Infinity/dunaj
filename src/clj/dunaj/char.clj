@@ -25,16 +25,18 @@
   {:categories ["Primary" "Predicates" "Operations"]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [defn defalias v1]]
-   [dunaj.type :refer [Maybe Any AnyFn Fn U Predicate]]
-   [dunaj.boolean :refer [Boolean and or]]
-   [dunaj.host.int :refer [iint i== i<= i32 iLF iCR]]
-   [dunaj.math :refer [INumerical]]
-   [dunaj.compare :refer [IComparable]]
-   [dunaj.flow :refer [let]]
-   [dunaj.poly :refer [deftype]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [defn defalias v1]]
+  [dunaj.type :refer [Maybe Any AnyFn Fn U Predicate]]
+  [dunaj.boolean :refer [Boolean and or]]
+  [dunaj.host.int :refer [iint i== i<= i32 iLF iCR]]
+  [dunaj.math :refer [INumerical]]
+  [dunaj.compare :refer [IComparable]]
+  [dunaj.flow :refer [let]]
+  [dunaj.poly :refer [deftype]]))
 
 
 ;;;; Public API

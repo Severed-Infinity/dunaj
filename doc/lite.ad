@@ -23,6 +23,10 @@ Changes
 ** something from c.l.Associative, c.l.IPersistentSet, j.l.Map or j.l.Set
 * if IIndexed, must also implement
 ** 2 args c.l.IIndexed/nth
+* types no longer seqable (use d.c.h/red-to-seq instead)
+** batches
+* array adaptors do not support c.c.contains?
+* strings are not counted
 
 TODO
 

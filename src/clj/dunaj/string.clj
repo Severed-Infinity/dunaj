@@ -26,49 +26,49 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Operations"]}
-  (:api bare)
-  (:require
-   [clojure.core :refer
-    [aget . throw ->> -> declare set! first second atom]]
-   [clojure.bootstrap :refer [def+ defn defrecord defalias defmacro
-                              v1 not-implemented]]
-   [clojure.bridge]
-   [dunaj.type :refer [Maybe Any AnyFn Fn U Predicate]]
-   [dunaj.boolean :refer [Boolean and or]]
-   [dunaj.host :refer [keyword->class class-instance? Array Batch]]
-   [dunaj.host.int :refer
-    [i0 iadd i< iint isub i== Int iMINUS idec iinc inneg? iloop
-     imul i31 iSPACE iHT iLF iCR i<= i32 ineg izero? i2 idiv i-1]]
-   [dunaj.host.number :refer [long]]
-   [dunaj.math :refer
-    [INumerical Integer - integer? nneg? < == >= > <= neg? add dec]]
-   [dunaj.compare :refer [IComparable IHash IEquiv IHashBasis not=
-                          hash-from-basis hash = nil? identical?]]
-   [dunaj.state :refer [IReference reset! ICloneable]]
-   [dunaj.flow :refer [if let loop recur doto when cond when-not
-                       if-let do delay]]
-   [dunaj.poly :refer [satisfies? defprotocol deftype]]
-   [dunaj.coll :refer
-    [IEmptyable IRed ISeq IEmptyAware ICapped IEditable IFlippable
-     IPeekable ICounted ICollectionFactory ISeqable ILookup IIndexed
-     ISectionable IReversible IHomogeneous IBatchedRed ISliceable
-     IMutableCollection IMutableAssociative IMutableStacked
-     ISettleable IMutableCatenable next slice counted? assoc nth get
-     reduce empty? count section reduced conj! seq -rest reduced?
-     postponed? postponed -reverse -nth edit settle!
-     -from-items item-type -from-coll red?]]
-   [dunaj.function :refer [IInvocable fn]]
-   [dunaj.concurrent.forkjoin :refer
-    [IFoldable fork join invoke -fold]]
-   [dunaj.coll.helper :refer
-    [split-adjust strip-reduced fold-sectionable equals-ordered
-     equiv-ordered compare-ordered prepare-ordered-section
-     reduce-batched* advance-fn]]
-   [dunaj.host.batch :refer
-    [batch-on batch-manager select-item-type item-types-match?]]
-   [dunaj.host.array :refer
-    [array-manager char-array acount object-array]]
-   [dunaj.char :refer [char char? Char whitespace?]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [aget ->> -> declare first second atom]]
+  [clojure.bootstrap :refer [def+ defn defrecord defalias defmacro
+                             v1 not-implemented]]
+  [dunaj.type :refer [Maybe Any AnyFn Fn U Predicate]]
+  [dunaj.boolean :refer [Boolean and or]]
+  [dunaj.host :refer [keyword->class class-instance? Array Batch]]
+  [dunaj.host.int :refer
+   [i0 iadd i< iint isub i== Int iMINUS idec iinc inneg? iloop
+    imul i31 iSPACE iHT iLF iCR i<= i32 ineg izero? i2 idiv i-1]]
+  [dunaj.host.number :refer [long]]
+  [dunaj.math :refer
+   [INumerical Integer - integer? nneg? < == >= > <= neg? add dec]]
+  [dunaj.compare :refer [IComparable IHash IEquiv IHashBasis not=
+                         hash-from-basis hash = nil? identical?]]
+  [dunaj.state :refer [IReference reset! ICloneable]]
+  [dunaj.flow :refer [let loop doto when cond when-not if-let delay]]
+  [dunaj.poly :refer [satisfies? defprotocol deftype]]
+  [dunaj.coll :refer
+   [IEmptyable IRed ISeq IEmptyAware ICapped IEditable IFlippable
+    IPeekable ICounted ICollectionFactory ISeqable ILookup IIndexed
+    ISectionable IReversible IHomogeneous IBatchedRed ISliceable
+    IMutableCollection IMutableAssociative IMutableStacked
+    ISettleable IMutableCatenable next slice counted? assoc nth get
+    reduce empty? count section reduced conj! seq -rest reduced?
+    postponed? postponed -reverse -nth edit settle!
+    -from-items item-type -from-coll red?]]
+  [dunaj.function :refer [IInvocable fn]]
+  [dunaj.concurrent.forkjoin :refer
+   [IFoldable fork join invoke -fold]]
+  [dunaj.coll.helper :refer
+   [split-adjust strip-reduced fold-sectionable equals-ordered
+    equiv-ordered compare-ordered prepare-ordered-section
+    reduce-batched* advance-fn red-to-seq]]
+  [dunaj.host.batch :refer
+   [batch-on batch-manager select-item-type item-types-match?]]
+  [dunaj.host.array :refer
+   [array-manager char-array acount object-array]]
+  [dunaj.char :refer [char char? Char whitespace?]])
+ (:import [java.lang Class String]))
 
 
 ;;;; Implementation details
@@ -416,7 +416,7 @@
           (let [v (aget arr i)]
             (recur (iinc i) (iadd (iint v) (imul (i31) ret))))))))))
 
-(deftype String
+(deftype String+
   "A type for strings."
   {:added v1
    :category "Primary"
@@ -439,8 +439,8 @@
           bm (batch-manager type)]
       (reducef
        init (batch-on bm (get-cha this) (i0) (.length this)))))
-  ICounted
-  (-count [this] (.length this))
+;;  ICounted
+;;  (-count [this] (.length this))
   IEmptyAware
   (-empty? [this] (.isEmpty this))
   IEmptyable
@@ -516,8 +516,8 @@
           bm (batch-manager type)]
       (reducef
        init (batch-on bm (get-sbcha this) (i0) (.length this)))))
-  ICounted
-  (-count [this] (.length this))
+;;  ICounted
+;;  (-count [this] (.length this))
   ICapped
   (-capacity [this] (.capacity this))
   IPeekable
@@ -839,6 +839,8 @@
                          (recur (reducef ret val)
                                 nfval (iinc i) i)))))]
           (af init (partitionf (aget arr offset)) offset offset)))))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (cond
@@ -907,7 +909,9 @@
     keep-whitespace? :- Boolean, shared? :- Boolean, string :- String]
    (let [f (fn [x :- ICharSequence] (whitespace-fn (.charAt x (i0))))]
      (let [r (partition-by whitespace-fn string)
-           r (if shared? r (map (fn [x :- ICharSequence] (.toString x)) r))
+           r (if shared?
+               r
+               (map (fn [x :- ICharSequence] (.toString x)) r))
            r (if keep-whitespace? r (remove f r))]))))
 
 (defn replace :- String

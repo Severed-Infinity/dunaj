@@ -18,20 +18,21 @@
   "General concurrency facilities, futures, promises."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer [var try throw]]
-   [clojure.bootstrap :refer [defmacro defalias def+ v1]]
-   [dunaj.type :refer [Fn Any I Macro]]
-   [dunaj.boolean :refer [and]]
-   [dunaj.host.number :refer [long]]
-   [dunaj.compare :refer [nil?]]
-   [dunaj.state :refer [IReference IBlockingReference ICancellable
-                        ICancelledAware IPending ICloneable]]
-   [dunaj.flow :refer [let when if]]
-   [dunaj.poly :refer [defprotocol extend-type!]]
-   [dunaj.coll :refer [empty? first rest several? map?]]
-   [dunaj.function :refer [Function apply fn defn]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [defmacro defalias def+ v1]]
+  [dunaj.type :refer [Fn Any I Macro]]
+  [dunaj.boolean :refer [and]]
+  [dunaj.host.number :refer [long]]
+  [dunaj.compare :refer [nil?]]
+  [dunaj.state :refer [IReference IBlockingReference ICancellable
+                       ICancelledAware IPending ICloneable]]
+  [dunaj.flow :refer [let when]]
+  [dunaj.poly :refer [defprotocol extend-type!]]
+  [dunaj.coll :refer [empty? first rest several? map?]]
+  [dunaj.function :refer [Function apply fn defn]]))
 
 
 ;;;; Implementation details
@@ -95,6 +96,7 @@
   "An abstract type protocol for task executors."
   {:added v1
    :see '[submit IExecutor execute IFuture]
+   :forbid-extensions true
    :on-interface java.util.concurrent.ExecutorService}
   (-submit :- IFuture
     "Submits a given function `_f_` for execution and returns an
@@ -109,7 +111,7 @@
   {:added v1
    :see '[execute ITaskExecutor]}
   [executor :- ITaskExecutor, executable :- Function]
-  (-submit executor executable))
+  (.submit executor ^java.util.concurrent.Callable executable))
 
 ;; extending on the interface!
 (extend-type! java.util.concurrent.Future
@@ -156,7 +158,8 @@
   ([f :- Function]
      (future-call *default-future-executor* f))
   ([executor :- ITaskExecutor, f :- Function]
-     (-submit executor (binding-conveyor-fn f))))
+     (.submit executor ^java.util.concurrent.Callable
+              (binding-conveyor-fn f))))
 
 (defmacro future
   "Takes a `_body_` of expressions and yields an `IFuture` object

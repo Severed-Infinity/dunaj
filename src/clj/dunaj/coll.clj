@@ -880,6 +880,8 @@
   [coll :- []]
   (cond (class-instance? clojure.lang.Counted coll)
         (.count ^clojure.lang.Counted coll)
+        (class-instance? java.lang.CharSequence)
+        (.length ^java.lang.CharSequence coll)
         ;;(satisfies? ICounted coll) (-count coll)
         ;; reduce is faster than c.c.count on seqs
         :else (reduce (fn [ret _] (iinc ret)) (i0) coll)))
@@ -1195,7 +1197,6 @@
    :see '[nth]
    :category "Features"
    :predicate 'indexed?
-   :forbid-extensions true
    :on-interface clojure.lang.Indexed}
   (-nth :- Any
     "Returns item at `_index_` position, or returns `_not-found_`

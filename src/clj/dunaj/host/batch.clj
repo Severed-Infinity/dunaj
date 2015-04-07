@@ -31,45 +31,48 @@
   may not store received batch between two calls, as batches
   are usually reused (cleared and filled with next data)."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.core :refer [assert throw get var declare]]
-   [clojure.bootstrap :refer [def+ v1 deftype replace-var!]]
-   [dunaj.type :refer [U Maybe AnyFn Any Fn]]
-   [dunaj.boolean :refer [Boolean not and or]]
-   [dunaj.host :refer
-    [Class BatchManager AnyBatch AnyArray Batch
-     class-instance? definterface class provide-class keyword->class]]
-   [dunaj.host.int :refer [Int iint isub iinc i== imul idiv idec ipos?
-                           i0 inneg? imin imax i1 i<]]
-   [dunaj.math :refer [max Integer min]]
-   [dunaj.compare :refer [nil? identical?]]
-   [dunaj.threading :refer [->]]
-   [dunaj.state :refer [ICloneable clone]]
-   [dunaj.flow :refer [let if do cond loop recur when doto when-not]]
-   [dunaj.poly :refer [Type extend-protocol! satisfies?]]
-   [dunaj.coll :refer
-    [IRed IBatchedRed reduced? postponed? postponed reduced advance
-     unsafe-advance! item-type IHomogeneous IUnpackedRed -section
-     -reduce-batched IReducing ISectionable ICounted count counted?
-     sectionable?]]
-   [dunaj.concurrent.forkjoin :refer [IFoldable folding]]
-   [dunaj.coll.helper :refer
-    [transduce* reduce* reduce-augmented* adapt* defxform
-     finish-advance advance-fn reduced-advance strip-reduced
-     reduce-unpacked* reduce-batched* cloned-advance-fn adapt]]
-   [dunaj.function :refer [defn fn]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [assert get declare]]
+  [clojure.bootstrap :refer [def+ v1 deftype replace-var!]]
+  [dunaj.type :refer [U Maybe AnyFn Any Fn]]
+  [dunaj.boolean :refer [Boolean not and or]]
+  [dunaj.host :refer
+   [Class+ BatchManager AnyBatch AnyArray Batch
+    class-instance? definterface class provide-class keyword->class]]
+  [dunaj.host.int :refer [Int iint isub iinc i== imul idiv idec ipos?
+                          i0 inneg? imin imax i1 i<]]
+  [dunaj.math :refer [max Integer min]]
+  [dunaj.compare :refer [nil? identical?]]
+  [dunaj.threading :refer [->]]
+  [dunaj.state :refer [ICloneable clone]]
+  [dunaj.flow :refer [let cond loop when doto when-not]]
+  [dunaj.poly :refer [Type extend-protocol! satisfies?]]
+  [dunaj.coll :refer
+   [IRed IBatchedRed reduced? postponed? postponed reduced advance
+    unsafe-advance! item-type IHomogeneous IUnpackedRed -section
+    -reduce-batched IReducing ISectionable ICounted count counted?
+    sectionable? ISeqable]]
+  [dunaj.concurrent.forkjoin :refer [IFoldable folding]]
+  [dunaj.coll.helper :refer
+   [transduce* reduce* reduce-augmented* adapt* defxform red-to-seq
+    finish-advance advance-fn reduced-advance strip-reduced
+    reduce-unpacked* reduce-batched* cloned-advance-fn adapt]]
+  [dunaj.function :refer [defn fn]])
+ (:import [java.lang Class String]))
 
 
 ;;;; Implementation details
 
-(def+ ^:private bms :- {Class BatchManager} @#'dunaj.host/bms)
+(def+ ^:private bms :- {Class+ BatchManager} @#'dunaj.host/bms)
 
 (def+ ^:private ^:dynamic *default-batch-size* 32)
 
 (def+ ^:private ^:dynamic *max-batch-size* 8192)
 
-(def+ ^:private default-item-type :- Class
+(def+ ^:private default-item-type :- Class+
   "A default item type used when no concrete type is specified
   in the batch creation process."
   java.lang.Byte/TYPE)
@@ -90,7 +93,7 @@
   if host does not support batches of `_item-type_`."
   {:added v1
    :see '[batch-manager-from provide-batch-manager batch-support?]}
-  [item-type :- (U nil Class Type)]
+  [item-type :- (U nil Class+ Type)]
   (get bms (provide-class item-type)))
 
 (defn batch-manager-from :- BatchManager
@@ -130,35 +133,35 @@
   "Returns `true` if item types match, `false` otherwise."
   {:added v1
    :see '[decide-item-type select-item-type dunaj.coll/item-type]}
-  [requested-type :- (U nil Class Type),
-   available-type :- (U nil Class Type)]
+  [requested-type :- (U nil Class+ Type),
+   available-type :- (U nil Class+ Type)]
   (or (nil? available-type)
       (nil? requested-type)
       (identical? requested-type available-type)
       (identical? (provide-class requested-type)
                   (provide-class available-type))))
 
-(defn decide-item-type :- (U nil Class Type)
+(defn decide-item-type :- (U nil Class+ Type)
   "Returns concrete item type, or `nil` if any type will suffice."
   {:added v1
    :see '[item-types-match? select-item-type dunaj.coll/item-type]}
-  [requested-type :- (U nil Class Type),
-   available-type :- (U nil Class Type)]
+  [requested-type :- (U nil Class+ Type),
+   available-type :- (U nil Class+ Type)]
   (when-not (item-types-match? requested-type available-type)
     (throw (java.lang.IllegalArgumentException.
             "Item types do not match")))
   (or requested-type available-type))
 
-(defn select-item-type :- (U nil Class Type)
+(defn select-item-type :- (U nil Class+ Type)
   "Returns concrete item type from a given requested and
   available types. Returns default item type (`byte`)
   if any type would suffice."
   {:added v1
    :see '[item-types-match? decide-item-type dunaj.coll/item-type]}
-  ([item-type :- (U nil Class Type)]
+  ([item-type :- (U nil Class+ Type)]
    (select-item-type item-type nil))
-  ([requested-type :- (U nil Class Type),
-    available-type :- (U nil Class Type)]
+  ([requested-type :- (U nil Class+ Type),
+    available-type :- (U nil Class+ Type)]
    (when-not (item-types-match? requested-type available-type)
      (throw (java.lang.IllegalArgumentException.
              "Item types do not match")))
@@ -172,7 +175,7 @@
   otherwise returns `false`."
   {:added v1
    :see '[batch-manager select-item-type batch-on]}
-  [item-type :- (U nil Class Type)]
+  [item-type :- (U nil Class+ Type)]
   (not (nil? (batch-manager item-type))))
 
 (defn batch-on :- AnyBatch
@@ -279,7 +282,7 @@
   Returns collection recipe if `_coll_` is given."
   {:added v1
    :see '[dunaj.coll.util/reduce-batched dunaj.coll.util/batched]}
-  [requested-type :- (U nil Class Type clojure.lang.Keyword),
+  [requested-type :- (U nil Class+ Type clojure.lang.Keyword),
    size-hint :- (Maybe Integer)]
   :let
   [type (select-item-type (provide-class requested-type))
@@ -306,6 +309,8 @@
   IRed
   (-reduce [this reducef init]
     (reduce* coll reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IBatchedRed
   (-reduce-batched [this requested-type size-hint reducef init]
     (let [t (select-item-type requested-type (item-type coll))

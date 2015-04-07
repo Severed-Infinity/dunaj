@@ -37,46 +37,49 @@
    :categories ["Primary"
                 ["Primitives"
                  "Functions specific to host primitive types."]]}
-  (:api bare)
-  (:require
-   [clojure.core :refer
-    [str declare get first second throw every? interpose pr-str map]]
-   [clojure.bootstrap :refer [deftype defn defalias def+ v1]]
-   [dunaj.type :refer [Fn Va U Any Maybe Predicate Macro]]
-   [dunaj.boolean :refer [Boolean and or not]]
-   [dunaj.host :refer [Class ArrayManager AnyArray Array
-                       class-instance? class provide-class set!]]
-   [dunaj.host.int :refer
-    [iint iinc idec isub Int imul i== iadd i0 i31 iloop i1 i< inneg?]]
-   [dunaj.math :refer [nneg? integer? < >= Integer == > zero?]]
-   [dunaj.flow :refer [delay when-not let loop when if cond recur]]
-   [dunaj.compare :refer
-    [IComparable IHash IEquiv IHashBasis nil? =
-     hash-from-basis next-basis basis-seed ordered-hash-factory]]
-   [dunaj.state :refer [IReference]]
-   [dunaj.poly :refer [Type]]
-   [dunaj.coll :refer
-    [IRed ICounted ISectionable IReversible ISeq
-     IFlippable ISliceable ISequential ILookup IIndexed IHomogeneous
-     IBatchedRed IPeekable ISeqable postponed? count reduced? -rest
-     postponed nth -reverse seq -contains? -section]]
-   [dunaj.function :refer [IInvocable fn apply]]
-   [dunaj.concurrent.forkjoin :refer [IFoldable]]
-   [dunaj.coll.helper :refer
-    [equiv-ordered equals-ordered prepare-ordered-section index-of
-     compare-ordered fold-sectionable coll->iterator
-     coll->list-iterator advance-fn]]
-   [dunaj.host.batch :refer
-    [batch-manager select-item-type batch-on batch-support?]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer
+   [str declare get first second every? interpose pr-str map]]
+  [clojure.bootstrap :refer [deftype defn defalias def+ v1]]
+  [dunaj.type :refer [Fn Va U Any Maybe Predicate Macro]]
+  [dunaj.boolean :refer [Boolean and or not]]
+  [dunaj.host :refer [Class+ ArrayManager AnyArray Array
+                      class-instance? class provide-class]]
+  [dunaj.host.int :refer
+   [iint iinc idec isub Int imul i== iadd i0 i31 iloop i1 i< inneg?]]
+  [dunaj.math :refer [nneg? integer? < >= Integer == > zero?]]
+  [dunaj.flow :refer [delay when-not let loop when cond]]
+  [dunaj.compare :refer
+   [IComparable IHash IEquiv IHashBasis nil? =
+    hash-from-basis next-basis basis-seed ordered-hash-factory]]
+  [dunaj.state :refer [IReference]]
+  [dunaj.poly :refer [Type]]
+  [dunaj.coll :refer
+   [IRed ICounted ISectionable IReversible ISeq
+    IFlippable ISliceable ISequential ILookup IIndexed IHomogeneous
+    IBatchedRed IPeekable ISeqable postponed? count reduced? -rest
+    postponed nth -reverse seq -contains? -section]]
+  [dunaj.function :refer [IInvocable fn apply]]
+  [dunaj.concurrent.forkjoin :refer [IFoldable]]
+  [dunaj.coll.helper :refer
+   [equiv-ordered equals-ordered prepare-ordered-section index-of
+    compare-ordered fold-sectionable coll->iterator red-to-seq
+    coll->list-iterator advance-fn]]
+  [dunaj.host.batch :refer
+   [batch-manager select-item-type batch-on batch-support?]])
+ (:import [java.lang Class String]))
 
 
 ;;;; Implementation details
 
-(def+ ^:private ams :- {Class ArrayManager} @#'dunaj.host/ams)
+(def+ ^:private ams :- {Class+ ArrayManager} @#'dunaj.host/ams)
 
 (defn ^:private array?* :- Predicate
   [arrf :- Any]
-  (let [arr-class :- Class (class (arrf 0))]
+  (let [arr-class :- Class+ (class (arrf 0))]
     (fn f :- Boolean [x :- Any] (class-instance? arr-class x))))
 
 
@@ -88,8 +91,8 @@
   {:added v1
    :category "Primary"
    :see '[to-array array]
-   :tsig (Fn [AnyArray Class Integer]
-             [AnyArray Class Integer (Va Integer)])})
+   :tsig (Fn [AnyArray Class+ Integer]
+             [AnyArray Class+ Integer (Va Integer)])})
 
 (defalias to-array
   "Returns host object array and fills it with contents of `_coll_`,
@@ -117,7 +120,7 @@
    :category "Primary"
    :see '[make-array to-array]
    :tsig (Fn [AnyArray IRed]
-             [AnyArray Class IRed])}
+             [AnyArray Class+ IRed])}
   clojure.core/into-array)
 
 ;;; Faster constructors if array type is known at compile time
@@ -484,7 +487,7 @@
    :tsig (Fn [AnyArray AnyArray])}
   clojure.core/aclone)
 
-(defn array-item-type :- Class
+(defn array-item-type :- Class+
   "Returns array's item type."
   {:added v1
    :category "Primary"
@@ -500,7 +503,7 @@
   {:added v1
    :category "Primary"
    :see '[array-manager-from]}
-  [item-type :- (U nil Class Type)]
+  [item-type :- (U nil Class+ Type)]
   (get ams (provide-class item-type)))
 
 (defn array-manager-from :- (Maybe ArrayManager)

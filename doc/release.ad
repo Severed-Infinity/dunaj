@@ -5,9 +5,9 @@ ITERNAL TODO:
 * clone support/forbid for collections
 ** clone for promise
 * unify otherwise clause in docstrings
-* dunaj.coll
+
+* dunaj.concurrent
 ** indents
-** TODO in reduce, check for IReduce/IReduceInit
 * ISeqable on all IRed
 * 
 
