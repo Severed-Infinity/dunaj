@@ -21,31 +21,34 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Ports" "Operations" "Mult" "Mix" "Pub"]}
-  (:api bare)
-  (:require
-   [clojure.core :refer
-    [add-watch constantly assert atom remove-watch disj empty?]]
-   [clojure.core.async.impl.dispatch]
-   [clojure.core.async.impl.protocols :as cap]
-   [clojure.bootstrap :refer [v1 not-implemented]]
-   [dunaj.type :refer
-    [Fn Any U I Va Maybe AnyFn Predicate Signature KeywordMap]]
-   [dunaj.boolean :refer [Boolean and]]
-   [dunaj.math :refer [Integer]]
-   [dunaj.state :refer [IOpenAware -open? IReference]]
-   [dunaj.flow :refer [let when if if-let]]
-   [dunaj.feature :refer [assoc-meta meta]]
-   [dunaj.poly :refer [extend-protocol! reify deftype defprotocol]]
-   [dunaj.coll :refer
-    [IMutableCollection IRed conj assoc editable? edit settle! conj!]]
-   [dunaj.function :refer [apply nop fn complement defn partial]]
-   [dunaj.concurrent :refer [IExecutor locking execute]]
-   [dunaj.buffer :refer [promise-buffer]]
-   [dunaj.string :refer [String]]
-   [dunaj.time :refer [IDuration]]
-   [dunaj.macro :refer [defmacro]]
-   [dunaj.error :refer [IException]]
-   [dunaj.state.var :refer [Var var def+]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer
+   [add-watch constantly assert atom remove-watch disj empty?]]
+  [clojure.core.async.impl.dispatch]
+  [clojure.core.async.impl.protocols :as cap]
+  [clojure.bootstrap :refer [v1 not-implemented]]
+  [dunaj.type :refer
+   [Fn Any U I Va Maybe AnyFn Predicate Signature KeywordMap]]
+  [dunaj.boolean :refer [Boolean and]]
+  [dunaj.math :refer [Integer]]
+  [dunaj.state :refer [IOpenAware -open? IReference]]
+  [dunaj.flow :refer [let when if-let]]
+  [dunaj.feature :refer [assoc-meta meta]]
+  [dunaj.poly :refer [extend-protocol! reify deftype defprotocol]]
+  [dunaj.coll :refer
+   [IMutableCollection IRed conj assoc editable? edit settle! conj!
+    ISeqable]]
+  [dunaj.function :refer [apply nop fn complement defn partial]]
+  [dunaj.concurrent :refer [IExecutor locking execute]]
+  [dunaj.buffer :refer [promise-buffer]]
+  [dunaj.time :refer [IDuration]]
+  [dunaj.macro :refer [defmacro]]
+  [dunaj.error :refer [IException]]
+  [dunaj.state.var :refer [Var def+]])
+ (:import [java.lang String]))
 
 
 ;;;; Implementation details

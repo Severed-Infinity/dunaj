@@ -31,16 +31,18 @@
   `nil` rather than `empty-list`."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.feature :refer [IMeta IPersistentMeta]]
-   [dunaj.poly :refer [deftype]]
-   [dunaj.coll :refer
-    [ISequential IEmptyable IRed ISeq IEmptyAware IPeekable ICounted
-     ICollectionFactory ISeqable IPersistentCollection IPersistentList
-     first]]
-   [dunaj.state.var :refer [def+]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.feature :refer [IMeta IPersistentMeta]]
+  [dunaj.poly :refer [deftype]]
+  [dunaj.coll :refer
+   [ISequential IEmptyable IRed ISeq IEmptyAware IPeekable ICounted
+    ICollectionFactory ISeqable IPersistentCollection IPersistentList
+    first]]
+  [dunaj.state.var :refer [def+]]))
 
 
 ;;;; Public API

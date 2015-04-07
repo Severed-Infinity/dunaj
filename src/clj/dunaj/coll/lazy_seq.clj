@@ -18,18 +18,20 @@
   "A Lazy seq type."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Macro]]
-   [dunaj.state :refer [IPending]]
-   [dunaj.feature :refer [IMeta IPersistentMeta]]
-   [dunaj.poly :refer [deftype]]
-   [dunaj.coll :refer
-    [IEmptyable IRed ISequential ISeqable ISeq IEmptyAware IPeekable
-     IPersistentCollection ICollectionFactory]]
-   [dunaj.coll.helper :refer [reduce*]]
-   [dunaj.state.var :refer [defalias]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Macro]]
+  [dunaj.state :refer [IPending]]
+  [dunaj.feature :refer [IMeta IPersistentMeta]]
+  [dunaj.poly :refer [deftype]]
+  [dunaj.coll :refer
+   [IEmptyable IRed ISequential ISeqable ISeq IEmptyAware IPeekable
+    IPersistentCollection ICollectionFactory]]
+  [dunaj.coll.helper :refer [reduce*]]
+  [dunaj.state.var :refer [defalias]]))
 
 
 ;;;; Public API
