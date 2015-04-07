@@ -363,14 +363,14 @@
    :see '[dropping-buffer sliding-buffer stretching-buffer
           dunaj.concurrent.port/chan]}
   ([n :- Int]
-     (buffer nil n))
+   (buffer nil n))
   ([type :- (U nil Keyword Class Type), n :- Int]
-     (when (inpos? n)
-       (throw (illegal-argument "n is not positive integer.")))
-     (let [am :- ArrayManager
-           (array-manager (provide-class (or type :object)))
-           arr (.allocate am (iinc n))]
-       (->FixedBuffer am arr (i0) (i0) false (.count am arr)))))
+   (when (inpos? n)
+     (throw (illegal-argument "n is not positive integer.")))
+   (let [am :- ArrayManager
+         (array-manager (provide-class (or type :object)))
+         arr (.allocate am (iinc n))]
+     (->FixedBuffer am arr (i0) (i0) false (.count am arr)))))
 
 (defn stretching-buffer :- IMutableCollection
   "Returns a stretching buffer of a size `_n_`. Optional `_type_` may
@@ -385,15 +385,15 @@
    :see '[dropping-buffer sliding-buffer buffer
           dunaj.concurrent.port/chan]}
   ([n :- Int]
-     (stretching-buffer nil n))
+   (stretching-buffer nil n))
   ([type :- (U nil Keyword Class Type), n :- Int]
-     (when (inpos? n)
-       (throw (illegal-argument "n is not positive integer.")))
-     (let [am :- ArrayManager
-           (array-manager (provide-class (or type :object)))
-           arr (.allocate am (iinc n))]
-       (->StretchingBuffer
-        am arr (i0) (i0) (.count am arr) false (.count am arr)))))
+   (when (inpos? n)
+     (throw (illegal-argument "n is not positive integer.")))
+   (let [am :- ArrayManager
+         (array-manager (provide-class (or type :object)))
+         arr (.allocate am (iinc n))]
+     (->StretchingBuffer
+      am arr (i0) (i0) (.count am arr) false (.count am arr)))))
 
 (defn dropping-buffer :- IMutableCollection
   "Returns a dropping buffer of a size `_n_`. Optional `_type_` may be
@@ -405,9 +405,9 @@
    :see '[buffer sliding-buffer dunaj.concurrent.port/chan
           stretching-buffer]}
   ([n :- Int]
-     (dropping-buffer nil n))
+   (dropping-buffer nil n))
   ([type :- (U nil Keyword Class Type), n :- Int]
-     (->DroppingBuffer (buffer type n))))
+   (->DroppingBuffer (buffer type n))))
 
 (defn sliding-buffer :- IMutableCollection
   "Returns a sliding buffer of a size `_n_`. Optional `_type_` may be
@@ -418,11 +418,11 @@
    :see '[buffer dropping-buffer dunaj.concurrent.port/chan
           stretching-buffer]}
   ([n :- Int]
-     (sliding-buffer nil n))
+   (sliding-buffer nil n))
   ([type :- (U nil Keyword Class Type), n :- Int]
-     (when (inpos? n)
-       (throw (illegal-argument "n is not positive integer.")))
-     (let [am :- ArrayManager
-           (array-manager (provide-class (or type :object)))
-           arr (.allocate am (iinc n))]
-       (->SlidingBuffer am arr (i0) (i0) false (.count am arr)))))
+   (when (inpos? n)
+     (throw (illegal-argument "n is not positive integer.")))
+   (let [am :- ArrayManager
+         (array-manager (provide-class (or type :object)))
+         arr (.allocate am (iinc n))]
+     (->SlidingBuffer am arr (i0) (i0) false (.count am arr)))))

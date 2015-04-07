@@ -42,20 +42,20 @@
   (let [frame (clojure.lang.Var/cloneThreadBindingFrame)]
     (fn
       ([]
-         (clojure.lang.Var/resetThreadBindingFrame frame)
-         (f))
+       (clojure.lang.Var/resetThreadBindingFrame frame)
+       (f))
       ([x]
-         (clojure.lang.Var/resetThreadBindingFrame frame)
-         (f x))
+       (clojure.lang.Var/resetThreadBindingFrame frame)
+       (f x))
       ([x y]
-         (clojure.lang.Var/resetThreadBindingFrame frame)
-         (f x y))
+       (clojure.lang.Var/resetThreadBindingFrame frame)
+       (f x y))
       ([x y z]
-         (clojure.lang.Var/resetThreadBindingFrame frame)
-         (f x y z))
+       (clojure.lang.Var/resetThreadBindingFrame frame)
+       (f x y z))
       ([x y z & args]
-         (clojure.lang.Var/resetThreadBindingFrame frame)
-         (apply f x y z args)))))
+       (clojure.lang.Var/resetThreadBindingFrame frame)
+       (apply f x y z args)))))
 
 
 ;;;; Public API
@@ -154,9 +154,9 @@
           dunaj.concurrent.thread/thread-call
           dunaj.concurrent.thread/daemon-call]}
   ([f :- Function]
-     (future-call *default-future-executor* f))
+   (future-call *default-future-executor* f))
   ([executor :- ITaskExecutor, f :- Function]
-     (-submit executor (binding-conveyor-fn f))))
+   (-submit executor (binding-conveyor-fn f))))
 
 (defmacro future
   "Takes a `_body_` of expressions and yields an `IFuture` object

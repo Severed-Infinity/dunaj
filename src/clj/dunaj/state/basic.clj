@@ -158,6 +158,6 @@
    :see '[volatile-reference unsynchronized-reference
           dunaj.concurrent.thread/pass!]}
   ([val :- Any]
-     (local val (current-thread)))
+   (local val (current-thread)))
   ([val :- Any, thread :- (Maybe Thread)]
-     (->Local val thread)))
+   (->Local val thread)))
