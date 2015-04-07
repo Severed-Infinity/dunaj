@@ -228,14 +228,14 @@
   {:added v1
    :see '[thread sleep daemon interrupt!]}
   ([thread :- Thread]
-     (join thread 0))
+   (join thread 0))
   ([thread :- Thread, timeout :- (U IDuration Integer)]
-     (let [ms (long (milliseconds timeout))
-           ns (int (rem (nanoseconds timeout) 1000000))]
-       (if (and (zero? ms) (zero? ns))
-         (.join thread)
-         (.join thread ms ns))
-       (not (open? thread)))))
+   (let [ms (long (milliseconds timeout))
+         ns (int (rem (nanoseconds timeout) 1000000))]
+     (if (and (zero? ms) (zero? ns))
+       (.join thread)
+       (.join thread ms ns))
+     (not (open? thread)))))
 
 (defn sleep :- nil
   "Waits for a specified `_duration_`. Returns `nil`.
@@ -255,20 +255,20 @@
    :see '[thread daemon-call dunaj.concurrent.port/thread-call]}
   ([f :- AnyFn] (thread-call f nil))
   ([f :- AnyFn, name-or-opts :- (U String KeywordMap)]
-     ;; this is faster than dunaj.function/bounded
-     (let [opts (if (string? name-or-opts)
-                  {:name name-or-opts} name-or-opts)
-           binds (clojure.lang.Var/getThreadBindingFrame)
-           tf (fn []
-                (clojure.lang.Var/resetThreadBindingFrame binds)
-                (f))
-           t (java.lang.Thread. ^java.lang.Runnable tf)]
-       (when-let [n (:name opts)] (.setName t n))
-       (when-let [p (:priority opts)] (.setPriority t p))
-       (cond (:daemon opts) (.setDaemon t true)
-             (contains? opts :daemon) (.setDaemon t false))
-       (.start t)
-       t)))
+   ;; this is faster than dunaj.function/bounded
+   (let [opts (if (string? name-or-opts)
+                {:name name-or-opts} name-or-opts)
+         binds (clojure.lang.Var/getThreadBindingFrame)
+         tf (fn []
+              (clojure.lang.Var/resetThreadBindingFrame binds)
+              (f))
+         t (java.lang.Thread. ^java.lang.Runnable tf)]
+     (when-let [n (:name opts)] (.setName t n))
+     (when-let [p (:priority opts)] (.setPriority t p))
+     (cond (:daemon opts) (.setDaemon t true)
+           (contains? opts :daemon) (.setDaemon t false))
+     (.start t)
+     t)))
 
 (defmacro thread
   "Executes `_body_` in another thread, returning immediately to the
@@ -289,10 +289,10 @@
    :see '[daemon thread-call]}
   ([f :- AnyFn] (thread-call f {:daemon true}))
   ([f :- AnyFn, name-or-opts :- (U String KeywordMap)]
-     (let [opts (if (string? name-or-opts)
-                  {:name name-or-opts :daemon true}
-                  (assoc name-or-opts :daemon true))]
-       (thread-call f opts))))
+   (let [opts (if (string? name-or-opts)
+                {:name name-or-opts :daemon true}
+                (assoc name-or-opts :daemon true))]
+     (thread-call f opts))))
 
 (defmacro daemon
   "Executes `_body_` in a new daemon thread, returning

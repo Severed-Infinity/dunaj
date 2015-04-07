@@ -112,12 +112,12 @@
   {:added v1
    :see '[symbol?]}
   ([x :- INamed]
-     (cond
-      (string? x) (clojure.lang.Symbol/intern x)
-      (symbol? x) x
-      :else (clojure.lang.Symbol/intern (namespace x) (name x))))
+   (cond
+     (string? x) (clojure.lang.Symbol/intern x)
+     (symbol? x) x
+     :else (clojure.lang.Symbol/intern (namespace x) (name x))))
   ([ns :- (Maybe String), name :- String]
-     (clojure.lang.Symbol/intern ns name)))
+   (clojure.lang.Symbol/intern ns name)))
 
 (defalias special?
   "Returns `true` if symbol `_s_` names a special form,
@@ -151,14 +151,14 @@
   {:added v1
    :see '[keyword?]}
   ([x :- INamed]
-     (cond
-      (string? x)
-      (clojure.lang.Keyword/intern ^java.lang.String (strip-colon x))
-      (keyword? x) x
-      (symbol? x) (clojure.lang.Keyword/intern ^clojure.lang.Symbol x)
-      :else (clojure.lang.Keyword/intern (namespace x) (name x))))
+   (cond
+     (string? x)
+     (clojure.lang.Keyword/intern ^java.lang.String (strip-colon x))
+     (keyword? x) x
+     (symbol? x) (clojure.lang.Keyword/intern ^clojure.lang.Symbol x)
+     :else (clojure.lang.Keyword/intern (namespace x) (name x))))
   ([ns :- (Maybe String), name :- String]
-     (clojure.lang.Keyword/intern ns name)))
+   (clojure.lang.Keyword/intern ns name)))
 
 ;;;; Extend string types
 

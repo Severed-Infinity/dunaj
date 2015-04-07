@@ -267,17 +267,17 @@
   ([] #{})
   ([s1 :- #{}] s1)
   ([s1 :- #{}, s2 :- #{}]
-     (cond (or (universal? s1) (universal? s2)) U
-           (complement? s1) (ccat s1 s2)
-           (complement? s2) (ccat s2 s1)
-           :else (cs/union s1 s2)))
+   (cond (or (universal? s1) (universal? s2)) U
+         (complement? s1) (ccat s1 s2)
+         (complement? s2) (ccat s2 s1)
+         :else (cs/union s1 s2)))
   ([s1 :- #{}, s2 :- #{} & sets :- #{}]
-     (let [s (cons s1 (cons s2 sets))]
-       (if-let [what (some #(cond (universal? %) :universal
-                                  (complement? %) %
-                                  :else false) s)]
-         (if (identical? what :universal) U (reduce cat what s))
-         (apply cs/union s)))))
+   (let [s (cons s1 (cons s2 sets))]
+     (if-let [what (some #(cond (universal? %) :universal
+                                (complement? %) %
+                                :else false) s)]
+       (if (identical? what :universal) U (reduce cat what s))
+       (apply cs/union s)))))
 
 (defn intersection :- #{}
   "Return a set that is the intersection of the input sets.
@@ -288,23 +288,23 @@
   ([] U)
   ([s1 :- #{}] s1)
   ([s1 :- #{}, s2 :- #{}]
-     (cond (universal? s1) s2
-           (universal? s2) s1
-           (and (complement? s1) (complement? s2))
-           (->ComplementSet
-            (cs/union (.-excluded ^dunaj.set.ComplementSet s1)
-                      (.-excluded ^dunaj.set.ComplementSet s2))
-            (meta s1))
-           (complement? s1)
-           (cs/difference s2 (.-excluded ^dunaj.set.ComplementSet s1))
-           (complement? s2)
-           (cs/difference s1 (.-excluded ^dunaj.set.ComplementSet s2))
-           :else (cs/intersection s1 s2)))
+   (cond (universal? s1) s2
+         (universal? s2) s1
+         (and (complement? s1) (complement? s2))
+         (->ComplementSet
+          (cs/union (.-excluded ^dunaj.set.ComplementSet s1)
+                    (.-excluded ^dunaj.set.ComplementSet s2))
+          (meta s1))
+         (complement? s1)
+         (cs/difference s2 (.-excluded ^dunaj.set.ComplementSet s1))
+         (complement? s2)
+         (cs/difference s1 (.-excluded ^dunaj.set.ComplementSet s2))
+         :else (cs/intersection s1 s2)))
   ([s1 :- #{}, s2 :- #{} & sets :- #{}]
-     (let [s (cons s1 (cons s2 sets))]
-       (if (some #(not (finite? %)) s)
-         (reduce intersection (intersection s1 s2) sets)
-         (apply cs/intersection s)))))
+   (let [s (cons s1 (cons s2 sets))]
+     (if (some #(not (finite? %)) s)
+       (reduce intersection (intersection s1 s2) sets)
+       (apply cs/intersection s)))))
 
 (defn select :- #{}
   "Returns a set of the items from `_xset_` for which `_pred_`
@@ -360,15 +360,15 @@
   {:added v1
    :category "Operations"}
   ([xrel :- #{}, yrel :- #{}] ;natural join
-     (when-not (finite? xrel)
-       (throw (unsupported-operation
-               "join is not supported on infinite sets")))
-     (cs/join xrel yrel))
+   (when-not (finite? xrel)
+     (throw (unsupported-operation
+             "join is not supported on infinite sets")))
+   (cs/join xrel yrel))
   ([xrel :- #{}, yrel :- #{}, km :- {}] ;arbitrary key mapping
-     (when-not (finite? xrel)
-       (throw (unsupported-operation
-               "join is not supported on infinite sets")))
-     (cs/join xrel yrel km)))
+   (when-not (finite? xrel)
+     (throw (unsupported-operation
+             "join is not supported on infinite sets")))
+   (cs/join xrel yrel km)))
 
 (defn difference :- #{}
   "Returns a set that is the first set without items of the
@@ -378,19 +378,19 @@
    :category "Operations"}
   ([s1 :- #{}] s1)
   ([s1 :- #{}, s2 :- #{}]
-     (cond (universal? s2) #{}
-           (universal? s1) (set-complement s2)
-           (and (complement? s1) (complement? s2))
-           (cs/difference (.-excluded ^dunaj.set.ComplementSet s2)
-                          (.-excluded ^dunaj.set.ComplementSet s1))
-           (complement? s2)
-           (intersection s1 (.-excluded ^dunaj.set.ComplementSet s2))
-           (complement? s1)
-           (set-complement
-            (union (.-excluded ^dunaj.set.ComplementSet s1) s2))
-           :else (cs/difference s1 s2)))
+   (cond (universal? s2) #{}
+         (universal? s1) (set-complement s2)
+         (and (complement? s1) (complement? s2))
+         (cs/difference (.-excluded ^dunaj.set.ComplementSet s2)
+                        (.-excluded ^dunaj.set.ComplementSet s1))
+         (complement? s2)
+         (intersection s1 (.-excluded ^dunaj.set.ComplementSet s2))
+         (complement? s1)
+         (set-complement
+          (union (.-excluded ^dunaj.set.ComplementSet s1) s2))
+         :else (cs/difference s1 s2)))
   ([s1 :- #{}, s2 :- #{} & sets :- #{}]
-     (reduce difference (difference s1 s2) sets)))
+   (reduce difference (difference s1 s2) sets)))
 
 (defn subset? :- Boolean
   "Returns `true` if `_s1_` is a subset of `_s2_`, otherwise
