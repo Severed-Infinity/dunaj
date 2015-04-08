@@ -21,60 +21,63 @@
 
   Printer supports naive pretty mode with ANSII color support."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [scratch v1]]
-   [dunaj.type :refer [Fn Any AnyFn Maybe U I]]
-   [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [Batch set! keyword->class class-instance?]]
-   [dunaj.host.int :refer
-    [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imax iadd
-     iloop i0 i1 i2 i3 i4 i5 i8 iFF ione? i-1 imul i10 idiv idigit?
-     ioctal? ihexa? ihexa->int idigit->int ismall-letter? iCAPITAL_M
-     icapital-letter? iZERO iUS iDEL iHT iCR iLF iCOLON iSPACE iCOMMA
-     iLBRACKET iRBRACKET iQUOTE iAPOS iBACKSLASH iSLASH iLBRACE
-     iRBRACE iTILDE iSMALL_B iSMALL_F iSMALL_N iSMALL_R iMINUS
-     iSMALL_U iSMALL_T iPLUS iCAPITAL_E iSMALL_E iCAPITAL_N iSMALL_X
-     iCAPITAL_X iBS iHT iCR iLF iFF iCAPITAL_R iSMALL_R iDOT]]
-   [dunaj.math :refer
-    [max min < == > neg? + inc >= inc dec - pos? * /]]
-   [dunaj.compare :refer [identical? nil? = defsentinel]]
-   [dunaj.flow :refer
-    [if when when-not cond do let loop recur if-not]]
-   [dunaj.threading :refer [->]]
-   [dunaj.poly :refer
-    [deftype defprotocol extend-protocol! defrecord]]
-   [dunaj.coll :refer
-    [first rest seq second reduce empty? slice count nth conj assoc
-     ISeq ISeqable sequential? settle! edit conj! assoc!]]
-   [dunaj.function :refer [fn defn identity apply]]
-   [dunaj.error :refer [throw illegal-state unsupported-operation]]
-   [dunaj.identifier :refer [INamed name symbol]]
-   [dunaj.char :refer [Char char]]
-   [dunaj.string :refer
-    [String MutableString ->str empty-string str string?]]
-   [dunaj.state.var :refer [def+]]
-   [dunaj.coll.default :refer [empty-vec empty-map vec]]
-   [dunaj.coll.cons-seq :refer [cons]]
-   [dunaj.coll.lazy-seq-map :refer [lazy-seq->map]]
-   [dunaj.coll.tuple :as ct :refer [tuple pair]]
-   [dunaj.coll.recipe :refer
-    [map partition keep mapcat take repeat remove]]
-   [dunaj.format :refer [IParserFactory IPrinterFactory parse print]]
-   [dunaj.format.helper :refer [string-to-batch! string-cat-batch!]]
-   [dunaj.format.parser :refer
-    [parser-engine string-literal-constructor leftover IParserMachine
-     ITokenizerMachine -analyze-eof! container-parser -parser-config
-     skipping-tokenizer tokenizer-engine IParserMachineFactory
-     ILazyParserMachineFactory ILazyParserMachine -dispatch-parser
-     literal-tokenizer ignore-token lazy-parser-engine
-     perror eof-handler keep? ignore? lazy-parser lazy-item-limit
-     lazy-level-limit take-until-token drop-until-token]]
-   [dunaj.format.printer :refer
-    [IContainerPrinterMachine -printer-to-type IPrinterMachineFactory
-     printer-engine -indent invalid-item-handler print-colored! red
-     pretty-printer-engine print! IIndentedMachine cyan prev-indent
-     next-indent base-indent color default-color custom-colorer]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [scratch v1]]
+  [dunaj.type :refer [Fn Any AnyFn Maybe U I]]
+  [dunaj.boolean :refer [Boolean and or not true? false?]]
+  [dunaj.host :refer [Batch keyword->class class-instance?]]
+  [dunaj.host.int :refer
+   [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imax iadd
+    iloop i0 i1 i2 i3 i4 i5 i8 iFF ione? i-1 imul i10 idiv idigit?
+    ioctal? ihexa? ihexa->int idigit->int ismall-letter? iCAPITAL_M
+    icapital-letter? iZERO iUS iDEL iHT iCR iLF iCOLON iSPACE iCOMMA
+    iLBRACKET iRBRACKET iQUOTE iAPOS iBACKSLASH iSLASH iLBRACE
+    iRBRACE iTILDE iSMALL_B iSMALL_F iSMALL_N iSMALL_R iMINUS
+    iSMALL_U iSMALL_T iPLUS iCAPITAL_E iSMALL_E iCAPITAL_N iSMALL_X
+    iCAPITAL_X iBS iHT iCR iLF iFF iCAPITAL_R iSMALL_R iDOT]]
+  [dunaj.math :refer
+   [max min < == > neg? + inc >= inc dec - pos? * /]]
+  [dunaj.compare :refer [identical? nil? = defsentinel]]
+  [dunaj.flow :refer
+   [when when-not cond let loop if-not]]
+  [dunaj.threading :refer [->]]
+  [dunaj.poly :refer
+   [deftype defprotocol extend-protocol! defrecord]]
+  [dunaj.coll :refer
+   [first rest seq second reduce empty? slice count nth conj assoc
+    ISeq ISeqable sequential? settle! edit conj! assoc!]]
+  [dunaj.function :refer [fn defn identity apply]]
+  [dunaj.error :refer [illegal-state unsupported-operation]]
+  [dunaj.identifier :refer [INamed name symbol]]
+  [dunaj.char :refer [Char char]]
+  [dunaj.string :refer
+   [String+ MutableString ->str empty-string str string?]]
+  [dunaj.state.var :refer [def+]]
+  [dunaj.coll.default :refer [empty-vec empty-map vec]]
+  [dunaj.coll.cons-seq :refer [cons]]
+  [dunaj.coll.lazy-seq-map :refer [lazy-seq->map]]
+  [dunaj.coll.tuple :as ct :refer [tuple pair]]
+  [dunaj.coll.recipe :refer
+   [map partition keep mapcat take repeat remove]]
+  [dunaj.format :refer [IParserFactory IPrinterFactory parse print]]
+  [dunaj.format.helper :refer [string-to-batch! string-cat-batch!]]
+  [dunaj.format.parser :refer
+   [parser-engine string-literal-constructor leftover IParserMachine
+    ITokenizerMachine -analyze-eof! container-parser -parser-config
+    skipping-tokenizer tokenizer-engine IParserMachineFactory
+    ILazyParserMachineFactory ILazyParserMachine -dispatch-parser
+    literal-tokenizer ignore-token lazy-parser-engine
+    perror eof-handler keep? ignore? lazy-parser lazy-item-limit
+    lazy-level-limit take-until-token drop-until-token]]
+  [dunaj.format.printer :refer
+   [IContainerPrinterMachine -printer-to-type IPrinterMachineFactory
+    printer-engine -indent invalid-item-handler print-colored! red
+    pretty-printer-engine print! IIndentedMachine cyan prev-indent
+    next-indent base-indent color default-color custom-colorer]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details

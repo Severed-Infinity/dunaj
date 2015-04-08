@@ -46,56 +46,58 @@
   Resources can implement custom error handling."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Scope" "System"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [clojure.core.async]
-   [dunaj.type :refer [Fn AnyFn Any Maybe U I]]
-   [dunaj.boolean :refer [Boolean or and not]]
-   [dunaj.host :refer [keyword->class class-instance? set!]]
-   [dunaj.host.int :refer [i0]]
-   [dunaj.math :refer [Integer integer? pos? odd? max neg? == min]]
-   [dunaj.state :refer
-    [IAtomic cancel! alter! cas! reference? IOpenAware adjust! io!
-     atomic? switch! IAdjustable IReference IMutable ensure-io
-     ensure-open open?]]
-   [dunaj.compare :refer [identical? = nil?]]
-   [dunaj.flow :refer
-    [if when let when-not when-let loop cond do condp if-let if-not
-     recur when]]
-   [dunaj.threading :refer [->>]]
-   [dunaj.buffer :refer [buffer]]
-   [dunaj.poly :refer
-    [Record instance? reify satisfies? defprotocol deftype defrecord]]
-   [dunaj.feature :refer [IConfig]]
-   [dunaj.coll :refer
-    [count contains? next first IRed IBatchedRed sequential? empty?
-     -reduce-batched reduced? ICounted get reduce Postponed full? seq
-     map? assoc update-in conj postponed? unsafe-advance! postponed
-     lookup? rest reduced update provide-collection]]
-   [dunaj.function :refer [apply defn invocable? fn partial]]
-   [dunaj.host.batch :refer [select-item-type batch-manager]]
-   [dunaj.concurrent.thread :refer [current-thread sleep]]
-   [dunaj.concurrent :refer [future]]
-   [dunaj.concurrent.port :as dp :refer
-    [ISourcePort chan <!! thread >!! timeout alts!!]]
-   [dunaj.string :refer [String string?]]
-   [dunaj.time :refer [IDuration milliseconds]]
-   [dunaj.macro :refer [defmacro]]
-   [dunaj.identifier :refer [Keyword]]
-   [dunaj.state.weak :refer [weak]]
-   [dunaj.state.basic :refer [atom]]
-   [dunaj.state.var :refer [Var var var? def+ declare alter-root!]]
-   [dunaj.error :refer
-    [IException ex-info illegal-argument throw
-     try unsupported-operation npe fail-aware? error]]
-   [dunaj.uri :refer [Uri uri uri?]]
-   [dunaj.coll.tuple :refer [tuple val key pair]]
-   [dunaj.coll.util :refer [into revlist doseq merge some recipe]]
-   [dunaj.coll.cons-seq :refer [cons]]
-   [dunaj.coll.default]
-   [dunaj.format :refer [IParserFactory IPrinterFactory print parse]]
-   [dunaj.format.charset :refer [utf-8]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [clojure.core.async]
+  [dunaj.type :refer [Fn AnyFn Any Maybe U I]]
+  [dunaj.boolean :refer [Boolean or and not]]
+  [dunaj.host :refer [keyword->class class-instance?]]
+  [dunaj.host.int :refer [i0]]
+  [dunaj.math :refer [Integer integer? pos? odd? max neg? == min]]
+  [dunaj.state :refer
+   [IAtomic cancel! alter! cas! reference? IOpenAware adjust! io!
+    atomic? switch! IAdjustable IReference IMutable ensure-io
+    ensure-open open?]]
+  [dunaj.compare :refer [identical? = nil?]]
+  [dunaj.flow :refer
+   [when let when-not when-let loop cond condp if-let if-not when]]
+  [dunaj.threading :refer [->>]]
+  [dunaj.buffer :refer [buffer]]
+  [dunaj.poly :refer
+   [Record instance? reify satisfies? defprotocol deftype defrecord]]
+  [dunaj.feature :refer [IConfig]]
+  [dunaj.coll :refer
+   [count contains? next first IRed IBatchedRed sequential? empty?
+    -reduce-batched reduced? ICounted get reduce Postponed full? seq
+    map? assoc update-in conj postponed? unsafe-advance! postponed
+    lookup? rest reduced update provide-collection]]
+  [dunaj.function :refer [apply defn invocable? fn partial]]
+  [dunaj.host.batch :refer [select-item-type batch-manager]]
+  [dunaj.concurrent.thread :refer [current-thread sleep]]
+  [dunaj.concurrent :refer [future]]
+  [dunaj.concurrent.port :as dp :refer
+   [ISourcePort chan <!! thread >!! timeout alts!!]]
+  [dunaj.string :refer [String+ string?]]
+  [dunaj.time :refer [IDuration milliseconds]]
+  [dunaj.macro :refer [defmacro]]
+  [dunaj.identifier :refer [Keyword]]
+  [dunaj.state.weak :refer [weak]]
+  [dunaj.state.basic :refer [atom]]
+  [dunaj.state.var :refer [Var var? def+ declare alter-root!]]
+  [dunaj.error :refer
+   [IException ex-info illegal-argument
+    unsupported-operation npe fail-aware? error]]
+  [dunaj.uri :refer [Uri uri uri?]]
+  [dunaj.coll.tuple :refer [tuple val key pair]]
+  [dunaj.coll.util :refer [into revlist doseq merge some recipe]]
+  [dunaj.coll.cons-seq :refer [cons]]
+  [dunaj.coll.default]
+  [dunaj.format :refer [IParserFactory IPrinterFactory print parse]]
+  [dunaj.format.charset :refer [utf-8]])
+ (:import [java.lang Class String]))
 
 
 ;;;; Implementation details
@@ -151,10 +153,10 @@
 
 (defmacro ^:private release-throw
   ([s val opts]
-   `(dunaj.error/throw
+   `(throw
      (dunaj.error/ex-info ~s {:value ~val :opts ~opts})))
   ([s val opts cause]
-   `(dunaj.error/throw
+   `(throw
      (dunaj.error/ex-info
       ~s {:value ~val :opts ~opts :cause ~cause}))))
 
@@ -305,15 +307,15 @@
                 scope)
         body (if defaults? (next body) body)]
     `(let [scope# (dunaj.state.basic/atom ~scope)
-           ret# (dunaj.error/try
+           ret# (try
                   (dunaj.state.var/with-bindings
-                    {(dunaj.state.var/var dunaj.resource/*scope*)
+                    {(var dunaj.resource/*scope*)
                      scope#
-                     (dunaj.state.var/var
+                     (var
                       dunaj.resource/*scope-thread*)
                      (dunaj.concurrent.thread/current-thread)}
                     ~@body)
-                  (clojure.core/catch java.lang.Throwable t#
+                  (catch java.lang.Throwable t#
                     (release-scope! scope# :fail t#)))]
        (pair ret# scope#))))
 
@@ -347,15 +349,15 @@
                 scope)
         body (if defaults? (next body) body)]
     `(let [scope# (dunaj.state.basic/atom ~scope)
-           ret# (dunaj.error/try
+           ret# (try
                   (dunaj.state.var/with-bindings
-                    {(dunaj.state.var/var dunaj.resource/*scope*)
+                    {(var dunaj.resource/*scope*)
                      scope#
-                     (dunaj.state.var/var
+                     (var
                       dunaj.resource/*scope-thread*)
                      (dunaj.concurrent.thread/current-thread)}
                     ~@body)
-                  (clojure.core/catch java.lang.Throwable t#
+                  (catch java.lang.Throwable t#
                     (release-scope! scope# :fail t#)))]
        (release-scope! scope# :success)
        ret#)))

@@ -13,36 +13,39 @@
 (ns dunaj.format.html
   "A very basic Hiccup like HTML printer."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
-   [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [Class class? set! keyword->class]]
-   [dunaj.flow :refer [if when when-not cond do let loop recur case]]
-   [dunaj.feature :refer [IMeta IPersistentMeta meta meta-ref]]
-   [dunaj.poly :refer
-    [defprotocol deftype extend-protocol! defrecord]]
-   [dunaj.coll :refer
-    [first rest seq second reduce single? reduced edit settle! conj!
-     empty? slice count nth assoc! reverse get ISeq ISeqable dissoc
-     sequential? conj assoc map? list? vector? set? double? seq?
-     counted? provide-sequential next update pop peek]]
-   [dunaj.function :refer [Function fn defn identity apply]]
-   [dunaj.state.var :refer [Var var var? declare def+]]
-   [dunaj.identifier :refer [INamed name keyword? symbol? named?]]
-   [dunaj.string :refer [->str empty-string str index-of string?]]
-   [dunaj.coll.cons-seq :refer [cons]]
-   [dunaj.coll.util :refer [merge into last some every?]]
-   [dunaj.coll.default :refer [->lst vec set ->map]]
-   [dunaj.coll.recipe :refer [map keep range concat remove interpose]]
-   [dunaj.format :refer [IParserFactory IPrinterFactory parse print]]
-   [dunaj.format.helper :refer [string-to-batch! string-cat-batch!]]
-   [dunaj.format.printer :refer
-    [IContainerPrinterMachine -printer-to-type cyan
-     IPrinterMachineFactory printer-engine invalid-item-handler
-     print-single-element! print-element! print-batch! print-finish!
-     print-single-batch! print-batch-escaped! print!]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
+  [dunaj.boolean :refer [Boolean and or not true? false?]]
+  [dunaj.host :refer [Class+ class? keyword->class]]
+  [dunaj.flow :refer [when when-not cond let loop case]]
+  [dunaj.feature :refer [IMeta IPersistentMeta meta meta-ref]]
+  [dunaj.poly :refer
+   [defprotocol deftype extend-protocol! defrecord]]
+  [dunaj.coll :refer
+   [first rest seq second reduce single? reduced edit settle! conj!
+    empty? slice count nth assoc! reverse get ISeq ISeqable dissoc
+    sequential? conj assoc map? list? vector? set? double? seq?
+    counted? provide-sequential next update pop peek]]
+  [dunaj.function :refer [Function fn defn identity apply]]
+  [dunaj.state.var :refer [Var var? declare def+]]
+  [dunaj.identifier :refer [INamed name keyword? symbol? named?]]
+  [dunaj.string :refer [->str empty-string str index-of string?]]
+  [dunaj.coll.cons-seq :refer [cons]]
+  [dunaj.coll.util :refer [merge into last some every?]]
+  [dunaj.coll.default :refer [->lst vec set ->map]]
+  [dunaj.coll.recipe :refer [map keep range concat remove interpose]]
+  [dunaj.format :refer [IParserFactory IPrinterFactory parse print]]
+  [dunaj.format.helper :refer [string-to-batch! string-cat-batch!]]
+  [dunaj.format.printer :refer
+   [IContainerPrinterMachine -printer-to-type cyan
+    IPrinterMachineFactory printer-engine invalid-item-handler
+    print-single-element! print-element! print-batch! print-finish!
+    print-single-batch! print-batch-escaped! print!]])
+ (:import [java.lang Class String]))
 
 
 ;;;; Implementation details

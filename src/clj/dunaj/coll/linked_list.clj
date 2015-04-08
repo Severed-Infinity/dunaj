@@ -117,7 +117,7 @@
     (cond (class-instance? clojure.lang.PersistentList coll) coll
           (reversible? coll) (reduce conj empty-list (reverse coll))
           :else (let [tv (if (counted? coll)
-                           (edit empty-bvt-vector (count coll))
+                           (edit empty-bvt-vector #_(count coll))
                            (edit empty-bvt-vector))
                       vec (settle! (reduce conj! tv coll))]
                   (reduce conj empty-list (reverse vec)))))

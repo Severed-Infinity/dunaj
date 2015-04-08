@@ -579,7 +579,7 @@
   [name & args]
   (cc/let [[metadata args] (parse-args args)
            name (vary-meta name merge metadata)]
-    `(clojure.core/let [v# (clojure.core/def ~name)]
+    `(clojure.core/let [v# (def ~name)]
        (clojure.core/when-not (.hasRoot v#)
          (defmacro ~name ~@args))
        (.setMacro ^clojure.lang.Var v#))))

@@ -13,40 +13,43 @@
 (ns dunaj.resource.helper
   "Resource helpers."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any AnyFn Maybe U I Fn]]
-   [dunaj.boolean :refer [and or not]]
-   [dunaj.host :refer [Batch keyword->class set! class-instance?]]
-   [dunaj.host.int :refer [i== i0 iint iloop iadd]]
-   [dunaj.math :refer [Integer max neg? == zero?]]
-   [dunaj.state :refer [IOpenAware IReference IMutable ICloneable
-                        ensure-io reset! ensure-open open?]]
-   [dunaj.flow :refer [let loop recur if do cond when if-not if-let]]
-   [dunaj.poly :refer [reify deftype]]
-   [dunaj.coll :refer
-    [IRed ICounted IBatchedRed IHomogeneous item-type Postponed
-     reduced? -reduce-batched contains? get reduce first assoc conj
-     postponed? postponed unsafe-advance! unsafe-postponed]]
-   [dunaj.function :refer [fn defn partial]]
-   [dunaj.coll.helper :refer [reduce-with-batched* reduce*]]
-   [dunaj.host.batch :refer [provide-batch-size select-item-type]]
-   [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal
-     current-thread ensure-thread-local]]
-   [dunaj.string :refer [String string?]]
-   [dunaj.macro :refer [defmacro]]
-   [dunaj.error :refer
-    [IFailAware IFailable try catch throw fail! error
-     fragile opened-fragile unsupported-operation]]
-   [dunaj.state.var :refer [alter-root!]]
-   [dunaj.coll.util :refer [merge reduce-batched]]
-   [dunaj.coll.default]
-   [dunaj.resource :refer
-    [IImmutableReadable IReleasable IFlushable IReadable
-     IAcquirableFactory IWritable ISeekable
-     acquire! resource *resource-providers*]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any AnyFn Maybe U I Fn]]
+  [dunaj.boolean :refer [and or not]]
+  [dunaj.host :refer [Batch keyword->class class-instance?]]
+  [dunaj.host.int :refer [i== i0 iint iloop iadd]]
+  [dunaj.math :refer [Integer max neg? == zero?]]
+  [dunaj.state :refer [IOpenAware IReference IMutable ICloneable
+                       ensure-io reset! ensure-open open?]]
+  [dunaj.flow :refer [let loop cond when if-not if-let]]
+  [dunaj.poly :refer [reify deftype]]
+  [dunaj.coll :refer
+   [IRed ICounted IBatchedRed IHomogeneous item-type Postponed
+    reduced? -reduce-batched contains? get reduce first assoc conj
+    postponed? postponed unsafe-advance! unsafe-postponed ISeqable]]
+  [dunaj.function :refer [fn defn partial]]
+  [dunaj.coll.helper :refer [reduce-with-batched* reduce* red-to-seq]]
+  [dunaj.host.batch :refer [provide-batch-size select-item-type]]
+  [dunaj.concurrent.thread :refer
+   [Thread IThreadLocal IPassableThreadLocal
+    current-thread ensure-thread-local]]
+  [dunaj.string :refer [String+ string?]]
+  [dunaj.macro :refer [defmacro]]
+  [dunaj.error :refer
+   [IFailAware IFailable fail! error
+    fragile opened-fragile unsupported-operation]]
+  [dunaj.state.var :refer [alter-root!]]
+  [dunaj.coll.util :refer [merge reduce-batched]]
+  [dunaj.coll.default]
+  [dunaj.resource :refer
+   [IImmutableReadable IReleasable IFlushable IReadable
+    IAcquirableFactory IWritable ISeekable
+    acquire! resource *resource-providers*]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -71,6 +74,8 @@
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
   IThreadLocal

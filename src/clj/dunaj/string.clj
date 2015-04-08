@@ -615,7 +615,7 @@
                (item-types-match? (keyword->class :char)
                                   (item-type coll)))
           (let [t (if (counted? coll)
-                    (edit empty-string (count coll))
+                    (edit empty-string #_(count coll))
                     (edit empty-string))
                 state (atom {})
                 rf (fn [ret val] (cat-batch! ret val state))]
@@ -624,7 +624,7 @@
               (reduce-batched*
                (keyword->class :char) nil coll rf t))))
           :else (let [t (if (counted? coll)
-                          (edit empty-string (count coll))
+                          (edit empty-string #_(count coll))
                           (edit empty-string))]
                   (settle! (reduce #(conj! % (sn %2)) t coll)))))
   (-from-items [factory] empty-string)

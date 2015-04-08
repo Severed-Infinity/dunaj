@@ -882,7 +882,7 @@
   [coll :- []]
   (cond (class-instance? clojure.lang.Counted coll)
         (.count ^clojure.lang.Counted coll)
-        (class-instance? java.lang.CharSequence)
+        (class-instance? java.lang.CharSequence coll)
         (.length ^java.lang.CharSequence coll)
         ;;(satisfies? ICounted coll) (-count coll)
         ;; reduce is faster than c.c.count on seqs

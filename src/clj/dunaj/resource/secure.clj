@@ -16,52 +16,55 @@
   WARNING: Needs review from someone who knows TLS protocol and
   SSLEngine better than me."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.core.async]
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-   [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [Class Batch keyword->class set! proxy]]
-   [dunaj.host.int :refer [Int iint iadd i0 i1 imin i== ipos? i< i<<]]
-   [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
-   [dunaj.compare :refer [nil? = identical?]]
-   [dunaj.state :refer [IOpenAware ICancellable ICloneable
-                        ensure-open io! open? realized?]]
-   [dunaj.flow :refer
-    [let loop recur if do cond when-not when condp when-let]]
-   [dunaj.feature :refer [IConfig config]]
-   [dunaj.poly :refer [reify defrecord deftype defprotocol]]
-   [dunaj.coll :refer
-    [IRed ICounted IBatchedRed IHomogeneous seq postponed
-     second nth reduced? rest empty? unsafe-advance! unsafe-postponed
-     item-type reduce contains? assoc conj postponed?]]
-   [dunaj.function :refer [Function fn defn identity]]
-   [dunaj.coll.helper :refer [reduce-with-batched*]]
-   [dunaj.buffer :refer [dropping-buffer]]
-   [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal current-thread
-     ensure-thread-local]]
-   [dunaj.concurrent.port :refer [chan <!! >!!]]
-   [dunaj.concurrent :refer [IFuture ITaskExecutor submit locking]]
-   [dunaj.string :refer [String string? ->str]]
-   [dunaj.macro :refer [defmacro]]
-   [dunaj.uri :refer [Uri uri? uri]]
-   [dunaj.state.var :refer [def+ declare]]
-   [dunaj.coll.util :refer [every? merge batched reduce-batched]]
-   [dunaj.host.array :refer [array aget]]
-   [dunaj.host.batch :refer [provide-batch-size item-types-match?]]
-   [dunaj.error :refer
-    [IFailAware IFailable IException throw illegal-argument
-     illegal-state fragile io fail! try catch unsupported-operation]]
-   [dunaj.resource :refer
-    [IReleasable IReadable IAcquirableFactory IWritable
-     acquire! -write! -read! with-scope]]
-   [dunaj.resource.helper :refer [defreleasable register-factory!]]
-   [dunaj.resource.tcp :refer [tcp finish-connect!]]
-   [dunaj.resource.selector :refer
-    [ISelectable selector register! select-now select deregister!
-     -register! -deregister!]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core.async]
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
+  [dunaj.boolean :refer [Boolean and or not true? false? boolean]]
+  [dunaj.host :refer [Class+ Batch keyword->class proxy]]
+  [dunaj.host.int :refer [Int iint iadd i0 i1 imin i== ipos? i< i<<]]
+  [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
+  [dunaj.compare :refer [nil? = identical?]]
+  [dunaj.state :refer [IOpenAware ICancellable ICloneable
+                       ensure-open io! open? realized?]]
+  [dunaj.flow :refer
+   [let loop cond when-not when condp when-let]]
+  [dunaj.feature :refer [IConfig config]]
+  [dunaj.poly :refer [reify defrecord deftype defprotocol]]
+  [dunaj.coll :refer
+   [IRed ICounted IBatchedRed IHomogeneous seq postponed ISeqable
+    second nth reduced? rest empty? unsafe-advance! unsafe-postponed
+    item-type reduce contains? assoc conj postponed?]]
+  [dunaj.function :refer [Function fn defn identity]]
+  [dunaj.coll.helper :refer [reduce-with-batched* red-to-seq]]
+  [dunaj.buffer :refer [dropping-buffer]]
+  [dunaj.concurrent.thread :refer
+   [Thread IThreadLocal IPassableThreadLocal current-thread
+    ensure-thread-local]]
+  [dunaj.concurrent.port :refer [chan <!! >!!]]
+  [dunaj.concurrent :refer [IFuture ITaskExecutor submit locking]]
+  [dunaj.string :refer [String+ string? ->str]]
+  [dunaj.macro :refer [defmacro]]
+  [dunaj.uri :refer [Uri uri? uri]]
+  [dunaj.state.var :refer [def+ declare]]
+  [dunaj.coll.util :refer [every? merge batched reduce-batched]]
+  [dunaj.host.array :refer [array aget]]
+  [dunaj.host.batch :refer [provide-batch-size item-types-match?]]
+  [dunaj.error :refer
+   [IFailAware IFailable IException illegal-argument
+    illegal-state fragile io fail! unsupported-operation]]
+  [dunaj.resource :refer
+   [IReleasable IReadable IAcquirableFactory IWritable
+    acquire! -write! -read! with-scope]]
+  [dunaj.resource.helper :refer [defreleasable register-factory!]]
+  [dunaj.resource.tcp :refer [tcp finish-connect!]]
+  [dunaj.resource.selector :refer
+   [ISelectable selector register! select-now select deregister!
+    -register! -deregister!]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -128,6 +131,8 @@
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
   ICloneable
@@ -182,11 +187,12 @@
   (-fail! [this ex] (when (nil? error) (set! error ex)) nil)
   IReleasable
   (-release! [this]
-    (set! opened? false)
+    (set! opened? (boolean false))
     (locking this
       (when (nil? error)
         ;; unblock buffer overflows
-        (.clear ^java.nio.Buffer (.-app-recv this))
+        (when (.-app-recv this)
+          (.clear ^java.nio.Buffer (.-app-recv this)))
         (with-scope
           (let [sel (acquire! (selector))]
             (register! sel transport :write)
@@ -213,7 +219,8 @@
                          (or (postponed? (.-input this))
                              (ipos? (.position net-recv))
                              (ipos? (.position net-send))))
-                (.clear ^java.nio.Buffer (.-app-recv this))
+                (when (.-app-recv this)
+                  (.clear ^java.nio.Buffer (.-app-recv this)))
                 (select sel 1000)
                 ;; following sleep is probably unnecessary
                 (java.lang.Thread/sleep 50)
@@ -247,7 +254,7 @@
   (-tls-process! [this]
     ;; should finish remaining stuff also if resource is closed
     (when error (throw error))
-    (set! retry? true)
+    (set! retry? (boolean true))
     (when (and pending (realized? pending))
       @pending ;; throw any pending exceptions
       (set! pending nil))
@@ -334,14 +341,14 @@
                 (let [ar (provide-byte-batch
                           app-recv (app-batch-size eng) false)]
                   (set! app-recv ar))
-                (set! retry? false))
+                (set! retry? (boolean false)))
             javax.net.ssl.SSLEngineResult$Status/BUFFER_UNDERFLOW
             (do (trace "net-recv buff underflow")
                 (let [nr (provide-byte-batch
                           net-recv (net-batch-size eng)
                           direct-buffers?)]
                   (set! net-recv nr))
-                (set! retry? false))
+                (set! retry? (boolean false)))
             nil)))
       ;; app-send -> net-send
       (.flip app-send)
@@ -355,13 +362,13 @@
                         net-send (net-batch-size eng)
                         direct-buffers?)]
                 (set! net-send ns))
-              (set! retry? false))
+              (set! retry? (boolean false)))
           javax.net.ssl.SSLEngineResult$Status/BUFFER_UNDERFLOW
           (do (trace "app-send buff underflow")
               (let [as (provide-byte-batch
                         app-send (app-batch-size eng) false)]
                 (set! app-send as))
-              (set! retry? false))
+              (set! retry? (boolean false)))
           nil))
       ;; run tasks and retry on OKed NEED_(UN)WRAP
       (condp = (.getHandshakeStatus eng)

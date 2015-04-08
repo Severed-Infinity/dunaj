@@ -13,87 +13,90 @@
 (ns dunaj.format.clj
   "CLJ formatter."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
-   [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [class? set! keyword->class class-instance?]]
-   [dunaj.host.int :refer
-    [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imax iadd
-     iloop i0 i1 i2 i3 i4 i5 i8 iFF i-1 idigit? ioctal? iCAPITAL_M iFF
-     ihexa? ihexa->int idigit->int iAMP ismall-letter? iPERCENT iLPAR
-     icapital-letter? iZERO iUS iDEL iHASH iHT iCR iLF iCOLON iSPACE
-     iCOMMA iLBRACKET iRBRACKET iQUOTE iAPOS iBACKSLASH iSLASH iRPAR
-     iLBRACE iRBRACE iTILDE iSMALL_B iSMALL_F iSMALL_N iSMALL_R iMINUS
-     iUNDERSCORE iSMALL_U iSMALL_T iPLUS iCAPITAL_E iSMALL_E iBANG iLT
-     iBACKQUOTE iARROWHEAD iAT i10 iSMALL_O iSEMICOLON iEQ iCAPITAL_N
-     iSMALL_X iCAPITAL_X iBS iHT iCR iLF iCAPITAL_R iSMALL_R iDOT]]
-   [dunaj.math :refer [max min < integer? == > neg? + inc nneg? zero?
-                       one? >= inc dec number? - pos? *]]
-   [dunaj.threading :refer [->]]
-   [dunaj.compare :refer [identical? nil? = sentinel]]
-   [dunaj.state :refer [reset! alter!]]
-   [dunaj.flow :refer [if when when-not cond do let if-let eval loop
-                       recur case condp if-not when-let]]
-   [dunaj.feature :refer
-    [IMeta IPersistentMeta assoc-meta meta meta-ref]]
-   [dunaj.poly :refer
-    [satisfies? defprotocol deftype extend-protocol! defrecord]]
-   [dunaj.coll :refer
-    [first slice seq second reduce single? reduced edit settle! dissoc
-     empty? rest count nth assoc! reverse get ISeq ISeqable conj! seq?
-     sequential? conj assoc map? list? vector? set? double? counted?]]
-   [dunaj.function :refer [fn defn identity constantly apply]]
-   [dunaj.host.batch :refer [batch-manager]]
-   [dunaj.host.array :refer [array-manager array]]
-   [dunaj.error :refer [throw illegal-state unsupported-operation]]
-   [dunaj.macro :refer [defmacro gensym]]
-   [dunaj.state.var :refer [Var var var? declare def+]]
-   [dunaj.state.basic :refer [unsynchronized-reference]]
-   [dunaj.identifier :refer
-    [name symbol namespace keyword? symbol? keyword]]
-   [dunaj.char :refer [Char char char?]]
-   [dunaj.string :refer [->str empty-string str index-of string?]]
-   [dunaj.set :refer [union]]
-   [dunaj.coll.lazy-seq-map :refer [lazy-seq->map]]
-   [dunaj.coll.cons-seq :refer [cons]]
-   [dunaj.coll.tuple :refer [tuple pair]]
-   [dunaj.coll.util :refer [merge last some every? prewalk-replace]]
-   [dunaj.coll.default :refer
-    [empty-vec empty-map empty-sorted-map ->lst vec set]]
-   [dunaj.coll.recipe :refer
-    [map partition keep mapcat filter take-nth range concat remove]]
-   [dunaj.format :refer [IParserFactory IPrinterFactory parse print]]
-   [dunaj.regex :refer [matches]]
-   [dunaj.format.helper :refer [string-to-batch! string-cat-batch!]]
-   [dunaj.format.parser :refer
-    [parser-engine string-literal-constructor leftover IParserMachine
-     ITokenizerMachine -analyze-eof! container-parser tokenizer-engine
-     IParserMachineFactory -parser-config ILazyParserMachine
-     -dispatch-parser process-one ILazyParserMachineFactory
-     -parse-value! literal-tokenizer ignore-token lazy-parser-engine
-     perror eof-handler keep? lazy-level-limit take-one drop-one]]
-   [dunaj.format.printer :refer
-    [IContainerPrinterMachine -printer-to-type IPrinterMachineFactory
-     printer-engine -indent invalid-item-handler print-colored! green
-     yellow magenta red custom-colorer prev-indent print!
-     IIndentedMachine next-indent base-indent default-colorer color
-     default-color bold-red white blue bold-blue bold-magenta
-     bold-cyan bold-green cyan bold-yellow pretty-printer-engine]]
-   [dunaj.format.edn :refer
-    [edn-delimiter? edn-whitespace? edn-newline? edn-bracket-close
-     edn-brace-close edn-par-close edn-symbol-start? edn-symbol-digit?
-     edn-strict-symbol-start? edn-maybe-symbol-start? ->TaggedParser
-     ->DiscardParser edn-set-container edn-vec-container move-column!
-     edn-map-container edn-lst-container edn-lineskip-literal
-     edn-character-literal edn-quote-batch edn-backslash-batch
-     edn-ht-batch edn-lf-batch edn-cr-batch edn-space-batch
-     edn-tab-batch edn-newline-batch edn-return-batch reset-column!
-     ->EdnTopContainer -print-edn! ->EdnPrettyTopContainer
-     -pretty-count-edn entry-container? -print-pretty-edn!
-     edn-level-limit-batch edn-item-limit-batch IEdnPrettyPrinter
-     ->EdnPrettyEntryContainer get-column IEdnPrinter]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
+  [dunaj.boolean :refer [Boolean and or not true? false?]]
+  [dunaj.host :refer [class? keyword->class class-instance?]]
+  [dunaj.host.int :refer
+   [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imax iadd
+    iloop i0 i1 i2 i3 i4 i5 i8 iFF i-1 idigit? ioctal? iCAPITAL_M iFF
+    ihexa? ihexa->int idigit->int iAMP ismall-letter? iPERCENT iLPAR
+    icapital-letter? iZERO iUS iDEL iHASH iHT iCR iLF iCOLON iSPACE
+    iCOMMA iLBRACKET iRBRACKET iQUOTE iAPOS iBACKSLASH iSLASH iRPAR
+    iLBRACE iRBRACE iTILDE iSMALL_B iSMALL_F iSMALL_N iSMALL_R iMINUS
+    iUNDERSCORE iSMALL_U iSMALL_T iPLUS iCAPITAL_E iSMALL_E iBANG iLT
+    iBACKQUOTE iARROWHEAD iAT i10 iSMALL_O iSEMICOLON iEQ iCAPITAL_N
+    iSMALL_X iCAPITAL_X iBS iHT iCR iLF iCAPITAL_R iSMALL_R iDOT]]
+  [dunaj.math :refer [max min < integer? == > neg? + inc nneg? zero?
+                      one? >= inc dec number? - pos? *]]
+  [dunaj.threading :refer [->]]
+  [dunaj.compare :refer [identical? nil? = sentinel]]
+  [dunaj.state :refer [reset! alter!]]
+  [dunaj.flow :refer [when when-not cond let if-let eval loop
+                      case condp if-not when-let]]
+  [dunaj.feature :refer
+   [IMeta IPersistentMeta assoc-meta meta meta-ref]]
+  [dunaj.poly :refer
+   [satisfies? defprotocol deftype extend-protocol! defrecord]]
+  [dunaj.coll :refer
+   [first slice seq second reduce single? reduced edit settle! dissoc
+    empty? rest count nth assoc! reverse get ISeq ISeqable conj! seq?
+    sequential? conj assoc map? list? vector? set? double? counted?]]
+  [dunaj.function :refer [fn defn identity constantly apply]]
+  [dunaj.host.batch :refer [batch-manager]]
+  [dunaj.host.array :refer [array-manager array]]
+  [dunaj.error :refer [illegal-state unsupported-operation]]
+  [dunaj.macro :refer [defmacro gensym]]
+  [dunaj.state.var :refer [Var var? declare def+]]
+  [dunaj.state.basic :refer [unsynchronized-reference]]
+  [dunaj.identifier :refer
+   [name symbol namespace keyword? symbol? keyword]]
+  [dunaj.char :refer [Char char char?]]
+  [dunaj.string :refer [->str empty-string str index-of string?]]
+  [dunaj.set :refer [union]]
+  [dunaj.coll.lazy-seq-map :refer [lazy-seq->map]]
+  [dunaj.coll.cons-seq :refer [cons]]
+  [dunaj.coll.tuple :refer [tuple pair]]
+  [dunaj.coll.util :refer [merge last some every? prewalk-replace]]
+  [dunaj.coll.default :refer
+   [empty-vec empty-map empty-sorted-map ->lst vec set]]
+  [dunaj.coll.recipe :refer
+   [map partition keep mapcat filter take-nth range concat remove]]
+  [dunaj.format :refer [IParserFactory IPrinterFactory parse print]]
+  [dunaj.regex :refer [matches]]
+  [dunaj.format.helper :refer [string-to-batch! string-cat-batch!]]
+  [dunaj.format.parser :refer
+   [parser-engine string-literal-constructor leftover IParserMachine
+    ITokenizerMachine -analyze-eof! container-parser tokenizer-engine
+    IParserMachineFactory -parser-config ILazyParserMachine
+    -dispatch-parser process-one ILazyParserMachineFactory
+    -parse-value! literal-tokenizer ignore-token lazy-parser-engine
+    perror eof-handler keep? lazy-level-limit take-one drop-one]]
+  [dunaj.format.printer :refer
+   [IContainerPrinterMachine -printer-to-type IPrinterMachineFactory
+    printer-engine -indent invalid-item-handler print-colored! green
+    yellow magenta red custom-colorer prev-indent print!
+    IIndentedMachine next-indent base-indent default-colorer color
+    default-color bold-red white blue bold-blue bold-magenta
+    bold-cyan bold-green cyan bold-yellow pretty-printer-engine]]
+  [dunaj.format.edn :refer
+   [edn-delimiter? edn-whitespace? edn-newline? edn-bracket-close
+    edn-brace-close edn-par-close edn-symbol-start? edn-symbol-digit?
+    edn-strict-symbol-start? edn-maybe-symbol-start? ->TaggedParser
+    ->DiscardParser edn-set-container edn-vec-container move-column!
+    edn-map-container edn-lst-container edn-lineskip-literal
+    edn-character-literal edn-quote-batch edn-backslash-batch
+    edn-ht-batch edn-lf-batch edn-cr-batch edn-space-batch
+    edn-tab-batch edn-newline-batch edn-return-batch reset-column!
+    ->EdnTopContainer -print-edn! ->EdnPrettyTopContainer
+    -pretty-count-edn entry-container? -print-pretty-edn!
+    edn-level-limit-batch edn-item-limit-batch IEdnPrettyPrinter
+    ->EdnPrettyEntryContainer get-column IEdnPrinter]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Parser
@@ -127,7 +130,7 @@
       (i== x (iARROWHEAD)) (i== x (iAT))))
 
 (deftype WrapperParser
-  "Type for wrapper macro parser."
+    "Type for wrapper macro parser."
   [config :- {}, first-val :- Any]
   IParserMachine
   (-parse-value! [this value parents]
@@ -336,13 +339,13 @@
 
 (defn ^:private syntax-quote
   [form gensyms-ref cns]
-  (let [ret (cond (clojure.lang.Compiler/isSpecial form)
-                  (->lst 'clojure.core/quote
+  (let [ret (cond (clojure.core/special-symbol? form)
+                  (->lst `quote
                         (if (nil? (namespace form))
                           (symbol "clojure.core" (name form))
                           form))
                   (symbol? form)
-                  (->lst 'clojure.core/quote
+                  (->lst `quote
                         (syntax-quote-symbol form gensyms-ref cns))
                   (unquote? form)
                   (second form)
@@ -354,7 +357,7 @@
                   (or (keyword? form) (number? form)
                       (char? form) (string? form))
                   form
-                  :else (->lst 'clojure.core/quote form))]
+                  :else (->lst `quote form))]
     (if (and (satisfies? IMeta form) (not (empty? (meta form))))
       (->lst 'clojure.core/with-meta ret
             (syntax-quote (meta form) gensyms-ref cns))
@@ -736,7 +739,7 @@
          (i== x (iBANG)) (edn-lineskip-literal config state x)
          (i== x (iLT)) (perror "invalid reader macro " (char x))
          (i== x (iQUOTE)) (regex-literal config state)
-         (i== x (iAPOS)) (->WrapperParser config 'clojure.core/var)
+         (i== x (iAPOS)) (->WrapperParser config `var)
          (and (i== x (iEQ)) (:read-eval config)) (->EvalParser config)
          (i== x (iARROWHEAD)) (metadata-parser config state)
          (i== x (iLPAR))
@@ -1184,10 +1187,10 @@
   (when (double? coll)
     (let [f (first coll)]
       (cond
-       (= 'clojure.core/var f)
+       (= `var f)
        (->CljPrefixPrettyPrinter
         config state (string-to-batch! "#'") 2 (rest coll))
-       (= 'clojure.core/quote f)
+       (= `quote f)
        (->CljPrefixPrettyPrinter
         config state (string-to-batch! "'") 1 (rest coll))
        (= 'clojure.core/deref f)
@@ -1464,7 +1467,7 @@
             (i== x (iLPAR)) (edn-lst-container config state)
             (i== x (iRPAR)) edn-par-close
             (i== x (iAPOS))
-            (->WrapperParser config 'clojure.core/quote)
+            (->WrapperParser config `quote)
             (i== x (iAT)) (->WrapperParser config 'clojure.core/deref)
             (i== x (iTILDE))
             (->UnquoteDispatchTokenizerMachine config state)

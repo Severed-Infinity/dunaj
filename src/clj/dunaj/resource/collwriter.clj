@@ -17,7 +17,9 @@
   public vars and there is *no need to require this namespace*
   directly."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:refer-clojure :exclude
+   [and or not nil? = reset! let cond loop when reify defprotocol
+    deftype defrecord first seq next empty? conj fn defn defmacro])
   (:require [clojure.core.async]
             [dunaj.boolean :refer [Boolean and or not]]
             [dunaj.host :refer [keyword->class Array ArrayManager]]
@@ -25,7 +27,7 @@
             [dunaj.compare :refer [nil? =]]
             [dunaj.state :refer [reset! trade! alter!]]
             [dunaj.feature :refer [assoc-meta]]
-            [dunaj.flow :refer [let recur if do cond loop when]]
+            [dunaj.flow :refer [let cond loop when]]
             [dunaj.poly :refer [reify defprotocol deftype defrecord]]
             [dunaj.coll :refer [first item-type seq next empty? conj]]
             [dunaj.function :refer [fn defn]]

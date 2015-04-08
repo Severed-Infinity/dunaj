@@ -535,3 +535,19 @@
                (i== i limit) ret
                :else (recur (reducef ret (.get this i)) (iinc i)))]
       (af init (.position this)))))
+
+(extend-protocol! IHomogeneous
+  java.nio.ByteBuffer
+  (-item-type [this] (keyword->class :byte))
+  java.nio.CharBuffer
+  (-item-type [this] (keyword->class :char))
+  java.nio.IntBuffer
+  (-item-type [this] (keyword->class :int))
+  java.nio.LongBuffer
+  (-item-type [this] (keyword->class :long))
+  java.nio.FloatBuffer
+  (-item-type [this] (keyword->class :float))
+  java.nio.DoubleBuffer
+  (-item-type [this] (keyword->class :double))
+  java.nio.ShortBuffer
+  (-item-type [this] (keyword->class :short)))
