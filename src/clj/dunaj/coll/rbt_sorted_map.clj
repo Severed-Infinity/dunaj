@@ -31,54 +31,55 @@
   rather than ones in this namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer [take-while]]
-   [clojure.bootstrap :refer [v1 not-implemented]]
-   [clojure.bridge]
-   [dunaj.type :refer [Any Fn U I Va Maybe AnyFn]]
-   [dunaj.boolean :refer [Boolean boolean and or not]]
-   [dunaj.host :refer
-    [AnyArray ArrayManager set! class-instance? proxy]]
-   [dunaj.host.int :refer
-    [Int iint iinc i< iadd i2 i0 inpos? ineg? izero? ixor]]
-   [dunaj.math :refer
-    [nneg? < integer? == <= quot dec >= zero? mod > subtract add neg?
-     one? multiply inc dec npos? /]]
-   [dunaj.compare :refer
-    [IHash IEquiv nil? hash IComparable identical? =
-     next-basis unordered-hash-factory basis-seed hash-from-basis]]
-   [dunaj.flow :refer
-    [when-let cond loop recur if let do when delay when-not if-let
-     doto if-some]]
-   [dunaj.threading :refer [->]]
-   [dunaj.feature :refer
-    [IMeta IPersistentMeta IConfig meta assoc-meta -config]]
-   [dunaj.poly :refer [deftype defrecord extend-protocol!]]
-   [dunaj.coll :refer
-    [ISequential IEmptyable IRed ISeq IEmptyAware IPeekable ICounted
-     ICollectionFactory ISeqable ILookup IIndexed ISortedSectionable
-     IReversible IUnpackedRed IPersistentCollection IStacked
-     IPersistentVector IAssociative IPersistentMap IEditable
-     IMutableStacked IMutableMap IMutableAssociative ISettleable
-     IMutableCollection IConvolutionFactory IFlippable ISorted
-     reduce empty? count section counted? seq empty single? get
-     peek conj assoc conj! settle! edit assoc! -reduce-unpacked
-     reduced? postponed? postponed advance first -empty second
-     -conj -key -dissoc contains? reduced -get -flip
-     unsafe-advance!]]
-   [dunaj.function :refer
-    [Function IInvocable fn defn apply constantly]]
-   [dunaj.concurrent.forkjoin :refer
-    [IFoldable fork join invoke -fold]]
-   [dunaj.coll.helper :refer
-    [fold-every reduce* fold* reduce-unpacked*
-     coll->iterator strip-reduced]]
-   [dunaj.host.array :refer
-    [array-manager array to-array aget acount adapt]]
-   [dunaj.state.var :refer [def+ declare]]
-   [dunaj.coll.tuple :refer [pair]]
-   [dunaj.coll.hamt-map]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [take-while]]
+  [clojure.bootstrap :refer [v1 not-implemented]]
+  [dunaj.type :refer [Any Fn U I Va Maybe AnyFn]]
+  [dunaj.boolean :refer [Boolean boolean and or not]]
+  [dunaj.host :refer
+   [AnyArray ArrayManager class-instance? proxy]]
+  [dunaj.host.int :refer
+   [Int iint iinc i< iadd i2 i0 inpos? ineg? izero? ixor]]
+  [dunaj.math :refer
+   [nneg? < integer? == <= quot dec >= zero? mod > subtract add neg?
+    one? multiply inc dec npos? /]]
+  [dunaj.compare :refer
+   [IHash IEquiv nil? hash IComparable identical? =
+    next-basis unordered-hash-factory basis-seed hash-from-basis]]
+  [dunaj.flow :refer
+   [when-let cond loop let when delay when-not if-let doto if-some]]
+  [dunaj.threading :refer [->]]
+  [dunaj.feature :refer
+   [IMeta IPersistentMeta IConfig meta assoc-meta -config]]
+  [dunaj.poly :refer [deftype defrecord extend-protocol!]]
+  [dunaj.coll :refer
+   [ISequential IEmptyable IRed ISeq IEmptyAware IPeekable ICounted
+    ICollectionFactory ISeqable ILookup IIndexed ISortedSectionable
+    IReversible IUnpackedRed IPersistentCollection IStacked
+    IPersistentVector IAssociative IPersistentMap IEditable
+    IMutableStacked IMutableMap IMutableAssociative ISettleable
+    IMutableCollection IConvolutionFactory IFlippable ISorted
+    reduce empty? count section counted? seq empty single? get
+    peek conj assoc conj! settle! edit assoc! -reduce-unpacked
+    reduced? postponed? postponed advance first -empty second
+    -conj -key -dissoc contains? reduced -get -flip
+    unsafe-advance!]]
+  [dunaj.function :refer
+   [Function IInvocable fn defn apply constantly]]
+  [dunaj.concurrent.forkjoin :refer
+   [IFoldable fork join invoke -fold]]
+  [dunaj.coll.helper :refer
+   [fold-every reduce* fold* reduce-unpacked* red-to-seq
+    coll->iterator strip-reduced]]
+  [dunaj.host.array :refer
+   [array-manager array to-array aget acount adapt]]
+  [dunaj.state.var :refer [def+ declare]]
+  [dunaj.coll.tuple :refer [pair]]
+  [dunaj.coll.hamt-map])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -289,6 +290,8 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (if-let [tree (.-tree coll)]
@@ -357,8 +360,6 @@
   (-invoke [this key not-found] (-get this key not-found))
 
   ;; Clojure compatibility
-  clojure.lang.ISeq
-  (seq [this] (clojure.bridge/red-to-seq this))
   clojure.lang.ILookup
   (valAt [this key] (-get this key nil))
   (valAt [this key not-found] (-get this key not-found))

@@ -17,39 +17,42 @@
   collection types."
   {:categories ["Primary" "Empty collections" "Factories"]
    :authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any Maybe Fn I U]]
-   [dunaj.host :refer [Class]]
-   [dunaj.math :refer [Integer]]
-   [dunaj.poly :refer [Type defrecord]]
-   [dunaj.coll :refer
-    [ICollectionFactory ISorted IConvolutionFactory IRed
-     IPersistentList IPersistentMap IPersistentVector IHomogeneous
-     IPersistentSet -from-coll -from-items -convolute
-     -from-interleaved assoc]]
-   [dunaj.function :refer [Function defn]]
-   [dunaj.identifier :refer [Keyword]]
-   [dunaj.state.var :refer [replace-var! defalias def+]]
-   [dunaj.coll.empty-list :as el]
-   [dunaj.coll.cons-seq :as cs :refer [cons]]
-   [dunaj.coll.linked-list :as ll]
-   [dunaj.coll.bvt-vector :as bv]
-   [dunaj.coll.primitive-vector :as pv]
-   [dunaj.coll.array-map :as am]
-   [dunaj.coll.tuple :as t]
-   [dunaj.coll.batched-queue :as bq]
-   [dunaj.coll.hamt-set :as hs]
-   [dunaj.coll.hamt-map :as hm]
-   [dunaj.coll.rbt-sorted-set :as rss]
-   [dunaj.coll.rbt-sorted-map :as rsm]
-   [dunaj.coll.lazy-seq]
-   [dunaj.coll.lazy-seq-map]
-   [dunaj.coll.lazy-seq-set]
-   [dunaj.coll.rrbt-vector]
-   [dunaj.coll.vector-section]
-   [dunaj.coll.util :refer [sequence]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any Maybe Fn I U]]
+  [dunaj.host :refer [Class+]]
+  [dunaj.math :refer [Integer]]
+  [dunaj.poly :refer [Type defrecord]]
+  [dunaj.coll :refer
+   [ICollectionFactory ISorted IConvolutionFactory IRed
+    IPersistentList IPersistentMap IPersistentVector IHomogeneous
+    IPersistentSet -from-coll -from-items -convolute
+    -from-interleaved assoc]]
+  [dunaj.function :refer [Function defn]]
+  [dunaj.identifier :refer [Keyword]]
+  [dunaj.state.var :refer [replace-var! defalias def+]]
+  [dunaj.coll.empty-list :as el]
+  [dunaj.coll.cons-seq :as cs :refer [cons]]
+  [dunaj.coll.linked-list :as ll]
+  [dunaj.coll.bvt-vector :as bv]
+  [dunaj.coll.primitive-vector :as pv]
+  [dunaj.coll.array-map :as am]
+  [dunaj.coll.tuple :as t]
+  [dunaj.coll.batched-queue :as bq]
+  [dunaj.coll.hamt-set :as hs]
+  [dunaj.coll.hamt-map :as hm]
+  [dunaj.coll.rbt-sorted-set :as rss]
+  [dunaj.coll.rbt-sorted-map :as rsm]
+  [dunaj.coll.lazy-seq]
+  [dunaj.coll.lazy-seq-map]
+  [dunaj.coll.lazy-seq-set]
+  [dunaj.coll.rrbt-vector]
+  [dunaj.coll.vector-section]
+  [dunaj.coll.util :refer [sequence]])
+ (:import [java.lang Class String]))
 
 
 ;;;; Implementation details

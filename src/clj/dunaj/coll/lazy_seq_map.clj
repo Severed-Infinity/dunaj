@@ -34,41 +34,44 @@
     `<<dunaj.coll.api.ad#assoc,assoc>>` and
     `<<dunaj.coll.api.ad#dissoc,dissoc>>`"
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.boolean :refer [and or not]]
-   [dunaj.host :refer [class-instance?]]
-   [dunaj.host.int :refer [iint isub ione? i==]]
-   [dunaj.compare :refer
-    [IHash IEquiv nil? hash IComparable identical? =
-     hash-from-basis basis-seed next-basis unordered-hash-factory]]
-   [dunaj.flow :refer
-    [when-let cond loop recur if let do when when-not if-let if-not]]
-   [dunaj.state :refer [IPending IReference alter! reset!]]
-   [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
-   [dunaj.poly :refer [deftype]]
-   [dunaj.coll :refer
-    [first next ISequential contains? IEmptyable IRed ISeq rest
-     IEmptyAware IPeekable ICounted ICollectionFactory ISeqable
-     ILookup IIndexed ISectionable IReversible reduce empty? get
-     section counted? seq empty single? peek IUnpackedRed ISorted
-     IFlippable second nnext conj! settle! edit reduced
-     IEditable ISettleable assoc! IMutableStacked IMutableMap
-     IMutableAssociative IMutableCollection IPersistentCollection
-     IStacked IPersistentVector conj IAssociative assoc -dissoc
-     IPersistentMap count -reduce-unpacked reduced? postponed
-     postponed? advance unsafe-advance!]]
-   [dunaj.function :refer [IInvocable fn defn apply constantly nop]]
-   [dunaj.coll.helper :refer
-    [coll->iterator strip-reduced reduce-unpacked*]]
-   [dunaj.error :refer [ex-info throw]]
-   [dunaj.state.basic :refer [atom]]
-   [dunaj.coll.tuple :refer [tuple pair key val]]
-   [dunaj.coll.hamt-map]
-   [dunaj.coll.array-map]
-   [dunaj.coll.lazy-seq]
-   [dunaj.coll.cons-seq]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.boolean :refer [and or not]]
+  [dunaj.host :refer [class-instance?]]
+  [dunaj.host.int :refer [iint isub ione? i==]]
+  [dunaj.compare :refer
+   [IHash IEquiv nil? hash IComparable identical? =
+    hash-from-basis basis-seed next-basis unordered-hash-factory]]
+  [dunaj.flow :refer
+   [when-let cond loop let when when-not if-let if-not]]
+  [dunaj.state :refer [IPending IReference alter! reset!]]
+  [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
+  [dunaj.poly :refer [deftype]]
+  [dunaj.coll :refer
+   [first next ISequential contains? IEmptyable IRed ISeq rest
+    IEmptyAware IPeekable ICounted ICollectionFactory ISeqable
+    ILookup IIndexed ISectionable IReversible reduce empty? get
+    section counted? seq empty single? peek IUnpackedRed ISorted
+    IFlippable second nnext conj! settle! edit reduced
+    IEditable ISettleable assoc! IMutableStacked IMutableMap
+    IMutableAssociative IMutableCollection IPersistentCollection
+    IStacked IPersistentVector conj IAssociative assoc -dissoc
+    IPersistentMap count -reduce-unpacked reduced? postponed
+    postponed? advance unsafe-advance!]]
+  [dunaj.function :refer [IInvocable fn defn apply constantly nop]]
+  [dunaj.coll.helper :refer
+   [coll->iterator strip-reduced reduce-unpacked* red-to-seq]]
+  [dunaj.error :refer [ex-info]]
+  [dunaj.state.basic :refer [atom]]
+  [dunaj.coll.tuple :refer [tuple pair key val]]
+  [dunaj.coll.hamt-map]
+  [dunaj.coll.array-map]
+  [dunaj.coll.lazy-seq]
+  [dunaj.coll.cons-seq])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -106,7 +109,7 @@
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
   ISeqable
-  (-seq [this] (clojure.bridge/red-to-seq this))
+  (-seq [this] (red-to-seq this))
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [data @data-ref

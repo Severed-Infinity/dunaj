@@ -20,44 +20,47 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Iterations" "Reducers" "Maps" "Walk"]}
-  (:api bare)
-  (:require
-   [clojure.core :refer [lazy-seq cons]]
-   [clojure.bootstrap :refer [v1 not-implemented]]
-   [clojure.set]
-   [dunaj.type :refer [U Maybe Any AnyFn Fn Va Predicate Macro]]
-   [dunaj.boolean :refer [Boolean and or not]]
-   [dunaj.host :refer [Class class-instance?]]
-   [dunaj.host.int :refer [Int iint iinc izero? ipos? idec iloop]]
-   [dunaj.math :refer [Integer == dec]]
-   [dunaj.compare :refer [nil? natural-comparator defsentinel]]
-   [dunaj.flow :refer
-    [cond let if when if-let when-not loop recur if-not]]
-   [dunaj.feature :refer [assoc-meta meta]]
-   [dunaj.poly :refer [Type identical-type? satisfies? deftype]]
-   [dunaj.coll :refer
-    [ISeq IRed IPersistentCollection IBatchedRed IUnpackedRed
-     IPersistentMap IPersistentList Transducer indexed? nth
-     seq? -reduce postponed transduce catenable? cat editable? count
-     edit settle! reduce conj! conj invertible? invert item-type next
-     reduced seq first sectionable? section reversible? reverse coll?
-     homogeneous? empty? pop collection empty rest emptyable? assoc
-     contains? vector? map? set? reducing]]
-   [dunaj.function :refer [Function defn identity fn apply comp nop]]
-   [dunaj.string :refer [string?]]
-   [dunaj.identifier :refer [keyword keyword? name]]
-   [dunaj.concurrent.forkjoin :refer
-    [IFoldable default-fold-pool default-fold-size]]
-   [dunaj.coll.helper :refer
-    [reduce-batched* red->seq* reduce-unpacked* reduce* strip-reduced
-     fold* fold-batched* fold-unpacked* adaptb]]
-   [dunaj.host.batch :refer [item-types-match? batch]]
-   [dunaj.host.array :refer
-    [array-manager to-array array array-manager-from object-array]]
-   [dunaj.macro :refer [defmacro macroexpand]]
-   [dunaj.state.var :refer [def+ defalias replace-var!]]
-   [dunaj.coll.bvt-vector :refer [bvt-vector-factory]]
-   [dunaj.coll.tuple :refer [key val pair]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [lazy-seq cons]]
+  [clojure.bootstrap :refer [v1 not-implemented]]
+  [clojure.set]
+  [dunaj.type :refer [U Maybe Any AnyFn Fn Va Predicate Macro]]
+  [dunaj.boolean :refer [Boolean and or not]]
+  [dunaj.host :refer [Class+ class-instance?]]
+  [dunaj.host.int :refer [Int iint iinc izero? ipos? idec iloop]]
+  [dunaj.math :refer [Integer == dec]]
+  [dunaj.compare :refer [nil? natural-comparator defsentinel]]
+  [dunaj.flow :refer
+   [cond let when if-let when-not loop if-not]]
+  [dunaj.feature :refer [assoc-meta meta]]
+  [dunaj.poly :refer [Type identical-type? satisfies? deftype]]
+  [dunaj.coll :refer
+   [ISeq IRed IPersistentCollection IBatchedRed IUnpackedRed ISeqable
+    IPersistentMap IPersistentList Transducer indexed? nth
+    seq? -reduce postponed transduce catenable? cat editable? count
+    edit settle! reduce conj! conj invertible? invert item-type next
+    reduced seq first sectionable? section reversible? reverse coll?
+    homogeneous? empty? pop collection empty rest emptyable? assoc
+    contains? vector? map? set? reducing]]
+  [dunaj.function :refer [Function defn identity fn apply comp nop]]
+  [dunaj.string :refer [string?]]
+  [dunaj.identifier :refer [keyword keyword? name]]
+  [dunaj.concurrent.forkjoin :refer
+   [IFoldable default-fold-pool default-fold-size]]
+  [dunaj.coll.helper :refer
+   [reduce-batched* red->seq* reduce-unpacked* reduce* strip-reduced
+    fold* fold-batched* fold-unpacked* adaptb red-to-seq]]
+  [dunaj.host.batch :refer [item-types-match? batch]]
+  [dunaj.host.array :refer
+   [array-manager to-array array array-manager-from object-array]]
+  [dunaj.macro :refer [defmacro macroexpand]]
+  [dunaj.state.var :refer [def+ defalias replace-var!]]
+  [dunaj.coll.bvt-vector :refer [bvt-vector-factory]]
+  [dunaj.coll.tuple :refer [key val pair]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -217,7 +220,9 @@
     (if (and (satisfies? IBatchedRed coll)
              (item-types-match? requested-type (item-type coll)))
       (reduce-batched* requested-type size-hint coll reducef init)
-      (reduce* (batch requested-type size-hint coll) reducef init))))
+      (reduce* (batch requested-type size-hint coll) reducef init)))
+  ISeqable
+  (-seq [this] (red-to-seq this)))
 
 (defn batched :- IRed
   "Returns a collection that reduces on batched values."
@@ -291,7 +296,9 @@
   (-reduce [this reducef init]
     (if (satisfies? IUnpackedRed coll)
       (reduce-unpacked* coll reducef init)
-      (reduce* coll (unpacked-fn reducef) init))))
+      (reduce* coll (unpacked-fn reducef) init)))
+  ISeqable
+  (-seq [this] (red-to-seq this)))
 
 (defn unpacked :- IRed
   "Returns a collection that reduces on unpacked values. Works on any
