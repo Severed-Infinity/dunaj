@@ -18,39 +18,41 @@
   public vars and there is *no need to require this namespace*
   directly."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.core :refer [every? subvec]]
-   [dunaj.type :refer [Any AnyFn Maybe]]
-   [dunaj.boolean :refer [and or not]]
-   [dunaj.host.int :refer
-    [Int iint iadd i< ineg? izero? i== isub idec i0 imul i31 i1]]
-   [dunaj.math :refer
-    [nneg? < integer? == <= quot dec >= zero? mod > subtract add neg?
-     multiply inc dec]]
-   [dunaj.state :refer [IReference]]
-   [dunaj.compare :refer
-    [IHash IHashBasis IEquiv IComparable nil? hash = hash-from-basis
-     basis-seed next-basis ordered-hash-factory]]
-   [dunaj.flow :refer
-    [when-let cond loop recur if let do when delay when-not]]
-   [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
-   [dunaj.poly :refer [deftype defrecord defprotocol]]
-   [dunaj.coll :refer
-    [first next ISequential seq IEmptyable IRed ISeq IEmptyAware
-     IPeekable ICounted ICollectionFactory ISeqable ILookup IIndexed
-     ISectionable IReversible reduce empty? count section counted?
-     seq ISliceable IPersistentCollection IStacked nth reverse
-     slice empty get -reverse
-     IPersistentVector conj IAssociative -empty -contains?]]
-   [dunaj.function :refer [IInvocable fn defn]]
-   [dunaj.coll.helper :refer
-    [equiv-ordered coll->iterator index-of coll->list-iterator
-     equals-ordered compare-ordered fold-sectionable
-     prepare-ordered-section]]
-   [dunaj.concurrent.forkjoin :refer [IFoldable]]
-   [dunaj.error :refer [throw index-out-of-bounds]]
-   [dunaj.state.var :refer [declare]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [every? subvec]]
+  [dunaj.type :refer [Any AnyFn Maybe]]
+  [dunaj.boolean :refer [and or not]]
+  [dunaj.host.int :refer
+   [Int iint iadd i< ineg? izero? i== isub idec i0 imul i31 i1]]
+  [dunaj.math :refer
+   [nneg? < integer? == <= quot dec >= zero? mod > subtract add neg?
+    multiply inc dec]]
+  [dunaj.state :refer [IReference]]
+  [dunaj.compare :refer
+   [IHash IHashBasis IEquiv IComparable nil? hash = hash-from-basis
+    basis-seed next-basis ordered-hash-factory]]
+  [dunaj.flow :refer
+   [when-let cond loop let do when delay when-not]]
+  [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
+  [dunaj.poly :refer [deftype defrecord defprotocol]]
+  [dunaj.coll :refer
+   [first next ISequential seq IEmptyable IRed ISeq IEmptyAware
+    IPeekable ICounted ICollectionFactory ISeqable ILookup IIndexed
+    ISectionable IReversible reduce empty? count section counted?
+    seq ISliceable IPersistentCollection IStacked nth reverse
+    slice empty get -reverse
+    IPersistentVector conj IAssociative -empty -contains?]]
+  [dunaj.function :refer [IInvocable fn defn]]
+  [dunaj.coll.helper :refer
+   [equiv-ordered coll->iterator index-of coll->list-iterator
+    equals-ordered compare-ordered fold-sectionable red-to-seq
+    prepare-ordered-section]]
+  [dunaj.concurrent.forkjoin :refer [IFoldable]]
+  [dunaj.error :refer [index-out-of-bounds]]
+  [dunaj.state.var :refer [declare]]))
 
 
 ;;;; Public API

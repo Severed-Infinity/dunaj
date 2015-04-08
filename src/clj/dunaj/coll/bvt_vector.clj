@@ -49,38 +49,41 @@
   rather than ones in this namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.core :refer [subvec]]
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any AnyFn Fn Va U I Maybe]]
-   [dunaj.boolean :refer [and or not]]
-   [dunaj.host :refer [set! AnyArray]]
-   [dunaj.host.int :refer [Int i< iinc i0 i<< i5 iint i<= i>= i> iadd
-                           i32 idiv imul idec iand inneg? inpos? i31]]
-   [dunaj.math :refer [nneg? < integer? dec >= > add neg? inc dec]]
-   [dunaj.compare :refer [IHash IEquiv IComparable nil? hash =]]
-   [dunaj.flow :refer [cond loop recur if let do when if-not]]
-   [dunaj.threading :refer [->]]
-   [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
-   [dunaj.poly :refer [deftype defrecord extend-protocol!]]
-   [dunaj.coll :refer
-    [ISequential IEmptyable IRed IEmptyAware IPeekable ICounted
-     ICollectionFactory ISeqable ILookup IIndexed ISectionable
-     IReversible IEditable ISettleable IMutableStacked IStacked
-     IMutableAssociative IMutableCollection IPersistentCollection
-     IPersistentVector IAssociative
-     first next postponed? postponed reduce empty? count -nth
-     section counted? seq reduced? conj! settle! edit conj]]
-   [dunaj.function :refer [IInvocable fn defn]]
-   [dunaj.concurrent.forkjoin :refer [IFoldable]]
-   [dunaj.host.array :refer [aget array-manager adapt]]
-   [dunaj.coll.helper :refer
-    [fold-sectionable prepare-ordered-section reduce* advance-fn]]
-   [dunaj.state.var :refer [def+]]
-   [dunaj.coll.vector-section :refer
-    [IReversedVectorSectionHelper IVectorSectionHelper
-     reversed-vector-section]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core :refer [subvec]]
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any AnyFn Fn Va U I Maybe]]
+  [dunaj.boolean :refer [and or not]]
+  [dunaj.host :refer [AnyArray]]
+  [dunaj.host.int :refer [Int i< iinc i0 i<< i5 iint i<= i>= i> iadd
+                          i32 idiv imul idec iand inneg? inpos? i31]]
+  [dunaj.math :refer [nneg? < integer? dec >= > add neg? inc dec]]
+  [dunaj.compare :refer [IHash IEquiv IComparable nil? hash =]]
+  [dunaj.flow :refer [cond loop let do when if-not doto]]
+  [dunaj.threading :refer [->]]
+  [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
+  [dunaj.poly :refer [deftype defrecord extend-protocol!]]
+  [dunaj.coll :refer
+   [ISequential IEmptyable IRed IEmptyAware IPeekable ICounted
+    ICollectionFactory ISeqable ILookup IIndexed ISectionable
+    IReversible IEditable ISettleable IMutableStacked IStacked
+    IMutableAssociative IMutableCollection IPersistentCollection
+    IPersistentVector IAssociative
+    first next postponed? postponed reduce empty? count -nth
+    section counted? seq reduced? conj! settle! edit conj]]
+  [dunaj.function :refer [IInvocable fn defn]]
+  [dunaj.concurrent.forkjoin :refer [IFoldable]]
+  [dunaj.host.array :refer [aget array-manager adapt]]
+  [dunaj.coll.helper :refer
+   [fold-sectionable prepare-ordered-section reduce* advance-fn]]
+  [dunaj.state.var :refer [def+]]
+  [dunaj.coll.vector-section :refer
+   [IReversedVectorSectionHelper IVectorSectionHelper
+    reversed-vector-section]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -110,7 +113,27 @@
                  (recur ret (.arrayFor vec (i<< nchi (i5)))
                         (iinc nchi) (i0)))]
         (af init (.arrayFor vec begin)
-            (iinc (idiv begin (i32))) (iand begin (i31)))))))
+           (iinc (idiv begin (i32))) (iand begin (i31)))))))
+
+(def+ ^:private mt :- java.lang.reflect.Field
+  (doto (.getDeclaredField
+         clojure.lang.PersistentVector$TransientVector "tail")
+    (.setAccessible true)))
+
+(defn ^:private get-mt :- AnyArray
+  [v :- clojure.lang.PersistentVector$TransientVector]
+  (.get mt v))
+
+(def+ ^:private maf :- java.lang.reflect.Method
+  (doto (.getDeclaredMethod
+         clojure.lang.PersistentVector$TransientVector
+         "arrayFor"
+         (dunaj.host.array/array Class [java.lang.Integer/TYPE]))
+    (.setAccessible true)))
+
+(defn ^:private invoke-maf :- AnyArray
+  [v :- clojure.lang.PersistentVector$TransientVector, i :- Int]
+  (.invoke maf v (dunaj.host.array/array [i])))
 
 (defn ^:private reduce-mutable-vector :- Any
   "Reduce section of a mutable BVT Vector."
@@ -119,7 +142,7 @@
   (if-not (i< begin end)
     init
     (if (i<= (.count vec) (i32))
-      (let [arr :- AnyArray (.-tail vec)
+      (let [arr :- AnyArray (get-mt vec)
             af (advance-fn [ret :- Any, i :- Int]
                  (i< i end)
                  (recur (reducef ret (aget arr i)) (iinc i))
@@ -134,9 +157,9 @@
                  (recur (reducef ret (aget arr i)) arr nchi (iinc i))
                  (i< end-chi nchi) ret
                  :else
-                 (recur ret (.arrayFor vec (i<< nchi (i5)))
+                 (recur ret (invoke-maf vec (i<< nchi (i5)))
                         (iinc nchi) (i0)))]
-        (af init (.arrayFor vec begin)
+        (af init (invoke-maf vec begin)
             (iinc (idiv begin (i32))) (iand begin (i31)))))))
 
 (defn ^:private reversed-reduce-vector :- Any
@@ -169,6 +192,30 @@
 
 (def+ ^:private oam (array-manager java.lang.Object))
 
+(def+ ^:private aca :- java.lang.reflect.Field
+  (doto (.getDeclaredField clojure.lang.ArrayChunk "array")
+    (.setAccessible true)))
+
+(def+ ^:private aco :- java.lang.reflect.Field
+  (doto (.getDeclaredField clojure.lang.ArrayChunk "off")
+    (.setAccessible true)))
+
+(def+ ^:private ace :- java.lang.reflect.Field
+  (doto (.getDeclaredField clojure.lang.ArrayChunk "end")
+    (.setAccessible true)))
+
+(defn ^:private get-aca :- AnyArray
+  [v :- clojure.lang.ArrayChunk]
+  (.get aca v))
+
+(defn ^:private get-aco :- Int
+  [v :- clojure.lang.ArrayChunk]
+  (.get aco v))
+
+(defn ^:private get-ace :- Int
+  [v :- clojure.lang.ArrayChunk]
+  (.get ace v))
+
 (extend-protocol! IRed
   clojure.lang.ArraySeq
   (-reduce [this reducef init]
@@ -179,7 +226,8 @@
         (reduce* coll reducef init))))
   clojure.lang.ArrayChunk
   (-reduce [this reducef init]
-    (let [coll (adapt oam (.-array this) (.-off this) (.-end this))]
+    (let [coll 
+          (adapt oam (get-aca this) (get-aco this) (get-ace this))]
       (reduce* coll reducef init)))
   clojure.lang.PersistentVector$ChunkedSeq
   (-reduce [this reducef init]

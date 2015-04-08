@@ -6,9 +6,6 @@ ITERNAL TODO:
 ** clone for promise
 * unify otherwise clause in docstrings
 
-* dunaj.concurrent, dunaj.identifier, concurrent.thread,
-  dunaj.state.basic, dunaj.buffer, dunaj.set
-** indents
 * ISeqable on all IRed
 * 
 

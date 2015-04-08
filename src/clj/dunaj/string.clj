@@ -476,9 +476,9 @@
   IHomogeneous
   (-item-type [this] java.lang.Character/TYPE)
   IEditable
-  (-edit [this capacity-hint]
+  (-edit [this #_capacity-hint]
     (let [sb (java.lang.StringBuilder. this)]
-      (when (and capacity-hint (> capacity-hint (.capacity sb)))
+      #_(when (and capacity-hint (> capacity-hint (.capacity sb)))
         (.ensureCapacity sb capacity-hint))
       sb))
   IFoldable

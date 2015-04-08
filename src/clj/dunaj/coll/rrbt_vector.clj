@@ -42,42 +42,46 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright
    "2012, 2015, Michał Marczyk, Rich Hickey and Clojure contributors"}
-  (:api bare)
-  (:require
-   [clojure.core.rrb-vector]
-   [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
-   [clojure.core.rrb-vector.nodes :refer [ranges]]
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any AnyFn Fn Va U I Maybe]]
-   [dunaj.boolean :refer [and or not]]
-   [dunaj.host :refer [AnyArray]]
-   [dunaj.host.int :refer
-    [Int i< iinc i0 i<< i5 iint i<= i>= i> i31 i32 idiv imul idec
-     iand inneg? ineg? isub iloop izero? i>> imin iadd imax]]
-   [dunaj.math :refer
-    [nneg? < integer? dec >= > add neg? inc dec zero? ==]]
-   [dunaj.compare :refer [IHash IEquiv IComparable nil? hash =]]
-   [dunaj.flow :refer [cond loop recur if let do when if-not]]
-   [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
-   [dunaj.poly :refer [deftype extend-type!]]
-   [dunaj.coll :refer
-    [ISequential IEmptyable IRed IEmptyAware IPeekable ICounted
-     ICollectionFactory ISeqable ILookup IIndexed ISectionable
-     IReversible IEditable ISettleable IMutableStacked IStacked
-     IMutableAssociative IMutableCollection IPersistentCollection
-     IPersistentVector IAssociative ICatenable ISliceable
-     first next postponed? postponed advance reduce empty? count -nth
-     section counted? seq reduced? conj! settle! edit conj]]
-   [dunaj.function :refer [IInvocable fn defn]]
-   [dunaj.concurrent.forkjoin :refer [IFoldable]]
-   [dunaj.host.array :refer [aget]]
-   [dunaj.coll.helper :refer
-    [fold-sectionable prepare-ordered-section advance-fn]]
-   [dunaj.error :refer [throw index-out-of-bounds]]
-   [dunaj.coll.vector-section :refer
-    [IReversedVectorSectionHelper IVectorSectionHelper
-     reversed-vector-section vector-section]]
-   [dunaj.coll.bvt-vector]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core.rrb-vector]
+  [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
+  [clojure.core.rrb-vector.nodes :refer [ranges]]
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any AnyFn Fn Va U I Maybe]]
+  [dunaj.boolean :refer [and or not]]
+  [dunaj.host :refer [AnyArray]]
+  [dunaj.host.int :refer
+   [Int i< iinc i0 i<< i5 iint i<= i>= i> i31 i32 idiv imul idec
+    iand inneg? ineg? isub iloop izero? i>> imin iadd imax]]
+  [dunaj.math :refer
+   [nneg? < integer? dec >= > add neg? inc dec zero? ==]]
+  [dunaj.compare :refer [IHash IEquiv IComparable nil? hash =]]
+  [dunaj.flow :refer [cond loop let do when if-not doto]]
+  [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
+  [dunaj.poly :refer [deftype extend-type!]]
+  [dunaj.coll :refer
+   [ISequential IEmptyable IRed IEmptyAware IPeekable ICounted
+    ICollectionFactory ISeqable ILookup IIndexed ISectionable
+    IReversible IEditable ISettleable IMutableStacked IStacked
+    IMutableAssociative IMutableCollection IPersistentCollection
+    IPersistentVector IAssociative ICatenable ISliceable
+    first next postponed? postponed advance reduce empty? count -nth
+    section counted? seq reduced? conj! settle! edit conj]]
+  [dunaj.function :refer [IInvocable fn defn]]
+  [dunaj.concurrent.forkjoin :refer [IFoldable]]
+  [dunaj.host.array :refer [aget]]
+  [dunaj.coll.helper :refer
+   [fold-sectionable prepare-ordered-section advance-fn]]
+  [dunaj.error :refer [index-out-of-bounds]]
+  [dunaj.coll.vector-section :refer
+   [IReversedVectorSectionHelper IVectorSectionHelper
+    reversed-vector-section vector-section]]
+  [dunaj.state.var :refer [def+]]
+  [dunaj.coll.bvt-vector])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -106,6 +110,33 @@
                       (isub i (aget rngs (idec idx))))]
               (recur i (aget arr idx) (isub shift (i5))))))))))
 
+(def+ ^:private rshift :- java.lang.reflect.Field
+  (doto (.getDeclaredField
+         clojure.core.rrb_vector.rrbt.Transient "shift")
+    (.setAccessible true)))
+
+(defn ^:private get-rshift :- Int
+  [v :- clojure.core.rrb_vector.rrbt.Transient]
+  (.get rshift v))
+
+(def+ ^:private rtail :- java.lang.reflect.Field
+  (doto (.getDeclaredField
+         clojure.core.rrb_vector.rrbt.Transient "tail")
+    (.setAccessible true)))
+
+(defn ^:private get-rtail
+  [v :- clojure.core.rrb_vector.rrbt.Transient]
+  (.get rtail v))
+
+(def+ ^:private rroot :- java.lang.reflect.Field
+  (doto (.getDeclaredField
+         clojure.core.rrb_vector.rrbt.Transient "root")
+    (.setAccessible true)))
+
+(defn ^:private get-rroot
+  [v :- clojure.core.rrb_vector.rrbt.Transient]
+  (.get rroot v))
+
 (defn offset-transient :- Int
   "Returns offset into array in rrbt `vec` for a given `i`.
   Use arrayFor to return the array itself."
@@ -114,11 +145,11 @@
     (throw (index-out-of-bounds))
     (let [am :- clojure.core.ArrayManager (.-am vec)
           nm :- clojure.core.rrb_vector.nodes.NodeManager (.-nm vec)
-          shift (._shift vec)
-          tail-off (isub (.count vec) (.alength am (._tail vec)))]
+          shift (get-rshift vec)
+          tail-off (isub (.count vec) (.alength am (get-rtail vec)))]
       (if (i<= tail-off i)
         (isub i tail-off)
-        (iloop [i i, node (._root vec), shift shift]
+        (iloop [i i, node (get-rroot vec), shift shift]
           (if (or (izero? shift) (.regular nm node))
             (iand i (i31))
             (let [arr :- AnyArray (.array nm node)

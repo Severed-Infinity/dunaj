@@ -55,54 +55,57 @@
                  booleans, as there is no batch support for them."]]
    :additional-copyright
    "2012, 2015, Michał Marczyk, Rich Hickey and Clojure contributors"}
-  (:api bare)
-  (:require
-   [clojure.core.rrb-vector :refer [vector-of]]
-   [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
-   [clojure.core.rrb-vector.nodes :refer [ranges]]
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any AnyFn Fn Va U I Maybe]]
-   [dunaj.boolean :refer [and or not]]
-   [dunaj.host :refer
-    [Class AnyArray class-instance? class provide-class]]
-   [dunaj.host.int :refer
-    [Int i< iinc i0 i<< i5 iint i<= i>= i> i31 i32 idiv imul idec
-     iand inneg? ineg? isub iloop izero? i>> imin iadd imax i==]]
-   [dunaj.math :refer
-    [nneg? < integer? dec >= > add neg? inc dec zero? ==]]
-   [dunaj.compare :refer
-    [IHash IEquiv IComparable nil? hash = identical?]]
-   [dunaj.flow :refer
-    [cond loop recur if let do when if-not when-not case condp]]
-   [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
-   [dunaj.threading :refer [->]]
-   [dunaj.poly :refer [Type deftype extend-type! defrecord]]
-   [dunaj.coll :refer
-    [ISequential IEmptyable IRed IEmptyAware IPeekable ICounted
-     ICollectionFactory ISeqable ILookup IIndexed ISectionable
-     IReversible IEditable ISettleable IMutableStacked IStacked
-     IMutableAssociative IMutableCollection IPersistentCollection
-     IPersistentVector IAssociative ICatenable ISliceable
-     IHomogeneous IBatchedRed -empty -slice -edit
-     first next postponed? postponed reduce empty? count -nth
-     section counted? seq reduced? conj! settle! edit conj -count
-     -section -nth -get item-type -contains? -reverse get nth -peek]]
-   [dunaj.function :refer [IInvocable fn defn -invoke]]
-   [dunaj.concurrent.forkjoin :refer [IFoldable -fold]]
-   [dunaj.host.batch :refer
-    [batch-manager batch-on item-types-match?]]
-   [dunaj.host.array :refer [aget]]
-   [dunaj.coll.helper :refer
-    [fold-sectionable prepare-ordered-section equals-ordered
-     equiv-ordered reduce* advance-fn]]
-   [dunaj.string :refer [->str]]
-   [dunaj.error :refer [throw index-out-of-bounds illegal-argument]]
-   [dunaj.state.var :refer [def+ declare]]
-   [dunaj.coll.vector-section :refer
-    [IReversedVectorSectionHelper IVectorSectionHelper
-     reversed-vector-section vector-section]]
-   [dunaj.coll.bvt-vector]
-   [dunaj.coll.rrbt-vector :refer [offset offset-transient]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.core.rrb-vector :refer [vector-of]]
+  [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
+  [clojure.core.rrb-vector.nodes :refer [ranges]]
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any AnyFn Fn Va U I Maybe]]
+  [dunaj.boolean :refer [and or not]]
+  [dunaj.host :refer
+   [Class+ AnyArray class-instance? class provide-class]]
+  [dunaj.host.int :refer
+   [Int i< iinc i0 i<< i5 iint i<= i>= i> i31 i32 idiv imul idec
+    iand inneg? ineg? isub iloop izero? i>> imin iadd imax i==]]
+  [dunaj.math :refer
+   [nneg? < integer? dec >= > add neg? inc dec zero? ==]]
+  [dunaj.compare :refer
+   [IHash IEquiv IComparable nil? hash = identical?]]
+  [dunaj.flow :refer
+   [cond loop let do when if-not when-not case condp]]
+  [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
+  [dunaj.threading :refer [->]]
+  [dunaj.poly :refer [Type deftype extend-type! defrecord]]
+  [dunaj.coll :refer
+   [ISequential IEmptyable IRed IEmptyAware IPeekable ICounted
+    ICollectionFactory ISeqable ILookup IIndexed ISectionable
+    IReversible IEditable ISettleable IMutableStacked IStacked
+    IMutableAssociative IMutableCollection IPersistentCollection
+    IPersistentVector IAssociative ICatenable ISliceable
+    IHomogeneous IBatchedRed -empty -slice -edit
+    first next postponed? postponed reduce empty? count -nth
+    section counted? seq reduced? conj! settle! edit conj -count
+    -section -nth -get item-type -contains? -reverse get nth -peek]]
+  [dunaj.function :refer [IInvocable fn defn -invoke]]
+  [dunaj.concurrent.forkjoin :refer [IFoldable -fold]]
+  [dunaj.host.batch :refer
+   [batch-manager batch-on item-types-match?]]
+  [dunaj.host.array :refer [aget]]
+  [dunaj.coll.helper :refer
+   [fold-sectionable prepare-ordered-section equals-ordered
+    equiv-ordered reduce* advance-fn]]
+  [dunaj.string :refer [->str]]
+  [dunaj.error :refer [index-out-of-bounds illegal-argument]]
+  [dunaj.state.var :refer [def+ declare]]
+  [dunaj.coll.vector-section :refer
+   [IReversedVectorSectionHelper IVectorSectionHelper
+    reversed-vector-section vector-section]]
+  [dunaj.coll.bvt-vector]
+  [dunaj.coll.rrbt-vector :refer [offset offset-transient]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -315,6 +318,8 @@
   (nth [this index] (.nth vec index))
   clojure.lang.Reversible
   (rseq [this] (seq (-reverse this)))
+  clojure.lang.Associative
+  (containsKey [this key] (-contains? this key))
 
   ;; JVM interop
   java.lang.Object
@@ -396,7 +401,7 @@
     (.getComponentType (class (.array ^clojure.core.ArrayManager
                                       (.-am vec) 0))))
   IEditable
-  (-edit [this capacity-hint] (->MutablePrimitiveVector (-edit vec)))
+  (-edit [this #_capacity-hint] (->MutablePrimitiveVector (-edit vec)))
   ISequential
   IPersistentCollection
   (-conj [this x] (->PrimitiveVector (.cons vec x)))
@@ -428,8 +433,8 @@
   (nth [this index] (.nth vec index))
   clojure.lang.Reversible
   (rseq [this] (seq (-reverse this)))
-  clojure.lang.IEditableCollection
-  (asTransient [this] (edit this nil))
+  clojure.lang.Associative
+  (containsKey [this key] (-contains? this key))
 
   ;; JVM interop
   java.lang.Object
