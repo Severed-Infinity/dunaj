@@ -584,11 +584,11 @@
           dunaj.coll/conj dunaj.coll/assoc dunaj.coll/edit
           dunaj.feature/config]}
   ([]
-     clojure.lang.PersistentTreeMap/EMPTY)
+   clojure.lang.PersistentTreeMap/EMPTY)
   ([comparator :- Function]
-     (if (nil? comparator)
-       clojure.lang.PersistentTreeMap/EMPTY
-       (clojure.lang.PersistentTreeMap. nil comparator))))
+   (if (nil? comparator)
+     clojure.lang.PersistentTreeMap/EMPTY
+     (clojure.lang.PersistentTreeMap. nil comparator))))
 
 ;;; Factory
 
