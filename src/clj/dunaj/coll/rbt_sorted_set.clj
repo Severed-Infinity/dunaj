@@ -142,6 +142,8 @@
       (reduce-rbt-section tree (wrap-fn reducef) init ascending?
                           (.comparator coll) begin end)
       init))
+  ISeqable
+  (-seq [this] (clojure.bridge/red-to-seq this))
   ILookup
   (-contains? [this key]
     (if (range-check (.comparator coll) key ascending? begin end)
@@ -202,8 +204,6 @@
   (-invoke [this key not-found] (-get this key not-found))
 
   ;; Clojure compatibility
-  clojure.lang.ISeq
-  (seq [this] (clojure.bridge/red-to-seq this))
   clojure.lang.ILookup
   (valAt [this key] (-get this key nil))
   (valAt [this key not-found] (-get this key not-found))
@@ -388,11 +388,11 @@
           dunaj.coll/conj dunaj.coll/edit dunaj.feature/config
           dunaj.coll/invert]}
   ([]
-     clojure.lang.PersistentTreeSet/EMPTY)
+   clojure.lang.PersistentTreeSet/EMPTY)
   ([comparator :- Function]
-     (if (nil? comparator)
-       clojure.lang.PersistentTreeSet/EMPTY
-       (clojure.lang.PersistentTreeSet/create comparator nil))))
+   (if (nil? comparator)
+     clojure.lang.PersistentTreeSet/EMPTY
+     (clojure.lang.PersistentTreeSet/create comparator nil))))
 
 ;;; Factory
 

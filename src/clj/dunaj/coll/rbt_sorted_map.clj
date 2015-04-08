@@ -289,6 +289,8 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  ISeqable
+  (-seq [this] (clojure.bridge/red-to-seq this))
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (if-let [tree (.-tree coll)]
@@ -357,8 +359,6 @@
   (-invoke [this key not-found] (-get this key not-found))
 
   ;; Clojure compatibility
-  clojure.lang.ISeq
-  (seq [this] (clojure.bridge/red-to-seq this))
   clojure.lang.ILookup
   (valAt [this key] (-get this key nil))
   (valAt [this key not-found] (-get this key not-found))
@@ -583,11 +583,11 @@
           dunaj.coll/conj dunaj.coll/assoc dunaj.coll/edit
           dunaj.feature/config]}
   ([]
-     clojure.lang.PersistentTreeMap/EMPTY)
+   clojure.lang.PersistentTreeMap/EMPTY)
   ([comparator :- Function]
-     (if (nil? comparator)
-       clojure.lang.PersistentTreeMap/EMPTY
-       (clojure.lang.PersistentTreeMap. nil comparator))))
+   (if (nil? comparator)
+     clojure.lang.PersistentTreeMap/EMPTY
+     (clojure.lang.PersistentTreeMap. nil comparator))))
 
 ;;; Factory
 
