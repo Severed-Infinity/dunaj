@@ -30,7 +30,7 @@
   [dunaj.type :refer [Macro Fn Va Any]]
   [dunaj.compare :refer [nil?]]
   [dunaj.state :refer [IReference IPending]])
- (:import [java.lang String]))
+ (:import [java.lang String Class]))
 
 
 ;;;; Public API
@@ -67,7 +67,7 @@
 
 ;;; Conditionals
 
-(defmacro if
+#_(defmacro if
   "Evaluates `_test_`. If not the singular values `nil` or `false`,
   evaluates and yields `_then_`, otherwise, evaluates and yields
   `_else_`. If `_else_` is not supplied it defaults to `nil`.
@@ -83,7 +83,7 @@
    :category "Conditionals"
    :highlight :flow}
   [& args]
-  `(clojure.core/if ~@args))
+  `(if ~@args))
 
 (defalias if-not
   "Evaluates `_test_`. If logical false, evaluates and returns
@@ -254,7 +254,7 @@
 
 ;;; Iteration
 
-(defmacro recur
+#_(defmacro recur
   "Evaluates the `_args_` in order, then, in parallel, rebinds the
   bindings of the recursion point to the values of the `_args_`.
   If the recursion point was a `fn` method, then it rebinds the
@@ -277,7 +277,7 @@
    :category "Iteration"
    :highlight :flow}
   [& args]
-  `(clojure.core/recur ~@args))
+  `(recur ~@args))
 
 (defmacro loop
   "Evaluates the `_body_` in a lexical context in which the symbols in
@@ -339,16 +339,16 @@
    :category "Evaluation"
    :tsig (Fn [Any Any])})
 
-(defmacro quote
+#_(defmacro quote
   "Returns the unevaluated `_form_`."
   {:added v1
    :see '[eval]
    :category "Evaluation"
    :highlight :flow}
   [form]
-  `(clojure.core/quote ~form))
+  `(quote ~form))
 
-(defmacro do
+#_(defmacro do
   "Evaluates the `_exprs_` in order and returns the value of the
   last. If no expressions are supplied, returns `nil`."
   {:added v1
@@ -357,7 +357,7 @@
    :highlight :flow
    :indent 0}
   [& exprs]
-  `(clojure.core/do ~@exprs))
+  `(do ~@exprs))
 
 ;;; Delayed evaluation
 
@@ -418,7 +418,7 @@
    :see '[force delay dunaj.state/deref IDelay dunaj.state/realized?]
    :category "Evaluation"}
   [& body]
-  (list `->RetryingDelay nil (list* `clojure.core/fn* [] body)))
+  (list `->RetryingDelay nil (list* `fn* [] body)))
 
 (defn force :- Any
   "If `_x_` is a `IDelay`, returns the (possibly cached) value of its
@@ -509,3 +509,12 @@
    2 (iint 2)
    :foo (iint 8)
    3 (iint 3)))
+
+(defn ^:private coding-error-action
+  "Returns host coding error action instance for a given coder
+  error `mode`, which can be one of :replace, :ignore or :report."
+  [mode]
+  (condp clojure.core/identical? mode
+    :replace java.nio.charset.CodingErrorAction/REPLACE
+    :ignore java.nio.charset.CodingErrorAction/IGNORE
+    :report java.nio.charset.CodingErrorAction/REPORT))

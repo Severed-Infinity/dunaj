@@ -26,23 +26,25 @@
   * regular expression - parsing regexes
   * `html` - basic html printer"
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Fn Any Maybe Va I U Predicate]]
-   [dunaj.boolean :refer [or]]
-   [dunaj.math :refer [Integer]]
-   [dunaj.compare :refer [sentinel identical? nil?]]
-   [dunaj.flow :refer [let if when]]
-   [dunaj.poly :refer [defprotocol extend-protocol!]]
-   [dunaj.coll :refer [IRed Transducer reduce reduced red?
-                       provide-sequential provide-collection]]
-   [dunaj.function :refer [defn]]
-   [dunaj.host.array :refer [to-array]]
-   [dunaj.error :refer [throw illegal-argument unsupported-operation]]
-   [dunaj.state.var :refer [Var var def+]]
-   [dunaj.coll.cons-seq :refer [cons]]
-   [dunaj.coll.tuple :refer [tuple]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Fn Any Maybe Va I U Predicate]]
+  [dunaj.boolean :refer [or]]
+  [dunaj.math :refer [Integer]]
+  [dunaj.compare :refer [sentinel identical? nil?]]
+  [dunaj.flow :refer [let when]]
+  [dunaj.poly :refer [defprotocol extend-protocol!]]
+  [dunaj.coll :refer [IRed Transducer reduce reduced red?
+                      provide-sequential provide-collection]]
+  [dunaj.function :refer [defn]]
+  [dunaj.host.array :refer [to-array]]
+  [dunaj.error :refer [illegal-argument unsupported-operation]]
+  [dunaj.state.var :refer [Var def+]]
+  [dunaj.coll.cons-seq :refer [cons]]
+  [dunaj.coll.tuple :refer [tuple]]))
 
 
 ;;;; Implementation details

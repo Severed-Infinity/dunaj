@@ -15,66 +15,69 @@
   recipes."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Generators" "Transducers"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Maybe Any AnyFn U I Va Predicate Fn]]
-   [dunaj.boolean :refer [Boolean and or not true?]]
-   [dunaj.host :refer [BatchManager ArrayManager AnyBatch Class
-                       class-instance? provide-class keyword->class]]
-   [dunaj.host.int :refer
-    [Int iadd iint iinc idec i0 isub i< izero? i== iloop i<= imin i1
-     imul inpos? ipos? imax i-1 ineg? i2 i>= inneg? ineg i> irem
-     imax0 idiv iLF iCR]]
-   [dunaj.host.number :refer [long]]
-   [dunaj.math :refer [Number Integer == zero? min npos? one? quot
-                       neg? < > / <= max >= pos? integer?]]
-   [dunaj.math.unchecked :as mu]
-   [dunaj.compare :refer
-    [nil? IHash IEquiv = hash sentinel identical? defsentinel]]
-   [dunaj.flow :refer [let if cond delay recur if-not do while
-                       if-some when when-not if-let]]
-   [dunaj.state :refer
-    [IPending IReference deref clone ICloneable reset!]]
-   [dunaj.feature :refer [IMeta IPersistentMeta]]
-   [dunaj.poly :refer [Type deftype satisfies? extend-protocol!]]
-   [dunaj.threading :refer [-> ->>]]
-   [dunaj.coll :refer
-    [IEmptyable IRed ISequential ISeqable ISeq IEmptyAware IPeekable
-     IPersistentCollection ICollectionFactory IHomogeneous ICounted
-     IBatchedRed IUnpackedRed ISectionable IReversible IFlippable
-     IReducing ISettleable Transducer
-     item-type conj counted? count empty? reduce seq single? first
-     sectionable? next section reduced? postponed? postponed advance
-     -reduce-unpacked -item-type -flip get reduced sequential? full?
-     -section settle! conj! -reduce-batched -reduce -count peek pop!
-     -capacity -full? -peek -conj! unsafe-advance! edit second cat!
-     reduce-augmented nth reducing double?]]
-   [dunaj.function :refer
-    [Function defn fn apply comp fn? identity complement constantly]]
-   [dunaj.concurrent.forkjoin :refer
-    [IFoldable -fold invoke fork join folding]]
-   [dunaj.coll.helper :refer
-    [reduce* reduce-batched* reduce-unpacked* fold-every -inner-coll
-     adapt* prepare-ordered-section fold-sectionable defreducing
-     defxform reducing-function fold* strip-reduced reduced-advance
-     split-adjust reduce-augmented* transduce* transfold*
-     adaptcbUs adaptcbus adaptCbuS adaptcs adaptbu adaptu adaptCS
-     advance-fn finish-advance reduce-with-batched*]]
-   [dunaj.host.batch :refer
-    [decide-item-type item-types-match?
-     provide-batch-size batch-manager select-item-type]]
-   [dunaj.host.array :refer [array-manager]]
-   [dunaj.string :refer [String empty-string MutableString]]
-   [dunaj.identifier :refer [Keyword]]
-   [dunaj.error :refer [throw ex-info illegal-argument]]
-   [dunaj.state.var :refer [declare def+ replace-var!]]
-   [dunaj.state.basic :refer [unsynchronized-reference]]
-   [dunaj.buffer :refer [sliding-buffer buffer]]
-   [dunaj.coll.util :refer [some into every? doall recipe]]
-   [dunaj.coll.cons-seq :refer [cons]]
-   [dunaj.coll.tuple :refer [tuple pair key val empty-tuple]]
-   [dunaj.coll.default :refer []]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Maybe Any AnyFn U I Va Predicate Fn]]
+  [dunaj.boolean :refer [Boolean and or not true?]]
+  [dunaj.host :refer [BatchManager ArrayManager AnyBatch Class+
+                      class-instance? provide-class keyword->class]]
+  [dunaj.host.int :refer
+   [Int iadd iint iinc idec i0 isub i< izero? i== iloop i<= imin i1
+    imul inpos? ipos? imax i-1 ineg? i2 i>= inneg? ineg i> irem
+    imax0 idiv iLF iCR]]
+  [dunaj.host.number :refer [long]]
+  [dunaj.math :refer [Number Integer == zero? min npos? one? quot
+                      neg? < > / <= max >= pos? integer?]]
+  [dunaj.math.unchecked :as mu]
+  [dunaj.compare :refer
+   [nil? IHash IEquiv = hash sentinel identical? defsentinel]]
+  [dunaj.flow :refer [let cond delay if-not while
+                      if-some when when-not if-let]]
+  [dunaj.state :refer
+   [IPending IReference deref clone ICloneable reset!]]
+  [dunaj.feature :refer [IMeta IPersistentMeta]]
+  [dunaj.poly :refer [Type deftype satisfies? extend-protocol!]]
+  [dunaj.threading :refer [-> ->>]]
+  [dunaj.coll :refer
+   [IEmptyable IRed ISequential ISeqable ISeq IEmptyAware IPeekable
+    IPersistentCollection ICollectionFactory IHomogeneous ICounted
+    IBatchedRed IUnpackedRed ISectionable IReversible IFlippable
+    IReducing ISettleable Transducer
+    item-type conj counted? count empty? reduce seq single? first
+    sectionable? next section reduced? postponed? postponed advance
+    -reduce-unpacked -item-type -flip get reduced sequential? full?
+    -section settle! conj! -reduce-batched -reduce -count peek pop!
+    -capacity -full? -peek -conj! unsafe-advance! edit second cat!
+    reduce-augmented nth reducing double?]]
+  [dunaj.function :refer
+   [Function defn fn apply comp fn? identity complement constantly]]
+  [dunaj.concurrent.forkjoin :refer
+   [IFoldable -fold invoke fork join folding]]
+  [dunaj.coll.helper :refer
+   [reduce* reduce-batched* reduce-unpacked* fold-every -inner-coll
+    adapt* prepare-ordered-section fold-sectionable defreducing
+    defxform reducing-function fold* strip-reduced reduced-advance
+    split-adjust reduce-augmented* transduce* transfold*
+    adaptcbUs adaptcbus adaptCbuS adaptcs adaptbu adaptu adaptCS
+    advance-fn finish-advance reduce-with-batched* red-to-seq]]
+  [dunaj.host.batch :refer
+   [decide-item-type item-types-match?
+    provide-batch-size batch-manager select-item-type]]
+  [dunaj.host.array :refer [array-manager]]
+  [dunaj.string :refer [String+ empty-string MutableString]]
+  [dunaj.identifier :refer [Keyword]]
+  [dunaj.error :refer [ex-info illegal-argument]]
+  [dunaj.state.var :refer [declare def+ replace-var!]]
+  [dunaj.state.basic :refer [unsynchronized-reference]]
+  [dunaj.buffer :refer [sliding-buffer buffer]]
+  [dunaj.coll.util :refer [some into every? doall recipe]]
+  [dunaj.coll.cons-seq :refer [cons]]
+  [dunaj.coll.tuple :refer [tuple pair key val empty-tuple]]
+  [dunaj.coll.default :refer []])
+ (:import [java.lang Class String]))
 
 
 ;;;; Implementation details
@@ -104,6 +107,8 @@
   []
   IRed
   (-reduce [this reducef init] init)
+  ISeqable
+  (-seq [this] (red-to-seq this))
   ICounted
   (-count [this] 0)
   IBatchedRed
@@ -127,6 +132,8 @@
   [m :- (Maybe String)]
   IRed
   (-reduce [this reducef init] (throw (ex-info m)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   ICounted
   (-count [this] 1)
   IBatchedRed
@@ -160,6 +167,8 @@
   IRed
   (-reduce [this reducef init]
     (reduce* colls #(reduce* %2 reducef %) init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   ICounted
   (-count [this] @count-ref)
   IHomogeneous
@@ -266,6 +275,8 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b]
@@ -285,6 +296,8 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b]
@@ -314,6 +327,8 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b c]
@@ -333,6 +348,8 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b c]
@@ -363,6 +380,8 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret ims]
@@ -382,6 +401,8 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret ims]
@@ -468,6 +489,8 @@
           ims (clojure.core/map
                (fn [x] (reduce #(postponed %2) nil x)) colls)]
       (af init nil ims)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   ICounted
   (-count [this]
     (imul (iint (count colls))
@@ -489,6 +512,8 @@
           ims (clojure.core/map
                (fn [x] (reduce #(postponed %2) nil x)) colls)]
       (af init nil ims)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   ICounted
   (-count [this]
     (imul (iint (count colls))
@@ -544,7 +569,9 @@
                        nothers (cons (next children) (next others))]
                    (recur (reducef ret val) (bf val nothers)))
                  (recur ret (next others))))]
-      (af (reducef init root) (bf root nil)))))
+      (af (reducef init root) (bf root nil))))
+  ISeqable
+  (-seq [this] (red-to-seq this)))
 
 (deftype PostTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn]
@@ -563,7 +590,9 @@
                                 (cons (pair node (next children))
                                       (next others))))
                    (recur (reducef ret node) (next others)))))]
-      (af init (cons (bf root) nil)))))
+      (af init (cons (bf root) nil))))
+  ISeqable
+  (-seq [this] (red-to-seq this)))
 
 (deftype ITWrap [node :- Any, i :- Int, children :- Any])
 
@@ -596,7 +625,9 @@
                                      (next others))))
                   (nothing? node) (recur ret (next others))
                   :else (recur (reducef ret node) (next others)))))]
-      (af init (cons (bf root) nil)))))
+      (af init (cons (bf root) nil))))
+  ISeqable
+  (-seq [this] (red-to-seq this)))
 
 (declare mapcat)
 
@@ -609,7 +640,9 @@
           af (advance-fn [ret level]
                (nil? level) ret
                :else (recur (reduce* level reducef ret) (nl level)))]
-      (af (reducef init root) (nl (tuple root))))))
+      (af (reducef init root) (nl (tuple root)))))
+  ISeqable
+  (-seq [this] (red-to-seq this)))
 
 (defn traverse :- IRed
   "Returns a collection recipe which contains nodes from tree
@@ -657,6 +690,8 @@
     (let [af (advance-fn [ret i]
                (recur (reducef ret i) (mu/add i step)))]
       (af init start)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -683,6 +718,8 @@
                (recur (reducef ret i) (mu/add i step) (mu/inc n))
                :else ret)]
       (af init start 0)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -723,6 +760,8 @@
                (recur (reducef ret i) (mu/add i step) (mu/inc n))
                :else ret)]
       (af init start 0)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -810,6 +849,8 @@
   IRed
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (recur (reducef ret val)))] (af init)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -829,6 +870,8 @@
                (zero? i) ret
                :else (recur (reducef ret val) (mu/dec i)))]
       (af init n)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -881,6 +924,8 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (recur (reduce* coll reducef ret)))]
       (af init)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IHomogeneous
   (-item-type [this] (item-type coll))
   IUnpackedRed
@@ -911,6 +956,8 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (recur (reducef ret (repf))))]
       (af init)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -954,6 +1001,8 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret x] (recur (reducef ret x) (iterf x)))]
       (af init x)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -1281,6 +1330,8 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (reduce* tail reducef ret))]
       (af (reduce* coll reducef init))))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   ICounted
   (-count [this] (mu/add (count coll) (count tail)))
   ISectionable
@@ -1370,6 +1421,8 @@
                         ([r k _ _ _] (reducef r k))
                         ([r k _ _ _ & _] (reducef r k)))
                       init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   ICounted
   (-count [this] (count coll))
   ISectionable
@@ -1415,6 +1468,8 @@
                         ([r _ v _ _] (reducef r v))
                         ([r _ v _ _ & _] (reducef r v)))
                       init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   ICounted
   (-count [this] (count coll))
   ISectionable
@@ -1685,6 +1740,8 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (reduce* coll reducef ret))]
       (af (reduce* head reducef init))))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   ICounted
   (-count [this] (mu/add (count coll) (count head)))
   ISectionable
@@ -1894,6 +1951,8 @@
   [coll :- IRed, n :- Int, rc :- IRed]
   IRed
   (-reduce [this reducef init] (-reduce rc reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IBatchedRed
   (-reduce-batched [this requested-type size-hint reducef init]
     (-reduce-batched rc requested-type size-hint reducef init))
@@ -2756,6 +2815,8 @@
                :else (let [val (take n (concat (section coll i) pad))]
                        (reducef ret (reduce-augmented r val))))]
       (af init (i0))))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   ICounted
   (-count [this]
     (if (true? pad)
@@ -3032,6 +3093,8 @@
   IRed
   (-reduce [this reducef init]
     (transduce* coll reduce* (partition-by* f ir) reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (transfold* coll reduce-fn pool n (foldable-partition-by* f ir)
@@ -3042,6 +3105,8 @@
   IRed
   (-reduce [this reducef init]
     (reduce* (->PartitionBy coll f ir) reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (let [l (iint (count coll))]
@@ -3154,6 +3219,8 @@
   IRed
   (-reduce [this reducef init]
     (transduce* coll reduce* (lines*) reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (transfold*
@@ -3285,6 +3352,8 @@
        (provide-batch-size *default-lines-batch-size*)
        % %2 %3)
      (->BatchedLinesReducing (reducing reducef init))))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (transfold*

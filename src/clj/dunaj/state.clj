@@ -31,7 +31,8 @@
   [dunaj.type :refer [Any Fn Va]]
   [dunaj.boolean :refer [Boolean boolean]]
   [dunaj.math :refer [Integer odd?]]
-  [dunaj.compare :refer [identical?]]))
+  [dunaj.compare :refer [identical?]])
+ (:import [java.lang Class String]))
 
 
 ;;;; Implementation details
@@ -56,7 +57,7 @@
   [& body]
   ;; JVM HOST
   `(clojure.core/with-bindings
-     {(clojure.core/var *io-thread*) (java.lang.Thread/currentThread)}
+     {(var *io-thread*) (java.lang.Thread/currentThread)}
      (clojure.core/io! ~@body)))
 
 (defn ensure-io :- nil

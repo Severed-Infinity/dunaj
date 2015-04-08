@@ -55,7 +55,7 @@
   [dunaj.math :refer [<]]
   [dunaj.compare :refer [nil?]]
   [dunaj.state :refer [ICloneable clone]]
-  [dunaj.flow :refer [when let cond when-not recur]]
+  [dunaj.flow :refer [when let cond when-not]]
   [dunaj.poly :refer [deftype Type defprotocol]]
   [dunaj.coll :refer
    [ICapped IPeekable IEmptyAware ICounted IIndexed ISeqable

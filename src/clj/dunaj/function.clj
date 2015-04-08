@@ -53,7 +53,7 @@
   [dunaj.coll :refer
    [ICollectionFactory IConvolutionFactory assoc conj]]
   [dunaj.feature :refer [meta update-meta]])
- (:import [java.lang String]))
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details

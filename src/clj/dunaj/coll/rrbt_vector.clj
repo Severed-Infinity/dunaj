@@ -59,7 +59,7 @@
   [dunaj.math :refer
    [nneg? < integer? dec >= > add neg? inc dec zero? ==]]
   [dunaj.compare :refer [IHash IEquiv IComparable nil? hash =]]
-  [dunaj.flow :refer [cond loop let do when if-not doto]]
+  [dunaj.flow :refer [cond loop let when if-not doto]]
   [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
   [dunaj.poly :refer [deftype extend-type!]]
   [dunaj.coll :refer

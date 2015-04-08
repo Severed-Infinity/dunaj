@@ -18,25 +18,29 @@
   "Regular expressions."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Fn Any U Maybe]]
-   [dunaj.boolean :refer [and or]]
-   [dunaj.host :refer [class-instance?]]
-   [dunaj.host.int :refer [Int iint iadd i0 isub izero? i==]]
-   [dunaj.math :refer [Integer]]
-   [dunaj.flow :refer [if do let loop recur cond]]
-   [dunaj.poly :refer [deftype]]
-   [dunaj.coll :refer [IRed reduced? postponed postponed?
-                       unsafe-advance! count nth unsafe-postponed]]
-   [dunaj.host.array :refer [adapt]]
-   [dunaj.function :refer [fn defn]]
-   [dunaj.string :refer
-    [ICanonical ICharSequence String str provide-char-sequence]]
-   [dunaj.error :refer [throw unsupported-operation]]
-   [dunaj.state.var :refer [defalias]]
-   [dunaj.format :refer [IParserFactory]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Fn Any U Maybe]]
+  [dunaj.boolean :refer [and or]]
+  [dunaj.host :refer [class-instance?]]
+  [dunaj.host.int :refer [Int iint iadd i0 isub izero? i==]]
+  [dunaj.math :refer [Integer]]
+  [dunaj.flow :refer [let loop cond]]
+  [dunaj.poly :refer [deftype]]
+  [dunaj.coll :refer [IRed reduced? postponed postponed? ISeqable
+                      unsafe-advance! count nth unsafe-postponed]]
+  [dunaj.coll.helper :refer [red-to-seq]]
+  [dunaj.host.array :refer [adapt]]
+  [dunaj.function :refer [fn defn]]
+  [dunaj.string :refer
+   [ICanonical ICharSequence String+ str provide-char-sequence]]
+  [dunaj.error :refer [unsupported-operation]]
+  [dunaj.state.var :refer [defalias]]
+  [dunaj.format :refer [IParserFactory]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -54,7 +58,9 @@
                  (.find m)
                  (recur (reducef ret (clojure.core/re-groups m)))
                  :else ret))]
-      (af init))))
+      (af init)))
+  ISeqable
+  (-seq [this] (red-to-seq this)))
 
 
 ;;;; Public API
@@ -96,10 +102,10 @@
   {:added v1
    :see '[regex? regex matches dunaj.format/parse]}
   ([re :- (U String Regex), coll :- (Maybe IRed)]
-     (split re coll 0))
+   (split re coll 0))
   ([re :- (U String Regex), coll :- (Maybe IRed), limit :- Integer]
-     (adapt
-      (.split (regex re) (provide-char-sequence coll) (or limit 0)))))
+   (adapt
+    (.split (regex re) (provide-char-sequence coll) (or limit 0)))))
 
 (defn quote :- String
   "Returns literal quoted string for use in regex pattern."

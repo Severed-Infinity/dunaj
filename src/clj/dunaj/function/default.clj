@@ -18,23 +18,26 @@
   public vars and there is *no need to require this namespace*
   directly."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [dunaj.type :refer [I Any Fn U Maybe Predicate]]
-   [dunaj.compare :refer [nil?]]
-   [dunaj.state :refer [alter!]]
-   [dunaj.flow :refer [retrying-delay if cond let if-let]]
-   [dunaj.feature :refer [meta update-meta]]
-   [dunaj.poly :refer [defrecord]]
-   [dunaj.coll :refer [collection get contains? ICollectionFactory
-                       IConvolutionFactory assoc hit update]]
-   [dunaj.function :refer
-    [IMemoizationFactory default-memoization-factory apply fn]]
-   [dunaj.state.var :refer [reset-root! defalias]]
-   [dunaj.state.basic :refer [atom box]]
-   [dunaj.coll.tuple :refer [pair key val]]
-   [dunaj.coll.default :refer [map-factory]]
-   [dunaj.coll.recipe :refer [map]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [dunaj.type :refer [I Any Fn U Maybe Predicate]]
+  [dunaj.compare :refer [nil?]]
+  [dunaj.state :refer [alter!]]
+  [dunaj.flow :refer [retrying-delay cond let if-let]]
+  [dunaj.feature :refer [meta update-meta]]
+  [dunaj.poly :refer [defrecord]]
+  [dunaj.coll :refer [collection get contains? ICollectionFactory
+                      IConvolutionFactory assoc hit update]]
+  [dunaj.function :refer
+   [IMemoizationFactory default-memoization-factory apply fn]]
+  [dunaj.state.var :refer [reset-root! defalias]]
+  [dunaj.state.basic :refer [atom box]]
+  [dunaj.coll.tuple :refer [pair key val]]
+  [dunaj.coll.default :refer [map-factory]]
+  [dunaj.coll.recipe :refer [map]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Public API

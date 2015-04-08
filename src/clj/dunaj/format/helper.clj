@@ -13,21 +13,24 @@
 (ns dunaj.format.helper
   "Helper fns for formatter implementations."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any Fn]]
-   [dunaj.host :refer
-    [ArrayManager Batch BatchManager AnyBatch Array keyword->class]]
-   [dunaj.host.int :refer [Int iadd i0 i<]]
-   [dunaj.state :refer [IReference]]
-   [dunaj.flow :refer [doto if let do]]
-   [dunaj.function :refer [defn]]
-   [dunaj.host.array :refer [array-manager]]
-   [dunaj.host.batch :refer [batch-on]]
-   [dunaj.char :refer [Char]]
-   [dunaj.string :refer [String MutableString]]
-   [dunaj.state.var :refer [def+]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any Fn]]
+  [dunaj.host :refer
+   [ArrayManager Batch BatchManager AnyBatch Array keyword->class]]
+  [dunaj.host.int :refer [Int iadd i0 i<]]
+  [dunaj.state :refer [IReference]]
+  [dunaj.flow :refer [doto let]]
+  [dunaj.function :refer [defn]]
+  [dunaj.host.array :refer [array-manager]]
+  [dunaj.host.batch :refer [batch-on]]
+  [dunaj.char :refer [Char]]
+  [dunaj.string :refer [String+ MutableString]]
+  [dunaj.state.var :refer [def+]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details

@@ -62,7 +62,7 @@
                           i32 idiv imul idec iand inneg? inpos? i31]]
   [dunaj.math :refer [nneg? < integer? dec >= > add neg? inc dec]]
   [dunaj.compare :refer [IHash IEquiv IComparable nil? hash =]]
-  [dunaj.flow :refer [cond loop let do when if-not doto]]
+  [dunaj.flow :refer [cond loop let when if-not doto]]
   [dunaj.threading :refer [->]]
   [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
   [dunaj.poly :refer [deftype defrecord extend-protocol!]]

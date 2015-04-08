@@ -46,45 +46,48 @@
   bytes to the collection of integers, floats, etc."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Transducers"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [assert-primitive v1 not-implemented]]
-   [dunaj.type :refer [Any Fn Va I U Maybe Predicate]]
-   [dunaj.boolean :refer [Boolean and or not boolean]]
-   [dunaj.math :refer [Integer Float >= rem < neg? <= zero? > == /]]
-   [dunaj.math.unchecked :as mu]
-   [dunaj.host :refer [Batch AnyBatch keyword->class]]
-   [dunaj.host.int :refer
-    [Int iint i0 idiv i>>> izero? iand iFF isub i8 i1 i3 iadd i<<
-     idec irem ineg? i<= i< i>= i7 i== iinc inpos? iloop i4]]
-   [dunaj.host.number :refer [long unchecked-byte double]]
-   [dunaj.bit :as bit]
-   [dunaj.compare :refer [nil?]]
-   [dunaj.state :refer [ICloneable clone]]
-   [dunaj.flow :refer [cond if let do recur loop when doto]]
-   [dunaj.threading :refer [->]]
-   [dunaj.poly :refer [defprotocol deftype defrecord satisfies?]]
-   [dunaj.feature :refer [IConfig]]
-   [dunaj.coll :refer
-    [IRed IBatchedRed IHomogeneous IIndexed IReducing
-     count nth item-type assoc first reduced seq next
-     reduced? postponed postponed? advance unsafe-advance!]]
-   [dunaj.coll.helper :refer
-    [reduce* reduce-batched* advance-fn finish-advance
-     defxform defreducing reduced-advance strip-reduced
-     reduce-with-batched* cloned-advance-fn]]
-   [dunaj.function :refer [apply defn fn]]
-   [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal current-thread ensure-thread-local]]
-   [dunaj.host.array :refer [byte-array array-manager]]
-   [dunaj.host.batch :refer [provide-batch-size batch-manager
-                             select-item-type item-types-match?]]
-   [dunaj.identifier :refer [Keyword name]]
-   [dunaj.error :refer [throw index-out-of-bounds]]
-   [dunaj.state.var :refer [Var var def+]]
-   [dunaj.coll.default :refer [->map]]
-   [dunaj.coll.util :refer [merge]]
-   [dunaj.coll.recipe :refer [->ObjectWrap cloning-advance]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [assert-primitive v1 not-implemented]]
+  [dunaj.type :refer [Any Fn Va I U Maybe Predicate]]
+  [dunaj.boolean :refer [Boolean and or not boolean]]
+  [dunaj.math :refer [Integer Float >= rem < neg? <= zero? > == /]]
+  [dunaj.math.unchecked :as mu]
+  [dunaj.host :refer [Batch AnyBatch keyword->class]]
+  [dunaj.host.int :refer
+   [Int iint i0 idiv i>>> izero? iand iFF isub i8 i1 i3 iadd i<<
+    idec irem ineg? i<= i< i>= i7 i== iinc inpos? iloop i4]]
+  [dunaj.host.number :refer [long unchecked-byte double]]
+  [dunaj.bit :as bit]
+  [dunaj.compare :refer [nil?]]
+  [dunaj.state :refer [ICloneable clone]]
+  [dunaj.flow :refer [cond let loop when doto]]
+  [dunaj.threading :refer [->]]
+  [dunaj.poly :refer [defprotocol deftype defrecord satisfies?]]
+  [dunaj.feature :refer [IConfig]]
+  [dunaj.coll :refer
+   [IRed IBatchedRed IHomogeneous IIndexed IReducing ISeqable
+    count nth item-type assoc first reduced seq next
+    reduced? postponed postponed? advance unsafe-advance!]]
+  [dunaj.coll.helper :refer
+   [reduce* reduce-batched* advance-fn finish-advance
+    defxform defreducing reduced-advance strip-reduced
+    reduce-with-batched* cloned-advance-fn red-to-seq]]
+  [dunaj.function :refer [apply defn fn]]
+  [dunaj.concurrent.thread :refer
+   [Thread IThreadLocal current-thread ensure-thread-local]]
+  [dunaj.host.array :refer [byte-array array-manager]]
+  [dunaj.host.batch :refer [provide-batch-size batch-manager
+                            select-item-type item-types-match?]]
+  [dunaj.identifier :refer [Keyword name]]
+  [dunaj.error :refer [index-out-of-bounds]]
+  [dunaj.state.var :refer [Var def+]]
+  [dunaj.coll.default :refer [->map]]
+  [dunaj.coll.util :refer [merge]]
+  [dunaj.coll.recipe :refer [->ObjectWrap cloning-advance]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details
@@ -213,6 +216,8 @@
   (-reduce [this reducef init]
     (reduce-with-batched*
      nil *default-rng-batch-size* this reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IThreadLocal
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
@@ -245,6 +250,8 @@
   (-reduce [this reducef init]
     (reduce-with-batched*
      nil *default-rng-batch-size* this reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
   IBatchedRed
@@ -292,6 +299,8 @@
                       (isub left (i1))
                       (i>>> val (i8))))]
       (af init 0 0)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   ICloneable
   (-clone [this] (->SplittableRng (.split sr)))
   IHomogeneous
@@ -330,6 +339,8 @@
   (-reduce [this reducef init]
     (reduce-with-batched*
      nil *default-rng-batch-size* this reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IConfig
   (-config [this]
     (merge config
@@ -464,6 +475,8 @@
   (-reduce [this reducef init]
     (reduce-with-batched* (keyword->class :long)
                           *default-rng-batch-size* this reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IHomogeneous
   (-item-type [this] nil)
   IBatchedRed
@@ -596,6 +609,8 @@
   (-reduce [this reducef init]
     (reduce-with-batched* (keyword->class :double)
                           *default-rng-batch-size* this reducef init))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IHomogeneous
   (-item-type [this] nil)
   IBatchedRed
