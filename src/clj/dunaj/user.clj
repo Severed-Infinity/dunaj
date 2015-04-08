@@ -12,5 +12,6 @@
 
 (ns dunaj.user
   "User namespace."
-  (:api dunaj)
-  (:require [dunaj.repl :refer :all]))
+  (:require [dunaj.core :refer [dunaj-ns]]))
+
+(dunaj-ns)

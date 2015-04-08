@@ -30,34 +30,37 @@
      "See <<Primary,ordered section>> for slower
      but ordered version of functions for parallel computation."]]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [clojure.core.async]
-   [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
-   [dunaj.boolean :refer [or]]
-   [dunaj.host :refer [..]]
-   [dunaj.math :refer [Integer < + zero? dec]]
-   [dunaj.compare :refer [decode-nil encode-nil]]
-   [dunaj.state :refer [deref]]
-   [dunaj.flow :refer [cond if let loop recur when when-let do]]
-   [dunaj.threading :refer [->]]
-   [dunaj.poly :refer [deftype]]
-   [dunaj.coll :refer
-    [IRed IReducing conj count peek pop unsafe-postponed
-     reduced reduced? postponed? postponed advance unsafe-advance!]]
-   [dunaj.function :refer [fn defn apply]]
-   [dunaj.coll.helper :refer
-    [reduce* defxform finish-advance reduced-advance strip-reduced]]
-   [dunaj.error :refer [throw unsupported-operation]]
-   [dunaj.concurrent :refer
-    [ITaskExecutor default-future-executor submit]]
-   [dunaj.concurrent.port :refer
-    [ICloseablePort ISourcePort ITargetPort <!! >!! close! chan]]
-   [dunaj.macro :refer [defmacro]]
-   [dunaj.coll.default :refer [empty-que]]
-   [dunaj.coll.tuple :refer [tuple]]
-   [dunaj.coll.recipe :refer [concat]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [clojure.core.async]
+  [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
+  [dunaj.boolean :refer [or]]
+  [dunaj.host :refer [..]]
+  [dunaj.math :refer [Integer < + zero? dec]]
+  [dunaj.compare :refer [decode-nil encode-nil]]
+  [dunaj.state :refer [deref]]
+  [dunaj.flow :refer [cond let loop when when-let]]
+  [dunaj.threading :refer [->]]
+  [dunaj.poly :refer [deftype]]
+  [dunaj.coll :refer
+   [IRed IReducing conj count peek pop unsafe-postponed
+    reduced reduced? postponed? postponed advance unsafe-advance!]]
+  [dunaj.function :refer [fn defn apply]]
+  [dunaj.coll.helper :refer
+   [reduce* defxform finish-advance reduced-advance strip-reduced]]
+  [dunaj.error :refer [unsupported-operation]]
+  [dunaj.concurrent :refer
+   [ITaskExecutor default-future-executor submit]]
+  [dunaj.concurrent.port :refer
+   [ICloseablePort ISourcePort ITargetPort <!! >!! close! chan]]
+  [dunaj.macro :refer [defmacro]]
+  [dunaj.coll.default :refer [empty-que]]
+  [dunaj.coll.tuple :refer [tuple]]
+  [dunaj.coll.recipe :refer [concat]])
+ (:import [java.lang Class String]))
 
 
 ;;;; Implementation details

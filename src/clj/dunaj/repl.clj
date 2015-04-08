@@ -20,36 +20,39 @@
   {:authors ["Chris Houser" "Christophe Grand"
              "Stephen Gilardi" "Michel Salim" "Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [v1]]
-   [dunaj.type :refer [Any Maybe Fn Any Va U]]
-   [dunaj.boolean :refer [and or]]
-   [dunaj.host :refer [proxy proxy-super class-instance? class]]
-   [dunaj.math :refer [Integer dec + - min]]
-   [dunaj.compare :refer [= not=]]
-   [dunaj.flow :refer
-    [when-let cond if let when dotimes loop recur if-let]]
-   [dunaj.feature :refer [IMeta meta assoc-meta]]
-   [dunaj.threading :refer [->]]
-   [dunaj.coll :refer [assoc first transduce count seq]]
-   [dunaj.function :refer [defn comp identity apply fn]]
-   [dunaj.char :refer [whitespace? char]]
-   [dunaj.string :refer [String ->str str]]
-   [dunaj.identifier :refer [name Symbol symbol]]
-   [dunaj.error :refer
-    [IException exception? throw illegal-state ex-data]]
-   [dunaj.macro :refer [defmacro]]
-   [dunaj.namespace :refer [resolve all publics]]
-   [dunaj.state.var :refer [defalias def+ var with-bindings]]
-   [dunaj.concurrent.thread :refer [Thread current-thread]]
-   [dunaj.coll.util :refer [doseq sort-by recipe dored sort]]
-   [dunaj.coll.recipe :refer
-    [concat mapcat map vals lines drop-while keys filter take remove]]
-   [dunaj.format :refer [parse print]]
-   [dunaj.regex :refer [Regex regex regex?]]
-   [dunaj.env :refer
-    [println! current-ns print! prn! out err default-printer]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [v1]]
+  [dunaj.type :refer [Any Maybe Fn Any Va U]]
+  [dunaj.boolean :refer [and or]]
+  [dunaj.host :refer [proxy proxy-super class-instance? class]]
+  [dunaj.math :refer [Integer dec + - min]]
+  [dunaj.compare :refer [= not=]]
+  [dunaj.flow :refer
+   [when-let cond let when dotimes loop if-let]]
+  [dunaj.feature :refer [IMeta meta assoc-meta]]
+  [dunaj.threading :refer [->]]
+  [dunaj.coll :refer [assoc first transduce count seq]]
+  [dunaj.function :refer [defn comp identity apply fn]]
+  [dunaj.char :refer [whitespace? char]]
+  [dunaj.string :refer [->str str]]
+  [dunaj.identifier :refer [name Symbol symbol]]
+  [dunaj.error :refer
+   [IException exception? illegal-state ex-data]]
+  [dunaj.macro :refer [defmacro]]
+  [dunaj.namespace :refer [resolve all publics]]
+  [dunaj.state.var :refer [defalias def+ with-bindings]]
+  [dunaj.concurrent.thread :refer [Thread current-thread]]
+  [dunaj.coll.util :refer [doseq sort-by recipe dored sort]]
+  [dunaj.coll.recipe :refer
+   [concat mapcat map vals lines drop-while keys filter take remove]]
+  [dunaj.format :refer [parse print]]
+  [dunaj.regex :refer [Regex regex regex?]]
+  [dunaj.env :refer
+   [println! current-ns print! prn! out err default-printer]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implemnetation details

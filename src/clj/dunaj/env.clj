@@ -19,32 +19,35 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Console"]}
-  (:api bare)
-  (:require
-   [clojure.bootstrap :refer [scratch v1]]
-   [dunaj.type :refer [Maybe I U AnyFn Fn Any Macro]]
-   [dunaj.boolean :refer [Boolean]]
-   [dunaj.flow :refer [when-let if let when]]
-   [dunaj.threading :refer [->]]
-   [dunaj.poly :refer [reify]]
-   [dunaj.coll :refer [IRed assoc]]
-   [dunaj.function :refer [defn apply]]
-   [dunaj.string :refer [String str]]
-   [dunaj.identifier :refer [Symbol]]
-   [dunaj.macro :refer [defmacro]]
-   [dunaj.state.var :refer [Var defalias var def+ defonce declare]]
-   [dunaj.uri :refer [Uri uri]]
-   [dunaj.concurrent.thread :refer [pass!]]
-   [dunaj.coll.tuple :refer [key]]
-   [dunaj.format :refer [IParserFactory IPrinterFactory print parse]]
-   [dunaj.format.charset :refer [default-charset]]
-   [dunaj.format.clj :refer [clj pretty-clj]]
-   [dunaj.resource :refer
-    [IReadable IWritable IFlushable write-one! write!
-     acquire! format grab-scope -write! -read!]]
-   [dunaj.resource.host :refer
-    [output-stream input-stream writer reader]]
-   [dunaj.version :refer [Version version]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require
+  [clojure.bootstrap :refer [scratch v1]]
+  [dunaj.type :refer [Maybe I U AnyFn Fn Any Macro]]
+  [dunaj.boolean :refer [Boolean]]
+  [dunaj.flow :refer [when-let let when]]
+  [dunaj.threading :refer [->]]
+  [dunaj.poly :refer [reify]]
+  [dunaj.coll :refer [IRed assoc]]
+  [dunaj.function :refer [defn apply]]
+  [dunaj.string :refer [str]]
+  [dunaj.identifier :refer [Symbol]]
+  [dunaj.macro :refer [defmacro]]
+  [dunaj.state.var :refer [Var defalias def+ defonce declare]]
+  [dunaj.uri :refer [Uri uri]]
+  [dunaj.concurrent.thread :refer [pass!]]
+  [dunaj.coll.tuple :refer [key]]
+  [dunaj.format :refer [IParserFactory IPrinterFactory print parse]]
+  [dunaj.format.charset :refer [default-charset]]
+  [dunaj.format.clj :refer [clj pretty-clj]]
+  [dunaj.resource :refer
+   [IReadable IWritable IFlushable write-one! write!
+    acquire! format grab-scope -write! -read!]]
+  [dunaj.resource.host :refer
+   [output-stream input-stream writer reader]]
+  [dunaj.version :refer [Version version]])
+ (:import [java.lang String Class]))
 
 
 ;;;; Implementation details

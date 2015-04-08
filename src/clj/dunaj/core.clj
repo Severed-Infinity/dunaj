@@ -17,102 +17,103 @@
   Idiomatic use is through the `:api` section of the
   `<<dunaj.lib.api.ad#ns,ns>>` macro."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require [clojure.bootstrap]
-            [clojure.core.async]
-            [clojure.bridge]
-            [dunaj.type]
-            [dunaj.boolean]
-            [dunaj.host]
-            [dunaj.host.int]
-            [dunaj.math]
-            [dunaj.math.precise]
-            [dunaj.math.unchecked]
-            [dunaj.math.angle]
-            [dunaj.bit]
-            [dunaj.host.number]
-            [dunaj.compare]
-            [dunaj.state]
-            [dunaj.flow :refer [let]]
-            [dunaj.threading]
-            [dunaj.feature :refer [alter-meta!]]
-            [dunaj.poly]
-            [dunaj.coll :refer [second assoc]]
-            [dunaj.function :refer [defn fn]]
-            [dunaj.concurrent]
-            [dunaj.concurrent.forkjoin]
-            [dunaj.coll.helper]
-            [dunaj.host.batch]
-            [dunaj.host.array]
-            [dunaj.char]
-            [dunaj.string]
-            [dunaj.time]
-            [dunaj.identifier]
-            [dunaj.error]
-            [dunaj.concurrent.thread]
-            [dunaj.macro :refer [defmacro]]
-            [dunaj.uri]
-            [dunaj.state.var]
-            [dunaj.state.ref]
-            [dunaj.state.basic]
-            [dunaj.buffer]
-            [dunaj.uuid]
-            [dunaj.concurrent.agent]
-            [dunaj.namespace]
-            [dunaj.concurrent.port]
-            [dunaj.state.weak]
-            [dunaj.set]
-            [dunaj.coll.empty-list]
-            [dunaj.coll.cons-seq]
-            [dunaj.coll.lazy-seq]
-            [dunaj.coll.vector-section]
-            [dunaj.coll.bvt-vector]
-            [dunaj.coll.rrbt-vector]
-            [dunaj.coll.primitive-vector]
-            [dunaj.coll.linked-list]
-            [dunaj.coll.batched-queue]
-            [dunaj.coll.tuple]
-            [dunaj.coll.hamt-map]
-            [dunaj.coll.hamt-set]
-            [dunaj.coll.array-map]
-            [dunaj.coll.rbt-sorted-map]
-            [dunaj.coll.rbt-sorted-set]
-            [dunaj.coll.lazy-seq-map]
-            [dunaj.coll.lazy-seq-set]
-            [dunaj.coll.util]
-            [dunaj.coll.default :refer [vec set]]
-            [dunaj.coll.recipe :refer [remove]]
-            [dunaj.function.default]
-            [dunaj.math.random]
-            [dunaj.format]
-            [dunaj.format.charset]
-            [dunaj.regex]
-            [dunaj.format.helper]
-            [dunaj.format.parser]
-            [dunaj.format.printer]
-            [dunaj.format.json]
-            [dunaj.format.html]
-            [dunaj.format.edn]
-            [dunaj.format.clj]
-            [dunaj.resource]
-            [dunaj.resource.helper]
-            [dunaj.resource.selector]
-            [dunaj.resource.file]
-            [dunaj.resource.host]
-            [dunaj.resource.pipe]
-            [dunaj.resource.udp]
-            [dunaj.resource.tcp]
-            [dunaj.resource.loopback]
-            [dunaj.resource.secure]
-            [dunaj.resource.http]
-            [dunaj.concurrent.parallel]
-            [dunaj.version]
-            [dunaj.lib]
-            [dunaj.env]
-            [dunaj.dev]
-            ;; [dunaj.main] ;; circular dependency
-            [dunaj.repl]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
 
+(bare-ns
+ (:require [clojure.bootstrap]
+           [clojure.core.async]
+           [clojure.dunaj-deftype]
+           [dunaj.type]
+           [dunaj.boolean]
+           [dunaj.host]
+           [dunaj.host.int]
+           [dunaj.math]
+           [dunaj.math.precise]
+           [dunaj.math.unchecked]
+           [dunaj.math.angle]
+           [dunaj.bit]
+           [dunaj.host.number]
+           [dunaj.compare :refer [=]]
+           [dunaj.state]
+           [dunaj.flow :refer [let if-not]]
+           [dunaj.threading]
+           [dunaj.feature :refer [alter-meta!]]
+           [dunaj.poly]
+           [dunaj.coll :refer [second assoc empty? first]]
+           [dunaj.function :refer [defn fn apply]]
+           [dunaj.concurrent]
+           [dunaj.concurrent.forkjoin]
+           [dunaj.coll.helper]
+           [dunaj.host.batch]
+           [dunaj.host.array]
+           [dunaj.char]
+           [dunaj.string]
+           [dunaj.time]
+           [dunaj.identifier :refer [symbol name]]
+           [dunaj.error]
+           [dunaj.concurrent.thread]
+           [dunaj.macro :refer [defmacro]]
+           [dunaj.uri]
+           [dunaj.state.var]
+           [dunaj.state.ref]
+           [dunaj.state.basic]
+           [dunaj.buffer]
+           [dunaj.uuid]
+           [dunaj.concurrent.agent]
+           [dunaj.namespace]
+           [dunaj.concurrent.port]
+           [dunaj.state.weak]
+           [dunaj.set]
+           [dunaj.coll.empty-list]
+           [dunaj.coll.cons-seq]
+           [dunaj.coll.lazy-seq]
+           [dunaj.coll.vector-section]
+           [dunaj.coll.bvt-vector]
+           [dunaj.coll.rrbt-vector]
+           [dunaj.coll.primitive-vector]
+           [dunaj.coll.linked-list]
+           [dunaj.coll.batched-queue]
+           [dunaj.coll.tuple]
+           [dunaj.coll.hamt-map]
+           [dunaj.coll.hamt-set]
+           [dunaj.coll.array-map]
+           [dunaj.coll.rbt-sorted-map]
+           [dunaj.coll.rbt-sorted-set]
+           [dunaj.coll.lazy-seq-map]
+           [dunaj.coll.lazy-seq-set]
+           [dunaj.coll.util]
+           [dunaj.coll.default :refer [vec set ->lst]]
+           [dunaj.coll.recipe :refer [remove filter map]]
+           [dunaj.function.default]
+           [dunaj.math.random]
+           [dunaj.format]
+           [dunaj.format.charset]
+           [dunaj.regex]
+           [dunaj.format.helper]
+           [dunaj.format.parser]
+           [dunaj.format.printer]
+           [dunaj.format.json]
+           [dunaj.format.html]
+           [dunaj.format.edn]
+           [dunaj.format.clj]
+           [dunaj.resource]
+           [dunaj.resource.helper]
+           [dunaj.resource.selector]
+           [dunaj.resource.file]
+           [dunaj.resource.host]
+           [dunaj.resource.pipe]
+           [dunaj.resource.udp]
+           [dunaj.resource.tcp]
+           [dunaj.resource.loopback]
+           [dunaj.resource.secure]
+           [dunaj.resource.http]
+           [dunaj.concurrent.parallel]
+           [dunaj.version]
+           [dunaj.lib]
+           [dunaj.env]
+           [dunaj.dev]
+           ;; [dunaj.main] ;; circular dependency
+           [dunaj.repl]))
 
 ;;;; Implementation details
 
@@ -131,7 +132,8 @@
     (alter-meta! clojure.core/*ns* assoc :qualified-specials true)
     ;; Refer peculiar special symbols directly. This is needed only
     ;; for syntax quote to work correctly when handling those symbols.
-    (refer clojure.core [catch finally &])
+    (clojure.core/import [java.lang String Class])
+    (refer clojure.core [])
     ;; Refer common API
     (refer dunaj.type
            [Any AnyFn Fn Maybe Va Predicate KeywordMap U I Required
@@ -139,7 +141,7 @@
     (refer dunaj.boolean
            [Boolean boolean? boolean false? true? not and or])
     (refer dunaj.host
-           [set! . .. proxy proxy-super Class class class-instance?
+           [.. proxy proxy-super Class+ class class-instance?
             ensure-class-instance provide-class keyword->class
             BatchManager AnyBatch Batch ArrayManager AnyArray Array
             definterface bean->map])
@@ -163,13 +165,11 @@
             adjustable? adjust! atomic? cas! switch! alter! trade!
             realized? open? cancelled? cancellable? cancel! clone])
     (refer dunaj.flow
-           [let letfn if if-not if-let if-some when when-not when-let
-            when-some cond condp case comment recur loop dotimes doto
-            while eval quote do delay force])
+           [let letfn if-not if-let if-some when when-not when-let
+            when-some cond condp case comment loop dotimes doto
+            while eval delay force])
     (refer dunaj.threading
            [-> ->> as-> cond-> cond->> some-> some->>])
-    (refer dunaj.threading.last [])
-    (refer dunaj.threading.second [])
     (refer dunaj.feature
            [IMeta IConfig validator meta assoc-meta config update-meta
             alter-meta! reset-meta! alter-config! reset-config!])
@@ -210,7 +210,7 @@
     (refer dunaj.host.array [array-manager])
     (refer dunaj.char [Char char? char])
     (refer dunaj.string
-           [canonical? canonical ICharSequence char-sequence? String
+           [canonical? canonical ICharSequence char-sequence? String+
             string? str ->str blank?])
     (refer dunaj.time
            [IInstant instant? instant now IDuration duration?
@@ -221,7 +221,7 @@
     (refer dunaj.error
            [IException exception? error illegal-argument illegal-state
             io index-out-of-bounds no-such-element npe
-            unsupported-operation ex-info ex-data try throw])
+            unsupported-operation ex-info ex-data])
     (refer dunaj.concurrent.thread
            [Thread thread-local? pass! current-thread
             ensure-thread-local sleep])
@@ -230,7 +230,7 @@
             macroexpand-all])
     (refer dunaj.uri [])
     (refer dunaj.state.var
-           [Var var? var def+ def defonce declare with-bindings])
+           [Var var? def+ defonce declare with-bindings])
     (refer dunaj.state.ref
            [IRef ref? ensure commute alter reset ref dosync])
     (refer dunaj.state.basic [Atom atom box local])
@@ -319,3 +319,20 @@
            [scratch warn-on-reflection! not-implemented assert
             time set-trace! trace set-color! pt])
     (refer dunaj.repl [])))
+
+(defmacro dunaj-ns
+  [& decls]
+  (let [gen-decl 
+        (fn [[kn & args]]
+          (apply ->lst (symbol "clojure.core" (name kn)) 
+                 (map #(->lst `quote %) args)))
+        gen-decls #(map gen-decl %)
+        ff #(= :refer-dunaj (first %))
+        decls (remove ff decls)
+        dd (filter ff decls)]
+    `(do
+       (clojure.bootstrap/remove-mappings! clojure.core/*ns*)
+       ~(if-not (empty? dd)
+          `(apply init-api nil dd)
+          `(init-api nil))
+       ~@(gen-decls decls))))

@@ -44,7 +44,7 @@
   [dunaj.math :refer [Integer]]
   [dunaj.compare :refer [= IComparable identical?]]
   [dunaj.state :refer [IReference IMutable IAdjustable ICloneable]]
-  [dunaj.flow :refer [let do when-not if-let cond]]
+  [dunaj.flow :refer [let when-not if-let cond]]
   [dunaj.feature :refer [IMeta IMutableMeta IConfig IMutableConfig]]
   [dunaj.poly :refer [deftype defprotocol]]
   [dunaj.coll :refer [empty? dissoc]]

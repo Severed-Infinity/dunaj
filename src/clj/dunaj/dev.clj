@@ -18,15 +18,16 @@
   "Helpers for developers."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
-  (:require [clojure.bootstrap :refer [v1]]
-            [dunaj.type :refer [Macro]]
-            [dunaj.flow :refer [when]]
-            [dunaj.function :refer [defn]]
-            [dunaj.macro :refer [defmacro]]
-            [dunaj.error :refer [throw]]
-            [dunaj.state.var :refer [defalias def+ reset-root! var]]
-            [dunaj.env :refer [pr! color print!]]))
+  (:require [clojure.bootstrap :refer [bare-ns]]))
+
+(bare-ns
+ (:require [clojure.bootstrap :refer [v1]]
+           [dunaj.type :refer [Macro]]
+           [dunaj.flow :refer [when]]
+           [dunaj.function :refer [defn]]
+           [dunaj.macro :refer [defmacro]]
+           [dunaj.state.var :refer [defalias def+ reset-root!]]
+           [dunaj.env :refer [pr! color print!]]))
 
 
 ;;;; Implementation details

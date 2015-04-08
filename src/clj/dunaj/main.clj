@@ -14,29 +14,33 @@
 
 (ns dunaj.main
   "Top level main function for REPL and scripts."
-  (:api bare)
+  (:refer-clojure :exclude
+   [and or class = identical? loop let cond when-not eval when
+    when-let -> meta count assoc first conj seq empty? aget defn fn
+    apply identity char canonical str resolve name symbol defmacro
+    declare doseq some print int zero? not= doto with-bindings])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [AnyFn Maybe Any]]
    [dunaj.boolean :refer [and or]]
-   [dunaj.host :refer [class-instance? class set!]]
+   [dunaj.host :refer [class-instance? class]]
    [dunaj.host.number :refer [int]]
    [dunaj.math :refer [zero?]]
    [dunaj.compare :refer [= not= sentinel identical?]]
    [dunaj.flow :refer
-    [loop if recur do let cond when-not eval when when-let doto]]
+    [loop let cond when-not eval when when-let doto]]
    [dunaj.threading :refer [->]]
    [dunaj.feature :refer [meta]]
    [dunaj.coll :refer [count assoc first conj seq empty?]]
    [dunaj.host.array :refer [aget]]
    [dunaj.function :refer [defn fn apply identity]]
    [dunaj.char :refer [Char whitespace? char]]
-   [dunaj.string :refer [String ->str canonical str]]
-   [dunaj.error :refer [IException try catch throw]]
+   [dunaj.string :refer [->str canonical str]]
+   [dunaj.error :refer [IException]]
    [dunaj.namespace :refer [resolve]]
    [dunaj.identifier :refer [Keyword name symbol]]
    [dunaj.macro :refer [defmacro]]
-   [dunaj.state.var :refer [declare def+ var]]
+   [dunaj.state.var :refer [declare def+]]
    [dunaj.coll.default :refer [->map]]
    [dunaj.coll.util :refer [dored doseq some]]
    [dunaj.format :refer [print parse print-one]]
