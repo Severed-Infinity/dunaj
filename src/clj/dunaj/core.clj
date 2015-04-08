@@ -328,11 +328,11 @@
                  (map #(->lst `quote %) args)))
         gen-decls #(map gen-decl %)
         ff #(= :refer-dunaj (first %))
-        decls (remove ff decls)
-        dd (filter ff decls)]
+        dd (vec (filter ff decls))
+        decls (remove ff decls)]
     `(do
        (clojure.bootstrap/remove-mappings! clojure.core/*ns*)
        ~(if-not (empty? dd)
-          `(apply init-api nil dd)
+          `(apply init-api ~(->lst `quote (first dd)))
           `(init-api nil))
        ~@(gen-decls decls))))
