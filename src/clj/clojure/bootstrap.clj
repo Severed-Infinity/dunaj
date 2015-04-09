@@ -1080,15 +1080,17 @@
 (def cns (cc/the-ns 'clojure.core))
 
 (cc/defn should-remove?
-  [v]
-  (or (and (cc/class? v)
-           (= "java.lang" (.getName (.getPackage ^java.lang.Class v))))
-      (and (cc/var? v)
-           (cc/identical? cns (.ns ^clojure.lang.Var v)))))
+  [s v]
+  (cc/or (cc/and (cc/class? v)
+                 (cc/= "java.lang" (.getName (.getPackage ^java.lang.Class v))))
+         (cc/and (cc/var? v)
+                 (cc/not (cc/= "loop" (cc/name s)))
+                 (cc/identical? cns (.ns ^clojure.lang.Var v)))))
 
 (cc/defn remove-mappings! [ns]
   (cc/doseq [[s v] (cc/ns-map ns)]
-    (when (should-remove? v)
+    (when (should-remove? s v)
+      (clojure.core/print s " ")
       (cc/ns-unmap ns s))))
 
 (cc/defmacro bare-ns

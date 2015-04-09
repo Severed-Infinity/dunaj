@@ -166,8 +166,8 @@
             realized? open? cancelled? cancellable? cancel! clone])
     (refer dunaj.flow
            [let letfn if-not if-let if-some when when-not when-let
-            when-some cond condp case comment loop dotimes doto
-            while eval delay force])
+            when-some cond condp case comment dotimes doto
+            while eval delay force loop])
     (refer dunaj.threading
            [-> ->> as-> cond-> cond->> some-> some->>])
     (refer dunaj.feature

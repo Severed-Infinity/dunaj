@@ -19,6 +19,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Conditionals" "Iteration" "Evaluation"]}
+  (:refer-clojure :exclude [loop if-let])
   (:require [clojure.bootstrap :refer [bare-ns]]))
 
 (bare-ns
@@ -509,12 +510,3 @@
    2 (iint 2)
    :foo (iint 8)
    3 (iint 3)))
-
-(defn ^:private coding-error-action
-  "Returns host coding error action instance for a given coder
-  error `mode`, which can be one of :replace, :ignore or :report."
-  [mode]
-  (condp clojure.core/identical? mode
-    :replace java.nio.charset.CodingErrorAction/REPLACE
-    :ignore java.nio.charset.CodingErrorAction/IGNORE
-    :report java.nio.charset.CodingErrorAction/REPORT))
