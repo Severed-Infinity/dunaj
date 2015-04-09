@@ -1077,9 +1077,19 @@
          (clojure.core/constantly ~source))
         nil)))
 
+(def cns (cc/the-ns 'clojure.core))
+
+(cc/defn should-remove?
+  [v]
+  (or (and (cc/class? v)
+           (= "java.lang" (.getName (.getPackage ^java.lang.Class v))))
+      (and (cc/var? v)
+           (cc/identical? cns (.ns ^clojure.lang.Var v)))))
+
 (cc/defn remove-mappings! [ns]
-  (cc/doseq [[s _] (cc/ns-map ns)]
-    (cc/ns-unmap ns s)))
+  (cc/doseq [[s v] (cc/ns-map ns)]
+    (when (should-remove? v)
+      (cc/ns-unmap ns s))))
 
 (cc/defmacro bare-ns
   [& decls]
