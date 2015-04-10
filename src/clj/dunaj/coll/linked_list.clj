@@ -32,29 +32,28 @@
   namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [I]]
-  [dunaj.host :refer [class-instance?]]
-  [dunaj.flow :refer [cond let]]
-  [dunaj.feature :refer [IMeta IPersistentMeta]]
-  [dunaj.poly :refer [reify deftype defrecord]]
-  [dunaj.coll :refer
-   [IEmptyable IRed ISeq IEmptyAware IPeekable ICounted IEditable
-    ICollectionFactory ISeqable IPersistentCollection IStacked
-    IPersistentList ISequential ISettleable IMutableCollection
-    first next reverse reversible? conj collection count -from-coll
-    reduced? postponed? postponed -conj! reduce -settle! edit
-    counted? settle! conj!]]
-  [dunaj.function :refer [fn]]
-  [dunaj.coll.helper :refer [advance-fn]]
-  [dunaj.state.var :refer [def+]]
-  [dunaj.coll.bvt-vector :refer [empty-bvt-vector]]
-  [dunaj.coll.empty-list :refer [empty-list]])
- (:import [java.lang Class String]))
+  (:refer-clojure :exclude
+   [reduce first reverse reduced? deftype conj! reversible? conj let
+    fn counted? reify cond next count defrecord])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [I]]
+   [dunaj.host :refer [class-instance?]]
+   [dunaj.flow :refer [cond let]]
+   [dunaj.feature :refer [IMeta IPersistentMeta]]
+   [dunaj.poly :refer [reify deftype defrecord]]
+   [dunaj.coll :refer
+    [IEmptyable IRed ISeq IEmptyAware IPeekable ICounted IEditable
+     ICollectionFactory ISeqable IPersistentCollection IStacked
+     IPersistentList ISequential ISettleable IMutableCollection
+     first next reverse reversible? conj collection count -from-coll
+     reduced? postponed? postponed -conj! reduce -settle! edit
+     counted? settle! conj!]]
+   [dunaj.function :refer [fn]]
+   [dunaj.coll.helper :refer [advance-fn]]
+   [dunaj.state.var :refer [def+]]
+   [dunaj.coll.bvt-vector :refer [empty-bvt-vector]]
+   [dunaj.coll.empty-list :refer [empty-list]]))
 
 
 ;;;; Public API

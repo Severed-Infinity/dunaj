@@ -29,47 +29,49 @@
   rather than ones in this namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Any Fn I Va Maybe]]
-  [dunaj.boolean :refer [Boolean+ boolean and or not]]
-  [dunaj.host :refer [AnyArray ArrayManager]]
-  [dunaj.host.int :refer [Int iint iinc i< iadd i2 i0]]
-  [dunaj.math :refer
-   [nneg? < integer? == <= quot dec >= zero? mod > subtract add neg?
-    one? multiply inc dec npos? /]]
-  [dunaj.compare :refer
-   [IHash IEquiv nil? hash IComparable identical?]]
-  [dunaj.flow :refer
-   [when-let cond loop let when delay when-not if-let doto if-some]]
-  [dunaj.threading :refer [->]]
-  [dunaj.feature :refer [IMeta IPersistentMeta meta]]
-  [dunaj.poly :refer [deftype defrecord extend-protocol!]]
-  [dunaj.coll :refer
-   [ISequential IEmptyable IRed ISeq IEmptyAware IPeekable ICounted
-    ICollectionFactory ISeqable ILookup IIndexed ISectionable
-    IReversible IUnpackedRed IPersistentCollection IStacked
-    IPersistentVector IAssociative IPersistentSet IEditable
-    IMutableStacked IMutableSet IMutableAssociative ISettleable
-    IMutableCollection IConvolutionFactory IInvertible
-    reduce empty? count section counted? seq empty single?
-    peek conj assoc conj! settle! edit assoc! -reduce-unpacked
-    reduced? postponed? postponed advance]]
-  [dunaj.function :refer [IInvocable fn defn apply]]
-  [dunaj.concurrent.forkjoin :refer
-   [IFoldable fork join invoke -fold]]
-  [dunaj.coll.helper :refer
-   [fold-sectionable fold-every reduce* fold* reduce-unpacked*]]
-  [dunaj.host.array :refer
-   [array-manager array to-array aget acount adapt]]
-  [dunaj.state.var :refer [def+]]
-  [dunaj.set :refer [U set-complement]]
-  [dunaj.coll.tuple :refer [pair key]]
-  [dunaj.coll.hamt-map])
- (:import [java.lang String Class]))
+  (:refer-clojure :exclude
+   [seq reduce peek aget boolean dec < delay neg? reduced? deftype
+    when-let <= if-some conj! conj let -> doto meta fn empty? hash
+    quot key when-not when > defn mod assoc! or counted? zero? nil?
+    not identical? empty / >= loop integer? cond inc if-let to-array
+    == count apply assoc defrecord and])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Any Fn I Va Maybe]]
+   [dunaj.boolean :refer [Boolean+ boolean and or not]]
+   [dunaj.host :refer [AnyArray ArrayManager]]
+   [dunaj.host.int :refer [Int iint iinc i< iadd i2 i0]]
+   [dunaj.math :refer
+    [nneg? < integer? == <= quot dec >= zero? mod > subtract add neg?
+     one? multiply inc dec npos? /]]
+   [dunaj.compare :refer
+    [IHash IEquiv nil? hash IComparable identical?]]
+   [dunaj.flow :refer
+    [when-let cond loop let when delay when-not if-let doto if-some]]
+   [dunaj.threading :refer [->]]
+   [dunaj.feature :refer [IMeta IPersistentMeta meta]]
+   [dunaj.poly :refer [deftype defrecord extend-protocol!]]
+   [dunaj.coll :refer
+    [ISequential IEmptyable IRed ISeq IEmptyAware IPeekable ICounted
+     ICollectionFactory ISeqable ILookup IIndexed ISectionable
+     IReversible IUnpackedRed IPersistentCollection IStacked
+     IPersistentVector IAssociative IPersistentSet IEditable
+     IMutableStacked IMutableSet IMutableAssociative ISettleable
+     IMutableCollection IConvolutionFactory IInvertible
+     reduce empty? count section counted? seq empty single?
+     peek conj assoc conj! settle! edit assoc! -reduce-unpacked
+     reduced? postponed? postponed advance]]
+   [dunaj.function :refer [IInvocable fn defn apply]]
+   [dunaj.concurrent.forkjoin :refer
+    [IFoldable fork join invoke -fold]]
+   [dunaj.coll.helper :refer
+    [fold-sectionable fold-every reduce* fold* reduce-unpacked*]]
+   [dunaj.host.array :refer
+    [array-manager array to-array aget acount adapt]]
+   [dunaj.state.var :refer [def+]]
+   [dunaj.set :refer [U set-complement]]
+   [dunaj.coll.tuple :refer [pair key]]
+   [dunaj.coll.hamt-map]))
 
 
 ;;;; Implementation details

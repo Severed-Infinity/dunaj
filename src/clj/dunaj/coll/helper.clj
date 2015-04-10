@@ -28,37 +28,38 @@
      characteristics of original collection. That way Dunaj can
      provide more features for processed collections apart from
      `IRed`."]]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer
-   [str gensym for keyword? list symbol map? conj count first
-    take-while drop-while vector? cons hash-map second contains?
-    list? concat]]
-  [clojure.bootstrap :refer
-   [defmacro v1 def+ not-implemented strip-sigs-vec get-sigs-vec]]
-  [dunaj.type :refer [Any AnyFn Fn Maybe U]]
-  [dunaj.boolean :refer [Boolean+ and or not false? true? boolean]]
-  [dunaj.host :refer [Class+ provide-class class-instance?]]
-  [dunaj.host.int :refer [Int iinc iadd imul i0 i-1 i1 i31 iloop i2
-                          imax idiv i== iint i<= izero? ione? i< i>]]
-  [dunaj.math :refer [Integer+ == neg? > zero?]]
-  [dunaj.compare :refer [nil? = identical? compare]]
-  [dunaj.flow :refer [let cond when when-not loop when-let]]
-  [dunaj.feature :refer [assoc-meta]]
-  [dunaj.poly :refer
-   [Type extend-protocol! defprotocol deftype satisfies?]]
-  [dunaj.coll :refer
-   [Reduced IHomogeneous IRed ICounted ISectionable IBatchedRed ISeq
-    IUnpackedRed reduced? reduced red? section rest -section ISeqable
-    sequential? -reduce-batched -reduce reduce -reduce-unpacked
-    sectionable? seq counted? item-type postponed IReducing
-    postponed? advance unsafe-advance!]]
-  [dunaj.function :refer [defn fn apply comp identity]]
-  [dunaj.concurrent.forkjoin :refer
-   [IFoldable -fold fold fork join invoke ForkJoinPool folding]])
- (:import [java.lang String Class]))
+  (:refer-clojure :exclude
+   [mapcat seq reduce satisfies? = boolean rest comp sequential? neg?
+    reduced? deftype when-let let identity fn when-not when > defn or
+    counted? zero? nil? not identical? defprotocol true? loop cond
+    reduced defmacro false? == apply compare and])
+  (:require
+   [clojure.core :refer
+    [str gensym for keyword? list symbol map? conj count first
+     take-while drop-while vector? cons hash-map second contains?
+     list? concat]]
+   [clojure.bootstrap :refer
+    [defmacro v1 def+ not-implemented strip-sigs-vec get-sigs-vec]]
+   [dunaj.type :refer [Any AnyFn Fn Maybe U]]
+   [dunaj.boolean :refer [Boolean+ and or not false? true? boolean]]
+   [dunaj.host :refer [Class+ provide-class class-instance?]]
+   [dunaj.host.int :refer [Int iinc iadd imul i0 i-1 i1 i31 iloop i2
+                           imax idiv i== iint i<= izero? ione? i< i>]]
+   [dunaj.math :refer [Integer+ == neg? > zero?]]
+   [dunaj.compare :refer [nil? = identical? compare]]
+   [dunaj.flow :refer [let cond when when-not loop when-let]]
+   [dunaj.feature :refer [assoc-meta]]
+   [dunaj.poly :refer
+    [Type extend-protocol! defprotocol deftype satisfies?]]
+   [dunaj.coll :refer
+    [Reduced IHomogeneous IRed ICounted ISectionable IBatchedRed ISeq
+     IUnpackedRed reduced? reduced red? section rest -section ISeqable
+     sequential? -reduce-batched -reduce reduce -reduce-unpacked
+     sectionable? seq counted? item-type postponed IReducing
+     postponed? advance unsafe-advance!]]
+   [dunaj.function :refer [defn fn apply comp identity]]
+   [dunaj.concurrent.forkjoin :refer
+    [IFoldable -fold fold fork join invoke ForkJoinPool folding]]))
 
 
 ;;;; Implementation details

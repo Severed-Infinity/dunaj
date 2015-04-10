@@ -42,46 +42,46 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright
    "2012, 2015, Michał Marczyk, Rich Hickey and Clojure contributors"}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core.rrb-vector]
-  [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
-  [clojure.core.rrb-vector.nodes :refer [ranges]]
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Any AnyFn Fn Va U I Maybe]]
-  [dunaj.boolean :refer [and or not]]
-  [dunaj.host :refer [AnyArray]]
-  [dunaj.host.int :refer
-   [Int i< iinc i0 i<< i5 iint i<= i>= i> i31 i32 idiv imul idec
-    iand inneg? ineg? isub iloop izero? i>> imin iadd imax]]
-  [dunaj.math :refer
-   [nneg? < integer? dec >= > add neg? inc dec zero? ==]]
-  [dunaj.compare :refer [IHash IEquiv IComparable nil? hash =]]
-  [dunaj.flow :refer [cond loop let when if-not doto]]
-  [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
-  [dunaj.poly :refer [deftype extend-type!]]
-  [dunaj.coll :refer
-   [ISequential IEmptyable IRed IEmptyAware IPeekable ICounted
-    ICollectionFactory ISeqable ILookup IIndexed ISectionable
-    IReversible IEditable ISettleable IMutableStacked IStacked
-    IMutableAssociative IMutableCollection IPersistentCollection
-    IPersistentVector IAssociative ICatenable ISliceable
-    first next postponed? postponed advance reduce empty? count -nth
-    section counted? seq reduced? conj! settle! edit conj]]
-  [dunaj.function :refer [IInvocable fn defn]]
-  [dunaj.concurrent.forkjoin :refer [IFoldable]]
-  [dunaj.host.array :refer [aget]]
-  [dunaj.coll.helper :refer
-   [fold-sectionable prepare-ordered-section advance-fn]]
-  [dunaj.error :refer [index-out-of-bounds]]
-  [dunaj.coll.vector-section :refer
-   [IReversedVectorSectionHelper IVectorSectionHelper
-    reversed-vector-section vector-section]]
-  [dunaj.state.var :refer [def+]]
-  [dunaj.coll.bvt-vector])
- (:import [java.lang String Class]))
+  (:refer-clojure :exclude
+   [seq reduce first aget = dec < if-not neg? reduced? deftype conj!
+    conj let doto meta fn empty? hash when > defn or counted? zero?
+    nil? not >= loop integer? cond inc next == count and])
+  (:require
+   [clojure.core.rrb-vector]
+   [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
+   [clojure.core.rrb-vector.nodes :refer [ranges]]
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Any AnyFn Fn Va U I Maybe]]
+   [dunaj.boolean :refer [and or not]]
+   [dunaj.host :refer [AnyArray]]
+   [dunaj.host.int :refer
+    [Int i< iinc i0 i<< i5 iint i<= i>= i> i31 i32 idiv imul idec
+     iand inneg? ineg? isub iloop izero? i>> imin iadd imax]]
+   [dunaj.math :refer
+    [nneg? < integer? dec >= > add neg? inc dec zero? ==]]
+   [dunaj.compare :refer [IHash IEquiv IComparable nil? hash =]]
+   [dunaj.flow :refer [cond loop let when if-not doto]]
+   [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
+   [dunaj.poly :refer [deftype extend-type!]]
+   [dunaj.coll :refer
+    [ISequential IEmptyable IRed IEmptyAware IPeekable ICounted
+     ICollectionFactory ISeqable ILookup IIndexed ISectionable
+     IReversible IEditable ISettleable IMutableStacked IStacked
+     IMutableAssociative IMutableCollection IPersistentCollection
+     IPersistentVector IAssociative ICatenable ISliceable
+     first next postponed? postponed advance reduce empty? count -nth
+     section counted? seq reduced? conj! settle! edit conj]]
+   [dunaj.function :refer [IInvocable fn defn]]
+   [dunaj.concurrent.forkjoin :refer [IFoldable]]
+   [dunaj.host.array :refer [aget]]
+   [dunaj.coll.helper :refer
+    [fold-sectionable prepare-ordered-section advance-fn]]
+   [dunaj.error :refer [index-out-of-bounds]]
+   [dunaj.coll.vector-section :refer
+    [IReversedVectorSectionHelper IVectorSectionHelper
+     reversed-vector-section vector-section]]
+   [dunaj.state.var :refer [def+]]
+   [dunaj.coll.bvt-vector]))
 
 
 ;;;; Implementation details

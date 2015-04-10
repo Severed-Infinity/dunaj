@@ -50,60 +50,63 @@
   rear of the collection."
   {:categories ["Primary" "Pairs"]
    :authors ["Jozef Wagner" "Zachary Tellman"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
+  (:refer-clojure :exclude
+   [key val seq seq? aget = dec < delay neg? reduced? deftype when-let
+    <= conj! let -> meta fn empty? hash quot when > defn symbol mod
+    declare assoc! or counted? zero? nil? not identical? empty >= loop
+    integer? condp gensym cond partial defmacro inc next case list? ==
+    count apply assoc compare defrecord and symbol? ->> coll?])
+  (:require
+   [clojure.core :refer
+    [map pr-str interpose re-find list vec doall range mapcat last
+     butlast into reduce first second]]
+   [clojure.bootstrap :refer [v1]]
+   [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
+   [dunaj.type :refer [Any]]
+   [dunaj.boolean :refer [and or not]]
+   [dunaj.host :refer [class-instance?]]
+   [dunaj.host.int :refer [Int iint iadd imul i31 i0 i1 isub i< iinc]]
+   [dunaj.math :refer
+    [nneg? < integer? == <= quot dec >= zero? mod > subtract
+     add neg? multiply inc dec npos? one?]]
+   [dunaj.compare :refer
+    [IHash IEquiv nil? hash IComparable identical? =
+     IHashBasis hash-from-basis compare basis-seed hash-basis
+     next-basis ordered-hash-factory -hash-basis]]
+   [dunaj.flow :refer [when-let cond loop let when delay condp case]]
+   [dunaj.feature :refer
+    [IMeta IPersistentMeta -assoc-meta assoc-meta meta]]
+   [dunaj.threading :refer [-> ->>]]
+   [dunaj.poly :refer [identical-type? defrecord deftype]]
+   [dunaj.coll :refer
+    [next ISequential IEmptyable IRed
+     ISeq IEmptyAware IPeekable ICounted ICollectionFactory
+     ISeqable ILookup IIndexed ISectionable IReversible -nth
+     empty? count section counted? seq ->collection
+     IUnpackedRed collection
+     IFlippable -reverse -slice -section -contains? -rest
+     empty ISliceable reduced? conj! settle! edit
+     postponed postponed? seq? list? coll?
+     IEditable ISettleable assoc!
+     IMutableStacked IMutableMap IMutableAssociative
+     IMutableCollection -edit IAssociative -assoc -cat
+     assoc ICatenable IStacked
+     IPersistentCollection IPersistentVector]]
+   [dunaj.function :refer [IInvocable fn defn apply partial]]
+   [dunaj.host.array :refer [aget aset!]]
+   [dunaj.coll.helper :refer
+    [equiv-ordered coll->iterator index-of equals-ordered
+     compare-ordered coll->list-iterator advance-fn]]
+   [dunaj.macro :refer [defmacro gensym]]
+   [dunaj.string :refer [->str]]
+   [dunaj.identifier :refer [symbol? symbol]]
+   [dunaj.error :refer [index-out-of-bounds illegal-argument]]
+   [dunaj.state.var :refer [def+ declare]]
+   [dunaj.coll.empty-list]
+   [dunaj.coll.cons-seq]
+   [dunaj.coll.bvt-vector :refer
+    [bvt-vector-factory empty-bvt-vector]]))
 
-(bare-ns
- (:require
-  [clojure.core :refer
-   [map pr-str interpose re-find list vec doall range mapcat last
-    butlast into reduce first second]]
-  [clojure.bootstrap :refer [v1]]
-  [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
-  [dunaj.type :refer [Any]]
-  [dunaj.boolean :refer [and or not]]
-  [dunaj.host :refer [class-instance?]]
-  [dunaj.host.int :refer [Int iint iadd imul i31 i0 i1 isub i< iinc]]
-  [dunaj.math :refer
-   [nneg? < integer? == <= quot dec >= zero? mod > subtract
-    add neg? multiply inc dec npos? one?]]
-  [dunaj.compare :refer
-   [IHash IEquiv nil? hash IComparable identical? =
-    IHashBasis hash-from-basis compare basis-seed hash-basis
-    next-basis ordered-hash-factory -hash-basis]]
-  [dunaj.flow :refer [when-let cond loop let when delay condp case]]
-  [dunaj.feature :refer
-   [IMeta IPersistentMeta -assoc-meta assoc-meta meta]]
-  [dunaj.threading :refer [-> ->>]]
-  [dunaj.poly :refer [identical-type? defrecord deftype]]
-  [dunaj.coll :refer
-   [next ISequential IEmptyable IRed
-    ISeq IEmptyAware IPeekable ICounted ICollectionFactory
-    ISeqable ILookup IIndexed ISectionable IReversible -nth
-    empty? count section counted? seq ->collection
-    IUnpackedRed collection
-    IFlippable -reverse -slice -section -contains? -rest
-    empty ISliceable reduced? conj! settle! edit
-    postponed postponed? seq? list? coll?
-    IEditable ISettleable assoc!
-    IMutableStacked IMutableMap IMutableAssociative
-    IMutableCollection -edit IAssociative -assoc -cat
-    assoc ICatenable IStacked
-    IPersistentCollection IPersistentVector]]
-  [dunaj.function :refer [IInvocable fn defn apply partial]]
-  [dunaj.host.array :refer [aget aset!]]
-  [dunaj.coll.helper :refer
-   [equiv-ordered coll->iterator index-of equals-ordered
-    compare-ordered coll->list-iterator advance-fn]]
-  [dunaj.macro :refer [defmacro gensym]]
-  [dunaj.string :refer [->str]]
-  [dunaj.identifier :refer [symbol? symbol]]
-  [dunaj.error :refer [index-out-of-bounds illegal-argument]]
-  [dunaj.state.var :refer [def+ declare]]
-  [dunaj.coll.empty-list]
-  [dunaj.coll.cons-seq]
-  [dunaj.coll.bvt-vector :refer
-   [bvt-vector-factory empty-bvt-vector]])
- (:import [java.lang String Class]))
 
 ;;;; Implementation details
 

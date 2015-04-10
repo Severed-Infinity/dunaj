@@ -15,69 +15,77 @@
   recipes."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Generators" "Transducers"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Maybe Any AnyFn U I Va Predicate Fn]]
-  [dunaj.boolean :refer [Boolean+ and or not true?]]
-  [dunaj.host :refer [BatchManager ArrayManager AnyBatch Class+
-                      class-instance? provide-class keyword->class]]
-  [dunaj.host.int :refer
-   [Int iadd iint iinc idec i0 isub i< izero? i== iloop i<= imin i1
-    imul inpos? ipos? imax i-1 ineg? i2 i>= inneg? ineg i> irem
-    imax0 idiv iLF iCR]]
-  [dunaj.host.number :refer [long]]
-  [dunaj.math :refer [Number+ Integer+ == zero? min npos? one? quot
-                      neg? < > / <= max >= pos? integer?]]
-  [dunaj.math.unchecked :as mu]
-  [dunaj.compare :refer
-   [nil? IHash IEquiv = hash sentinel identical? defsentinel]]
-  [dunaj.flow :refer [let cond delay if-not while
-                      if-some when when-not if-let]]
-  [dunaj.state :refer
-   [IPending IReference deref clone ICloneable reset!]]
-  [dunaj.feature :refer [IMeta IPersistentMeta]]
-  [dunaj.poly :refer [Type deftype satisfies? extend-protocol!]]
-  [dunaj.threading :refer [-> ->>]]
-  [dunaj.coll :refer
-   [IEmptyable IRed ISequential ISeqable ISeq IEmptyAware IPeekable
-    IPersistentCollection ICollectionFactory IHomogeneous ICounted
-    IBatchedRed IUnpackedRed ISectionable IReversible IFlippable
-    IReducing ISettleable Transducer
-    item-type conj counted? count empty? reduce seq single? first
-    sectionable? next section reduced? postponed? postponed advance
-    -reduce-unpacked -item-type -flip get reduced sequential? full?
-    -section settle! conj! -reduce-batched -reduce -count peek pop!
-    -capacity -full? -peek -conj! unsafe-advance! edit second cat!
-    reduce-augmented nth reducing double?]]
-  [dunaj.function :refer
-   [Function defn fn apply comp fn? identity complement constantly]]
-  [dunaj.concurrent.forkjoin :refer
-   [IFoldable -fold invoke fork join folding]]
-  [dunaj.coll.helper :refer
-   [reduce* reduce-batched* reduce-unpacked* fold-every -inner-coll
-    adapt* prepare-ordered-section fold-sectionable defreducing
-    defxform reducing-function fold* strip-reduced reduced-advance
-    split-adjust reduce-augmented* transduce* transfold*
-    adaptcbUs adaptcbus adaptCbuS adaptcs adaptbu adaptu adaptCS
-    advance-fn finish-advance reduce-with-batched* red-to-seq]]
-  [dunaj.host.batch :refer
-   [decide-item-type item-types-match?
-    provide-batch-size batch-manager select-item-type]]
-  [dunaj.host.array :refer [array-manager]]
-  [dunaj.string :refer [String+ empty-string MutableString]]
-  [dunaj.identifier :refer [Keyword]]
-  [dunaj.error :refer [ex-info illegal-argument]]
-  [dunaj.state.var :refer [declare def+ replace-var!]]
-  [dunaj.state.basic :refer [unsynchronized-reference]]
-  [dunaj.buffer :refer [sliding-buffer buffer]]
-  [dunaj.coll.util :refer [some into every? doall recipe]]
-  [dunaj.coll.cons-seq :refer [cons]]
-  [dunaj.coll.tuple :refer [tuple pair key val empty-tuple]]
-  [dunaj.coll.default :refer []])
- (:import [java.lang Class String]))
+  (:refer-clojure :exclude
+   [take-last take-nth iterate dedupe take map keep mapcat range
+    take-while repeatedly remove interleave cycle replace concat
+    reductions drop split-at vals drop-last distinct partition
+    partition-all partition-by flatten keys filter split-with
+    interpose drop-while repeat seq reduce every? while satisfies?
+    first fn? doall peek = < delay comp cons pos? if-not sequential?
+    neg? reduced? deftype <= if-some conj! min pop! conj let -> get
+    identity into long fn empty? hash quot key when-not when second >
+    defn declare or reset! counted? zero? some nth nil? val not
+    identical? true? / >= integer? cond ex-info reduced next if-let
+    max == count apply deref complement constantly and ->>])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Maybe Any AnyFn U I Va Predicate Fn]]
+   [dunaj.boolean :refer [Boolean+ and or not true?]]
+   [dunaj.host :refer [BatchManager ArrayManager AnyBatch Class+
+                       class-instance? provide-class keyword->class]]
+   [dunaj.host.int :refer
+    [Int iadd iint iinc idec i0 isub i< izero? i== iloop i<= imin i1
+     imul inpos? ipos? imax i-1 ineg? i2 i>= inneg? ineg i> irem
+     imax0 idiv iLF iCR]]
+   [dunaj.host.number :refer [long]]
+   [dunaj.math :refer [Number+ Integer+ == zero? min npos? one? quot
+                       neg? < > / <= max >= pos? integer?]]
+   [dunaj.math.unchecked :as mu]
+   [dunaj.compare :refer
+    [nil? IHash IEquiv = hash sentinel identical? defsentinel]]
+   [dunaj.flow :refer [let cond delay if-not while
+                       if-some when when-not if-let]]
+   [dunaj.state :refer
+    [IPending IReference deref clone ICloneable reset!]]
+   [dunaj.feature :refer [IMeta IPersistentMeta]]
+   [dunaj.poly :refer [Type deftype satisfies? extend-protocol!]]
+   [dunaj.threading :refer [-> ->>]]
+   [dunaj.coll :refer
+    [IEmptyable IRed ISequential ISeqable ISeq IEmptyAware IPeekable
+     IPersistentCollection ICollectionFactory IHomogeneous ICounted
+     IBatchedRed IUnpackedRed ISectionable IReversible IFlippable
+     IReducing ISettleable Transducer
+     item-type conj counted? count empty? reduce seq single? first
+     sectionable? next section reduced? postponed? postponed advance
+     -reduce-unpacked -item-type -flip get reduced sequential? full?
+     -section settle! conj! -reduce-batched -reduce -count peek pop!
+     -capacity -full? -peek -conj! unsafe-advance! edit second cat!
+     reduce-augmented nth reducing double?]]
+   [dunaj.function :refer
+    [Function defn fn apply comp fn? identity complement constantly]]
+   [dunaj.concurrent.forkjoin :refer
+    [IFoldable -fold invoke fork join folding]]
+   [dunaj.coll.helper :refer
+    [reduce* reduce-batched* reduce-unpacked* fold-every -inner-coll
+     adapt* prepare-ordered-section fold-sectionable defreducing
+     defxform reducing-function fold* strip-reduced reduced-advance
+     split-adjust reduce-augmented* transduce* transfold*
+     adaptcbUs adaptcbus adaptCbuS adaptcs adaptbu adaptu adaptCS
+     advance-fn finish-advance reduce-with-batched* red-to-seq]]
+   [dunaj.host.batch :refer
+    [decide-item-type item-types-match?
+     provide-batch-size batch-manager select-item-type]]
+   [dunaj.host.array :refer [array-manager]]
+   [dunaj.string :refer [String+ empty-string MutableString]]
+   [dunaj.identifier :refer [Keyword]]
+   [dunaj.error :refer [ex-info illegal-argument]]
+   [dunaj.state.var :refer [declare def+ replace-var!]]
+   [dunaj.state.basic :refer [unsynchronized-reference]]
+   [dunaj.buffer :refer [sliding-buffer buffer]]
+   [dunaj.coll.util :refer [some into every? doall recipe]]
+   [dunaj.coll.cons-seq :refer [cons]]
+   [dunaj.coll.tuple :refer [tuple pair key val empty-tuple]]
+   [dunaj.coll.default :refer []]))
 
 
 ;;;; Implementation details

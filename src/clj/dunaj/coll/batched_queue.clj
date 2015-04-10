@@ -27,27 +27,26 @@
   rather than ones in this namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.host :refer [class-instance?]]
-  [dunaj.compare :refer [IHash IEquiv nil?]]
-  [dunaj.flow :refer [when-let cond loop let doto]]
-  [dunaj.feature :refer [IMeta IPersistentMeta]]
-  [dunaj.poly :refer [deftype defrecord]]
-  [dunaj.coll :refer
-   [IEmptyable IRed ISeq ISequential IPersistentCollection IStacked
-    IPersistentList IEmptyAware IPeekable ICounted ICollectionFactory
-    ISeqable collection first next reverse reversible? reduce conj
-    seq postponed postponed? reduced? count]]
-  [dunaj.function :refer [apply fn defn]]
-  [dunaj.coll.helper :refer [reduce* advance-fn]]
-  [dunaj.state.var :refer [def+]]
-  [dunaj.coll.empty-list]
-  [dunaj.coll.bvt-vector])
- (:import [java.lang Class String]))
+  (:refer-clojure :exclude
+   [seq reduce first reverse reduced? deftype when-let reversible?
+    conj let doto fn defn nil? loop cond next count apply defrecord])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.host :refer [class-instance?]]
+   [dunaj.compare :refer [IHash IEquiv nil?]]
+   [dunaj.flow :refer [when-let cond loop let doto]]
+   [dunaj.feature :refer [IMeta IPersistentMeta]]
+   [dunaj.poly :refer [deftype defrecord]]
+   [dunaj.coll :refer
+    [IEmptyable IRed ISeq ISequential IPersistentCollection IStacked
+     IPersistentList IEmptyAware IPeekable ICounted ICollectionFactory
+     ISeqable collection first next reverse reversible? reduce conj
+     seq postponed postponed? reduced? count]]
+   [dunaj.function :refer [apply fn defn]]
+   [dunaj.coll.helper :refer [reduce* advance-fn]]
+   [dunaj.state.var :refer [def+]]
+   [dunaj.coll.empty-list]
+   [dunaj.coll.bvt-vector]))
 
 
 ;;;; Public API
