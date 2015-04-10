@@ -40,28 +40,29 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Comparison" "Operations" "Rounding"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :as cc :refer
-   [ratio? assert apply hash-map cond -> = binding when-not
-    if-not seq first rest and declare nil? double long]]
-  [clojure.bootstrap :refer [defalias defn def+ fn loop let v1
-                             defprotocol not-implemented defmacro]]
-  [dunaj.type :refer [Fn Maybe U Any Va Signature]]
-  [dunaj.boolean :refer [Boolean not or]]
-  [dunaj.host :refer [class-instance?]]
-  [dunaj.host.int :refer [iint]])
- (:import
-  [java.lang Math String]
-  [java.math BigDecimal MathContext RoundingMode BigInteger]
-  [clojure.lang BigInt Numbers]))
+  (:refer-clojure :exclude
+   [decimal? dec < pos? neg? num float? <= * min with-precision quot >
+    even? mod - zero? rem / >= integer? numerator rationalize odd? inc
+    + max == rational? number? denominator let fn defn or not
+    defprotocol loop defmacro])
+  (:require
+   [clojure.core :as cc :refer
+    [ratio? assert apply hash-map cond -> = binding when-not
+     if-not seq first rest and declare nil? double long]]
+   [clojure.bootstrap :refer [defalias defn def+ fn loop let v1
+                              defprotocol not-implemented defmacro]]
+   [dunaj.type :refer [Fn Maybe U Any Va Signature]]
+   [dunaj.boolean :refer [Boolean+ not or]]
+   [dunaj.host :refer [class-instance?]]
+   [dunaj.host.int :refer [iint]])
+  (:import
+   [java.math BigDecimal MathContext RoundingMode BigInteger]
+   [clojure.lang BigInt Numbers]))
 
 
 ;;;; Public API
 
-(def+ Number :- Signature
+(def+ Number+ :- Signature
   "A type signature for numbers."
   {:added v1
    :see '[number? Integer+ Float+ Decimal Rational INumerical num]

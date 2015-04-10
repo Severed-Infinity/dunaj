@@ -38,7 +38,7 @@
   [clojure.core :refer [take-while]]
   [clojure.bootstrap :refer [v1 not-implemented]]
   [dunaj.type :refer [Any Fn U I Va Maybe AnyFn]]
-  [dunaj.boolean :refer [Boolean boolean and or not]]
+  [dunaj.boolean :refer [Boolean+ boolean and or not]]
   [dunaj.host :refer
    [AnyArray ArrayManager class-instance? proxy]]
   [dunaj.host.int :refer

@@ -21,7 +21,7 @@
  (:require
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [Maybe Any AnyFn U I Va Predicate Fn]]
-  [dunaj.boolean :refer [Boolean and or not true?]]
+  [dunaj.boolean :refer [Boolean+ and or not true?]]
   [dunaj.host :refer [BatchManager ArrayManager AnyBatch Class+
                       class-instance? provide-class keyword->class]]
   [dunaj.host.int :refer

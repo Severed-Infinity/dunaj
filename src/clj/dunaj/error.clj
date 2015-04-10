@@ -23,7 +23,7 @@
   [clojure.bootstrap :refer
    [defprotocol defn defalias defmacro v1 not-implemented]]
   [dunaj.type :refer [Fn Maybe KeywordMap]]
-  [dunaj.boolean :refer [Boolean]]
+  [dunaj.boolean :refer [Boolean+]]
   [dunaj.host :refer [bean->map class]]
   [dunaj.flow :refer [let when]]
   [dunaj.state :refer [IReference]]

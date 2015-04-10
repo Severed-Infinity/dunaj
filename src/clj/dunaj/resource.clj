@@ -53,7 +53,7 @@
   [clojure.bootstrap :refer [v1]]
   [clojure.core.async]
   [dunaj.type :refer [Fn AnyFn Any Maybe U I]]
-  [dunaj.boolean :refer [Boolean or and not]]
+  [dunaj.boolean :refer [Boolean+ or and not]]
   [dunaj.host :refer [keyword->class class-instance?]]
   [dunaj.host.int :refer [i0]]
   [dunaj.math :refer [Integer+ integer? pos? odd? max neg? == min]]

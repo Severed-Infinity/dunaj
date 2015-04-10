@@ -40,7 +40,7 @@
   [clojure.bootstrap :refer [v1]]
   [clojure.pprint]
   [dunaj.type :refer [Any Fn I Maybe AnyFn Va KeywordMap Predicate]]
-  [dunaj.boolean :refer [Boolean not or and]]
+  [dunaj.boolean :refer [Boolean+ not or and]]
   [dunaj.host :refer [class-instance?]]
   [dunaj.host.int :refer [Int iadd iint]]
   [dunaj.compare :refer [IHash IEquiv identical? hash -hash =]]

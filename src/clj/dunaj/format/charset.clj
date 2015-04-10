@@ -28,7 +28,7 @@
  (:require
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [Maybe Va Fn Any AnyFn U I]]
-  [dunaj.boolean :refer [Boolean or not and]]
+  [dunaj.boolean :refer [Boolean+ or not and]]
   [dunaj.host :refer
    [Class+ Array AnyBatch BatchManager keyword->class]]
   [dunaj.host.int :refer [Int iint iadd i0]]

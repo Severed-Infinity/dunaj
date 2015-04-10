@@ -21,7 +21,7 @@
  (:require
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [Fn Maybe Any U I AnyFn Predicate]]
-  [dunaj.boolean :refer [Boolean boolean or not and]]
+  [dunaj.boolean :refer [Boolean+ boolean or not and]]
   [dunaj.host :refer
    [Class+ AnyBatch BatchManager keyword->class]]
   [dunaj.host.int :refer

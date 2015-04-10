@@ -23,7 +23,7 @@
   [clojure.core.async]
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-  [dunaj.boolean :refer [Boolean and or not true? false? boolean]]
+  [dunaj.boolean :refer [Boolean+ and or not true? false? boolean]]
   [dunaj.host :refer [Class+ Batch keyword->class proxy]]
   [dunaj.host.int :refer [Int iint iadd i0 i1 imin i== ipos? i< i<<]]
   [dunaj.math :refer [Integer+ max neg? == < zero? nneg?]]

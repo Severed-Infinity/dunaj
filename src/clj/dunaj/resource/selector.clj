@@ -20,7 +20,7 @@
  (:require
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-  [dunaj.boolean :refer [Boolean and or not]]
+  [dunaj.boolean :refer [Boolean+ and or not]]
   [dunaj.host :refer [keyword->class]]
   [dunaj.host.int :refer [Int iint iadd izero? iand ipos? ior i0]]
   [dunaj.math :refer [Integer+ max neg?]]

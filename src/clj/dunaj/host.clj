@@ -37,7 +37,7 @@
                              v1 primitive-type-hint defrecord]]
   [dunaj.type :refer
    [Macro Fn Any Maybe Signature TypeHint IHintedSignature]]
-  [dunaj.boolean :refer [Boolean]])
+  [dunaj.boolean :refer [Boolean+]])
  (:import [java.lang String Class]))
 
 ;;;; Public API

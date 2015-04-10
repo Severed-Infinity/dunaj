@@ -25,7 +25,7 @@
  (:require
   [clojure.bootstrap :refer [scratch v1]]
   [dunaj.type :refer [Maybe I U AnyFn Fn Any Macro]]
-  [dunaj.boolean :refer [Boolean]]
+  [dunaj.boolean :refer [Boolean+]]
   [dunaj.flow :refer [when-let let when]]
   [dunaj.threading :refer [->]]
   [dunaj.poly :refer [reify]]

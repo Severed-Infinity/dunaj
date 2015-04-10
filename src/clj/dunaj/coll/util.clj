@@ -28,7 +28,7 @@
   [clojure.bootstrap :refer [v1 not-implemented]]
   [clojure.set]
   [dunaj.type :refer [U Maybe Any AnyFn Fn Va Predicate Macro]]
-  [dunaj.boolean :refer [Boolean and or not]]
+  [dunaj.boolean :refer [Boolean+ and or not]]
   [dunaj.host :refer [Class+ class-instance?]]
   [dunaj.host.int :refer [Int iint iinc izero? ipos? idec iloop]]
   [dunaj.math :refer [Integer+ == dec]]

@@ -31,7 +31,7 @@
  (:require
   [clojure.bootstrap :refer [defn defalias v1]]
   [dunaj.type :refer [Maybe Any AnyFn Fn U Predicate]]
-  [dunaj.boolean :refer [Boolean and or]]
+  [dunaj.boolean :refer [Boolean+ and or]]
   [dunaj.host.int :refer [iint i== i<= i32 iLF iCR]]
   [dunaj.math :refer [INumerical]]
   [dunaj.compare :refer [IComparable]]

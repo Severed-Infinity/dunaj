@@ -37,7 +37,7 @@
    [methods prefers symbol get map? some cons remove ->>]]
   [clojure.bootstrap :refer [defalias def+ v1 type-map defn fn]]
   [dunaj.type :refer [Signature Required Fn Any U Va Macro]]
-  [dunaj.boolean :refer [Boolean boolean or and]]
+  [dunaj.boolean :refer [Boolean+ boolean or and]]
   [dunaj.host :refer [Class+ class class? class-instance? supers]]
   [dunaj.compare :refer [identical?]]
   [dunaj.state :refer [ICloneable]]

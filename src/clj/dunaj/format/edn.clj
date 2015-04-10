@@ -25,7 +25,7 @@
  (:require
   [clojure.bootstrap :refer [scratch v1]]
   [dunaj.type :refer [AnyFn Any Fn Maybe U I]]
-  [dunaj.boolean :refer [Boolean and or not true? false?]]
+  [dunaj.boolean :refer [Boolean+ and or not true? false?]]
   [dunaj.host :refer [keyword->class class-instance?]]
   [dunaj.host.int :refer
    [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imax iadd

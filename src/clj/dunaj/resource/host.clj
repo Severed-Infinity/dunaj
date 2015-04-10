@@ -20,7 +20,7 @@
   [clojure.bootstrap :refer [v1]]
   [clojure.core.async]
   [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-  [dunaj.boolean :refer [Boolean and or not boolean]]
+  [dunaj.boolean :refer [Boolean+ and or not boolean]]
   [dunaj.host :refer [Batch AnyArray ArrayManager Array
                       keyword->class class-instance? proxy]]
   [dunaj.host.int :refer [iint iinc i0 i-1 i< iadd]]

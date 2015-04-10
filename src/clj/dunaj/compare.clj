@@ -39,7 +39,7 @@
   [clojure.bootstrap :refer
    [defprotocol defalias defn defonce v1 def+ defrecord fn defmacro]]
   [dunaj.type :refer [Predicate Fn Any Va Unknown R]]
-  [dunaj.boolean :refer [Boolean]]
+  [dunaj.boolean :refer [Boolean+]]
   [dunaj.host.int :refer [Int iint iadd imul i31 i0 i1]]
   [dunaj.math :refer [Integer+]])
  (:import [java.lang String]))

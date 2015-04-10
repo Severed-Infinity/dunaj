@@ -20,7 +20,7 @@
   [clojure.bootstrap :refer [v1]]
   [clojure.core.async]
   [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-  [dunaj.boolean :refer [Boolean and or not true? false?]]
+  [dunaj.boolean :refer [Boolean+ and or not true? false?]]
   [dunaj.host :refer [Class+ BatchManager Batch AnyBatch]]
   [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]
   [dunaj.math :refer [Integer+ max neg? == < zero? nneg?]]

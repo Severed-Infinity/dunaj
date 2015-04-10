@@ -22,7 +22,7 @@
  (:require
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [U]]
-  [dunaj.boolean :refer [Boolean]]
+  [dunaj.boolean :refer [Boolean+]]
   [dunaj.math :refer [Integer+]]
   [dunaj.compare :refer [IComparable identical?]]
   [dunaj.flow :refer [condp]]

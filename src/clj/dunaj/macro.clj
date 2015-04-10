@@ -24,7 +24,7 @@
  (:require
   [clojure.bootstrap :refer [defalias v1 not-implemented]]
   [dunaj.type :refer [Fn Any Macro]]
-  [dunaj.boolean :refer [Boolean]]
+  [dunaj.boolean :refer [Boolean+]]
   [dunaj.function :refer [defn]]
   [dunaj.identifier :refer [Symbol]])
  (:import [java.lang String]))

@@ -21,7 +21,7 @@
 (bare-ns
  (:require [clojure.bootstrap :refer [v1]]
            [dunaj.type :refer [Maybe]]
-           [dunaj.boolean :refer [Boolean or]]
+           [dunaj.boolean :refer [Boolean+ or]]
            [dunaj.compare :refer [=]]
            [dunaj.flow :refer [when-let when let]]
            [dunaj.poly :refer [defrecord]]

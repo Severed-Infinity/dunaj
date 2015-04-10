@@ -31,7 +31,7 @@
     remove-ns gensym ns-unmap ns-aliases the-ns]]
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [Any Fn AnyFn U Maybe Va I]]
-  [dunaj.boolean :refer [Boolean and not]]
+  [dunaj.boolean :refer [Boolean+ and not]]
   [dunaj.host :refer [Class+ class-instance?]]
   [dunaj.compare :refer [nil? =]]
   [dunaj.state :refer [IMutable IReference IAtomic ICloneable]]

@@ -32,7 +32,7 @@
   [clojure.bootstrap :refer [v1 not-implemented]]
   [dunaj.type :refer
    [Fn Any U I Va Maybe AnyFn Predicate Signature KeywordMap]]
-  [dunaj.boolean :refer [Boolean and]]
+  [dunaj.boolean :refer [Boolean+ and]]
   [dunaj.math :refer [Integer+]]
   [dunaj.state :refer [IOpenAware -open? IReference]]
   [dunaj.flow :refer [let when if-let]]

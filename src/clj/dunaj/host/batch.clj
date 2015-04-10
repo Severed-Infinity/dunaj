@@ -38,7 +38,7 @@
   [clojure.core :refer [assert get declare]]
   [clojure.bootstrap :refer [def+ v1 deftype replace-var!]]
   [dunaj.type :refer [U Maybe AnyFn Any Fn]]
-  [dunaj.boolean :refer [Boolean not and or]]
+  [dunaj.boolean :refer [Boolean+ not and or]]
   [dunaj.host :refer
    [Class+ BatchManager AnyBatch AnyArray Batch
     class-instance? definterface class provide-class keyword->class]]

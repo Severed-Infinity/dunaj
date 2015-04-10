@@ -29,7 +29,7 @@
    [defmacro defprotocol deftype defn def+ v1
     replace-var! milliseconds loop let fn]]
   [dunaj.type :refer [Any Fn Va]]
-  [dunaj.boolean :refer [Boolean boolean]]
+  [dunaj.boolean :refer [Boolean+ boolean]]
   [dunaj.math :refer [Integer+ odd?]]
   [dunaj.compare :refer [identical?]])
  (:import [java.lang Class String]))

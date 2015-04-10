@@ -20,7 +20,7 @@
  (:require
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [Any Fn Maybe I U AnyFn KeywordMap]]
-  [dunaj.boolean :refer [Boolean or not and boolean]]
+  [dunaj.boolean :refer [Boolean+ or not and boolean]]
   [dunaj.host :refer
    [Class+ AnyBatch BatchManager keyword->class class-instance?]]
   [dunaj.host.int :refer

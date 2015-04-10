@@ -42,7 +42,7 @@
  (:require
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [Any Fn U I Va Maybe AnyFn]]
-  [dunaj.boolean :refer [Boolean boolean and or not]]
+  [dunaj.boolean :refer [Boolean+ boolean and or not]]
   [dunaj.host :refer [AnyArray ArrayManager]]
   [dunaj.host.int :refer
    [Int iint iinc i< iadd i2 i0 imul isub idiv]]

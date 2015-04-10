@@ -23,7 +23,7 @@
  (:require
   [clojure.bootstrap :refer [defmacro def+ v1]]
   [dunaj.type :refer [Any KeywordMap Maybe U AnyFn]]
-  [dunaj.boolean :refer [Boolean and not xor]]
+  [dunaj.boolean :refer [Boolean+ and not xor]]
   [dunaj.math :refer [Integer+ zero? rem]]
   [dunaj.host.number :refer [int long]]
   [dunaj.compare :refer [not= identical? nil?]]

@@ -67,7 +67,7 @@
  (:require
   [clojure.bootstrap :refer [defalias v1]]
   [dunaj.type :refer [Fn Va]]
-  [dunaj.boolean :refer [Boolean]]
+  [dunaj.boolean :refer [Boolean+]]
   [dunaj.math :refer [Integer+]]))
 
 

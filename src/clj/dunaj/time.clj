@@ -27,7 +27,7 @@
   [clojure.bootstrap :refer
    [replace-var! def+ defprotocol deftype defrecord v1 fn defn]]
   [dunaj.type :refer [U Any AnyFn Fn]]
-  [dunaj.boolean :refer [Boolean and]]
+  [dunaj.boolean :refer [Boolean+ and]]
   [dunaj.math :refer [subtract dec quot neg? INumerical rem num trunc
                       Integer+ integer? decimal? multiply Decimal]]
   [dunaj.math.precise :as dmp]

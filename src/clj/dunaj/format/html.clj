@@ -19,7 +19,7 @@
  (:require
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
-  [dunaj.boolean :refer [Boolean and or not true? false?]]
+  [dunaj.boolean :refer [Boolean+ and or not true? false?]]
   [dunaj.host :refer [Class+ class? keyword->class]]
   [dunaj.flow :refer [when when-not cond let loop case]]
   [dunaj.feature :refer [IMeta IPersistentMeta meta meta-ref]]

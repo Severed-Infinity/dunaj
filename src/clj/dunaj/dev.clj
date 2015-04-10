@@ -18,16 +18,16 @@
   "Helpers for developers."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require [clojure.bootstrap :refer [v1]]
-           [dunaj.type :refer [Macro]]
-           [dunaj.flow :refer [when]]
-           [dunaj.function :refer [defn]]
-           [dunaj.macro :refer [defmacro]]
-           [dunaj.state.var :refer [defalias def+ reset-root!]]
-           [dunaj.env :refer [pr! color print!]]))
+  (:refer-clojure :exclude
+   [time assert seq set first namespace map let not= vec when second
+    defn concat defmacro keys filter])
+  (:require [clojure.bootstrap :refer [v1]]
+            [dunaj.type :refer [Macro]]
+            [dunaj.flow :refer [when]]
+            [dunaj.function :refer [defn]]
+            [dunaj.macro :refer [defmacro]]
+            [dunaj.state.var :refer [defalias def+ reset-root!]]
+            [dunaj.env :refer [pr! color print!]]))
 
 
 ;;;; Implementation details
@@ -153,7 +153,7 @@
 
  []
 
- (let [sym 'dunaj.boolean]
+ (let [sym 'dunaj.buffer]
    (clojure.core/println "(:refer-clojure :exclude" 
                          (vec (conflicts sym)) ")"))
  

@@ -52,7 +52,7 @@
  (:require
   [clojure.bootstrap :refer [assert-primitive v1 not-implemented]]
   [dunaj.type :refer [Any Fn Va I U Maybe Predicate]]
-  [dunaj.boolean :refer [Boolean and or not boolean]]
+  [dunaj.boolean :refer [Boolean+ and or not boolean]]
   [dunaj.math :refer [Integer+ Float+ >= rem < neg? <= zero? > == /]]
   [dunaj.math.unchecked :as mu]
   [dunaj.host :refer [Batch AnyBatch keyword->class]]

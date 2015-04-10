@@ -34,7 +34,7 @@
   [clojure.bootstrap :refer [def+ defn defrecord defalias defmacro
                              v1 not-implemented]]
   [dunaj.type :refer [Maybe Any AnyFn Fn U Predicate]]
-  [dunaj.boolean :refer [Boolean and or]]
+  [dunaj.boolean :refer [Boolean+ and or]]
   [dunaj.host :refer [keyword->class class-instance? Array Batch]]
   [dunaj.host.int :refer
    [i0 iadd i< iint isub i== Int iMINUS idec iinc inneg? iloop

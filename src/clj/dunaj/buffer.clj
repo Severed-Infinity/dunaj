@@ -42,40 +42,40 @@
   CAUTION: There are no synchronization guarantees for buffer types,
   use them with care!"
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Any AnyFn Fn U Maybe]]
-  [dunaj.boolean :refer [Boolean not or and boolean]]
-  [dunaj.host :refer [ArrayManager AnyArray Class+ provide-class]]
-  [dunaj.host.int :refer [Int iint iadd isub i>= ipos? i> i== i0
-                          izero? iinc idec inpos? i< i2 imul]]
-  [dunaj.math :refer [<]]
-  [dunaj.compare :refer [nil?]]
-  [dunaj.state :refer [ICloneable clone]]
-  [dunaj.flow :refer [when let cond when-not]]
-  [dunaj.poly :refer [deftype Type defprotocol]]
-  [dunaj.coll :refer
-   [ICapped IPeekable IEmptyAware ICounted IIndexed ISeqable
-    IFullAware IRed IHomogeneous IBatchedRed IUnpackedRed
-    ISectionable IMutableCollection IMutableStacked ISettleable
-    count empty? full? pop! item-type -count reduced? postponed?
-    postponed advance -capacity -conj! -pop! -peek -settle!
-    -full?]]
-  [dunaj.function :refer [defn fn]]
-  [dunaj.concurrent.forkjoin :refer [IFoldable fork join invoke]]
-  [dunaj.coll.helper :refer
-   [adaptCbuS fold-sectionable prepare-ordered-section advance-fn
-    red-to-seq]]
-  [dunaj.host.array :refer [array-manager]]
-  [dunaj.host.batch :refer
-   [batch-support? batch-on item-types-match?]]
-  [dunaj.error :refer [no-such-element ex-info illegal-argument]]
-  [dunaj.string :refer [->str]]
-  [dunaj.identifier :refer [Keyword]]
-  [dunaj.state.var :refer [declare]]))
+  (:refer-clojure :exclude
+   [boolean < reduced? deftype pop! let fn empty? when-not when defn
+    declare or nil? not defprotocol cond ex-info count and])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Any AnyFn Fn U Maybe]]
+   [dunaj.boolean :refer [not or and boolean]]
+   [dunaj.host :refer [ArrayManager AnyArray Class+ provide-class]]
+   [dunaj.host.int :refer [Int iint iadd isub i>= ipos? i> i== i0
+                           izero? iinc idec inpos? i< i2 imul]]
+   [dunaj.math :refer [<]]
+   [dunaj.compare :refer [nil?]]
+   [dunaj.state :refer [ICloneable clone]]
+   [dunaj.flow :refer [when let cond when-not]]
+   [dunaj.poly :refer [deftype Type defprotocol]]
+   [dunaj.coll :refer
+    [ICapped IPeekable IEmptyAware ICounted IIndexed ISeqable
+     IFullAware IRed IHomogeneous IBatchedRed IUnpackedRed
+     ISectionable IMutableCollection IMutableStacked ISettleable
+     count empty? full? pop! item-type -count reduced? postponed?
+     postponed advance -capacity -conj! -pop! -peek -settle!
+     -full?]]
+   [dunaj.function :refer [defn fn]]
+   [dunaj.concurrent.forkjoin :refer [IFoldable fork join invoke]]
+   [dunaj.coll.helper :refer
+    [adaptCbuS fold-sectionable prepare-ordered-section advance-fn
+     red-to-seq]]
+   [dunaj.host.array :refer [array-manager]]
+   [dunaj.host.batch :refer
+    [batch-support? batch-on item-types-match?]]
+   [dunaj.error :refer [no-such-element ex-info illegal-argument]]
+   [dunaj.string :refer [->str]]
+   [dunaj.identifier :refer [Keyword]]
+   [dunaj.state.var :refer [declare]]))
 
 
 ;;;; Public API

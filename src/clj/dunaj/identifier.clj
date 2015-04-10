@@ -25,7 +25,7 @@
   [clojure.bootstrap :refer
    [defalias defprotocol defn deftype replace-var! v1 scratch]]
   [dunaj.type :refer [Maybe Fn U]]
-  [dunaj.boolean :refer [Boolean and]]
+  [dunaj.boolean :refer [Boolean+ and]]
   [dunaj.host.int :refer [i== iCOLON i0 i1 iint]]
   [dunaj.compare :refer [IHash IComparable =]]
   [dunaj.flow :refer [cond]]
