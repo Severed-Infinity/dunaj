@@ -48,7 +48,7 @@
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn U Maybe]]
-   [dunaj.boolean :refer [not or and boolean]]
+   [dunaj.boolean :refer [Boolean+ not or and boolean]]
    [dunaj.host :refer [ArrayManager AnyArray Class+ provide-class]]
    [dunaj.host.int :refer [Int iint iadd isub i>= ipos? i> i== i0
                            izero? iinc idec inpos? i< i2 imul]]

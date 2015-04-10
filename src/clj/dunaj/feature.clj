@@ -14,18 +14,18 @@
   "Feature protocols for metadata, configuration and validation."
   {:authors ["Jozef Wagner"]
    :categories ["Metadata" "Configuration"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer [atom apply]]
-  [clojure.bootstrap :refer [deftype defn defprotocol defalias v1]]
-  [clojure.dunaj-deftype :refer [extend-type satisfies?]]
-  [dunaj.type :refer [Any KeywordMap I Fn AnyFn]]
-  [dunaj.compare :refer [identical?]]
-  [dunaj.state :refer
-   [IMutable IReference IAtomic atomic? reset! alter!]]
-  [dunaj.flow :refer [when let]]))
+  (:refer-clojure :exclude
+   [meta reset-meta! alter-meta! satisfies? deftype let when defn
+    reset! extend-type identical? defprotocol])
+  (:require
+   [clojure.core :refer [atom apply]]
+   [clojure.bootstrap :refer [deftype defn defprotocol defalias v1]]
+   [clojure.dunaj-deftype :refer [extend-type satisfies?]]
+   [dunaj.type :refer [Any KeywordMap I Fn AnyFn]]
+   [dunaj.compare :refer [identical?]]
+   [dunaj.state :refer
+    [IMutable IReference IAtomic atomic? reset! alter!]]
+   [dunaj.flow :refer [when let]]))
 
 
 ;;;; Public API

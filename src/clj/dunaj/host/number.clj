@@ -23,7 +23,7 @@
 (bare-ns
  (:require [clojure.bootstrap :refer [defalias v1]]
            [dunaj.type :refer [Fn Any]]
-           [dunaj.math :refer [Number]])
+           [dunaj.math :refer [Number+]])
  (:import [java.lang String]))
 
 

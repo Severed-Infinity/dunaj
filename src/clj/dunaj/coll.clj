@@ -139,28 +139,34 @@
                 "Mutable" "Factory"]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer
-   [partition apply assert str meta with-meta lazy-seq gensym cons]]
-  [clojure.dunaj-deftype :refer [satisfies? extend-protocol]]
-  [clojure.core.protocols :refer [coll-reduce]]
-  [clojure.bootstrap :refer
-   [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec
-    not-implemented]]
-  [dunaj.type :refer [Fn Any Va Maybe AnyFn U Signature]]
-  [dunaj.boolean :refer [Boolean+ boolean and or not]]
-  [dunaj.host :refer [class class-instance? AnyBatch Class+]]
-  [dunaj.host.int :refer [iinc i0 iint]]
-  [dunaj.math :refer [Integer+ > == zero? odd?]]
-  [dunaj.compare :refer [sentinel nil? identical? defsentinel]]
-  [dunaj.state :refer [IReference]]
-  [dunaj.flow :refer [if-not cond let when-not when loop if-let]]
-  [dunaj.threading :refer [->]]
-  [dunaj.poly :refer [Type deftype defprotocol identical-type?]])
- (:import [java.lang String]))
+  (:refer-clojure :exclude
+   [seq reduce when-first contains? first seq? dissoc peek vector?
+    rest reverse disj nthrest sequential? reduced? disj! set? cat
+    conj! pop! reversible? conj transduce map? get empty? second
+    associative? pop dissoc! assoc! ffirst counted? assoc-in nnext nth
+    sorted? update update-in empty not-empty reduced next list? count
+    assoc nthnext coll? get-in satisfies? boolean if-not deftype let
+    -> fn when-not when > defn or zero? nil? extend-protocol not
+    identical? defprotocol loop cond defmacro odd? if-let class ==
+    and])
+  (:require
+   [clojure.core :refer
+    [partition apply assert str meta with-meta lazy-seq gensym cons]]
+   [clojure.dunaj-deftype :refer [satisfies? extend-protocol]]
+   [clojure.core.protocols :refer [coll-reduce]]
+   [clojure.bootstrap :refer
+    [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec
+     not-implemented]]
+   [dunaj.type :refer [Fn Any Va Maybe AnyFn U Signature]]
+   [dunaj.boolean :refer [Boolean+ boolean and or not]]
+   [dunaj.host :refer [class class-instance? AnyBatch Class+]]
+   [dunaj.host.int :refer [iinc i0 iint]]
+   [dunaj.math :refer [Integer+ > == zero? odd?]]
+   [dunaj.compare :refer [sentinel nil? identical? defsentinel]]
+   [dunaj.state :refer [IReference]]
+   [dunaj.flow :refer [if-not cond let when-not when loop if-let]]
+   [dunaj.threading :refer [->]]
+   [dunaj.poly :refer [Type deftype defprotocol identical-type?]]))
 
 
 ;;;; Implementation details

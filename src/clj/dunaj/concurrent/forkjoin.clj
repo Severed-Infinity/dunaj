@@ -28,7 +28,7 @@
  (:require [clojure.core.reducers :refer [coll-fold]]
            [clojure.bootstrap :refer [def+ v1 replace-var!]]
            [dunaj.type :refer [Fn Any AnyFn U Maybe]]
-           [dunaj.boolean :refer [and or not Boolean true?]]
+           [dunaj.boolean :refer [and or not Boolean+ true?]]
            [dunaj.host :refer [class-instance?]]
            [dunaj.math :refer [Integer+]]
            [dunaj.compare :refer [nil? identical?]]

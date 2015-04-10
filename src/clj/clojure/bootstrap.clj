@@ -1100,4 +1100,6 @@
         gen-decls #(map gen-decl %)]
     `(do
        (remove-mappings! cc/*ns*)
-       ~@(gen-decls decls))))
+       ~@(gen-decls decls)
+       (clojure.core/import '[java.lang ~'Boolean ~'Number ~'Integer ~'Float]))))
+

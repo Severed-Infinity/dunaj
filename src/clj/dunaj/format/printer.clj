@@ -14,60 +14,64 @@
   "Fast printer engine with helper functions."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Colorer" "Indentation"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Any Fn Maybe I U AnyFn KeywordMap]]
-  [dunaj.boolean :refer [Boolean+ or not and boolean]]
-  [dunaj.host :refer
-   [Class+ AnyBatch BatchManager keyword->class class-instance?]]
-  [dunaj.host.int :refer
-   [iint iinc i== i< isub izero? idec ineg? i> i< i<< iadd iloop i0
-    i1 i2 i3 i4 i5 i8 ixFF ione? i-1 imul i27 idigit? ioctal? ihexa?
-    ihexa->int idigit->int iHT iCR iLF iCOLON iSPACE iCOMMA i<= imax
-    iQUOTE iAPOS iBACKSLASH ipos? iLBRACKET iSMALL_M iSMALL_B
-    iSMALL_F iSMALL_N iSMALL_R iSMALL_U iSMALL_T]]
-  [dunaj.math :refer
-   [Integer+ max min < integer? == > neg? pos? zero? one?]]
-  [dunaj.math.unchecked :as mu]
-  [dunaj.compare :refer [identical? nil?]]
-  [dunaj.state :refer [reset! realized? IReference clone]]
-  [dunaj.flow :refer [let when cond when-not loop condp
-                      if-not if-let delay while]]
-  [dunaj.threading :refer [-> ->>]]
-  [dunaj.feature :refer [IConfig meta]]
-  [dunaj.poly :refer [Type satisfies? defprotocol deftype type]]
-  [dunaj.coll :refer
-   [reduced reduce IRed IHomogeneous reduced? assoc vector? list? pop
-    IBatchedRed first second rest empty? postponed? postponed peek
-    advance unsafe-advance! IReducing conj reducing Transducer
-    next ISeq ISequential ISeqable seq single? count unsafe-postponed
-    IPersistentList settle! edit]]
-  [dunaj.coll.helper :refer
-   [reduce* reduce-with-batched* reduce-augmented* finish-advance
-    defxform reduced-advance strip-reduced red-to-seq]]
-  [dunaj.host.array :refer [array-manager array aget acount]]
-  [dunaj.host.batch :refer
-   [batch-manager select-item-type batch-support?
-    item-types-match? batch-manager-from decide-item-type
-    provide-batch-size provide-batch-manager]]
-  [dunaj.function :refer [Function fn defn apply comp identity]]
-  [dunaj.macro :refer [defmacro]]
-  [dunaj.error :refer
-   [illegal-argument illegal-state unsupported-operation]]
-  [dunaj.identifier :refer [INamed Keyword name symbol symbol?]]
-  [dunaj.state.var :refer [Var def+]]
-  [dunaj.state.basic :refer [unsynchronized-reference]]
-  [dunaj.string :refer [->str str empty-string string? camel-case]]
-  [dunaj.format :refer [default-formatter-batch-size]]
-  [dunaj.coll.default :refer [->lst]]
-  [dunaj.coll.util :refer [some merge]]
-  [dunaj.coll.recipe :refer [concat mapcat partition cap]]
-  [dunaj.coll.tuple :as ct :refer [tuple]]
-  [dunaj.format.helper :refer [string-to-batch!]])
- (:import [java.lang Class String]))
+  (:refer-clojure :exclude
+   [seq reduce while satisfies? first peek aget vector? boolean < rest
+    delay mapcat comp pos? if-not neg? reduced? deftype min conj let
+    -> identity meta fn empty? string? when-not when second > defn
+    concat symbol pop or reset! name zero? some nil? not type
+    identical? defprotocol partition loop merge integer? condp cond
+    reduced defmacro str next if-let list? max == count apply assoc
+    realized? and symbol? ->>])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Any Fn Maybe I U AnyFn KeywordMap]]
+   [dunaj.boolean :refer [Boolean+ or not and boolean]]
+   [dunaj.host :refer
+    [Class+ AnyBatch BatchManager keyword->class class-instance?]]
+   [dunaj.host.int :refer
+    [iint iinc i== i< isub izero? idec ineg? i> i< i<< iadd iloop i0
+     i1 i2 i3 i4 i5 i8 ixFF ione? i-1 imul i27 idigit? ioctal? ihexa?
+     ihexa->int idigit->int iHT iCR iLF iCOLON iSPACE iCOMMA i<= imax
+     iQUOTE iAPOS iBACKSLASH ipos? iLBRACKET iSMALL_M iSMALL_B
+     iSMALL_F iSMALL_N iSMALL_R iSMALL_U iSMALL_T]]
+   [dunaj.math :refer
+    [Integer+ max min < integer? == > neg? pos? zero? one?]]
+   [dunaj.math.unchecked :as mu]
+   [dunaj.compare :refer [identical? nil?]]
+   [dunaj.state :refer [reset! realized? IReference clone]]
+   [dunaj.flow :refer [let when cond when-not loop condp
+                       if-not if-let delay while]]
+   [dunaj.threading :refer [-> ->>]]
+   [dunaj.feature :refer [IConfig meta]]
+   [dunaj.poly :refer [Type satisfies? defprotocol deftype type]]
+   [dunaj.coll :refer
+    [reduced reduce IRed IHomogeneous reduced? assoc vector? list? pop
+     IBatchedRed first second rest empty? postponed? postponed peek
+     advance unsafe-advance! IReducing conj reducing Transducer
+     next ISeq ISequential ISeqable seq single? count unsafe-postponed
+     IPersistentList settle! edit]]
+   [dunaj.coll.helper :refer
+    [reduce* reduce-with-batched* reduce-augmented* finish-advance
+     defxform reduced-advance strip-reduced red-to-seq]]
+   [dunaj.host.array :refer [array-manager array aget acount]]
+   [dunaj.host.batch :refer
+    [batch-manager select-item-type batch-support?
+     item-types-match? batch-manager-from decide-item-type
+     provide-batch-size provide-batch-manager]]
+   [dunaj.function :refer [Function fn defn apply comp identity]]
+   [dunaj.macro :refer [defmacro]]
+   [dunaj.error :refer
+    [illegal-argument illegal-state unsupported-operation]]
+   [dunaj.identifier :refer [INamed Keyword name symbol symbol?]]
+   [dunaj.state.var :refer [Var def+]]
+   [dunaj.state.basic :refer [unsynchronized-reference]]
+   [dunaj.string :refer [->str str empty-string string? camel-case]]
+   [dunaj.format :refer [default-formatter-batch-size]]
+   [dunaj.coll.default :refer [->lst]]
+   [dunaj.coll.util :refer [some merge]]
+   [dunaj.coll.recipe :refer [concat mapcat partition cap]]
+   [dunaj.coll.tuple :as ct :refer [tuple]]
+   [dunaj.format.helper :refer [string-to-batch!]]))
 
 
 ;;;; Public API

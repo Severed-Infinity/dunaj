@@ -29,21 +29,22 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Multimethods"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer
-   [methods prefers symbol get map? some cons remove ->>]]
-  [clojure.bootstrap :refer [defalias def+ v1 type-map defn fn]]
-  [dunaj.type :refer [Signature Required Fn Any U Va Macro]]
-  [dunaj.boolean :refer [Boolean+ boolean or and]]
-  [dunaj.host :refer [Class+ class class? class-instance? supers]]
-  [dunaj.compare :refer [identical?]]
-  [dunaj.state :refer [ICloneable]]
-  [dunaj.flow :refer [let when-let]]
-  [dunaj.feature :refer [IConfig meta]])
- (:import [java.lang Class]))
+  (:refer-clojure :exclude
+   [satisfies? isa? make-hierarchy deftype extends? defmethod reify
+    instance? record? type defprotocol descendants ancestors extenders
+    get-method defmulti parents defrecord boolean when-let let meta fn
+    defn or class? identical? class supers and])
+  (:require
+   [clojure.core :refer
+    [methods prefers symbol get map? some cons remove ->>]]
+   [clojure.bootstrap :refer [defalias def+ v1 type-map defn fn]]
+   [dunaj.type :refer [Signature Required Fn Any U Va Macro]]
+   [dunaj.boolean :refer [Boolean+ boolean or and]]
+   [dunaj.host :refer [Class+ class class? class-instance? supers]]
+   [dunaj.compare :refer [identical?]]
+   [dunaj.state :refer [ICloneable]]
+   [dunaj.flow :refer [let when-let]]
+   [dunaj.feature :refer [IConfig meta]]))
 
 
 ;;;; Public API

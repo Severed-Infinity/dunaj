@@ -29,7 +29,7 @@
     imul inpos? ipos? imax i-1 ineg? i2 i>= inneg? ineg i> irem
     imax0 idiv iLF iCR]]
   [dunaj.host.number :refer [long]]
-  [dunaj.math :refer [Number Integer+ == zero? min npos? one? quot
+  [dunaj.math :refer [Number+ Integer+ == zero? min npos? one? quot
                       neg? < > / <= max >= pos? integer?]]
   [dunaj.math.unchecked :as mu]
   [dunaj.compare :refer

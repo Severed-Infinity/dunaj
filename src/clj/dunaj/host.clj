@@ -38,7 +38,7 @@
   [dunaj.type :refer
    [Macro Fn Any Maybe Signature TypeHint IHintedSignature]]
   [dunaj.boolean :refer [Boolean+]])
- (:import [java.lang String Class]))
+ (:import [java.lang String Class Boolean]))
 
 ;;;; Public API
 

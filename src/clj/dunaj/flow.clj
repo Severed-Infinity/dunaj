@@ -19,10 +19,10 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Conditionals" "Iteration" "Evaluation"]}
-  (:refer-clojure :exclude [loop if-let])
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
+  (:refer-clojure :exclude
+   [while delay eval if-not when-let if-some let doto when-not when
+    force dotimes letfn loop condp cond if-let case comment when-some
+    satisfies? deftype defn nil? defprotocol defmacro ==])
  (:require
   [clojure.core :refer [locking list list*]]
   [clojure.dunaj-deftype :refer [satisfies?]]
@@ -30,8 +30,7 @@
    [defalias defmacro defprotocol deftype defn v1 replace-var!]]
   [dunaj.type :refer [Macro Fn Va Any]]
   [dunaj.compare :refer [nil?]]
-  [dunaj.state :refer [IReference IPending]])
- (:import [java.lang String Class]))
+  [dunaj.state :refer [IReference IPending]]))
 
 
 ;;;; Public API

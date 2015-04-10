@@ -153,7 +153,7 @@
 
  []
 
- (let [sym 'dunaj.buffer]
+ (let [sym 'dunaj.format.printer]
    (clojure.core/println "(:refer-clojure :exclude" 
                          (vec (conflicts sym)) ")"))
  

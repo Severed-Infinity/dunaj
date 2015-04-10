@@ -34,7 +34,7 @@
  (:require [clojure.core :refer [reduce let]]
            [clojure.bootstrap :refer [defalias defn v1]]
            [dunaj.type :refer [Fn Va]]
-           [dunaj.math :refer [Number]])
+           [dunaj.math :refer [Number+]])
  (:import [java.lang String]))
 
 

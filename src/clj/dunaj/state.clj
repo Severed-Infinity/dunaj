@@ -32,7 +32,7 @@
   [dunaj.boolean :refer [Boolean+ boolean]]
   [dunaj.math :refer [Integer+ odd?]]
   [dunaj.compare :refer [identical?]])
- (:import [java.lang Class String]))
+ (:import [java.lang Class String Boolean]))
 
 
 ;;;; Implementation details
