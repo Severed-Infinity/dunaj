@@ -149,15 +149,7 @@
           [dunaj.coll :refer [seq second first]]
           [dunaj.coll.util :refer []]
           [dunaj.coll.default :refer [set vec]]
-          [dunaj.coll.recipe :refer [concat filter keys map]]]
-
- []
-
- (let [sym 'dunaj.version]
-   (clojure.core/println "(:refer-clojure :exclude" 
-                         (vec (conflicts sym)) ")"))
- 
-)
+          [dunaj.coll.recipe :refer [concat filter keys map]]])
 
 (defn conflicts
   ([sym] 

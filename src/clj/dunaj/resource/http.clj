@@ -14,75 +14,79 @@
   "Resource for fetching data through http with very basic
   functionalities."
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [clojure.core.async]
-  [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-  [dunaj.boolean :refer
-   [Boolean+ and or not boolean boolean? true? false?]]
-  [dunaj.host :refer [Class+ BatchManager Batch AnyBatch
-                      keyword->class class-instance?]]
-  [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]
-  [dunaj.host.number :refer [long]]
-  [dunaj.math :refer [Integer+ integer? max neg? == < zero? nneg?]]
-  [dunaj.compare :refer [nil? = identical?]]
-  [dunaj.state :refer
-   [IOpenAware IReference IMutable IAdjustable ICloneable
-    ensure-io reset! adjust! ensure-open io!]]
-  [dunaj.flow :refer
-   [let loop cond when-not when condp if-let when-let]]
-  [dunaj.feature :refer [IConfig]]
-  [dunaj.poly :refer
-   [reify defrecord deftype defprotocol satisfies?]]
-  [dunaj.coll :refer
-   [IRed ICounted IBatchedRed IHomogeneous IUnpackedRed seq single?
-    -reduce-unpacked second nth reduced? -reduce-batched rest empty?
-    item-type reduce contains? assoc conj postponed? postponed
-    unsafe-advance! provide-sequential counted? count first ISeqable
-    -reduce-batched unsafe-postponed]]
-  [dunaj.function :refer [fn defn identity apply]]
-  [dunaj.coll.helper :refer [reduce-with-batched* reduce* red-to-seq]]
-  [dunaj.concurrent.thread :refer
-   [Thread+ IThreadLocal IPassableThreadLocal
-    current-thread ensure-thread-local]]
-  [dunaj.concurrent.port :refer
-   [IMult -tap! -untap! -untap-all! chan put! <!! close!]]
-  [dunaj.time :refer [milliseconds]]
-  [dunaj.uri :refer [Uri uri? uri]]
-  [dunaj.macro :refer [defmacro]]
-  [dunaj.identifier :refer [Keyword keyword name symbol named?]]
-  [dunaj.state.var :refer [def+ declare]]
-  [dunaj.coll.default :refer [vec]]
-  [dunaj.coll.recipe :refer
-   [keep map take-nth partition-by interpose concat]]
-  [dunaj.coll.util :refer
-   [every? merge merge-with unpacked batched doseq]]
-  [dunaj.host.array :refer
-   [array array-manager aget byte-array adapt]]
-  [dunaj.host.batch :refer
-   [provide-batch-size select-item-type batch-manager
-    item-types-match?]]
-  [dunaj.string :refer [String+ string? ->str str]]
-  [dunaj.error :refer
-   [IFailAware IFailable IException
-    illegal-argument illegal-state fragile io
-    opened-fragile fail! unsupported-operation]]
-  [dunaj.buffer :refer [dropping-buffer]]
-  [dunaj.format :refer [parse]]
-  [dunaj.regex]
-  [dunaj.resource :refer
-   [IImmutableReadable IControllable IFlushable IReadable IWritable
-    ISeekable IStatusable IReleasable IAcquirableFactory
-    acquire! read!]]
-  [dunaj.resource.helper :refer
-   [register-factory! defreleasable readable-resource-recipe
-    basic-write!]]
-  [dunaj.resource.selector :refer
-   [ISelectable register* deregister*]])
- (:import [java.lang String Class]))
+  (:refer-clojure :exclude
+   [seq reduce contains? every? satisfies? take-nth first aget =
+    boolean map < rest keep merge-with doseq neg? reduced? deftype
+    when-let conj let identity long fn empty? string? when-not vec
+    when second defn concat symbol declare or reset! name counted? and
+    byte-array zero? nth nil? reify not identical? defprotocol true?
+    loop merge integer? partition-by condp cond defmacro keyword str
+    if-let false? io! max == count apply interpose assoc defrecord])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [clojure.core.async]
+   [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
+   [dunaj.boolean :refer
+    [Boolean+ and or not boolean boolean? true? false?]]
+   [dunaj.host :refer [Class+ BatchManager Batch AnyBatch
+                       keyword->class class-instance?]]
+   [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]
+   [dunaj.host.number :refer [long]]
+   [dunaj.math :refer [Integer+ integer? max neg? == < zero? nneg?]]
+   [dunaj.compare :refer [nil? = identical?]]
+   [dunaj.state :refer
+    [IOpenAware IReference IMutable IAdjustable ICloneable
+     ensure-io reset! adjust! ensure-open io!]]
+   [dunaj.flow :refer
+    [let loop cond when-not when condp if-let when-let]]
+   [dunaj.feature :refer [IConfig]]
+   [dunaj.poly :refer
+    [reify defrecord deftype defprotocol satisfies?]]
+   [dunaj.coll :refer
+    [IRed ICounted IBatchedRed IHomogeneous IUnpackedRed seq single?
+     -reduce-unpacked second nth reduced? -reduce-batched rest empty?
+     item-type reduce contains? assoc conj postponed? postponed
+     unsafe-advance! provide-sequential counted? count first ISeqable
+     -reduce-batched unsafe-postponed]]
+   [dunaj.function :refer [fn defn identity apply]]
+   [dunaj.coll.helper :refer [reduce-with-batched* reduce* red-to-seq]]
+   [dunaj.concurrent.thread :refer
+    [Thread+ IThreadLocal IPassableThreadLocal
+     current-thread ensure-thread-local]]
+   [dunaj.concurrent.port :refer
+    [IMult -tap! -untap! -untap-all! chan put! <!! close!]]
+   [dunaj.time :refer [milliseconds]]
+   [dunaj.uri :refer [Uri uri? uri]]
+   [dunaj.macro :refer [defmacro]]
+   [dunaj.identifier :refer [Keyword keyword name symbol named?]]
+   [dunaj.state.var :refer [def+ declare]]
+   [dunaj.coll.default :refer [vec]]
+   [dunaj.coll.recipe :refer
+    [keep map take-nth partition-by interpose concat]]
+   [dunaj.coll.util :refer
+    [every? merge merge-with unpacked batched doseq]]
+   [dunaj.host.array :refer
+    [array array-manager aget byte-array adapt]]
+   [dunaj.host.batch :refer
+    [provide-batch-size select-item-type batch-manager
+     item-types-match?]]
+   [dunaj.string :refer [String+ string? ->str str]]
+   [dunaj.error :refer
+    [IFailAware IFailable IException
+     illegal-argument illegal-state fragile io
+     opened-fragile fail! unsupported-operation]]
+   [dunaj.buffer :refer [dropping-buffer]]
+   [dunaj.format :refer [parse]]
+   [dunaj.regex]
+   [dunaj.resource :refer
+    [IImmutableReadable IControllable IFlushable IReadable IWritable
+     ISeekable IStatusable IReleasable IAcquirableFactory
+     acquire! read!]]
+   [dunaj.resource.helper :refer
+    [register-factory! defreleasable readable-resource-recipe
+     basic-write!]]
+   [dunaj.resource.selector :refer
+    [ISelectable register* deregister*]]))
 
 
 ;;;; Implementation details

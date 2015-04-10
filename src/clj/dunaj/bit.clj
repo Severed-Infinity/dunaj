@@ -61,14 +61,12 @@
      <<dunaj.host.int.api.ad#Shifts, bitwise operators on Ints>>."]]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [defalias v1]]
-  [dunaj.type :refer [Fn Va]]
-  [dunaj.boolean :refer [Boolean+]]
-  [dunaj.math :refer [Integer+]]))
+  (:refer-clojure :exclude [set test or not and])
+  (:require
+   [clojure.bootstrap :refer [defalias v1]]
+   [dunaj.type :refer [Fn Va]]
+   [dunaj.boolean :refer [Boolean+]]
+   [dunaj.math :refer [Integer+]]))
 
 
 ;;;; Public API

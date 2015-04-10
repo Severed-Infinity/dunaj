@@ -20,47 +20,47 @@
   * `:replacement` - replacement string
   * `:malformed-mode` - see `charset-formatter` for available options
   * `:unmappable-mode` - see `charset-formatter` for available
-    options"
+  options"
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Maybe Va Fn Any AnyFn U I]]
-  [dunaj.boolean :refer [Boolean+ or not and]]
-  [dunaj.host :refer
-   [Class+ Array AnyBatch BatchManager keyword->class]]
-  [dunaj.host.int :refer [Int iint iadd i0]]
-  [dunaj.math :refer [Integer+ max <]]
-  [dunaj.compare :refer [identical? nil?]]
-  [dunaj.state :refer [clone]]
-  [dunaj.flow :refer [let when cond when-not loop condp]]
-  [dunaj.threading :refer [->]]
-  [dunaj.poly :refer [deftype defrecord satisfies?]]
-  [dunaj.coll :refer
-   [IReducing reduced IRed IHomogeneous reduced? item-type reducing
-    IBatchedRed postponed postponed? advance unsafe-advance! reduce
-    ISeqable]]
-  [dunaj.function :refer [Function fn defn identity comp]]
-  [dunaj.coll.helper :refer
-   [defxform cloned-advance-fn reduce-batched* reduced-advance
-    reduce-augmented* reduce* finish-advance strip-reduced
-    reduce-with-batched* red-to-seq]]
-  [dunaj.error :refer [illegal-argument ex-info]]
-  [dunaj.feature :refer [IConfig]]
-  [dunaj.host.batch :refer [batch-manager item-types-match? batch]]
-  [dunaj.host.array :refer [array-manager]]
-  [dunaj.string :refer [String+ ->str]]
-  [dunaj.macro :refer [defmacro]]
-  [dunaj.identifier :refer [Keyword]]
-  [dunaj.state.var :refer [Var def+]]
-  [dunaj.coll.util :refer [merge recipe]]
-  [dunaj.coll.recipe :refer [map concat*]]
-  [dunaj.format :refer [IParserFactory IPrinterFactory parse print
-                        -parse -print default-formatter-batch-size]]
-  [dunaj.format.helper :refer [prepend-unread]])
- (:import [java.lang Class String]))
+  (:refer-clojure :exclude
+   [reduce satisfies? map < comp reduced? deftype let -> identity fn
+    when-not when defn or nil? not identical? print loop merge condp
+    cond ex-info reduced defmacro max defrecord and])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Maybe Va Fn Any AnyFn U I]]
+   [dunaj.boolean :refer [Boolean+ or not and]]
+   [dunaj.host :refer
+    [Class+ Array AnyBatch BatchManager keyword->class]]
+   [dunaj.host.int :refer [Int iint iadd i0]]
+   [dunaj.math :refer [Integer+ max <]]
+   [dunaj.compare :refer [identical? nil?]]
+   [dunaj.state :refer [clone]]
+   [dunaj.flow :refer [let when cond when-not loop condp]]
+   [dunaj.threading :refer [->]]
+   [dunaj.poly :refer [deftype defrecord satisfies?]]
+   [dunaj.coll :refer
+    [IReducing reduced IRed IHomogeneous reduced? item-type reducing
+     IBatchedRed postponed postponed? advance unsafe-advance! reduce
+     ISeqable]]
+   [dunaj.function :refer [Function fn defn identity comp]]
+   [dunaj.coll.helper :refer
+    [defxform cloned-advance-fn reduce-batched* reduced-advance
+     reduce-augmented* reduce* finish-advance strip-reduced
+     reduce-with-batched* red-to-seq]]
+   [dunaj.error :refer [illegal-argument ex-info]]
+   [dunaj.feature :refer [IConfig]]
+   [dunaj.host.batch :refer [batch-manager item-types-match? batch]]
+   [dunaj.host.array :refer [array-manager]]
+   [dunaj.string :refer [String+ ->str]]
+   [dunaj.macro :refer [defmacro]]
+   [dunaj.identifier :refer [Keyword]]
+   [dunaj.state.var :refer [Var def+]]
+   [dunaj.coll.util :refer [merge recipe]]
+   [dunaj.coll.recipe :refer [map concat*]]
+   [dunaj.format :refer [IParserFactory IPrinterFactory parse print
+                         -parse -print default-formatter-batch-size]]
+   [dunaj.format.helper :refer [prepend-unread]]))
 
 
 ;;;; Implementation details

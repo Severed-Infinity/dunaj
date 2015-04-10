@@ -822,17 +822,17 @@
    :see '[start! acquire! system]
    :predicate 'system?})
 
-(defrecord System
+(defrecord System+
   []
   ISystem)
 
-(defn system :- System
+(defn system :- System+
   "Returns a system map."
   {:added v1
    :category "System"
    :see '[start! deps assoc-deps]}
   [& {:as keyvals}]
-  (map->System keyvals))
+  (map->System+ keyvals))
 
 (defn start! :- {}
   "Starts the `_system_` and returns map of started components.
@@ -841,7 +841,7 @@
   {:added v1
    :category "System"
    :see '[acquire! deps assoc-deps system]}
-  [system :- System]
+  [system :- System+]
   (loop [fin {}, sys (seq system),
          k nil, v nil, d nil, kh nil, vh nil, dh nil]
     (cond

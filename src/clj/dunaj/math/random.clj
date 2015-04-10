@@ -46,48 +46,50 @@
   bytes to the collection of integers, floats, etc."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Transducers"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [assert-primitive v1 not-implemented]]
-  [dunaj.type :refer [Any Fn Va I U Maybe Predicate]]
-  [dunaj.boolean :refer [Boolean+ and or not boolean]]
-  [dunaj.math :refer [Integer+ Float+ >= rem < neg? <= zero? > == /]]
-  [dunaj.math.unchecked :as mu]
-  [dunaj.host :refer [Batch AnyBatch keyword->class]]
-  [dunaj.host.int :refer
-   [Int iint i0 idiv i>>> izero? iand iFF isub i8 i1 i3 iadd i<<
-    idec irem ineg? i<= i< i>= i7 i== iinc inpos? iloop i4]]
-  [dunaj.host.number :refer [long unchecked-byte double]]
-  [dunaj.bit :as bit]
-  [dunaj.compare :refer [nil?]]
-  [dunaj.state :refer [ICloneable clone]]
-  [dunaj.flow :refer [cond let loop when doto]]
-  [dunaj.threading :refer [->]]
-  [dunaj.poly :refer [defprotocol deftype defrecord satisfies?]]
-  [dunaj.feature :refer [IConfig]]
-  [dunaj.coll :refer
-   [IRed IBatchedRed IHomogeneous IIndexed IReducing ISeqable
-    count nth item-type assoc first reduced seq next
-    reduced? postponed postponed? advance unsafe-advance!]]
-  [dunaj.coll.helper :refer
-   [reduce* reduce-batched* advance-fn finish-advance
-    defxform defreducing reduced-advance strip-reduced
-    reduce-with-batched* cloned-advance-fn red-to-seq]]
-  [dunaj.function :refer [apply defn fn]]
-  [dunaj.concurrent.thread :refer
-   [Thread+ IThreadLocal current-thread ensure-thread-local]]
-  [dunaj.host.array :refer [byte-array array-manager]]
-  [dunaj.host.batch :refer [provide-batch-size batch-manager
-                            select-item-type item-types-match?]]
-  [dunaj.identifier :refer [Keyword name]]
-  [dunaj.error :refer [index-out-of-bounds]]
-  [dunaj.state.var :refer [Var def+]]
-  [dunaj.coll.default :refer [->map]]
-  [dunaj.coll.util :refer [merge]]
-  [dunaj.coll.recipe :refer [->ObjectWrap cloning-advance]])
- (:import [java.lang String Class]))
+  (:refer-clojure :exclude
+   [rand-nth floats booleans rand seq satisfies? first boolean < neg?
+    reduced? deftype <= let -> doto long double fn when > defn or
+    name byte-array zero? rem nth nil? not defprotocol / >= loop
+    merge cond reduced unchecked-byte next == count apply assoc
+    defrecord and])
+  (:require
+   [clojure.bootstrap :refer [assert-primitive v1 not-implemented]]
+   [dunaj.type :refer [Any Fn Va I U Maybe Predicate]]
+   [dunaj.boolean :refer [Boolean+ and or not boolean]]
+   [dunaj.math :refer [Integer+ Float+ >= rem < neg? <= zero? > == /]]
+   [dunaj.math.unchecked :as mu]
+   [dunaj.host :refer [Batch AnyBatch keyword->class]]
+   [dunaj.host.int :refer
+    [Int iint i0 idiv i>>> izero? iand iFF isub i8 i1 i3 iadd i<<
+     idec irem ineg? i<= i< i>= i7 i== iinc inpos? iloop i4]]
+   [dunaj.host.number :refer [long unchecked-byte double]]
+   [dunaj.bit :as bit]
+   [dunaj.compare :refer [nil?]]
+   [dunaj.state :refer [ICloneable clone]]
+   [dunaj.flow :refer [cond let loop when doto]]
+   [dunaj.threading :refer [->]]
+   [dunaj.poly :refer [defprotocol deftype defrecord satisfies?]]
+   [dunaj.feature :refer [IConfig]]
+   [dunaj.coll :refer
+    [IRed IBatchedRed IHomogeneous IIndexed IReducing ISeqable
+     count nth item-type assoc first reduced seq next
+     reduced? postponed postponed? advance unsafe-advance!]]
+   [dunaj.coll.helper :refer
+    [reduce* reduce-batched* advance-fn finish-advance
+     defxform defreducing reduced-advance strip-reduced
+     reduce-with-batched* cloned-advance-fn red-to-seq]]
+   [dunaj.function :refer [apply defn fn]]
+   [dunaj.concurrent.thread :refer
+    [Thread+ IThreadLocal current-thread ensure-thread-local]]
+   [dunaj.host.array :refer [byte-array array-manager]]
+   [dunaj.host.batch :refer [provide-batch-size batch-manager
+                             select-item-type item-types-match?]]
+   [dunaj.identifier :refer [Keyword name]]
+   [dunaj.error :refer [index-out-of-bounds]]
+   [dunaj.state.var :refer [Var def+]]
+   [dunaj.coll.default :refer [->map]]
+   [dunaj.coll.util :refer [merge]]
+   [dunaj.coll.recipe :refer [->ObjectWrap cloning-advance]]))
 
 
 ;;;; Implementation details
