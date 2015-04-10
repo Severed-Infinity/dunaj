@@ -9,8 +9,8 @@
   :deploy-repositories [["clojars" {:creds :gpg}]]
   :source-paths ["src/clj"]
   :java-source-paths ["src/jvm"]
-;  :main ^:skip-aot dunaj.main
-;  :aot [dunaj.core dunaj.main] ;; see CLJ-1650
+  :main ^:skip-aot dunaj.main
+  :aot [dunaj.core dunaj.main] ;; see CLJ-1650
 ;  :aot :all
 ;  :clean-non-project-classes true
   :auto-clean false
