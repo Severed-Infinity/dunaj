@@ -16,55 +16,57 @@
   WARNING: Needs review from someone who knows TLS protocol and
   SSLEngine better than me."
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core.async]
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-  [dunaj.boolean :refer [Boolean+ and or not true? false? boolean]]
-  [dunaj.host :refer [Class+ Batch keyword->class proxy]]
-  [dunaj.host.int :refer [Int iint iadd i0 i1 imin i== ipos? i< i<<]]
-  [dunaj.math :refer [Integer+ max neg? == < zero? nneg?]]
-  [dunaj.compare :refer [nil? = identical?]]
-  [dunaj.state :refer [IOpenAware ICancellable ICloneable
-                       ensure-open io! open? realized?]]
-  [dunaj.flow :refer
-   [let loop cond when-not when condp when-let]]
-  [dunaj.feature :refer [IConfig config]]
-  [dunaj.poly :refer [reify defrecord deftype defprotocol]]
-  [dunaj.coll :refer
-   [IRed ICounted IBatchedRed IHomogeneous seq postponed ISeqable
-    second nth reduced? rest empty? unsafe-advance! unsafe-postponed
-    item-type reduce contains? assoc conj postponed?]]
-  [dunaj.function :refer [Function fn defn identity]]
-  [dunaj.coll.helper :refer [reduce-with-batched* red-to-seq]]
-  [dunaj.buffer :refer [dropping-buffer]]
-  [dunaj.concurrent.thread :refer
-   [Thread IThreadLocal IPassableThreadLocal current-thread
-    ensure-thread-local]]
-  [dunaj.concurrent.port :refer [chan <!! >!!]]
-  [dunaj.concurrent :refer [IFuture ITaskExecutor submit locking]]
-  [dunaj.string :refer [String+ string? ->str]]
-  [dunaj.macro :refer [defmacro]]
-  [dunaj.uri :refer [Uri uri? uri]]
-  [dunaj.state.var :refer [def+ declare]]
-  [dunaj.coll.util :refer [every? merge batched reduce-batched]]
-  [dunaj.host.array :refer [array aget]]
-  [dunaj.host.batch :refer [provide-batch-size item-types-match?]]
-  [dunaj.error :refer
-   [IFailAware IFailable IException illegal-argument
-    illegal-state fragile io fail! unsupported-operation]]
-  [dunaj.resource :refer
-   [IReleasable IReadable IAcquirableFactory IWritable
-    acquire! -write! -read! with-scope]]
-  [dunaj.resource.helper :refer [defreleasable register-factory!]]
-  [dunaj.resource.tcp :refer [tcp finish-connect!]]
-  [dunaj.resource.selector :refer
-   [ISelectable selector register! select-now select deregister!
-    -register! -deregister!]])
- (:import [java.lang String Class]))
+  (:refer-clojure :exclude
+   [seq reduce contains? every? aget = boolean < rest neg? reduced?
+    deftype when-let conj let identity fn empty? string? when-not
+    when second defn declare or zero? nth nil? reify not identical?
+    defprotocol true? loop merge condp cond defmacro proxy locking
+    false? io! max == assoc realized? defrecord and])
+  (:require
+   [clojure.core.async]
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
+   [dunaj.boolean :refer [Boolean+ and or not true? false? boolean]]
+   [dunaj.host :refer [Class+ Batch keyword->class proxy]]
+   [dunaj.host.int :refer [Int iint iadd i0 i1 imin i== ipos? i< i<<]]
+   [dunaj.math :refer [Integer+ max neg? == < zero? nneg?]]
+   [dunaj.compare :refer [nil? = identical?]]
+   [dunaj.state :refer [IOpenAware ICancellable ICloneable
+                        ensure-open io! open? realized?]]
+   [dunaj.flow :refer
+    [let loop cond when-not when condp when-let]]
+   [dunaj.feature :refer [IConfig config]]
+   [dunaj.poly :refer [reify defrecord deftype defprotocol]]
+   [dunaj.coll :refer
+    [IRed ICounted IBatchedRed IHomogeneous seq postponed ISeqable
+     second nth reduced? rest empty? unsafe-advance! unsafe-postponed
+     item-type reduce contains? assoc conj postponed?]]
+   [dunaj.function :refer [Function fn defn identity]]
+   [dunaj.coll.helper :refer [reduce-with-batched* red-to-seq]]
+   [dunaj.buffer :refer [dropping-buffer]]
+   [dunaj.concurrent.thread :refer
+    [Thread IThreadLocal IPassableThreadLocal current-thread
+     ensure-thread-local]]
+   [dunaj.concurrent.port :refer [chan <!! >!!]]
+   [dunaj.concurrent :refer [IFuture ITaskExecutor submit locking]]
+   [dunaj.string :refer [String+ string? ->str]]
+   [dunaj.macro :refer [defmacro]]
+   [dunaj.uri :refer [Uri uri? uri]]
+   [dunaj.state.var :refer [def+ declare]]
+   [dunaj.coll.util :refer [every? merge batched reduce-batched]]
+   [dunaj.host.array :refer [array aget]]
+   [dunaj.host.batch :refer [provide-batch-size item-types-match?]]
+   [dunaj.error :refer
+    [IFailAware IFailable IException illegal-argument
+     illegal-state fragile io fail! unsupported-operation]]
+   [dunaj.resource :refer
+    [IReleasable IReadable IAcquirableFactory IWritable
+     acquire! -write! -read! with-scope]]
+   [dunaj.resource.helper :refer [defreleasable register-factory!]]
+   [dunaj.resource.tcp :refer [tcp finish-connect!]]
+   [dunaj.resource.selector :refer
+    [ISelectable selector register! select-now select deregister!
+     -register! -deregister!]]))
 
 
 ;;;; Implementation details

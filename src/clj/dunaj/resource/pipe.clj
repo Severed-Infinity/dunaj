@@ -16,47 +16,47 @@
 
   Pipes are used to support selectors in custom resources."
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-  [dunaj.boolean :refer [and or not]]
-  [dunaj.host :refer [keyword->class]]
-  [dunaj.host.int :refer [iint iloop iadd]]
-  [dunaj.math :refer [Integer+ max neg?]]
-  [dunaj.compare :refer [nil?]]
-  [dunaj.state :refer [IOpenAware IReference IMutable
-                       ensure-io reset! ensure-open open?]]
-  [dunaj.flow :refer [let loop cond when when-let]]
-  [dunaj.feature :refer [IConfig]]
-  [dunaj.poly :refer [reify defprotocol deftype defrecord]]
-  [dunaj.coll :refer
-   [IRed ICounted IBatchedRed IHomogeneous
-    reduced? -reduce-batched provide-collection assoc]]
-  [dunaj.function :refer [fn defn]]
-  [dunaj.coll.helper :refer []]
-  [dunaj.host.array :refer [array]]
-  [dunaj.host.batch :refer [select-item-type]]
-  [dunaj.concurrent.thread :refer
-   [Thread current-thread ensure-thread-local]]
-  [dunaj.string :refer [string?]]
-  [dunaj.error :refer [IException IFailAware IFailable
-                       fail! error fragile opened-fragile]]
-  [dunaj.state.var :refer [def+]]
-  [dunaj.coll.recipe :refer [keep]]
-  [dunaj.coll.util :refer [merge]]
-  [dunaj.coll.default]
-  [dunaj.coll.tuple :refer [pair]]
-  [dunaj.resource :refer
-   [IImmutableReadable IReleasable IFlushable IReadable
-    IAcquirableFactory IWritable ISeekable acquire!]]
-  [dunaj.resource.helper :refer
-   [readable-resource-recipe basic-write! defreleasable]]
-  [dunaj.resource.selector :refer
-   [ISelectable register* deregister*]])
- (:import [java.lang String Class]))
+  (:refer-clojure :exclude
+   [keep neg? reduced? deftype when-let let fn string? when defn or
+    reset! nil? reify not defprotocol loop merge cond max assoc
+    defrecord and])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
+   [dunaj.boolean :refer [and or not]]
+   [dunaj.host :refer [keyword->class]]
+   [dunaj.host.int :refer [iint iloop iadd]]
+   [dunaj.math :refer [Integer+ max neg?]]
+   [dunaj.compare :refer [nil?]]
+   [dunaj.state :refer [IOpenAware IReference IMutable
+                        ensure-io reset! ensure-open open?]]
+   [dunaj.flow :refer [let loop cond when when-let]]
+   [dunaj.feature :refer [IConfig]]
+   [dunaj.poly :refer [reify defprotocol deftype defrecord]]
+   [dunaj.coll :refer
+    [IRed ICounted IBatchedRed IHomogeneous
+     reduced? -reduce-batched provide-collection assoc]]
+   [dunaj.function :refer [fn defn]]
+   [dunaj.coll.helper :refer []]
+   [dunaj.host.array :refer [array]]
+   [dunaj.host.batch :refer [select-item-type]]
+   [dunaj.concurrent.thread :refer
+    [Thread current-thread ensure-thread-local]]
+   [dunaj.string :refer [string?]]
+   [dunaj.error :refer [IException IFailAware IFailable
+                        fail! error fragile opened-fragile]]
+   [dunaj.state.var :refer [def+]]
+   [dunaj.coll.recipe :refer [keep]]
+   [dunaj.coll.util :refer [merge]]
+   [dunaj.coll.default]
+   [dunaj.coll.tuple :refer [pair]]
+   [dunaj.resource :refer
+    [IImmutableReadable IReleasable IFlushable IReadable
+     IAcquirableFactory IWritable ISeekable acquire!]]
+   [dunaj.resource.helper :refer
+    [readable-resource-recipe basic-write! defreleasable]]
+   [dunaj.resource.selector :refer
+    [ISelectable register* deregister*]]))
 
 
 ;;;; Implementation details

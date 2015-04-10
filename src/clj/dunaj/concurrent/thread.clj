@@ -17,29 +17,29 @@
   for creating daemon threads, which are threads on which JVM doesn't
   wait when exiting."
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [defmacro def+ v1]]
-  [dunaj.type :refer [Any KeywordMap Maybe U AnyFn]]
-  [dunaj.boolean :refer [Boolean+ and not xor]]
-  [dunaj.math :refer [Integer+ zero? rem]]
-  [dunaj.host.number :refer [int long]]
-  [dunaj.compare :refer [not= identical? nil?]]
-  [dunaj.state :refer
-   [IReference IOpenAware IMutable IAdjustable open?]]
-  [dunaj.flow :refer [when-not let when doto when-let cond]]
-  [dunaj.feature :refer [IConfig IMutableConfig config]]
-  [dunaj.poly :refer [defprotocol deftype]]
-  [dunaj.coll :refer
-   [empty? several? first rest contains? dissoc map? assoc]]
-  [dunaj.function :refer [fn defn]]
-  [dunaj.string :refer [string?]]
-  [dunaj.time :as dt :refer [IDuration milliseconds nanoseconds]]
-  [dunaj.identifier :refer [Keyword]]
-  [dunaj.error :refer [illegal-argument]])
- (:import [java.lang String]))
+  (:refer-clojure :exclude
+   [contains? first dissoc rest deftype when-let let map? doto long fn
+    empty? not= string? when-not when int defn zero? rem nil? not
+    identical? defprotocol cond defmacro assoc and])
+  (:require
+   [clojure.bootstrap :refer [defmacro def+ v1]]
+   [dunaj.type :refer [Any KeywordMap Maybe U AnyFn]]
+   [dunaj.boolean :refer [Boolean+ and not xor]]
+   [dunaj.math :refer [Integer+ zero? rem]]
+   [dunaj.host.number :refer [int long]]
+   [dunaj.compare :refer [not= identical? nil?]]
+   [dunaj.state :refer
+    [IReference IOpenAware IMutable IAdjustable open?]]
+   [dunaj.flow :refer [when-not let when doto when-let cond]]
+   [dunaj.feature :refer [IConfig IMutableConfig config]]
+   [dunaj.poly :refer [defprotocol deftype]]
+   [dunaj.coll :refer
+    [empty? several? first rest contains? dissoc map? assoc]]
+   [dunaj.function :refer [fn defn]]
+   [dunaj.string :refer [string?]]
+   [dunaj.time :as dt :refer [IDuration milliseconds nanoseconds]]
+   [dunaj.identifier :refer [Keyword]]
+   [dunaj.error :refer [illegal-argument]]))
 
 
 ;;;; Implementation details

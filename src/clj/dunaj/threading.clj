@@ -28,12 +28,11 @@
      <<dunaj.threading.last.api.ad#,dunaj.threading.last>>
      namespace."]]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [defalias v1]]
-  [dunaj.type :refer [Macro]]))
+  (:refer-clojure :exclude
+   [->> some-> cond-> some->> as-> -> cond->>] )
+  (:require
+   [clojure.bootstrap :refer [defalias v1]]
+   [dunaj.type :refer [Macro]]))
 
 
 ;;;; Public API

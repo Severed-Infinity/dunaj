@@ -49,24 +49,24 @@
   fails."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require [clojure.core :refer [agent-error]]
-           [clojure.bootstrap :refer [v1]]
-           [dunaj.type :refer [Fn Maybe U Any AnyFn Va]]
-           [dunaj.boolean :refer [Boolean+ boolean]]
-           [dunaj.host :refer [class-instance?]]
-           [dunaj.math :refer [Integer+ zero? rem]]
-           [dunaj.state :refer [IReference IMutable]]
-           [dunaj.flow :refer [let when]]
-           [dunaj.feature :refer [IMeta IMutableMeta]]
-           [dunaj.poly :refer [deftype reify]]
-           [dunaj.function :refer [defn apply]]
-           [dunaj.concurrent :refer [IExecutor]]
-           [dunaj.time :refer [IDuration milliseconds nanoseconds]]
-           [dunaj.error :refer [IFailAware IErrorHandleable]]
-           [dunaj.state.var :refer [Var def+ defalias]]))
+  (:refer-clojure :exclude
+   [await agent await-for boolean deftype let when defn zero? rem
+    reify apply])
+  (:require [clojure.core :refer [agent-error]]
+            [clojure.bootstrap :refer [v1]]
+            [dunaj.type :refer [Fn Maybe U Any AnyFn Va]]
+            [dunaj.boolean :refer [Boolean+ boolean]]
+            [dunaj.host :refer [class-instance?]]
+            [dunaj.math :refer [Integer+ zero? rem]]
+            [dunaj.state :refer [IReference IMutable]]
+            [dunaj.flow :refer [let when]]
+            [dunaj.feature :refer [IMeta IMutableMeta]]
+            [dunaj.poly :refer [deftype reify]]
+            [dunaj.function :refer [defn apply]]
+            [dunaj.concurrent :refer [IExecutor]]
+            [dunaj.time :refer [IDuration milliseconds nanoseconds]]
+            [dunaj.error :refer [IFailAware IErrorHandleable]]
+            [dunaj.state.var :refer [Var def+ defalias]]))
 
 
 ;;;; Implementation details

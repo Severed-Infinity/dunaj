@@ -21,7 +21,7 @@
   [clojure.core.async]
   [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
   [dunaj.boolean :refer
-   [Boolean and or not boolean boolean? true? false?]]
+   [Boolean+ and or not boolean boolean? true? false?]]
   [dunaj.host :refer [Class+ BatchManager Batch AnyBatch
                       keyword->class class-instance?]]
   [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]

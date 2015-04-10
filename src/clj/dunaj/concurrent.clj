@@ -18,21 +18,21 @@
   "General concurrency facilities, futures, promises."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [defmacro defalias def+ v1]]
-  [dunaj.type :refer [Fn Any I Macro]]
-  [dunaj.boolean :refer [and]]
-  [dunaj.host.number :refer [long]]
-  [dunaj.compare :refer [nil?]]
-  [dunaj.state :refer [IReference IBlockingReference ICancellable
-                       ICancelledAware IPending ICloneable]]
-  [dunaj.flow :refer [let when]]
-  [dunaj.poly :refer [defprotocol extend-type!]]
-  [dunaj.coll :refer [empty? first rest several? map?]]
-  [dunaj.function :refer [Function apply fn defn]]))
+  (:refer-clojure :exclude
+   [future-call future promise future? locking first rest let map?
+    long fn empty? when defn nil? defprotocol defmacro apply and])
+  (:require
+   [clojure.bootstrap :refer [defmacro defalias def+ v1]]
+   [dunaj.type :refer [Fn Any I Macro]]
+   [dunaj.boolean :refer [and]]
+   [dunaj.host.number :refer [long]]
+   [dunaj.compare :refer [nil?]]
+   [dunaj.state :refer [IReference IBlockingReference ICancellable
+                        ICancelledAware IPending ICloneable]]
+   [dunaj.flow :refer [let when]]
+   [dunaj.poly :refer [defprotocol extend-type!]]
+   [dunaj.coll :refer [empty? first rest several? map?]]
+   [dunaj.function :refer [Function apply fn defn]]))
 
 
 ;;;; Implementation details

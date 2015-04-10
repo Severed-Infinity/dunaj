@@ -13,58 +13,63 @@
 (ns dunaj.resource.loopback
   "Basic loopback resource."
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
+  (:refer-clojure :exclude
+   [reduce contains? satisfies? first atom = boolean cons pos? if-not
+    sequential? doseq neg? reduced? deftype when-let if-some min conj
+    let map? get into var? future fn empty? string? when-not when defn
+    declare or nil? reify update-in instance? not identical?
+    defprotocol print loop merge integer? condp cond ex-info partial
+    defmacro odd? next if-let io! max == count apply assoc defrecord
+    and ->>])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [clojure.core.async]
+   [dunaj.type :refer [Fn AnyFn Any Maybe U I]]
+   [dunaj.boolean :refer [Boolean+ or and not boolean]]
+   [dunaj.host :refer [keyword->class class-instance?]]
+   [dunaj.host.int :refer [i0 iinc]]
+   [dunaj.math :refer [Integer+ integer? pos? odd? max neg? == min]]
+   [dunaj.state :refer
+    [IAtomic cancel! alter! cas! reference? IOpenAware adjust! io!
+     atomic? switch! IAdjustable IReference IMutable ensure-io
+     ensure-open open? ICloneable]]
+   [dunaj.compare :refer [identical? = nil?]]
+   [dunaj.flow :refer [when let when-not when-let loop cond
+                       condp if-let if-not when if-some]]
+   [dunaj.threading :refer [->>]]
+   [dunaj.buffer :refer [buffer]]
+   [dunaj.poly :refer
+    [instance? reify satisfies? defprotocol deftype defrecord]]
+   [dunaj.feature :refer [IConfig]]
+   [dunaj.coll :refer
+    [count contains? next first IRed IBatchedRed sequential? empty? get
+     -reduce-batched reduced? reduce unsafe-postponed full? ISeqable
+     map? assoc update-in conj postponed? unsafe-advance! postponed]]
+   [dunaj.function :refer [apply defn invocable? fn partial]]
+   [dunaj.coll.helper :refer [recipe red-to-seq]]
+   [dunaj.host.batch :refer [select-item-type batch-manager]]
+   [dunaj.concurrent :refer [future]]
+   [dunaj.concurrent.port :as dp :refer
+    [ISourcePort chan <!! thread >!! timeout alts!! close!]]
+   [dunaj.string :refer [String+ string?]]
+   [dunaj.time :refer [IDuration milliseconds]]
+   [dunaj.macro :refer [defmacro]]
+   [dunaj.identifier :refer [Keyword]]
+   [dunaj.state.weak :refer [weak]]
+   [dunaj.state.basic :refer [atom]]
+   [dunaj.state.var :refer [Var var? def+ declare alter-root!]]
+   [dunaj.error :refer [IException ex-info illegal-argument npe
+                        unsupported-operation fail-aware? error]]
+   [dunaj.uri :refer [Uri uri uri?]]
+   [dunaj.coll.tuple :refer [tuple]]
+   [dunaj.coll.util :refer [into revlist doseq merge]]
+   [dunaj.coll.cons-seq :refer [cons]]
+   [dunaj.coll.default]
+   [dunaj.format :refer [IParserFactory IPrinterFactory print parse]]
+   [dunaj.resource :refer
+    [IWritable IReadable IAcquirableFactory IReleasable]]
+   [dunaj.resource.helper :refer [defreleasable]]))
 
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [clojure.core.async]
-  [dunaj.type :refer [Fn AnyFn Any Maybe U I]]
-  [dunaj.boolean :refer [Boolean+ or and not boolean]]
-  [dunaj.host :refer [keyword->class class-instance?]]
-  [dunaj.host.int :refer [i0 iinc]]
-  [dunaj.math :refer [Integer+ integer? pos? odd? max neg? == min]]
-  [dunaj.state :refer
-   [IAtomic cancel! alter! cas! reference? IOpenAware adjust! io!
-    atomic? switch! IAdjustable IReference IMutable ensure-io
-    ensure-open open? ICloneable]]
-  [dunaj.compare :refer [identical? = nil?]]
-  [dunaj.flow :refer [when let when-not when-let loop cond
-                      condp if-let if-not when if-some]]
-  [dunaj.threading :refer [->>]]
-  [dunaj.buffer :refer [buffer]]
-  [dunaj.poly :refer
-   [instance? reify satisfies? defprotocol deftype defrecord]]
-  [dunaj.feature :refer [IConfig]]
-  [dunaj.coll :refer
-   [count contains? next first IRed IBatchedRed sequential? empty? get
-    -reduce-batched reduced? reduce unsafe-postponed full? ISeqable
-    map? assoc update-in conj postponed? unsafe-advance! postponed]]
-  [dunaj.function :refer [apply defn invocable? fn partial]]
-  [dunaj.coll.helper :refer [recipe red-to-seq]]
-  [dunaj.host.batch :refer [select-item-type batch-manager]]
-  [dunaj.concurrent :refer [future]]
-  [dunaj.concurrent.port :as dp :refer
-   [ISourcePort chan <!! thread >!! timeout alts!! close!]]
-  [dunaj.string :refer [String+ string?]]
-  [dunaj.time :refer [IDuration milliseconds]]
-  [dunaj.macro :refer [defmacro]]
-  [dunaj.identifier :refer [Keyword]]
-  [dunaj.state.weak :refer [weak]]
-  [dunaj.state.basic :refer [atom]]
-  [dunaj.state.var :refer [Var var? def+ declare alter-root!]]
-  [dunaj.error :refer [IException ex-info illegal-argument npe
-                       unsupported-operation fail-aware? error]]
-  [dunaj.uri :refer [Uri uri uri?]]
-  [dunaj.coll.tuple :refer [tuple]]
-  [dunaj.coll.util :refer [into revlist doseq merge]]
-  [dunaj.coll.cons-seq :refer [cons]]
-  [dunaj.coll.default]
-  [dunaj.format :refer [IParserFactory IPrinterFactory print parse]]
-  [dunaj.resource :refer
-   [IWritable IReadable IAcquirableFactory IReleasable]]
-  [dunaj.resource.helper :refer [defreleasable]])
- (:import [java.lang Class String]))
 
 ;;;; Implementation details
 

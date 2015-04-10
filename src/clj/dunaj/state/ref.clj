@@ -33,24 +33,24 @@
   https://github.com/cgrand/megaref[Megarefs])"
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer [doseq keys ref-set ref-min-history
-                        ref-max-history ref-history-count]]
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Any Fn AnyFn Va Macro]]
-  [dunaj.math :refer [Integer+]]
-  [dunaj.compare :refer [= IComparable identical?]]
-  [dunaj.state :refer [IReference IMutable IAdjustable ICloneable]]
-  [dunaj.flow :refer [let when-not if-let cond]]
-  [dunaj.feature :refer [IMeta IMutableMeta IConfig IMutableConfig]]
-  [dunaj.poly :refer [deftype defprotocol]]
-  [dunaj.coll :refer [empty? dissoc]]
-  [dunaj.function :refer [IInvocable defn]]
-  [dunaj.error :refer [illegal-argument]]
-  [dunaj.state.var :refer [defalias declare]]))
+  (:refer-clojure :exclude
+   [ensure dosync alter ref commute dissoc = deftype let empty?
+    when-not defn declare identical? defprotocol cond if-let])
+  (:require
+   [clojure.core :refer [doseq keys ref-set ref-min-history
+                         ref-max-history ref-history-count]]
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Any Fn AnyFn Va Macro]]
+   [dunaj.math :refer [Integer+]]
+   [dunaj.compare :refer [= IComparable identical?]]
+   [dunaj.state :refer [IReference IMutable IAdjustable ICloneable]]
+   [dunaj.flow :refer [let when-not if-let cond]]
+   [dunaj.feature :refer [IMeta IMutableMeta IConfig IMutableConfig]]
+   [dunaj.poly :refer [deftype defprotocol]]
+   [dunaj.coll :refer [empty? dissoc]]
+   [dunaj.function :refer [IInvocable defn]]
+   [dunaj.error :refer [illegal-argument]]
+   [dunaj.state.var :refer [defalias declare]]))
 
 
 ;;;; Public API

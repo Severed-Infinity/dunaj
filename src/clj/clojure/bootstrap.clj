@@ -1081,7 +1081,7 @@
 
 (cc/defn should-remove?
   [s v]
-  (cc/or (cc/and (cc/class? v)
+  (cc/or #_(cc/and (cc/class? v)
                  (cc/= "java.lang" (.getName (.getPackage ^java.lang.Class v))))
          (cc/and (cc/var? v)
                  (cc/identical? cns (.ns ^clojure.lang.Var v)))))
@@ -1101,5 +1101,5 @@
     `(do
        (remove-mappings! cc/*ns*)
        ~@(gen-decls decls)
-       (clojure.core/import '[java.lang ~'Boolean ~'Number ~'Integer ~'Float]))))
+       #_(clojure.core/import '[java.lang ~'Boolean ~'Number ~'Integer ~'Float]))))
 

@@ -13,48 +13,48 @@
 (ns dunaj.resource.file
   "Host filesystem resources."
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-  [dunaj.boolean :refer [and or not]]
-  [dunaj.host :refer [AnyArray keyword->class class-instance?]]
-  [dunaj.host.int :refer [iint iloop iadd i0]]
-  [dunaj.math :refer [Integer+ max neg?]]
-  [dunaj.host.number :refer [long]]
-  [dunaj.compare :refer [nil?]]
-  [dunaj.state :refer [IOpenAware IReference IMutable ICloneable
-                       ensure-io reset! open? ensure-open]]
-  [dunaj.flow :refer [let loop cond when]]
-  [dunaj.feature :refer [IConfig]]
-  [dunaj.poly :refer [reify defprotocol deftype defrecord]]
-  [dunaj.coll :refer
-   [IRed ICounted IBatchedRed IHomogeneous reduced? ISeqable
-    -reduce-batched provide-collection assoc]]
-  [dunaj.function :refer [fn defn]]
-  [dunaj.coll.helper :refer
-   [reduce-with-batched* advance-fn red-to-seq]]
-  [dunaj.host.array :refer [array]]
-  [dunaj.host.batch :refer [select-item-type provide-batch-size]]
-  [dunaj.concurrent.thread :refer
-   [Thread IThreadLocal IPassableThreadLocal
-    current-thread ensure-thread-local]]
-  [dunaj.string :refer [String+ string?]]
-  [dunaj.uri :refer [Uri uri uri? absolute? resolve]]
-  [dunaj.state.var :refer [def+ declare]]
-  [dunaj.error :refer [IException IFailAware IFailable opened-fragile
-                       fail! error fragile]]
-  [dunaj.coll.recipe :refer [keep]]
-  [dunaj.coll.util :refer [merge]]
-  [dunaj.resource :refer
-   [IImmutableReadable IReleasable IFlushable IReadable
-    IAcquirableFactory IWritable ISeekable acquire!]]
-  [dunaj.resource.helper :refer
-   [register-factory! basic-write!
-    readable-resource-recipe defreleasable]])
- (:import [java.lang String Class]))
+  (:refer-clojure :exclude
+   [keep neg? reduced? deftype let long fn string? when defn declare
+    or reset! nil? reify not defprotocol loop merge cond max assoc
+    resolve defrecord and])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
+   [dunaj.boolean :refer [and or not]]
+   [dunaj.host :refer [AnyArray keyword->class class-instance?]]
+   [dunaj.host.int :refer [iint iloop iadd i0]]
+   [dunaj.math :refer [Integer+ max neg?]]
+   [dunaj.host.number :refer [long]]
+   [dunaj.compare :refer [nil?]]
+   [dunaj.state :refer [IOpenAware IReference IMutable ICloneable
+                        ensure-io reset! open? ensure-open]]
+   [dunaj.flow :refer [let loop cond when]]
+   [dunaj.feature :refer [IConfig]]
+   [dunaj.poly :refer [reify defprotocol deftype defrecord]]
+   [dunaj.coll :refer
+    [IRed ICounted IBatchedRed IHomogeneous reduced? ISeqable
+     -reduce-batched provide-collection assoc]]
+   [dunaj.function :refer [fn defn]]
+   [dunaj.coll.helper :refer
+    [reduce-with-batched* advance-fn red-to-seq]]
+   [dunaj.host.array :refer [array]]
+   [dunaj.host.batch :refer [select-item-type provide-batch-size]]
+   [dunaj.concurrent.thread :refer
+    [Thread IThreadLocal IPassableThreadLocal
+     current-thread ensure-thread-local]]
+   [dunaj.string :refer [String+ string?]]
+   [dunaj.uri :refer [Uri uri uri? absolute? resolve]]
+   [dunaj.state.var :refer [def+ declare]]
+   [dunaj.error :refer [IException IFailAware IFailable opened-fragile
+                        fail! error fragile]]
+   [dunaj.coll.recipe :refer [keep]]
+   [dunaj.coll.util :refer [merge]]
+   [dunaj.resource :refer
+    [IImmutableReadable IReleasable IFlushable IReadable
+     IAcquirableFactory IWritable ISeekable acquire!]]
+   [dunaj.resource.helper :refer
+    [register-factory! basic-write!
+     readable-resource-recipe defreleasable]]))
 
 
 ;;;; Implementation details

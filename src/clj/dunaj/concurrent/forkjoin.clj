@@ -22,24 +22,24 @@
    ["Primary"
     ["Folds" "Additional helper functions for folds can be found at
              <<dunaj.coll.helper.api.ad#Folds,dunaj.coll.helper>>."]]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require [clojure.core.reducers :refer [coll-fold]]
-           [clojure.bootstrap :refer [def+ v1 replace-var!]]
-           [dunaj.type :refer [Fn Any AnyFn U Maybe]]
-           [dunaj.boolean :refer [and or not Boolean+ true?]]
-           [dunaj.host :refer [class-instance?]]
-           [dunaj.math :refer [Integer+]]
-           [dunaj.compare :refer [nil? identical?]]
-           [dunaj.flow :refer [let cond if-not when]]
-           [dunaj.threading :refer [->>]]
-           [dunaj.poly :refer
-            [defprotocol deftype extend-protocol! satisfies?]]
-           [dunaj.coll :refer [IRed IReducing]]
-           [dunaj.function :refer [Function defn apply fn]]
-           [dunaj.concurrent :refer
-            [IFuture IExecutor ITaskExecutor submit]]))
+  (:refer-clojure :exclude
+   [satisfies? if-not deftype let fn when defn or nil? not identical?
+    defprotocol true? cond apply and ->>])
+  (:require [clojure.core.reducers :refer [coll-fold]]
+            [clojure.bootstrap :refer [def+ v1 replace-var!]]
+            [dunaj.type :refer [Fn Any AnyFn U Maybe]]
+            [dunaj.boolean :refer [and or not Boolean+ true?]]
+            [dunaj.host :refer [class-instance?]]
+            [dunaj.math :refer [Integer+]]
+            [dunaj.compare :refer [nil? identical?]]
+            [dunaj.flow :refer [let cond if-not when]]
+            [dunaj.threading :refer [->>]]
+            [dunaj.poly :refer
+             [defprotocol deftype extend-protocol! satisfies?]]
+            [dunaj.coll :refer [IRed IReducing]]
+            [dunaj.function :refer [Function defn apply fn]]
+            [dunaj.concurrent :refer
+             [IFuture IExecutor ITaskExecutor submit]]))
 
 
 ;;;; Implementation details

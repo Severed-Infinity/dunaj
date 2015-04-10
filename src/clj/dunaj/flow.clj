@@ -23,14 +23,14 @@
    [while delay eval if-not when-let if-some let doto when-not when
     force dotimes letfn loop condp cond if-let case comment when-some
     satisfies? deftype defn nil? defprotocol defmacro ==])
- (:require
-  [clojure.core :refer [locking list list*]]
-  [clojure.dunaj-deftype :refer [satisfies?]]
-  [clojure.bootstrap :refer
-   [defalias defmacro defprotocol deftype defn v1 replace-var!]]
-  [dunaj.type :refer [Macro Fn Va Any]]
-  [dunaj.compare :refer [nil?]]
-  [dunaj.state :refer [IReference IPending]]))
+  (:require
+   [clojure.core :refer [locking list list*]]
+   [clojure.dunaj-deftype :refer [satisfies?]]
+   [clojure.bootstrap :refer
+    [defalias defmacro defprotocol deftype defn v1 replace-var!]]
+   [dunaj.type :refer [Macro Fn Va Any]]
+   [dunaj.compare :refer [nil?]]
+   [dunaj.state :refer [IReference IPending]]))
 
 
 ;;;; Public API

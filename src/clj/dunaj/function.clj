@@ -40,20 +40,20 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Transformations" "Memoization"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer [str]]
-  [clojure.dunaj-deftype :refer [satisfies?]]
-  [clojure.bootstrap :as cb :refer [defalias defprotocol def+ v1]]
-  [dunaj.type :refer [Fn Any AnyFn I U Va Predicate Signature Macro]]
-  [dunaj.boolean :refer [Boolean+ and boolean]]
-  [dunaj.flow :refer [cond let if-let]]
-  [dunaj.coll :refer
-   [ICollectionFactory IConvolutionFactory assoc conj]]
-  [dunaj.feature :refer [meta update-meta]])
- (:import [java.lang String Class]))
+  (:refer-clojure :exclude
+   [fn? bound-fn juxt comp fnil identity fn trampoline defn memoize
+    partial every-pred some-fn apply complement constantly satisfies?
+    boolean conj let meta defprotocol cond if-let assoc and])
+  (:require
+   [clojure.core :refer [str]]
+   [clojure.dunaj-deftype :refer [satisfies?]]
+   [clojure.bootstrap :as cb :refer [defalias defprotocol def+ v1]]
+   [dunaj.type :refer [Fn Any AnyFn I U Va Predicate Signature Macro]]
+   [dunaj.boolean :refer [Boolean+ and boolean]]
+   [dunaj.flow :refer [cond let if-let]]
+   [dunaj.coll :refer
+    [ICollectionFactory IConvolutionFactory assoc conj]]
+   [dunaj.feature :refer [meta update-meta]]))
 
 
 ;;;; Implementation details

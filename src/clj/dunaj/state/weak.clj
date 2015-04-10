@@ -18,24 +18,24 @@
   ones, but they allow the referenced object to be cleared only
   when memory is running low."
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core.async]
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Any Fn U I Maybe]]
-  [dunaj.boolean :refer [and not]]
-  [dunaj.state :refer [IReference IAtomic cas! ICloneable]]
-  [dunaj.compare :refer [not= nil?]]
-  [dunaj.flow :refer [let when doto if-let loop]]
-  [dunaj.poly :refer [extend-type! deftype]]
-  [dunaj.function :refer [fn defn]]
-  [dunaj.error :refer [IException no-such-element]]
-  [dunaj.state.basic :refer [atom]]
-  [dunaj.state.var :refer [defonce defalias declare]]
-  [dunaj.concurrent.port :refer
-   [ITargetPort chan put! thread go-loop]]))
+  (:refer-clojure :exclude
+   [atom deftype let doto fn not= when defn declare nil? defonce not
+    loop if-let and])
+  (:require
+   [clojure.core.async]
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Any Fn U I Maybe]]
+   [dunaj.boolean :refer [and not]]
+   [dunaj.state :refer [IReference IAtomic cas! ICloneable]]
+   [dunaj.compare :refer [not= nil?]]
+   [dunaj.flow :refer [let when doto if-let loop]]
+   [dunaj.poly :refer [extend-type! deftype]]
+   [dunaj.function :refer [fn defn]]
+   [dunaj.error :refer [IException no-such-element]]
+   [dunaj.state.basic :refer [atom]]
+   [dunaj.state.var :refer [defonce defalias declare]]
+   [dunaj.concurrent.port :refer
+    [ITargetPort chan put! thread go-loop]]))
 
 
 ;;;; Implementation details

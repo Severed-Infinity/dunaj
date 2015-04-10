@@ -23,21 +23,20 @@
   root binding unbound."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer [var-set constantly]]
-  [clojure.bootstrap :as cb :refer [defmacro deftype defn v1]]
-  [dunaj.type :refer [Fn Any Va AnyFn Maybe Macro]]
-  [dunaj.boolean :refer [Boolean+]]
-  [dunaj.state :refer [IReference IMutable ICloneable]]
-  [dunaj.flow :refer [when when-let]]
-  [dunaj.feature :refer [IMeta]]
-  [dunaj.function :refer [IInvocable]]
-  [dunaj.identifier :refer
-   [Symbol INamed INamespaced name namespace]])
- (:import [java.lang String]))
+  (:refer-clojure :exclude
+   [thread-bound? find-var with-bindings bound? var? declare defonce
+    namespace deftype when-let when defn name defmacro])
+  (:require
+   [clojure.core :refer [var-set constantly]]
+   [clojure.bootstrap :as cb :refer [defmacro deftype defn v1]]
+   [dunaj.type :refer [Fn Any Va AnyFn Maybe Macro]]
+   [dunaj.boolean :refer [Boolean+]]
+   [dunaj.state :refer [IReference IMutable ICloneable]]
+   [dunaj.flow :refer [when when-let]]
+   [dunaj.feature :refer [IMeta]]
+   [dunaj.function :refer [IInvocable]]
+   [dunaj.identifier :refer
+    [Symbol INamed INamespaced name namespace]]))
 
 
 ;;;; Implementation details

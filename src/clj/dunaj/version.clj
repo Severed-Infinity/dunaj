@@ -16,10 +16,8 @@
   Supports Clojure-like version scheme:
   `MAJOR.MINOR.INCREMENTAL-QUALIFIER-SNAPSHOT`"
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require [clojure.bootstrap :refer [v1]]
+  (:refer-clojure :exclude [= when-let let when defn or defrecord])
+  (:require [clojure.bootstrap :refer [v1]]
            [dunaj.type :refer [Maybe]]
            [dunaj.boolean :refer [Boolean+ or]]
            [dunaj.compare :refer [=]]
@@ -30,8 +28,7 @@
            [dunaj.string :refer [ICanonical ->str]]
            [dunaj.identifier :refer [Symbol]]
            [dunaj.state.var :refer [defalias]]
-           [dunaj.uri :refer [Uri uri]])
- (:import [java.lang String Class]))
+           [dunaj.uri :refer [Uri uri]]))
 
 
 ;;;; Public API

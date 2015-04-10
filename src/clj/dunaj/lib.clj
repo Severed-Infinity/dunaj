@@ -20,40 +20,40 @@
   NOTE: Documentation needs more work."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [scratch v1]]
-  [dunaj.type :refer [Any AnyFn U I Maybe Fn Macro]]
-  [dunaj.boolean :refer [and not or]]
-  [dunaj.host :refer [class-instance? keyword->class proxy]]
-  [dunaj.host.int :refer [iint iinc i-1 i0 i< iadd]]
-  [dunaj.compare :refer [nil?]]
-  [dunaj.state :refer [io! reset!]]
-  [dunaj.flow :refer [let when when-let cond loop]]
-  [dunaj.feature :refer [config]]
-  [dunaj.poly :refer [deftype satisfies?]]
-  [dunaj.coll :refer
-   [IRed slice not-empty red? homogeneous? item-type empty? seq first
-    next]]
-  [dunaj.function :refer [defn]]
-  [dunaj.host.array :refer [aset-char!]]
-  [dunaj.host.batch :refer [item-types-match?]]
-  [dunaj.string :refer [last-index-of]]
-  [dunaj.identifier :refer [symbol?]]
-  [dunaj.state.basic :refer [local]]
-  [dunaj.state.var :refer [defalias with-bindings]]
-  [dunaj.uri :refer [Uri]]
-  [dunaj.coll.util :refer [merge]]
-  [dunaj.format :refer [parse]]
-  [dunaj.format.charset :refer [utf-8]]
-  [dunaj.resource :refer
-   [IAcquirableFactory IImmutableReadable IReadable
-    readable? read! acquire! read]]
-  [dunaj.resource.helper]
-  [dunaj.resource.host :refer [coll-reader]])
- (:import [java.lang String Class]))
+  (:refer-clojure :exclude
+   [ns seq satisfies? first with-bindings deftype when-let let empty?
+    read when defn or reset! nil? not not-empty loop merge cond proxy
+    next io! and symbol?])
+  (:require
+   [clojure.bootstrap :refer [scratch v1]]
+   [dunaj.type :refer [Any AnyFn U I Maybe Fn Macro]]
+   [dunaj.boolean :refer [and not or]]
+   [dunaj.host :refer [class-instance? keyword->class proxy]]
+   [dunaj.host.int :refer [iint iinc i-1 i0 i< iadd]]
+   [dunaj.compare :refer [nil?]]
+   [dunaj.state :refer [io! reset!]]
+   [dunaj.flow :refer [let when when-let cond loop]]
+   [dunaj.feature :refer [config]]
+   [dunaj.poly :refer [deftype satisfies?]]
+   [dunaj.coll :refer
+    [IRed slice not-empty red? homogeneous? item-type empty? seq first
+     next]]
+   [dunaj.function :refer [defn]]
+   [dunaj.host.array :refer [aset-char!]]
+   [dunaj.host.batch :refer [item-types-match?]]
+   [dunaj.string :refer [last-index-of]]
+   [dunaj.identifier :refer [symbol?]]
+   [dunaj.state.basic :refer [local]]
+   [dunaj.state.var :refer [defalias with-bindings]]
+   [dunaj.uri :refer [Uri]]
+   [dunaj.coll.util :refer [merge]]
+   [dunaj.format :refer [parse]]
+   [dunaj.format.charset :refer [utf-8]]
+   [dunaj.resource :refer
+    [IAcquirableFactory IImmutableReadable IReadable
+     readable? read! acquire! read]]
+   [dunaj.resource.helper]
+   [dunaj.resource.host :refer [coll-reader]]))
 
 
 ;;;; Public API

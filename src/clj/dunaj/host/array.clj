@@ -37,40 +37,43 @@
    :categories ["Primary"
                 ["Primitives"
                  "Functions specific to host primitive types."]]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer
-   [str declare get first second every? interpose pr-str map]]
-  [clojure.bootstrap :refer [deftype defn defalias def+ v1]]
-  [dunaj.type :refer [Fn Va U Any Maybe Predicate Macro]]
-  [dunaj.boolean :refer [Boolean+ and or not]]
-  [dunaj.host :refer [Class+ ArrayManager AnyArray Array
-                      class-instance? class provide-class]]
-  [dunaj.host.int :refer
-   [iint iinc idec isub Int imul i== iadd i0 i31 iloop i1 i< inneg?]]
-  [dunaj.math :refer [nneg? integer? < >= Integer+ == > zero?]]
-  [dunaj.flow :refer [delay when-not let loop when cond]]
-  [dunaj.compare :refer
-   [IComparable IHash IEquiv IHashBasis nil? =
-    hash-from-basis next-basis basis-seed ordered-hash-factory]]
-  [dunaj.state :refer [IReference]]
-  [dunaj.poly :refer [Type]]
-  [dunaj.coll :refer
-   [IRed ICounted ISectionable IReversible ISeq
-    IFlippable ISliceable ISequential ILookup IIndexed IHomogeneous
-    IBatchedRed IPeekable ISeqable postponed? count reduced? -rest
-    postponed nth -reverse seq -contains? -section]]
-  [dunaj.function :refer [IInvocable fn apply]]
-  [dunaj.concurrent.forkjoin :refer [IFoldable]]
-  [dunaj.coll.helper :refer
-   [equiv-ordered equals-ordered prepare-ordered-section index-of
-    compare-ordered fold-sectionable coll->iterator red-to-seq
-    coll->list-iterator advance-fn]]
-  [dunaj.host.batch :refer
-   [batch-manager select-item-type batch-on batch-support?]])
- (:import [java.lang Class String]))
+  (:refer-clojure :exclude
+   [short-array aget aclone floats boolean-array booleans int-array
+    areduce longs double-array to-array-2d amap byte-array long-array
+    object-array doubles float-array chars ints to-array char-array
+    make-array shorts bytes seq = < delay reduced? deftype let fn
+    when-not when > defn or zero? nth nil? not >= loop integer? cond
+    class == count apply and])
+  (:require
+   [clojure.core :refer
+    [str declare get first second every? interpose pr-str map]]
+   [clojure.bootstrap :refer [deftype defn defalias def+ v1]]
+   [dunaj.type :refer [Fn Va U Any Maybe Predicate Macro]]
+   [dunaj.boolean :refer [Boolean+ and or not]]
+   [dunaj.host :refer [Class+ ArrayManager AnyArray Array
+                       class-instance? class provide-class]]
+   [dunaj.host.int :refer
+    [iint iinc idec isub Int imul i== iadd i0 i31 iloop i1 i< inneg?]]
+   [dunaj.math :refer [nneg? integer? < >= Integer+ == > zero?]]
+   [dunaj.flow :refer [delay when-not let loop when cond]]
+   [dunaj.compare :refer
+    [IComparable IHash IEquiv IHashBasis nil? =
+     hash-from-basis next-basis basis-seed ordered-hash-factory]]
+   [dunaj.state :refer [IReference]]
+   [dunaj.poly :refer [Type]]
+   [dunaj.coll :refer
+    [IRed ICounted ISectionable IReversible ISeq
+     IFlippable ISliceable ISequential ILookup IIndexed IHomogeneous
+     IBatchedRed IPeekable ISeqable postponed? count reduced? -rest
+     postponed nth -reverse seq -contains? -section]]
+   [dunaj.function :refer [IInvocable fn apply]]
+   [dunaj.concurrent.forkjoin :refer [IFoldable]]
+   [dunaj.coll.helper :refer
+    [equiv-ordered equals-ordered prepare-ordered-section index-of
+     compare-ordered fold-sectionable coll->iterator red-to-seq
+     coll->list-iterator advance-fn]]
+   [dunaj.host.batch :refer
+    [batch-manager select-item-type batch-on batch-support?]]))
 
 
 ;;;; Implementation details

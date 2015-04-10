@@ -21,29 +21,28 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Mappings"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer
-   [set map list into first second find-ns chunked-seq? chunk-first
-    chunk-next persistent! transient ns-name all-ns create-ns
-    remove-ns gensym ns-unmap ns-aliases the-ns]]
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [Any Fn AnyFn U Maybe Va I]]
-  [dunaj.boolean :refer [Boolean+ and not]]
-  [dunaj.host :refer [Class+ class-instance?]]
-  [dunaj.compare :refer [nil? =]]
-  [dunaj.state :refer [IMutable IReference IAtomic ICloneable]]
-  [dunaj.flow :refer [let loop doto]]
-  [dunaj.poly :refer [reify]]
-  [dunaj.coll :refer [ILookup conj seq seq? rest next]]
-  [dunaj.function :refer [fn defn]]
-  [dunaj.string :refer [->str]]
-  [dunaj.identifier :refer [Symbol symbol? name]]
-  [dunaj.macro :refer [defmacro]]
-  [dunaj.state.var :refer [Var defalias def+]])
- (:import [java.lang String Class]))
+  (:refer-clojure :exclude
+   [munge meta resolve seq seq? = rest conj let doto fn defn name nil?
+    reify not loop defmacro next and symbol?])
+  (:require
+   [clojure.core :refer
+    [set map list into first second find-ns chunked-seq? chunk-first
+     chunk-next persistent! transient ns-name all-ns create-ns
+     remove-ns gensym ns-unmap ns-aliases the-ns]]
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [Any Fn AnyFn U Maybe Va I]]
+   [dunaj.boolean :refer [Boolean+ and not]]
+   [dunaj.host :refer [Class+ class-instance?]]
+   [dunaj.compare :refer [nil? =]]
+   [dunaj.state :refer [IMutable IReference IAtomic ICloneable]]
+   [dunaj.flow :refer [let loop doto]]
+   [dunaj.poly :refer [reify]]
+   [dunaj.coll :refer [ILookup conj seq seq? rest next]]
+   [dunaj.function :refer [fn defn]]
+   [dunaj.string :refer [->str]]
+   [dunaj.identifier :refer [Symbol symbol? name]]
+   [dunaj.macro :refer [defmacro]]
+   [dunaj.state.var :refer [Var defalias def+]]))
 
 
 ;;;; Implementation details

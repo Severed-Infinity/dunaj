@@ -31,37 +31,37 @@
   may not store received batch between two calls, as batches
   are usually reused (cleared and filled with next data)."
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer [assert get declare]]
-  [clojure.bootstrap :refer [def+ v1 deftype replace-var!]]
-  [dunaj.type :refer [U Maybe AnyFn Any Fn]]
-  [dunaj.boolean :refer [Boolean+ not and or]]
-  [dunaj.host :refer
-   [Class+ BatchManager AnyBatch AnyArray Batch
-    class-instance? definterface class provide-class keyword->class]]
-  [dunaj.host.int :refer [Int iint isub iinc i== imul idiv idec ipos?
-                          i0 inneg? imin imax i1 i<]]
-  [dunaj.math :refer [max Integer+ min]]
-  [dunaj.compare :refer [nil? identical?]]
-  [dunaj.threading :refer [->]]
-  [dunaj.state :refer [ICloneable clone]]
-  [dunaj.flow :refer [let cond loop when doto when-not]]
-  [dunaj.poly :refer [Type extend-protocol! satisfies?]]
-  [dunaj.coll :refer
-   [IRed IBatchedRed reduced? postponed? postponed reduced advance
-    unsafe-advance! item-type IHomogeneous IUnpackedRed -section
-    -reduce-batched IReducing ISectionable ICounted count counted?
-    sectionable? ISeqable]]
-  [dunaj.concurrent.forkjoin :refer [IFoldable folding]]
-  [dunaj.coll.helper :refer
-   [transduce* reduce* reduce-augmented* adapt* defxform red-to-seq
-    finish-advance advance-fn reduced-advance strip-reduced
-    reduce-unpacked* reduce-batched* cloned-advance-fn adapt]]
-  [dunaj.function :refer [defn fn]])
- (:import [java.lang Class String]))
+  (:refer-clojure :exclude
+   [satisfies? reduced? deftype min let -> doto fn definterface
+    when-not when defn or counted? nil? not identical? loop cond
+    reduced class max count and])
+  (:require
+   [clojure.core :refer [assert get declare]]
+   [clojure.bootstrap :refer [def+ v1 deftype replace-var!]]
+   [dunaj.type :refer [U Maybe AnyFn Any Fn]]
+   [dunaj.boolean :refer [Boolean+ not and or]]
+   [dunaj.host :refer
+    [Class+ BatchManager AnyBatch AnyArray Batch
+     class-instance? definterface class provide-class keyword->class]]
+   [dunaj.host.int :refer [Int iint isub iinc i== imul idiv idec ipos?
+                           i0 inneg? imin imax i1 i<]]
+   [dunaj.math :refer [max Integer+ min]]
+   [dunaj.compare :refer [nil? identical?]]
+   [dunaj.threading :refer [->]]
+   [dunaj.state :refer [ICloneable clone]]
+   [dunaj.flow :refer [let cond loop when doto when-not]]
+   [dunaj.poly :refer [Type extend-protocol! satisfies?]]
+   [dunaj.coll :refer
+    [IRed IBatchedRed reduced? postponed? postponed reduced advance
+     unsafe-advance! item-type IHomogeneous IUnpackedRed -section
+     -reduce-batched IReducing ISectionable ICounted count counted?
+     sectionable? ISeqable]]
+   [dunaj.concurrent.forkjoin :refer [IFoldable folding]]
+   [dunaj.coll.helper :refer
+    [transduce* reduce* reduce-augmented* adapt* defxform red-to-seq
+     finish-advance advance-fn reduced-advance strip-reduced
+     reduce-unpacked* reduce-batched* cloned-advance-fn adapt]]
+   [dunaj.function :refer [defn fn]]))
 
 
 ;;;; Implementation details

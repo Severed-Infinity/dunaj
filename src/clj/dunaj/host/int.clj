@@ -22,14 +22,12 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Comparison" "Operations"
                 "Bitwise" "Numbers" "ASCII"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
+  (:refer-clojure :exclude [deftype defn defmacro])
+  (:require [clojure.core :refer [fn]]
+            [clojure.bootstrap :refer [deftype defmacro defn v1]]
+            [dunaj.type :refer [Any]]
+            [dunaj.boolean :refer [Boolean+]]))
 
-(bare-ns
- (:require [clojure.core :refer [fn]]
-           [clojure.bootstrap :refer [deftype defmacro defn v1]]
-           [dunaj.type :refer [Any]]
-           [dunaj.boolean :refer [Boolean+]])
- (:import [java.lang String Class Boolean]))
 
 ;;;; Public API
 

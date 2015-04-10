@@ -18,24 +18,23 @@
   "Symbolic identifiers and related protocols."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer
-   [defalias defprotocol defn deftype replace-var! v1 scratch]]
-  [dunaj.type :refer [Maybe Fn U]]
-  [dunaj.boolean :refer [Boolean+ and]]
-  [dunaj.host.int :refer [i== iCOLON i0 i1 iint]]
-  [dunaj.compare :refer [IHash IComparable =]]
-  [dunaj.flow :refer [cond]]
-  [dunaj.feature :refer [IMeta IPersistentMeta]]
-  [dunaj.poly :refer [extend-protocol!]]
-  [dunaj.coll :refer [first slice]]
-  [dunaj.function :refer [IInvocable]]
-  [dunaj.string :refer [ICanonical ReversedStringSection
-                        StringSection str string?]])
- (:import [java.lang String]))
+  (:refer-clojure :exclude
+   [namespace keyword? symbol name keyword symbol? first = deftype
+    string? defn defprotocol cond str and])
+  (:require
+   [clojure.bootstrap :refer
+    [defalias defprotocol defn deftype replace-var! v1 scratch]]
+   [dunaj.type :refer [Maybe Fn U]]
+   [dunaj.boolean :refer [Boolean+ and]]
+   [dunaj.host.int :refer [i== iCOLON i0 i1 iint]]
+   [dunaj.compare :refer [IHash IComparable =]]
+   [dunaj.flow :refer [cond]]
+   [dunaj.feature :refer [IMeta IPersistentMeta]]
+   [dunaj.poly :refer [extend-protocol!]]
+   [dunaj.coll :refer [first slice]]
+   [dunaj.function :refer [IInvocable]]
+   [dunaj.string :refer [ICanonical ReversedStringSection
+                         StringSection str string?]]))
 
 
 ;;;; Implementation details

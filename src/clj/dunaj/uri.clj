@@ -16,22 +16,20 @@
   A data reader literal `#uri` is available for
   a convenient URI creation."
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [U]]
-  [dunaj.boolean :refer [Boolean+]]
-  [dunaj.math :refer [Integer+]]
-  [dunaj.compare :refer [IComparable identical?]]
-  [dunaj.flow :refer [condp]]
-  [dunaj.poly :refer [deftype]]
-  [dunaj.coll :refer [ILookup]]
-  [dunaj.function :refer [defn]]
-  [dunaj.string :refer [ICanonical ->str]]
-  [dunaj.identifier :refer [name INamed]])
- (:import [java.lang String]))
+  (:refer-clojure :exclude
+   [resolve deftype defn name identical? condp])
+  (:require
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [U]]
+   [dunaj.boolean :refer [Boolean+]]
+   [dunaj.math :refer [Integer+]]
+   [dunaj.compare :refer [IComparable identical?]]
+   [dunaj.flow :refer [condp]]
+   [dunaj.poly :refer [deftype]]
+   [dunaj.coll :refer [ILookup]]
+   [dunaj.function :refer [defn]]
+   [dunaj.string :refer [ICanonical ->str]]
+   [dunaj.identifier :refer [name INamed]]))
 
 
 ;;;; Public API

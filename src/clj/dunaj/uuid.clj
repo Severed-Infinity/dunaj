@@ -20,24 +20,23 @@
   A data reader literal `#uuid` is available for
   a convenient UUID creation."
   {:authors ["Jozef Wagner"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer [assoc]]
-  [clojure.bootstrap :refer [v1]]
-  [dunaj.type :refer [U Fn Any]]
-  [dunaj.math :refer [INumerical num Integer+]]
-  [dunaj.compare :refer [IComparable]]
-  [dunaj.host.number :refer [biginteger]]
-  [dunaj.flow :refer [let cond]]
-  [dunaj.threading :refer [->]]
-  [dunaj.poly :refer [deftype]]
-  [dunaj.function :refer [defn]]
-  [dunaj.host.array :refer [byte-array? byte-array]]
-  [dunaj.string :refer
-   [ICharSequence char-sequence? ->str ICanonical canonical]]
-  [dunaj.state.var :refer [alter-root! replace-var!]]))
+  (:refer-clojure :exclude
+    [num deftype biginteger let -> defn byte-array cond])
+  (:require
+   [clojure.core :refer [assoc]]
+   [clojure.bootstrap :refer [v1]]
+   [dunaj.type :refer [U Fn Any]]
+   [dunaj.math :refer [INumerical num Integer+]]
+   [dunaj.compare :refer [IComparable]]
+   [dunaj.host.number :refer [biginteger]]
+   [dunaj.flow :refer [let cond]]
+   [dunaj.threading :refer [->]]
+   [dunaj.poly :refer [deftype]]
+   [dunaj.function :refer [defn]]
+   [dunaj.host.array :refer [byte-array? byte-array]]
+   [dunaj.string :refer
+    [ICharSequence char-sequence? ->str ICanonical canonical]]
+   [dunaj.state.var :refer [alter-root! replace-var!]]))
 
 
 ;;;; Public API

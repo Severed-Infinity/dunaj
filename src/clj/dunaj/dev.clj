@@ -153,7 +153,7 @@
 
  []
 
- (let [sym 'dunaj.coll.vector-section]
+ (let [sym 'dunaj.version]
    (clojure.core/println "(:refer-clojure :exclude" 
                          (vec (conflicts sym)) ")"))
  

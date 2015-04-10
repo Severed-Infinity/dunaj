@@ -14,24 +14,23 @@
   "Error handling, exceptions."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Exceptions"]}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer [extend-protocol map into]]
-  [clojure.stacktrace]
-  [clojure.bootstrap :refer
-   [defprotocol defn defalias defmacro v1 not-implemented]]
-  [dunaj.type :refer [Fn Maybe KeywordMap]]
-  [dunaj.boolean :refer [Boolean+]]
-  [dunaj.host :refer [bean->map class]]
-  [dunaj.flow :refer [let when]]
-  [dunaj.state :refer [IReference]]
-  [dunaj.function :refer [fn comp]]
-  [dunaj.host.array :refer [adapt]]
-  [dunaj.string :refer [hyphen-case]]
-  [dunaj.identifier :refer [INamed keyword namespace name]])
- (:import [java.lang String]))
+  (:refer-clojure :exclude
+   [ex-data error-mode error-handler ex-info namespace comp let fn
+    when defn name defprotocol defmacro keyword class])
+  (:require
+   [clojure.core :refer [extend-protocol map into]]
+   [clojure.stacktrace]
+   [clojure.bootstrap :refer
+    [defprotocol defn defalias defmacro v1 not-implemented]]
+   [dunaj.type :refer [Fn Maybe KeywordMap]]
+   [dunaj.boolean :refer [Boolean+]]
+   [dunaj.host :refer [bean->map class]]
+   [dunaj.flow :refer [let when]]
+   [dunaj.state :refer [IReference]]
+   [dunaj.function :refer [fn comp]]
+   [dunaj.host.array :refer [adapt]]
+   [dunaj.string :refer [hyphen-case]]
+   [dunaj.identifier :refer [INamed keyword namespace name]]))
 
 
 ;;;; Public API

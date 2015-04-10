@@ -31,30 +31,31 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Operations"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require
-  [clojure.core :refer [defmethod get-method cons some print-method]]
-  [clojure.set :as cs]
-  [clojure.bootstrap :refer [v1]]
-  [clojure.pprint]
-  [dunaj.type :refer [Any Fn I Maybe AnyFn Va KeywordMap Predicate]]
-  [dunaj.boolean :refer [Boolean+ not or and]]
-  [dunaj.host :refer [class-instance?]]
-  [dunaj.host.int :refer [Int iadd iint]]
-  [dunaj.compare :refer [IHash IEquiv identical? hash -hash =]]
-  [dunaj.flow :refer [let cond when-not if-let when]]
-  [dunaj.feature :refer [IPersistentMeta IMeta meta assoc-meta]]
-  [dunaj.poly :refer [instance? identical-type? satisfies? deftype]]
-  [dunaj.coll :refer
-   [IRed IEmptyAware IEmptyable empty ILookup contains? empty? conj
-    IInvertible ISeqable reduce IPersistentSet disj get
-    IPersistentCollection ICatenable cat]]
-  [dunaj.function :refer [IInvocable apply defn]]
-  [dunaj.string :refer [->str]]
-  [dunaj.error :refer [unsupported-operation illegal-argument]]
-  [dunaj.state.var :refer [declare def+]]))
+  (:refer-clojure :exclude
+   [reduce contains? satisfies? = disj deftype cat conj let get meta
+    empty? hash when-not when defn declare or instance? not identical?
+    empty cond if-let apply and])
+  (:require
+   [clojure.core :refer [defmethod get-method cons some print-method]]
+   [clojure.set :as cs]
+   [clojure.bootstrap :refer [v1]]
+   [clojure.pprint]
+   [dunaj.type :refer [Any Fn I Maybe AnyFn Va KeywordMap Predicate]]
+   [dunaj.boolean :refer [Boolean+ not or and]]
+   [dunaj.host :refer [class-instance?]]
+   [dunaj.host.int :refer [Int iadd iint]]
+   [dunaj.compare :refer [IHash IEquiv identical? hash -hash =]]
+   [dunaj.flow :refer [let cond when-not if-let when]]
+   [dunaj.feature :refer [IPersistentMeta IMeta meta assoc-meta]]
+   [dunaj.poly :refer [instance? identical-type? satisfies? deftype]]
+   [dunaj.coll :refer
+    [IRed IEmptyAware IEmptyable empty ILookup contains? empty? conj
+     IInvertible ISeqable reduce IPersistentSet disj get
+     IPersistentCollection ICatenable cat]]
+   [dunaj.function :refer [IInvocable apply defn]]
+   [dunaj.string :refer [->str]]
+   [dunaj.error :refer [unsupported-operation illegal-argument]]
+   [dunaj.state.var :refer [declare def+]]))
 
 
 ;;;; Public API
