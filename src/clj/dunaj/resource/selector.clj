@@ -42,7 +42,7 @@
    [dunaj.host.batch :refer [select-item-type]]
    [dunaj.time :refer [IDuration milliseconds]]
    [dunaj.concurrent.thread :refer
-    [IThreadLocal IPassableThreadLocal Thread
+    [IThreadLocal IPassableThreadLocal Thread+
      current-thread ensure-thread-local]]
    [dunaj.string :refer [string?]]
    [dunaj.error :refer

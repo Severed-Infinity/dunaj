@@ -44,7 +44,7 @@
   [dunaj.macro :refer [defmacro]]
   [dunaj.namespace :refer [resolve all publics]]
   [dunaj.state.var :refer [defalias def+ with-bindings]]
-  [dunaj.concurrent.thread :refer [Thread current-thread]]
+  [dunaj.concurrent.thread :refer [Thread+ current-thread]]
   [dunaj.coll.util :refer [doseq sort-by recipe dored sort]]
   [dunaj.coll.recipe :refer
    [concat mapcat map vals lines drop-while keys filter take remove]]

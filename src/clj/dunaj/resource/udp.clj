@@ -43,7 +43,7 @@
   [dunaj.function :refer [fn defn identity]]
   [dunaj.coll.helper :refer [red-to-seq]]
   [dunaj.concurrent.thread :refer
-   [Thread IThreadLocal IPassableThreadLocal current-thread
+   [Thread+ IThreadLocal IPassableThreadLocal current-thread
     ensure-thread-local]]
   [dunaj.concurrent.port :refer
    [IMult -tap! -untap! -untap-all! chan put! <!! close!]]

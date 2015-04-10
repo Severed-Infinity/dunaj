@@ -224,7 +224,7 @@
             io index-out-of-bounds no-such-element npe
             unsupported-operation ex-info ex-data])
     (refer dunaj.concurrent.thread
-           [Thread thread-local? pass! current-thread
+           [Thread+ thread-local? pass! current-thread
             ensure-thread-local sleep])
     (refer dunaj.macro
            [defmacro gensym macroexpand macroexpand-1

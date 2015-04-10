@@ -77,7 +77,7 @@
     reduce-with-batched* cloned-advance-fn red-to-seq]]
   [dunaj.function :refer [apply defn fn]]
   [dunaj.concurrent.thread :refer
-   [Thread IThreadLocal current-thread ensure-thread-local]]
+   [Thread+ IThreadLocal current-thread ensure-thread-local]]
   [dunaj.host.array :refer [byte-array array-manager]]
   [dunaj.host.batch :refer [provide-batch-size batch-manager
                             select-item-type item-types-match?]]

@@ -29,7 +29,7 @@
    [dunaj.function :refer [defn]]
    [dunaj.concurrent.thread :refer
     [IThreadLocal IPassableThreadLocal
-     Thread current-thread ensure-thread-local]]
+     Thread+ current-thread ensure-thread-local]]
    [dunaj.state.var :refer [replace-var! defalias declare]]))
 
 

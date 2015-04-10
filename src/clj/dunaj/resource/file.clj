@@ -40,7 +40,7 @@
    [dunaj.host.array :refer [array]]
    [dunaj.host.batch :refer [select-item-type provide-batch-size]]
    [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal
+    [Thread+ IThreadLocal IPassableThreadLocal
      current-thread ensure-thread-local]]
    [dunaj.string :refer [String+ string?]]
    [dunaj.uri :refer [Uri uri uri? absolute? resolve]]

@@ -45,7 +45,7 @@
    [dunaj.coll.helper :refer [reduce-with-batched* red-to-seq]]
    [dunaj.buffer :refer [dropping-buffer]]
    [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal current-thread
+    [Thread+ IThreadLocal IPassableThreadLocal current-thread
      ensure-thread-local]]
    [dunaj.concurrent.port :refer [chan <!! >!!]]
    [dunaj.concurrent :refer [IFuture ITaskExecutor submit locking]]

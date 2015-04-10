@@ -47,7 +47,7 @@
    [dunaj.host.array :refer [aset-char! array-manager]]
    [dunaj.host.batch :refer [select-item-type provide-batch-size]]
    [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal
+    [Thread+ IThreadLocal IPassableThreadLocal
      current-thread ensure-thread-local]]
    [dunaj.concurrent.port :refer [<!! chan close! tap!]]
    [dunaj.string :refer [String+ string?]]

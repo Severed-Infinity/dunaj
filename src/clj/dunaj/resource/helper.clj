@@ -37,7 +37,7 @@
     [reduce-with-batched* reduce* red-to-seq]]
    [dunaj.host.batch :refer [provide-batch-size select-item-type]]
    [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal
+    [Thread+ IThreadLocal IPassableThreadLocal
      current-thread ensure-thread-local]]
    [dunaj.string :refer [String+ string?]]
    [dunaj.macro :refer [defmacro]]

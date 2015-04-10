@@ -41,7 +41,7 @@
    [dunaj.host.array :refer [array]]
    [dunaj.host.batch :refer [select-item-type]]
    [dunaj.concurrent.thread :refer
-    [Thread current-thread ensure-thread-local]]
+    [Thread+ current-thread ensure-thread-local]]
    [dunaj.string :refer [string?]]
    [dunaj.error :refer [IException IFailAware IFailable
                         fail! error fragile opened-fragile]]

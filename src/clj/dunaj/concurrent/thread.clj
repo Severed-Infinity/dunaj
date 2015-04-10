@@ -110,7 +110,7 @@
                         "Key must be :name or :priority")))
     this))
 
-(deftype Thread
+(deftype Thread+
   "A type for thread.
 
   Thread priority and name can be controlled with mutable and
