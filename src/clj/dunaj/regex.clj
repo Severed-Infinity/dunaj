@@ -27,7 +27,7 @@
   [dunaj.boolean :refer [and or]]
   [dunaj.host :refer [class-instance?]]
   [dunaj.host.int :refer [Int iint iadd i0 isub izero? i==]]
-  [dunaj.math :refer [Integer]]
+  [dunaj.math :refer [Integer+]]
   [dunaj.flow :refer [let loop cond]]
   [dunaj.poly :refer [deftype]]
   [dunaj.coll :refer [IRed reduced? postponed postponed? ISeqable
@@ -103,7 +103,7 @@
    :see '[regex? regex matches dunaj.format/parse]}
   ([re :- (U String Regex), coll :- (Maybe IRed)]
    (split re coll 0))
-  ([re :- (U String Regex), coll :- (Maybe IRed), limit :- Integer]
+  ([re :- (U String Regex), coll :- (Maybe IRed), limit :- Integer+]
    (adapt
     (.split (regex re) (provide-char-sequence coll) (or limit 0)))))
 

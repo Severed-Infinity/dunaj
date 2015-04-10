@@ -41,7 +41,7 @@
     imul i31 iSPACE iHT iLF iCR i<= i32 ineg izero? i2 idiv i-1]]
   [dunaj.host.number :refer [long]]
   [dunaj.math :refer
-   [INumerical Integer - integer? nneg? < == >= > <= neg? add dec]]
+   [INumerical Integer+ - integer? nneg? < == >= > <= neg? add dec]]
   [dunaj.compare :refer [IComparable IHash IEquiv IHashBasis not=
                          hash-from-basis hash = nil? identical?]]
   [dunaj.state :refer [IReference reset! ICloneable]]
@@ -775,7 +775,7 @@
         (settle! (.-ret ^dunaj.string.CamelWrap r))
         empty-string))))
 
-(defn index-of :- (Maybe Integer)
+(defn index-of :- (Maybe Integer+)
   "Returns first found index of `_x_` inside `_coll_`,
   or returns `nil` if `_coll_` does not contain `_x_`.
   `_x_` may be a character or a collection."
@@ -796,7 +796,7 @@
               (reduce rf (i0) coll)))]
       (when (nneg? res) res))))
 
-(defn last-index-of :- (Maybe Integer)
+(defn last-index-of :- (Maybe Integer+)
   "Returns last found index of `_x_` inside `_coll_`,
   or returns `nil` if `_coll_` does not contain `_x_`.
   `_x_` may be a character or a collection."
@@ -1007,9 +1007,9 @@
   {:added v1
    :see '[hexa]
    :category "Operations"}
-  ([x :- Integer]
+  ([x :- Integer+]
    (binary x 8))
-  ([x :- Integer, n :- Integer]
+  ([x :- Integer+, n :- Integer+]
    (when-not (<= 1 n 64)
      (throw (java.lang.IllegalArgumentException.
              "n is out of bounds.")))
@@ -1025,9 +1025,9 @@
   {:added v1
    :see '[binary]
    :category "Operations"}
-  ([x :- Integer]
+  ([x :- Integer+]
    (hexa x 4))
-  ([x :- Integer, n :- Integer]
+  ([x :- Integer+, n :- Integer+]
    (when-not (<= 1 n 16)
      (throw (java.lang.IllegalArgumentException.
              "n is out of bounds.")))

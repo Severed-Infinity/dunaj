@@ -30,7 +30,7 @@
     iQUOTE iAPOS iBACKSLASH ipos? iLBRACKET iSMALL_M iSMALL_B
     iSMALL_F iSMALL_N iSMALL_R iSMALL_U iSMALL_T]]
   [dunaj.math :refer
-   [Integer max min < integer? == > neg? pos? zero? one?]]
+   [Integer+ max min < integer? == > neg? pos? zero? one?]]
   [dunaj.math.unchecked :as mu]
   [dunaj.compare :refer [identical? nil?]]
   [dunaj.state :refer [reset! realized? IReference clone]]
@@ -173,11 +173,11 @@
   {:added v1
    :category "Indentation"
    :see '[base-indent next-indent]}
-  (-indent :- Integer
+  (-indent :- Integer+
     "Returns indent amount for `_this_` machine."
     [this]))
 
-(defn base-indent :- (Maybe Integer)
+(defn base-indent :- (Maybe Integer+)
   "Returns base indentation value based on the given `_config_`. Uses
   `:indent-size` key in `_config_` to obtain the indentation size."
   {:added v1
@@ -186,7 +186,7 @@
   [config :- {}]
   (:indent-offset config))
 
-(defn next-indent :- (Maybe Integer)
+(defn next-indent :- (Maybe Integer+)
   "Returns new indentation value based on the given `_config_` and
   parent `_machine_`. Uses `:indent-size` key in `_config_`
   to obtain the indentation size."
@@ -196,7 +196,7 @@
   [config :- {}, machine :- IIndentedMachine]
   (mu/add (-indent machine) (:indent-size config)))
 
-(defn prev-indent :- (Maybe Integer)
+(defn prev-indent :- (Maybe Integer+)
   "Returns previous indentation value based on the given `_config_`
   and current `_machine_`. Uses `:indent-size` key in `_config_`
   to obtain the indentation size."
@@ -397,7 +397,7 @@
 (defn ^:private provide-capacity :- AnyBatch
   "Returns new batch if `_batch_` is small,
   otherwise returns `_batch_`."
-  [bm :- BatchManager, batch :- AnyBatch, size-hint :- Integer]
+  [bm :- BatchManager, batch :- AnyBatch, size-hint :- Integer+]
   (if (or (nil? batch) (i< (.capacity batch) (iint size-hint)))
     (.allocate bm (provide-batch-size size-hint))
     batch))
@@ -490,7 +490,7 @@
   creating it if not present."
   ([bm :- BatchManager, state :- IReference]
    (alt-batch! bm state 0))
-  ([bm :- BatchManager, state :- IReference, initial-size :- Integer]
+  ([bm :- BatchManager, state :- IReference, initial-size :- Integer+]
    (if-let [abatch (:alt-batch @state)]
      abatch
      (let [size (provide-batch-size
@@ -504,7 +504,7 @@
   state reference. Returns `_batch_`."
   ([bm :- BatchManager, state :- IReference]
    (alt-batch-grow! bm state 0))
-  ([bm :- BatchManager, state :- IReference, new-size :- Integer]
+  ([bm :- BatchManager, state :- IReference, new-size :- Integer+]
    (let [abatch ^java.nio.Buffer (:alt-batch @state)
          l (imax (iadd (.position abatch) (iint new-size))
                  (i<< (.capacity abatch) 1))
@@ -556,7 +556,7 @@
          (recur (alt-batch-grow! bm state) bm state el)
          (do (.clear abatch) (recur abatch bm state el))))))
   ([dest :- AnyBatch, bm :- BatchManager,
-    state :- IReference, el :- Any, n :- Integer]
+    state :- IReference, el :- Any, n :- Integer+]
    (iloop [dest dest, i (iint n)]
      (if (izero? i)
        dest

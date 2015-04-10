@@ -22,7 +22,7 @@
   [dunaj.boolean :refer [and or not]]
   [dunaj.host :refer [Batch keyword->class class-instance?]]
   [dunaj.host.int :refer [i== i0 iint iloop iadd]]
-  [dunaj.math :refer [Integer max neg? == zero?]]
+  [dunaj.math :refer [Integer+ max neg? == zero?]]
   [dunaj.state :refer [IOpenAware IReference IMutable ICloneable
                        ensure-io reset! ensure-open open?]]
   [dunaj.flow :refer [let loop cond when if-not if-let]]
@@ -68,7 +68,7 @@
 (deftype ReadableResourceRecipe
   "Reads from the readable resource. Passable thread local."
   [rch :- java.nio.channels.ReadableByteChannel,
-   batch-size :- (Maybe Integer),
+   batch-size :- (Maybe Integer+),
    resource :- (I IFailable IOpenAware),
    ^:volatile-mutable thread :- (Maybe Thread)]
   IRed
@@ -151,18 +151,18 @@
   {:added v1}
   [resource :- (I IFailable IOpenAware),
    rch :- java.nio.channels.ReadableByteChannel,
-   batch-size :- (Maybe Integer),
+   batch-size :- (Maybe Integer+),
    thread :- (Maybe Thread)]
   (->ReadableResourceRecipe rch batch-size resource thread))
 
-(defn basic-write! :- (U Integer Postponed)
+(defn basic-write! :- (U Integer+ Postponed)
   "Performs a write to a given writable byte channel `_wch_`,
   returning number of bytes written or postponed object if
   channel is it non blocking mode. Thread local."
   {:added v1}
   [resource :- (I IFailable IOpenAware),
    wch :- java.nio.channels.WritableByteChannel,
-   batch-size :- (Maybe Integer),
+   batch-size :- (Maybe Integer+),
    thread :- (Maybe Thread), coll :- (Maybe IRed)]
   (let [non-blocking?
         (and

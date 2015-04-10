@@ -30,7 +30,7 @@
     ihexa? ihexa->int idigit->int iHT iCR iLF iCOLON iSPACE iCOMMA
     i<= iQUOTE iAPOS iBACKSLASH ipos? iSMALL_B iSMALL_F iSMALL_N
     iSMALL_R iSMALL_U iSMALL_T]]
-  [dunaj.math :refer [Integer neg? pos? <]]
+  [dunaj.math :refer [Integer+ neg? pos? <]]
   [dunaj.threading :refer [->> ->]]
   [dunaj.compare :refer [identical? nil? defsentinel]]
   [dunaj.state :refer [reset! IReference clone]]
@@ -604,7 +604,7 @@
   Throws if `_level-limit_` has been reached."
   {:added v1
    :category "Lazy"}
-  [parents :- IPersistentList, level-limit :- Integer, coll :- IRed]
+  [parents :- IPersistentList, level-limit :- Integer+, coll :- IRed]
   (when (and (pos? level-limit) (< level-limit (count parents)))
     (perror "container level count reached " (count parents)))
   (lazy-seq
@@ -630,7 +630,7 @@
    :see '[take-one drop-until-token]
    :category "Lazy"}
   [parents :- IPersistentList, pred :- AnyFn,
-   item-limit :- Integer, level-limit :- Integer, coll :- IRed]
+   item-limit :- Integer+, level-limit :- Integer+, coll :- IRed]
   (->> coll
        (lazy-parser parents level-limit)
        (take-while (complement pred))
@@ -644,7 +644,7 @@
   {:added v1
    :see '[drop-one take-until-token process-one]
    :category "Lazy"}
-  [parents :- IPersistentList, level-limit :- Integer, coll :- IRed]
+  [parents :- IPersistentList, level-limit :- Integer+, coll :- IRed]
   (when (and (pos? level-limit) (< level-limit (count parents)))
     (perror "container level count reached " (count parents)))
   (let [s (seq coll),
@@ -667,7 +667,7 @@
    :see '[drop-one take-until-token]
    :category "Lazy"}
   [parents :- IPersistentList, pred :- AnyFn,
-   item-limit :- Integer, level-limit :- Integer, coll :- IRed]
+   item-limit :- Integer+, level-limit :- Integer+, coll :- IRed]
   (when (and (pos? level-limit) (< level-limit (count parents)))
     (perror "container level count reached " (count parents)))
   (lazy-seq
@@ -693,7 +693,7 @@
   {:added v1
    :see '[drop-until-token take-one process-one]
    :category "Lazy"}
-  [parents :- IPersistentList, level-limit :- Integer, coll :- IRed]
+  [parents :- IPersistentList, level-limit :- Integer+, coll :- IRed]
   (when (and (pos? level-limit) (< level-limit (count parents)))
     (perror "container level count reached " (count parents)))
   (let [s (seq coll)

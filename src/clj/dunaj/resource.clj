@@ -56,7 +56,7 @@
   [dunaj.boolean :refer [Boolean or and not]]
   [dunaj.host :refer [keyword->class class-instance?]]
   [dunaj.host.int :refer [i0]]
-  [dunaj.math :refer [Integer integer? pos? odd? max neg? == min]]
+  [dunaj.math :refer [Integer+ integer? pos? odd? max neg? == min]]
   [dunaj.state :refer
    [IAtomic cancel! alter! cas! reference? IOpenAware adjust! io!
     atomic? switch! IAdjustable IReference IMutable ensure-io
@@ -529,13 +529,13 @@
    :see '[write! write-one!]
    :predicate 'writable?
    :forbid-extensions true}
-  (-write! :- (U Integer Postponed)
+  (-write! :- (U Integer+ Postponed)
     "Writes `_coll_` into `_this_` and returns number of items
     written. Blocks or returns postponed object if in non-blocking
     mode. Throws if I/O error occurs."
     [this coll :- IRed]))
 
-(defn write! :- (U Integer Postponed)
+(defn write! :- (U Integer+ Postponed)
   "Writes `_coll_` into object `_x_` and returns number of items
   written. Takes an optional transducer `_xf_`.
 
@@ -552,7 +552,7 @@
   ([x :- Any, xform :- Any, coll :- IRed]
    (write! x (recipe xform coll))))
 
-(defn write-one! :- (U Integer Postponed)
+(defn write-one! :- (U Integer+ Postponed)
   "Writes `_val_` into object `_x_` and returns number of items
   written. Takes an optional transducer `_xf_`.
   Blocks or returns postponed object if in non-blocking mode.
@@ -626,14 +626,14 @@
   {:added v1
    :see '[size position]
    :predicate 'seekable?}
-  (-size :- Integer
+  (-size :- Integer+
     "Returns the current size of `_this_`."
     [this])
   (-position :- IMutable
     "Returns a mutable reference to the current position."
     [this]))
 
-(defn size :- Integer
+(defn size :- Integer+
   "Returns the current size of a seekable resource `_x_`,
   in resource specific units."
   {:added v1
@@ -703,7 +703,7 @@
   ([res :- IImmutableReadable, parser :- IParserFactory]
    (parse parser (read res))))
 
-(defn spit-with! :- Integer
+(defn spit-with! :- Integer+
   "Writes `_coll_` to the `_res_` using `_printer_` for printing,
   returning number of bytes written. Default mode is `:append`."
   {:added v1
@@ -718,7 +718,7 @@
                (assoc (resource res) :mode mode))]
      (write! res (print printer coll)))))
 
-(defn spit! :- Integer
+(defn spit! :- Integer+
   "Writes `_coll_` to the `_res_`, returning number of bytes written.
   Uses utf-8 printer. Default `_mode_` is `:append`."
   {:added v1

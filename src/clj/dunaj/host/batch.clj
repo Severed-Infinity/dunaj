@@ -44,7 +44,7 @@
     class-instance? definterface class provide-class keyword->class]]
   [dunaj.host.int :refer [Int iint isub iinc i== imul idiv idec ipos?
                           i0 inneg? imin imax i1 i<]]
-  [dunaj.math :refer [max Integer min]]
+  [dunaj.math :refer [max Integer+ min]]
   [dunaj.compare :refer [nil? identical?]]
   [dunaj.threading :refer [->]]
   [dunaj.state :refer [ICloneable clone]]
@@ -265,7 +265,7 @@
   WARNING: This promise may be dropped in later versions."
   {:added v1
    :see '[default-batch-size dunaj.coll.util/reduce-batched batch]}
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (imax (iint *default-batch-size*) (iint (or size-hint (i1))))
   ;; TODO: upper limit can be introduced after users will not
   ;;       assume returned batch size will be at least big as
@@ -283,7 +283,7 @@
   {:added v1
    :see '[dunaj.coll.util/reduce-batched dunaj.coll.util/batched]}
   [requested-type :- (U nil Class+ Type clojure.lang.Keyword),
-   size-hint :- (Maybe Integer)]
+   size-hint :- (Maybe Integer+)]
   :let
   [type (select-item-type (provide-class requested-type))
    batch-size (provide-batch-size size-hint)]

@@ -23,7 +23,7 @@
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [U]]
   [dunaj.boolean :refer [Boolean]]
-  [dunaj.math :refer [Integer]]
+  [dunaj.math :refer [Integer+]]
   [dunaj.compare :refer [IComparable identical?]]
   [dunaj.flow :refer [condp]]
   [dunaj.poly :refer [deftype]]
@@ -75,7 +75,7 @@
    :see '[uri?]}
   ([val :- (U String Uri)]
    (if (uri? val) val (java.net.URI/create val)))
-  ([scheme :- INamed, host :- String, port :- Integer]
+  ([scheme :- INamed, host :- String, port :- Integer+]
    (java.net.URI. (name scheme) nil host port nil nil nil)))
 
 ;;; Predicates

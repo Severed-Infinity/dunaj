@@ -25,7 +25,7 @@
   [dunaj.host :refer [Class+ BatchManager Batch AnyBatch
                       keyword->class class-instance?]]
   [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]
-  [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
+  [dunaj.math :refer [Integer+ max neg? == < zero? nneg?]]
   [dunaj.compare :refer [nil? = identical?]]
   [dunaj.state :refer
    [IOpenAware IReference IMutable IAdjustable ICloneable
@@ -79,14 +79,14 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-datagram-batch-size :- Integer
+(def+ ^:private default-datagram-batch-size :- Integer+
   "Default size for datagram batch."
   2048)
 
-(defn ^:private provide-datagram-batch-size :- Integer
+(defn ^:private provide-datagram-batch-size :- Integer+
   "Returns datagram batch size taking into account given
   batch size hint."
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (provide-batch-size
    (max (or size-hint 0) default-datagram-batch-size)))
 
@@ -97,7 +97,7 @@
   `_payload_`."
   {:added v1
    :see '[bare-udp]}
-  [address :- (Maybe String), port :- (Maybe Integer),
+  [address :- (Maybe String), port :- (Maybe Integer+),
    payload :- (U AnyBatch IRed)]
   (->UdpDatagram address port payload))
 
@@ -105,7 +105,7 @@
   "Reads from an opened connectionless UDP socket.
   Passable thread local. Supports non blocking mode."
   [ch :- java.nio.channels.DatagramChannel,
-   resource :- (U IFailable IOpenAware), batch-size :- Integer,
+   resource :- (U IFailable IOpenAware), batch-size :- Integer+,
    ^:volatile-mutable thread :- (Maybe Thread), payload-fn :- AnyFn]
   IRed
   (-reduce [this reducef init]
@@ -156,7 +156,7 @@
   "Reads from an opened connected UDP socket.
   Passable thread local. Supports non blocking mode."
   [ch :- java.nio.channels.DatagramChannel,
-   resource :- (U IOpenAware IFailable), batch-size :- Integer,
+   resource :- (U IOpenAware IFailable), batch-size :- Integer+,
    ^:volatile-mutable thread :- (Maybe Thread), payload-fn :- AnyFn]
   ICloneable
   (-clone [this] (throw (unsupported-operation)))
@@ -305,7 +305,7 @@
 
 (defn ^:private socket-address :- java.net.InetSocketAddress
   "Returns instance of socket address."
-  [address :- (Maybe String), port :- (Maybe Integer)]
+  [address :- (Maybe String), port :- (Maybe Integer+)]
   (let [port (or port 0)
         address (when address
                   (java.net.InetAddress/getByName address))]
@@ -403,7 +403,7 @@
 
 (defreleasable ^:private BareUdpResource
   "Connectionless UDP resource type."
-  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer,
+  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException),
    payload-fn :- AnyFn]
   IConfig
@@ -441,7 +441,7 @@
 
 (defreleasable ^:private UdpResource
   "Connected UDP resource type."
-  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer,
+  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException),
    payload-fn :- AnyFn]
   IConfig
@@ -480,7 +480,7 @@
 
 (defreleasable ^:private MulticastResource
   "Multicast UDP resource type."
-  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer,
+  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException),
    payload-fn :- AnyFn,
    membership-key :- java.nio.channels.MembershipKey,

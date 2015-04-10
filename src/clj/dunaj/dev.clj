@@ -140,3 +140,33 @@
    :see '[assert-primitive]
    :tsig Macro}
   clojure.bootstrap/pt)
+
+(scratch [[dunaj.lib]
+          [dunaj.namespace]
+          [dunaj.compare :refer [not=]]
+          [dunaj.flow :refer [let]]
+          [dunaj.identifier :refer [namespace]]
+          [dunaj.coll :refer [seq second first]]
+          [dunaj.coll.util :refer []]
+          [dunaj.coll.default :refer [set vec]]
+          [dunaj.coll.recipe :refer [concat filter keys map]]]
+
+ []
+
+ (let [sym 'dunaj.boolean]
+   (clojure.core/println "(:refer-clojure :exclude" 
+                         (vec (conflicts sym)) ")"))
+ 
+)
+
+(defn conflicts
+  ([sym] 
+   (conflicts sym 'clojure.core))
+  ([sym reference]
+   (dunaj.lib/require! sym)
+   (let [is (keys (dunaj.namespace/interns sym))
+         rs (map first 
+             (filter #(not= "clojure.core" (namespace (second %)))
+                     (dunaj.namespace/refers sym)))
+         cps (set (keys (dunaj.namespace/publics reference)))]
+     (seq (filter cps (concat is rs))))))

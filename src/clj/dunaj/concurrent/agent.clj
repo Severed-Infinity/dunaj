@@ -57,7 +57,7 @@
            [dunaj.type :refer [Fn Maybe U Any AnyFn Va]]
            [dunaj.boolean :refer [Boolean boolean]]
            [dunaj.host :refer [class-instance?]]
-           [dunaj.math :refer [Integer zero? rem]]
+           [dunaj.math :refer [Integer+ zero? rem]]
            [dunaj.state :refer [IReference IMutable]]
            [dunaj.flow :refer [let when]]
            [dunaj.feature :refer [IMeta IMutableMeta]]
@@ -268,7 +268,7 @@
   returning due to `_timeout_`, `true` otherwise."
   {:added v1
    :see '[await dunaj.concurrent.thread/join restart-agent!]}
-  [timeout :- (U Integer IDuration) & agents :- Agent]
+  [timeout :- (U Integer+ IDuration) & agents :- Agent]
   (let [ms (milliseconds timeout)]
     (boolean (apply clojure.core/await-for ms agents))))
 
@@ -286,5 +286,5 @@
         transaction, which are still held until commit."
    :added v1
    :see '[current-agent send send-off send-via restart-agent!]
-   :tsig (Fn [Integer])}
+   :tsig (Fn [Integer+])}
   clojure.core/release-pending-sends)

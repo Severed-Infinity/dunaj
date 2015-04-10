@@ -68,14 +68,14 @@
   [clojure.bootstrap :refer [defalias v1]]
   [dunaj.type :refer [Fn Va]]
   [dunaj.boolean :refer [Boolean]]
-  [dunaj.math :refer [Integer]]))
+  [dunaj.math :refer [Integer+]]))
 
 
 ;;;; Public API
 
 (defalias clear
   {:added v1
-   :tsig (Fn [Integer Integer Integer])
+   :tsig (Fn [Integer+ Integer+ Integer+])
    :doc "Returns the number `_x_` with cleared (set to `0`) bit at
         zero-based index `_n_`."
    :category "Primary"}
@@ -83,7 +83,7 @@
 
 (defalias flip
   {:added v1
-   :tsig (Fn [Integer Integer Integer])
+   :tsig (Fn [Integer+ Integer+ Integer+])
    :doc "Returns the number `_x_` with flipped bit at zero-based
         index `_n_`."
    :category "Primary"}
@@ -91,7 +91,7 @@
 
 (defalias set
   {:added v1
-   :tsig (Fn [Integer Integer Integer])
+   :tsig (Fn [Integer+ Integer+ Integer+])
    :doc "Returns the number `_x_` with set (to `1`) bit at zero-based
         index `_n_`."
    :category "Primary"}
@@ -99,7 +99,7 @@
 
 (defalias test
   {:added v1
-   :tsig (Fn [Boolean Integer Integer])
+   :tsig (Fn [Boolean Integer+ Integer+])
    :doc "Returns `true` if number `_x_` has bit at zero-based index
         `_n_` set to `1`, otherwise returns `false`."
    :category "Primary"}
@@ -109,7 +109,7 @@
 
 (defalias shift-left
   {:added v1
-   :tsig (Fn [Integer Integer Integer])
+   :tsig (Fn [Integer+ Integer+ Integer+])
    :category "Shifts"
    :doc "Returns the result of shifting `_x_` to the left by `_n_`
         bits."
@@ -118,7 +118,7 @@
 
 (defalias shift-right
   {:added v1
-   :tsig (Fn [Integer Integer Integer])
+   :tsig (Fn [Integer+ Integer+ Integer+])
    :category "Shifts"
    :doc "Returns the result of shifting `_x_` to the right by `_n_`
         bits. Performs an arithmetic shift, preserving the sign of
@@ -128,7 +128,7 @@
 
 (defalias unsigned-shift-right
   {:added v1
-   :tsig (Fn [Integer Integer Integer])
+   :tsig (Fn [Integer+ Integer+ Integer+])
    :category "Shifts"
    :doc "Returns the result of shifting `_x_` to the right by `_n_`
         bits. Performs an unsigned (logical) shift, inserting binary
@@ -138,7 +138,7 @@
 
 (defalias <<
   {:added v1
-   :tsig (Fn [Integer Integer Integer])
+   :tsig (Fn [Integer+ Integer+ Integer+])
    :category "Shifts"
    :doc "Alias of `<<shift_left,shift-left>>`. Returns the result of
         shifting `_x_` to the left by `_n_` bits."
@@ -147,7 +147,7 @@
 
 (defalias >>
   {:added v1
-   :tsig (Fn [Integer Integer Integer])
+   :tsig (Fn [Integer+ Integer+ Integer+])
    :category "Shifts"
    :doc "Alias of `<<shift_right,shift-right>>`. Returns the result of
         shifting `_x_` to the left by `_n_` bits."
@@ -156,7 +156,7 @@
 
 (defalias >>>
   {:added v1
-   :tsig (Fn [Integer Integer Integer])
+   :tsig (Fn [Integer+ Integer+ Integer+])
    :category "Shifts"
    :doc "Alias of `<<unsigned_shift_right,unsigned-shift-right>>`.
         Returns the result of shifting `_x_` to the left by `_n_`
@@ -168,8 +168,8 @@
 
 (defalias and
   {:added v1
-   :tsig (Fn [Integer Integer Integer]
-             [Integer Integer Integer (Va Integer)])
+   :tsig (Fn [Integer+ Integer+ Integer+]
+             [Integer+ Integer+ Integer+ (Va Integer+)])
    :category "Logic"
    :doc "Returns the result of performing logical AND on each group
         of corresponding bits."
@@ -178,8 +178,8 @@
 
 (defalias or
   {:added v1
-   :tsig (Fn [Integer Integer Integer]
-             [Integer Integer Integer (Va Integer)])
+   :tsig (Fn [Integer+ Integer+ Integer+]
+             [Integer+ Integer+ Integer+ (Va Integer+)])
    :category "Logic"
    :doc "Returns the result of performing logical OR on each group
         of corresponding bits."
@@ -188,8 +188,8 @@
 
 (defalias xor
   {:added v1
-   :tsig (Fn [Integer Integer Integer]
-             [Integer Integer Integer (Va Integer)])
+   :tsig (Fn [Integer+ Integer+ Integer+]
+             [Integer+ Integer+ Integer+ (Va Integer+)])
    :category "Logic"
    :doc "Returns the result of performing logical XOR on each group
         of corresponding bits."
@@ -198,8 +198,8 @@
 
 (defalias and-not
   {:added v1
-   :tsig (Fn [Integer Integer Integer]
-             [Integer Integer Integer (Va Integer)])
+   :tsig (Fn [Integer+ Integer+ Integer+]
+             [Integer+ Integer+ Integer+ (Va Integer+)])
    :category "Logic"
    :see '[and not dunaj.boolean/implication]
    :doc "Returns bitwise `and` with complement
@@ -208,7 +208,7 @@
 
 (defalias not
   {:added v1
-   :tsig (Fn [Integer Integer])
+   :tsig (Fn [Integer+ Integer+])
    :category "Logic"
    :doc "Returns the result of performing logical NOT on each bit
         of `_x_`."

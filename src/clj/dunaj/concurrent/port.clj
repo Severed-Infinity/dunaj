@@ -33,7 +33,7 @@
   [dunaj.type :refer
    [Fn Any U I Va Maybe AnyFn Predicate Signature KeywordMap]]
   [dunaj.boolean :refer [Boolean and]]
-  [dunaj.math :refer [Integer]]
+  [dunaj.math :refer [Integer+]]
   [dunaj.state :refer [IOpenAware -open? IReference]]
   [dunaj.flow :refer [let when if-let]]
   [dunaj.feature :refer [assoc-meta meta]]
@@ -327,11 +327,11 @@
    :category "Ports"}
   ([]
    (chan nil))
-  ([buf-or-n :- (U Integer IMutableCollection)]
+  ([buf-or-n :- (U Integer+ IMutableCollection)]
    (chan buf-or-n nil))
-  ([buf-or-n :- (U Integer IMutableCollection), xform :- Any]
+  ([buf-or-n :- (U Integer+ IMutableCollection), xform :- Any]
    (chan buf-or-n xform nil))
-  ([buf-or-n :- (U Integer IMutableCollection), xform :- Any,
+  ([buf-or-n :- (U Integer+ IMutableCollection), xform :- Any,
     exception-handler :- (Fn [Any IException])]
    (not-implemented)))
 
@@ -340,7 +340,7 @@
   {:added v1
    :ses '[chan dunaj.state/open? take!]
    :category "Ports"}
-  [duration :- (U Integer IDuration)]
+  [duration :- (U Integer+ IDuration)]
   (not-implemented))
 
 (defn promise-chan :- (I ISourcePort ITargetPort ICloseablePort)
@@ -520,7 +520,7 @@
   ([mapf :- AnyFn, ports :- [ISourcePort]]
    (map! mapf ports nil))
   ([mapf :- AnyFn, ports :- [ISourcePort],
-    buf-or-n :- (U Integer IMutableCollection)]
+    buf-or-n :- (U Integer+ IMutableCollection)]
    (not-implemented)))
 
 (defn pipe! :- ISourcePort
@@ -553,13 +553,13 @@
   {:added v1
    :see '[pipe! pipeline-blocking! pipeline-async!]
    :category "Operations"}
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
     from :- ISourcePort]
    (pipeline! n to xform from false))
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
     from :- ISourcePort, keep-open? :- Boolean]
    (pipeline! n to xform from keep-open? nil))
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
     from :- ISourcePort, keep-open? :- Boolean, ex-handler :- AnyFn]
    (not-implemented)))
 
@@ -568,13 +568,13 @@
   {:added v1
    :see '[pipe! pipeline! pipeline-async!]
    :category "Operations"}
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
     from :- ISourcePort]
    (pipeline-blocking! n to xform from false))
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
     from :- ISourcePort, keep-open? :- Boolean]
    (pipeline-blocking! n to xform from keep-open? nil))
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
     from :- ISourcePort, keep-open? :- Boolean, ex-handler :- AnyFn]
    (not-implemented)))
 
@@ -596,9 +596,9 @@
   {:added v1
    :see '[pipe! pipeline-blocking! pipeline!]
    :category "Operations"}
-  ([n :- Integer, to :- ITargetPort, af :- AnyFn, from :- ISourcePort]
+  ([n :- Integer+, to :- ITargetPort, af :- AnyFn, from :- ISourcePort]
    (pipeline-async! n to af from true))
-  ([n :- Integer, to :- ITargetPort, af :- AnyFn, from :- ISourcePort,
+  ([n :- Integer+, to :- ITargetPort, af :- AnyFn, from :- ISourcePort,
     keep-open? :- Boolean]
    (not-implemented)))
 
@@ -616,8 +616,8 @@
   ([pred :- Predicate, port :- ISourcePort]
    (split! pred port nil nil))
   ([pred :- Predicate, port :- ISourcePort,
-    t-buf-or-n :- (U Integer IMutableCollection),
-    f-buf-or-n :- (U Integer IMutableCollection)]
+    t-buf-or-n :- (U Integer+ IMutableCollection),
+    f-buf-or-n :- (U Integer+ IMutableCollection)]
    (not-implemented)))
 
 (defn reduce! :- ISourcePort
@@ -668,7 +668,7 @@
    :category "Operations"}
   ([ports :- [ISourcePort]] (merge! ports nil))
   ([ports :- [ISourcePort],
-    buf-or-n :- (U Integer IMutableCollection)]
+    buf-or-n :- (U Integer+ IMutableCollection)]
    (not-implemented)))
 
 (defn into! :- ISourcePort
@@ -691,9 +691,9 @@
   {:added v1
    :see '[pipe!]
    :category "Operations"}
-  ([n :- Integer, port :- ISourcePort] (take-n! n port nil))
-  ([n :- Integer, port :- ISourcePort,
-    buf-or-n :- (U Integer IMutableCollection)]
+  ([n :- Integer+, port :- ISourcePort] (take-n! n port nil))
+  ([n :- Integer+, port :- ISourcePort,
+    buf-or-n :- (U Integer+ IMutableCollection)]
    (not-implemented)))
 
 ;;; Mults
@@ -943,7 +943,7 @@
   ([port :- ISourcePort, topic-fn :- (Fn [Any PortVal])]
    (pub! port topic-fn (constantly nil)))
   ([port :- ISourcePort, topic-fn :- (Fn [Any PortVal]),
-    buf-fn :- (Fn [(U Integer IMutableCollection) Any])]
+    buf-fn :- (Fn [(U Integer+ IMutableCollection) Any])]
    (not-implemented)))
 
 (defn sub! :- nil

@@ -35,7 +35,7 @@
 (deftype Int
   "Host Integer type."
   {:added v1
-   :see '[dunaj.math/Integer]
+   :see '[dunaj.math/Integer+]
    :category "Primary"}
   java.lang.Integer)
 

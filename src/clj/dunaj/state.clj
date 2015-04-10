@@ -30,7 +30,7 @@
     replace-var! milliseconds loop let fn]]
   [dunaj.type :refer [Any Fn Va]]
   [dunaj.boolean :refer [Boolean boolean]]
-  [dunaj.math :refer [Integer odd?]]
+  [dunaj.math :refer [Integer+ odd?]]
   [dunaj.compare :refer [identical?]])
  (:import [java.lang Class String]))
 
@@ -100,7 +100,7 @@
     is reached. Blocks until value is produced or until timeout is
     reached."
     {:on 'deref}
-    [this timeout-ms :- Integer, timeout-val :- Any]))
+    [this timeout-ms :- Integer+, timeout-val :- Any]))
 
 (defn deref :- Any
   "Returns the current state of `_ref_`. Concrete semantics differ

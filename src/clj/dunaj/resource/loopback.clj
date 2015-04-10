@@ -23,7 +23,7 @@
   [dunaj.boolean :refer [Boolean or and not boolean]]
   [dunaj.host :refer [keyword->class class-instance?]]
   [dunaj.host.int :refer [i0 iinc]]
-  [dunaj.math :refer [Integer integer? pos? odd? max neg? == min]]
+  [dunaj.math :refer [Integer+ integer? pos? odd? max neg? == min]]
   [dunaj.state :refer
    [IAtomic cancel! alter! cas! reference? IOpenAware adjust! io!
     atomic? switch! IAdjustable IReference IMutable ensure-io
@@ -68,7 +68,7 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-loopback-size :- Integer
+(def+ ^:private default-loopback-size :- Integer+
   "Default size for loopback buffer."
   8192)
 
@@ -143,5 +143,5 @@
   {:added v1
    :see '[loopback-factory]}
   ([] loopback-factory)
-  ([size-hint :- (Maybe Integer) & {:as opts}]
+  ([size-hint :- (Maybe Integer+) & {:as opts}]
      (merge loopback-factory (assoc opts :size-hint size-hint))))

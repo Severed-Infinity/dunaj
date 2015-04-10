@@ -28,7 +28,7 @@
   [dunaj.type :refer [Any Maybe Fn Any Va U]]
   [dunaj.boolean :refer [and or]]
   [dunaj.host :refer [proxy proxy-super class-instance? class]]
-  [dunaj.math :refer [Integer dec + - min]]
+  [dunaj.math :refer [Integer+ dec + - min]]
   [dunaj.compare :refer [= not=]]
   [dunaj.flow :refer
    [when-let cond let when dotimes loop if-let]]
@@ -265,12 +265,12 @@
   {:added v1
    :see '[stack-element-str root-cause demunge]}
   ([] (pst 12))
-  ([e-or-depth :- (U Integer IException)]
+  ([e-or-depth :- (U Integer+ IException)]
      (if (exception? e-or-depth)
        (pst e-or-depth 12)
        (when-let [e *e]
          (pst (root-cause e) e-or-depth))))
-  ([e :- IException, depth :- Integer]
+  ([e :- IException, depth :- Integer+]
      (with-bindings [out @err]
        (println!
         (->str

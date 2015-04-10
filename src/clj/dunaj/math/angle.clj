@@ -20,130 +20,130 @@
 
 (bare-ns
  (:require [clojure.bootstrap :refer [defn v1 fn]]
-           [dunaj.math :refer [Float]])
+           [dunaj.math :refer [Float+]])
  (:import [java.lang Math String]))
 
 ;;;; Public API
 
 ;;; Circular
 
-(defn deg :- Float
+(defn deg :- Float+
   "Returns an angle in degrees which is approximately equivalent to
   given `_rad_` angle in radians. Precision as implemented by host."
   {:added v1
    :category "Primary"
    :inline (fn [x] `(. Math (toDegrees ~x)))}
-  [rad :- Float]
+  [rad :- Float+]
   (Math/toDegrees rad))
 
-(defn rad :- Float
+(defn rad :- Float+
   "Returns an angle in radians which is approximately equivalent to
   given `_deg_` angle in degrees. Precision as implemented by host."
   {:added v1
    :category "Primary"
    :inline (fn [x] `(. Math (toRadians ~x)))}
-  [deg :- Float]
+  [deg :- Float+]
   (Math/toRadians deg))
 
-(defn sin :- Float
+(defn sin :- Float+
   "Returns the circular sine of an angle `_rad_`.
   Precision as implemented by host."
   {:added v1
    :category "Primary"
    :inline (fn [x] `(. Math (sin ~x)))}
-  [rad :- Float]
+  [rad :- Float+]
   (Math/sin rad))
 
-(defn cos :- Float
+(defn cos :- Float+
   "Returns the circular cosine of an angle `_rad_`.
   Precision as implemented by host."
   {:added v1
    :category "Primary"
    :inline (fn [x] `(. Math (cos ~x)))}
-  [rad :- Float]
+  [rad :- Float+]
   (Math/cos rad))
 
-(defn tan :- Float
+(defn tan :- Float+
   "Returns the circular tangent of an angle `_rad_`.
   Precision as implemented by host."
   {:added v1
    :category "Primary"
    :inline (fn [x] `(. Math (tan ~x)))}
-  [rad :- Float]
+  [rad :- Float+]
   (Math/tan rad))
 
-(defn asin :- Float
+(defn asin :- Float+
   "Returns the arc sine of a value `_x_`, in radians.
   Precision as implemented by host."
   {:added v1
    :category "Primary"
    :inline (fn [x] `(. Math (asin ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/asin x))
 
-(defn acos :- Float
+(defn acos :- Float+
   "Returns the arc cosine of a value `_x_`, in radians.
   Precision as implemented by host."
   {:added v1
    :category "Primary"
    :inline (fn [x] `(. Math (acos ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/acos x))
 
-(defn atan :- Float
+(defn atan :- Float+
   "Returns the arc tangent of a value `_x_`, in radians.
   Precision as implemented by host."
   {:added v1
    :category "Primary"
    :inline (fn [x] `(. Math (atan ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/atan x))
 
-(defn atan2 :- Float
+(defn atan2 :- Float+
   "Returns the angle theta from the conversion of rectangular
   coordinates `(_x_, _y_)` to polar coordinates `(r, theta)`.
   Precision as implemented by host."
   {:added v1
    :category "Primary"
    :inline (fn [x y] `(. Math (atan2 ~x ~y)))}
-  [x :- Float, y :- Float]
+  [x :- Float+, y :- Float+]
   (Math/atan2 x y))
 
-(defn hypot :- Float
+(defn hypot :- Float+
   "Returns hypotenuse without intermediate overflow or underflow.
   Precision as implemented by host."
   {:added v1
    :category "Primary"
    :inline (fn [x y] `(. Math (hypot ~x ~y)))}
-  [x :- Float, y :- Float]
+  [x :- Float+, y :- Float+]
   (Math/hypot x y))
 
 ;;; Hyperbolic
 
-(defn sinh :- Float
+(defn sinh :- Float+
   "Returns the hyperbolic sine of a hyperbolic angle `_x_`.
   Precision as implemented by host."
   {:added v1
    :category "Hyperbolic"
    :inline (fn [x] `(. Math (sinh ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/sinh x))
 
-(defn cosh :- Float
+(defn cosh :- Float+
   "Returns the hyperbolic cosine of a hyperbolic angle `_x_`.
   Precision as implemented by host."
   {:added v1
    :category "Hyperbolic"
    :inline (fn [x] `(. Math (cosh ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/cosh x))
 
-(defn tanh :- Float
+(defn tanh :- Float+
   "Returns the hyperbolic tangent of a hyperbolic angle `_x_`."
   {:added v1
    :category "Hyperbolic"
    :inline (fn [x] `(. Math (tanh ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/tanh x))
 
 

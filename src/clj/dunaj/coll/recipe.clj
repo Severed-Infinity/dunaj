@@ -29,7 +29,7 @@
     imul inpos? ipos? imax i-1 ineg? i2 i>= inneg? ineg i> irem
     imax0 idiv iLF iCR]]
   [dunaj.host.number :refer [long]]
-  [dunaj.math :refer [Number Integer == zero? min npos? one? quot
+  [dunaj.math :refer [Number Integer+ == zero? min npos? one? quot
                       neg? < > / <= max >= pos? integer?]]
   [dunaj.math.unchecked :as mu]
   [dunaj.compare :refer
@@ -665,11 +665,11 @@
    :category "Primary"}
   ([root :- Any]
    (traverse sequential? identity root))
-  ([mode :- (U nil Keyword Integer), root :- Any]
+  ([mode :- (U nil Keyword Integer+), root :- Any]
    (traverse mode sequential? identity root))
   ([branch-fn :- Predicate, children-fn :- AnyFn, root :- Any]
    (->PreTraverse root branch-fn children-fn))
-  ([mode :- (U nil Keyword Integer),
+  ([mode :- (U nil Keyword Integer+),
     branch-fn :- Predicate, children-fn :- AnyFn, root :- Any]
    (cond (identical? :post mode)
          (->PostTraverse root branch-fn children-fn)
@@ -863,7 +863,7 @@
       (af init))))
 
 (deftype FiniteRepeat
-  [type :- Class, n :- Integer, val :- Any]
+  [type :- Class, n :- Integer+, val :- Any]
   IRed
   (-reduce [this reducef init]
     (let [af (advance-fn [ret i]
@@ -910,11 +910,11 @@
    :category "Generators"}
   ([val :- Any]
    (repeat nil val))
-  ([n :- (Maybe Integer), val :- Any]
+  ([n :- (Maybe Integer+), val :- Any]
    (if (nil? n)
      (adaptcbus (->Repeat nil val))
      (adaptCbuS (->FiniteRepeat nil n val))))
-  ([type :- (U nil Class Type), n :- (Maybe Integer), val :- Any]
+  ([type :- (U nil Class Type), n :- (Maybe Integer+), val :- Any]
    (let [t (provide-class type)]
      (if (nil? n) (->Repeat t val) (->FiniteRepeat t n val)))))
 
@@ -986,11 +986,11 @@
    :see '[repeat range cycle]
    :category "Generators"}
   ([f :- AnyFn] (repeatedly nil f))
-  ([n :- (Maybe Integer), f :- AnyFn]
+  ([n :- (Maybe Integer+), f :- AnyFn]
    (if-not (nil? n)
      (take n (repeatedly nil f))
      (adaptcbus (->Repeatedly nil f))))
-  ([type :- (U nil Class Type), n :- (Maybe Integer), f :- AnyFn]
+  ([type :- (U nil Class Type), n :- (Maybe Integer+), f :- AnyFn]
    (if-not (nil? n)
      (take n (repeatedly type nil f))
      (->Repeatedly (provide-class type) f))))
@@ -2846,12 +2846,12 @@
   {:added v1
    :see '[partition* partition-all partition-by lines]
    :transducer true
-   :tsig (Fn [Transducer Integer]
-             [IRed Integer []]
-             [IRed Integer Integer []]
-             [IRed Integer Integer (U nil true IRed) []]
-             [IRed Integer Integer AnyFn AnyFn []]
-             [IRed Integer Integer (U nil true IRed) AnyFn AnyFn []])
+   :tsig (Fn [Transducer Integer+]
+             [IRed Integer+ []]
+             [IRed Integer+ Integer+ []]
+             [IRed Integer+ Integer+ (U nil true IRed) []]
+             [IRed Integer+ Integer+ AnyFn AnyFn []]
+             [IRed Integer+ Integer+ (U nil true IRed) AnyFn AnyFn []])
    :category "Transducers"}
   ([n] (partition* n n nil (folding concat conj)))
   ([n coll] (partition n n coll))
@@ -2877,10 +2877,10 @@
   {:added v1
    :see '[partition* partition partition-by lines]
    :transducer true
-   :tsig (Fn [Transducer Integer]
-             [IRed Integer []]
-             [IRed Integer Integer []]
-             [IRed Integer Integer AnyFn AnyFn []])
+   :tsig (Fn [Transducer Integer+]
+             [IRed Integer+ []]
+             [IRed Integer+ Integer+ []]
+             [IRed Integer+ Integer+ AnyFn AnyFn []])
    :category "Transducers"}
   ([n]
    (partition* n n true (folding concat conj)))
@@ -3381,7 +3381,7 @@
   "Returns a vector of `[(take _n_ _coll_) (drop _n_ _coll_)]`."
   {:added v1
    :see '[split-with take drop]}
-  [n :- Integer, coll :- IRed]
+  [n :- Integer+, coll :- IRed]
   (pair (take n coll) (drop n coll)))
 
 (defn split-with :- []

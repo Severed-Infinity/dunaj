@@ -32,7 +32,7 @@
   [dunaj.host :refer
    [Class+ Array AnyBatch BatchManager keyword->class]]
   [dunaj.host.int :refer [Int iint iadd i0]]
-  [dunaj.math :refer [Integer max <]]
+  [dunaj.math :refer [Integer+ max <]]
   [dunaj.compare :refer [identical? nil?]]
   [dunaj.state :refer [clone]]
   [dunaj.flow :refer [let when cond when-not loop condp]]
@@ -158,10 +158,10 @@
     #(.encode ^java.nio.charset.CharsetEncoder coder %1 %2 %3)
     #(.decode ^java.nio.charset.CharsetDecoder coder %1 %2 %3)))
 
-(defn ^:private compute-capacity :- Integer
+(defn ^:private compute-capacity :- Integer+
   "Returns capacity based on requested capacity and default formatter
   batch sizes."
-  [requested-capacity :- (Maybe Integer)]
+  [requested-capacity :- (Maybe Integer+)]
   (max @default-formatter-batch-size (or requested-capacity 0)))
 
 (defn ^:private check-result :- nil
@@ -225,7 +225,7 @@
    malformed-mode :- (Maybe Keyword),
    unmappable-mode :- (Maybe Keyword)
    code-mode :- Keyword,
-   batch-size :- Integer,
+   batch-size :- Integer+,
    fbm :- BatchManager, tbm :- BatchManager]
   IReducing
   (-init [this] (._init r))

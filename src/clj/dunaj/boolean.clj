@@ -48,19 +48,17 @@
      "See also <<dunaj.bit.api.ad#Logic, bitwise logic operators>>."]]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:require [clojure.bootstrap :refer [bare-ns]]))
-
-(bare-ns
- (:require   
-  [clojure.core :refer [seq first inc rest odd? cons]]
-  [clojure.bootstrap :refer
-   [defalias deftype defmacro v1 defn let fn]]
-  [dunaj.type :refer [Fn Any Predicate Macro Va]]))
-
+  (:refer-clojure :exclude
+   [boolean or not true? false? and deftype let fn defn defmacro])
+  (:require   
+   [clojure.core :refer [seq first inc rest odd? cons]]
+   [clojure.bootstrap :refer
+    [defalias deftype defmacro v1 defn let fn]]
+   [dunaj.type :refer [Fn Any Predicate Macro Va]]))
 
 ;;;; Public API
 
-(deftype Boolean
+(deftype Boolean+
   "A boolean type, which has two values, `true` and `false`.
 
   [NOTE]

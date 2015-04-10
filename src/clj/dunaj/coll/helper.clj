@@ -43,7 +43,7 @@
   [dunaj.host :refer [Class+ provide-class class-instance?]]
   [dunaj.host.int :refer [Int iinc iadd imul i0 i-1 i1 i31 iloop i2
                           imax idiv i== iint i<= izero? ione? i< i>]]
-  [dunaj.math :refer [Integer == neg? > zero?]]
+  [dunaj.math :refer [Integer+ == neg? > zero?]]
   [dunaj.compare :refer [nil? = identical? compare]]
   [dunaj.flow :refer [let cond when when-not loop when-let]]
   [dunaj.feature :refer [assoc-meta]]
@@ -225,7 +225,7 @@
   order for performing actual reduction (put e.g. `reduce*` there)."
   {:added v1
    :arglists '([coll reduce-fn pool n combinef reducef])
-   :tsig (Fn [Any [] AnyFn ForkJoinPool Integer AnyFn AnyFn])
+   :tsig (Fn [Any [] AnyFn ForkJoinPool Integer+ AnyFn AnyFn])
    :see '[fold-augmented* fold-batched* fold-unpacked* transfold*
           reduce-augmented* reduce* reduce-batched* reduce-unpacked*]
    :category "Folds"}
@@ -241,7 +241,7 @@
   order for performing actual reduction (put e.g. `reduce*` there)."
   {:added v1
    :arglists '([coll reduce-fn pool n r])
-   :tsig (Fn [Any [] AnyFn ForkJoinPool Integer IReducing])
+   :tsig (Fn [Any [] AnyFn ForkJoinPool Integer+ IReducing])
    :see '[fold* fold-batched* fold-unpacked* transfold*
           reduce-augmented* reduce* reduce-batched* reduce-unpacked*]
    :category "Folds"}
@@ -260,8 +260,8 @@
           reduce-augmented* reduce* reduce-batched* reduce-unpacked*]
    :category "Folds"}
   [coll :- [], requested-type :- (U nil Class+ Type),
-   size-hint :- (Maybe Integer), pool :- ForkJoinPool,
-   n :- Integer, combinef :- AnyFn, reducef :- AnyFn]
+   size-hint :- (Maybe Integer+), pool :- ForkJoinPool,
+   n :- Integer+, combinef :- AnyFn, reducef :- AnyFn]
   (if (and (satisfies? IBatchedRed coll)
            (item-types-match? requested-type (item-type coll)))
     (fold* coll #(reduce-batched* requested-type size-hint % %2 %3)
@@ -282,7 +282,7 @@
           reduce-augmented* reduce* reduce-batched* reduce-unpacked*]
    :category "Folds"}
   [coll :- [], pool :- ForkJoinPool,
-   n :- Integer, combinef :- AnyFn, reducef :- AnyFn]
+   n :- Integer+, combinef :- AnyFn, reducef :- AnyFn]
   (if (satisfies? IUnpackedRed coll)
     (fold* coll reduce-unpacked* pool n combinef reducef)
     (fold* coll reduce* pool n combinef (unpacked-fn reducef))))
@@ -298,7 +298,7 @@
   {:added v1
    :arglists '([coll reduce-fn pool n xform reducef]
                [coll reduce-fn pool n xform combinef reducef])
-   :tsig (Fn [Any IRed AnyFn ForkJoinPool Integer AnyFn AnyFn])
+   :tsig (Fn [Any IRed AnyFn ForkJoinPool Integer+ AnyFn AnyFn])
    :category "Folds"}
   @#'dunaj.concurrent.forkjoin/transfold*)
 
@@ -743,7 +743,7 @@
              (postponed? a2) false
              :else (clojure.lang.Util/equals a1 a2))))))
 
-(defn compare-ordered :- Integer
+(defn compare-ordered :- Integer+
   "Returns -1, 0 or 1 as a result of comparing two ordered collections
   with default comparator."
   {:added v1
@@ -770,15 +770,15 @@
 
 ;;; Section
 
-(defn prepare-ordered-section :- Integer
+(defn prepare-ordered-section :- Integer+
   "Returns `_new-end_` or `_length_`, if `_new-end_` is `nil`.
   Throws if arguments are out of bounds of the interval
   `[new-begin, new-begin + length)`."
   {:added v1
    :category "Primary"
    :see '[dunaj.coll/section]}
-  [new-begin :- Integer, new-end :- (Maybe Integer),
-   length :- Integer]
+  [new-begin :- Integer+, new-end :- (Maybe Integer+),
+   length :- Integer+]
   (let [new-end (or new-end length)]
     (when (or (neg? new-begin)
               (> new-begin new-end)
@@ -822,16 +822,16 @@
    :category "Folds"
    :see '[split-adjust fold-every]}
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn]
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn]
    (fold-sectionable
     coll reduce-fn pool n combinef reducef section))
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn,
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn,
     section-fn :- AnyFn]
    (fold-sectionable
     coll reduce-fn pool n combinef reducef section-fn count))
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn,
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn,
     section-fn :- AnyFn, count-fn :- AnyFn]
    (let [cnt (iint (count-fn coll))
          n (imax (i1) (iint n))]
@@ -865,15 +865,15 @@
    :category "Folds"
    :see '[split-adjust fold-every]}
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn]
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn]
    (fold-every coll reduce-fn pool n combinef reducef section))
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn,
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn,
     section-fn :- AnyFn]
    (fold-every
     coll reduce-fn pool n combinef reducef section-fn count))
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn,
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn,
     section-fn :- AnyFn, count-fn :- AnyFn]
    (let [dofn (fn dofn [coll]
                 (let [cnt (iint (count-fn coll))]

@@ -41,7 +41,7 @@
                         ref-max-history ref-history-count]]
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [Any Fn AnyFn Va Macro]]
-  [dunaj.math :refer [Integer]]
+  [dunaj.math :refer [Integer+]]
   [dunaj.compare :refer [= IComparable identical?]]
   [dunaj.state :refer [IReference IMutable IAdjustable ICloneable]]
   [dunaj.flow :refer [let when-not if-let cond]]
@@ -82,7 +82,7 @@
     "Must be called in a transaction. Sets the value of `_this_`.
     Returns `_val_`."
     [this val :- Any])
-  (-history-count :- Integer
+  (-history-count :- Integer+
     "Returns the history count of `_this_` ref."
     [this]))
 
@@ -128,7 +128,7 @@
   [ref :- IRef, val :- Any]
   (-reset ref val))
 
-(defn history-count :- Integer
+(defn history-count :- Integer+
   "Returns the history count of a `_ref_`. Min and max history
   parameters are stored and can be changed in ref's mutable config."
   {:added v1

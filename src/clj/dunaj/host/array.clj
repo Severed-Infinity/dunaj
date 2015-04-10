@@ -50,7 +50,7 @@
                       class-instance? class provide-class]]
   [dunaj.host.int :refer
    [iint iinc idec isub Int imul i== iadd i0 i31 iloop i1 i< inneg?]]
-  [dunaj.math :refer [nneg? integer? < >= Integer == > zero?]]
+  [dunaj.math :refer [nneg? integer? < >= Integer+ == > zero?]]
   [dunaj.flow :refer [delay when-not let loop when cond]]
   [dunaj.compare :refer
    [IComparable IHash IEquiv IHashBasis nil? =
@@ -91,8 +91,8 @@
   {:added v1
    :category "Primary"
    :see '[to-array array]
-   :tsig (Fn [AnyArray Class+ Integer]
-             [AnyArray Class+ Integer (Va Integer)])})
+   :tsig (Fn [AnyArray Class+ Integer+]
+             [AnyArray Class+ Integer+ (Va Integer+)])})
 
 (defalias to-array
   "Returns host object array and fills it with contents of `_coll_`,
@@ -130,71 +130,71 @@
   {:added v1
    :category "Primitives"
    :see '[booleans boolean-array? array make-array]
-   :tsig (Fn [(Array java.lang.Boolean) (U Integer IRed)]
-             [(Array java.lang.Boolean) Integer Any])})
+   :tsig (Fn [(Array java.lang.Boolean) (U Integer+ IRed)]
+             [(Array java.lang.Boolean) Integer+ Any])})
 
 (defalias byte-array
   "Creates an array of bytes."
   {:added v1
    :category "Primitives"
    :see '[bytes byte-array? array make-array]
-   :tsig (Fn [(Array java.lang.Byte) (U Integer IRed)]
-             [(Array java.lang.Byte) Integer Any])})
+   :tsig (Fn [(Array java.lang.Byte) (U Integer+ IRed)]
+             [(Array java.lang.Byte) Integer+ Any])})
 
 (defalias char-array
   "Creates an array of chars."
   {:added v1
    :category "Primitives"
    :see '[chars char-array? array make-array]
-   :tsig (Fn [(Array java.lang.Character) (U Integer IRed)]
-             [(Array java.lang.Character) Integer Any])})
+   :tsig (Fn [(Array java.lang.Character) (U Integer+ IRed)]
+             [(Array java.lang.Character) Integer+ Any])})
 
 (defalias double-array
   "Creates an array of doubles."
   {:added v1
    :category "Primitives"
    :see '[doubles double-array? array make-array]
-   :tsig (Fn [(Array java.lang.Double) (U Integer IRed)]
-             [(Array java.lang.Double) Integer Any])})
+   :tsig (Fn [(Array java.lang.Double) (U Integer+ IRed)]
+             [(Array java.lang.Double) Integer+ Any])})
 
 (defalias float-array
   "Creates an array of floats."
   {:added v1
    :category "Primitives"
    :see '[floats float-array? array make-array]
-   :tsig (Fn [(Array java.lang.Float) (U Integer IRed)]
-             [(Array java.lang.Float) Integer Any])})
+   :tsig (Fn [(Array java.lang.Float) (U Integer+ IRed)]
+             [(Array java.lang.Float) Integer+ Any])})
 
 (defalias int-array
   "Creates an array of ints."
   {:added v1
    :category "Primitives"
    :see '[ints int-array? array make-array]
-   :tsig (Fn [(Array java.lang.Integer) (U Integer IRed)]
-             [(Array java.lang.Integer) Integer Any])})
+   :tsig (Fn [(Array java.lang.Integer) (U Integer+ IRed)]
+             [(Array java.lang.Integer) Integer+ Any])})
 
 (defalias long-array
   "Creates an array of longs."
   {:added v1
    :category "Primitives"
    :see '[longs long-array? array make-array]
-   :tsig (Fn [(Array java.lang.Long) (U Integer IRed)]
-             [(Array java.lang.Long) Integer Any])})
+   :tsig (Fn [(Array java.lang.Long) (U Integer+ IRed)]
+             [(Array java.lang.Long) Integer+ Any])})
 
 (defalias object-array
   "Creates an array of objects."
   {:added v1
    :category "Primary"
    :see '[object-array? to-array array make-array]
-   :tsig (Fn [(Array java.lang.Object) (U Integer IRed)])})
+   :tsig (Fn [(Array java.lang.Object) (U Integer+ IRed)])})
 
 (defalias short-array
   "Creates an array of shorts."
   {:added v1
    :category "Primitives"
    :see '[shorts short-array? array make-array]
-   :tsig (Fn [(Array java.lang.Short) (U Integer IRed)]
-             [(Array java.lang.Short) Integer Any])})
+   :tsig (Fn [(Array java.lang.Short) (U Integer+ IRed)]
+             [(Array java.lang.Short) Integer+ Any])})
 
 ;;; Coercion to primitive array
 
@@ -344,8 +344,8 @@
   {:added v1
    :category "Primary"
    :see '[object-array? aget]
-   :tsig (Fn [Any AnyArray Integer Any]
-             [Any AnyArray Integer Integer (Va Any)])}
+   :tsig (Fn [Any AnyArray Integer+ Any]
+             [Any AnyArray Integer+ Integer+ (Va Any)])}
   clojure.core/aset)
 
 ;; TODO: add inline to support primitives
@@ -355,8 +355,8 @@
   {:added v1
    :category "Primitives"
    :see '[boolean-array? aget]
-   :tsig (Fn [Any AnyArray Integer Any]
-             [Any AnyArray Integer Integer (Va Any)])}
+   :tsig (Fn [Any AnyArray Integer+ Any]
+             [Any AnyArray Integer+ Integer+ (Va Any)])}
   clojure.core/aset-boolean)
 
 ;; TODO: add inline to support primitives
@@ -366,8 +366,8 @@
   {:added v1
    :category "Primitives"
    :see '[byte-array? aget]
-   :tsig (Fn [Any AnyArray Integer Any]
-             [Any AnyArray Integer Integer (Va Any)])}
+   :tsig (Fn [Any AnyArray Integer+ Any]
+             [Any AnyArray Integer+ Integer+ (Va Any)])}
   clojure.core/aset-byte)
 
 ;; TODO: add inline to support primitives
@@ -377,8 +377,8 @@
   {:added v1
    :category "Primitives"
    :see '[char-array? aget]
-   :tsig (Fn [Any AnyArray Integer Any]
-             [Any AnyArray Integer Integer (Va Any)])}
+   :tsig (Fn [Any AnyArray Integer+ Any]
+             [Any AnyArray Integer+ Integer+ (Va Any)])}
   clojure.core/aset-char)
 
 ;; TODO: add inline to support primitives
@@ -388,8 +388,8 @@
   {:added v1
    :category "Primitives"
    :see '[double-array? aget]
-   :tsig (Fn [Any AnyArray Integer Any]
-             [Any AnyArray Integer Integer (Va Any)])}
+   :tsig (Fn [Any AnyArray Integer+ Any]
+             [Any AnyArray Integer+ Integer+ (Va Any)])}
   clojure.core/aset-double)
 
 ;; TODO: add inline to support primitives
@@ -399,8 +399,8 @@
   {:added v1
    :category "Primitives"
    :see '[float-array? aget]
-   :tsig (Fn [Any AnyArray Integer Any]
-             [Any AnyArray Integer Integer (Va Any)])}
+   :tsig (Fn [Any AnyArray Integer+ Any]
+             [Any AnyArray Integer+ Integer+ (Va Any)])}
   clojure.core/aset-float)
 
 ;; TODO: add inline to support primitives
@@ -410,8 +410,8 @@
   {:added v1
    :category "Primitives"
    :see '[int-array? aget]
-   :tsig (Fn [Any AnyArray Integer Any]
-             [Any AnyArray Integer Integer (Va Any)])}
+   :tsig (Fn [Any AnyArray Integer+ Any]
+             [Any AnyArray Integer+ Integer+ (Va Any)])}
   clojure.core/aset-int)
 
 ;; TODO: add inline to support primitives
@@ -421,8 +421,8 @@
   {:added v1
    :category "Primitives"
    :see '[long-array? aget]
-   :tsig (Fn [Any AnyArray Integer Any]
-             [Any AnyArray Integer Integer (Va Any)])}
+   :tsig (Fn [Any AnyArray Integer+ Any]
+             [Any AnyArray Integer+ Integer+ (Va Any)])}
   clojure.core/aset-long)
 
 ;; TODO: add inline to support primitives
@@ -432,8 +432,8 @@
   {:added v1
    :category "Primitives"
    :see '[short-array? aget]
-   :tsig (Fn [Any AnyArray Integer Any]
-             [Any AnyArray Integer Integer (Va Any)])}
+   :tsig (Fn [Any AnyArray Integer+ Any]
+             [Any AnyArray Integer+ Integer+ (Va Any)])}
   clojure.core/aset-short)
 
 ;;; Operations

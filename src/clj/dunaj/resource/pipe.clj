@@ -25,7 +25,7 @@
   [dunaj.boolean :refer [and or not]]
   [dunaj.host :refer [keyword->class]]
   [dunaj.host.int :refer [iint iloop iadd]]
-  [dunaj.math :refer [Integer max neg?]]
+  [dunaj.math :refer [Integer+ max neg?]]
   [dunaj.compare :refer [nil?]]
   [dunaj.state :refer [IOpenAware IReference IMutable
                        ensure-io reset! ensure-open open?]]
@@ -61,18 +61,18 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-pipe-batch-size :- Integer
+(def+ ^:private default-pipe-batch-size :- Integer+
   "Default size for pipe batch."
   8192)
 
-(defn ^:private provide-pipe-batch-size :- Integer
+(defn ^:private provide-pipe-batch-size :- Integer+
   "Returns pipe batch size taking into account given batch size hint."
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (max (or size-hint 0) default-pipe-batch-size))
 
 (defreleasable ^:private SourceResource
   "Source pipe resource type."
-  [ch :- java.nio.channels.ReadableByteChannel, batch-size :- Integer,
+  [ch :- java.nio.channels.ReadableByteChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)
@@ -95,7 +95,7 @@
 
 (defreleasable ^:private SinkResource
   "Sink pipe resource type."
-  [ch :- java.nio.channels.WritableByteChannel, batch-size :- Integer,
+  [ch :- java.nio.channels.WritableByteChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable, error :- (Maybe IException)]
   IConfig
   (-config [this] config)

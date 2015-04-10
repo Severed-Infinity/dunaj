@@ -29,7 +29,7 @@
   [dunaj.type :refer [U Any AnyFn Fn]]
   [dunaj.boolean :refer [Boolean and]]
   [dunaj.math :refer [subtract dec quot neg? INumerical rem num trunc
-                      Integer integer? decimal? multiply Decimal]]
+                      Integer+ integer? decimal? multiply Decimal]]
   [dunaj.math.precise :as dmp]
   [dunaj.host.number :refer [bigdec long]]
   [dunaj.compare :refer [IHash IEquiv = hash nil?]]
@@ -43,7 +43,7 @@
 ;;;; Implementation details
 
 (defn ^:private print-formatted :- String
-  [val :- Any, digits :- Integer]
+  [val :- Any, digits :- Integer+]
   (let [s (->str "000000000" val)]
     (slice s (subtract (count s) digits))))
 
@@ -74,8 +74,8 @@
   (-instant
     "Returns a new instant object with given arguments."
     {:tsig (Fn [IInstant IInstantFactory
-                Integer Integer Integer Integer Integer
-                Integer Integer Integer Integer Integer])}
+                Integer+ Integer+ Integer+ Integer+ Integer+
+                Integer+ Integer+ Integer+ Integer+ Integer+])}
     [this years months days hours minutes seconds nanoseconds
      offset-sign offset-hours offset-minutes]))
 
@@ -314,13 +314,13 @@
   {:added v1
    :see '[milliseconds nanoseconds]
    :predicate 'duration?}
-  (-milliseconds :- (U Integer Decimal)
+  (-milliseconds :- (U Integer+ Decimal)
     "Returns number of milliseconds relative to given start
     `_instant_`. If `_before?_` is `true`, uses `_instant_` as an
     end instant. May return decimal."
     [this instant :- IInstant, before? :- Boolean]))
 
-(defn milliseconds :- Integer
+(defn milliseconds :- Integer+
   "Returns number of milliseconds from `_duration_` relative to given
   start `_instant_`, which defaults to `(now)`. If `_before?_` is
   `true` (defaults to `false`), uses `_instant_` as an end instant.
@@ -328,18 +328,18 @@
   milliseconds."
   {:added v1
    :see '[nanoseconds duration?]}
-  ([duration :- (U IDuration Integer)]
+  ([duration :- (U IDuration Integer+)]
    (milliseconds duration (now)))
-  ([duration :- (U IDuration Integer), instant :- IInstant]
+  ([duration :- (U IDuration Integer+), instant :- IInstant]
    (milliseconds duration instant false))
-  ([duration :- (U IDuration Integer), instant :- IInstant,
+  ([duration :- (U IDuration Integer+), instant :- IInstant,
     before? :- Boolean]
    (cond
      (integer? duration) duration
      (nil? duration) 0
      :else (trunc (-milliseconds duration instant before?)))))
 
-(defn nanoseconds :- Integer
+(defn nanoseconds :- Integer+
   "Returns number of nanoseconds from `_duration_` relative to given
   start `_instant_`, which defaults to `(now)`. If `_before?_` is
   `true` (defaults to `false`), uses `_instant_` as an end instant.
@@ -347,10 +347,10 @@
   milliseconds."
   {:added v1
    :see '[milliseconds duration?]}
-  ([duration :- (U IDuration Integer)] (nanoseconds duration (now)))
-  ([duration :- (U IDuration Integer), instant :- IInstant]
+  ([duration :- (U IDuration Integer+)] (nanoseconds duration (now)))
+  ([duration :- (U IDuration Integer+), instant :- IInstant]
    (nanoseconds duration instant false))
-  ([duration :- (U IDuration Integer), instant :- IInstant,
+  ([duration :- (U IDuration Integer+), instant :- IInstant,
     before? :- Boolean]
    (cond
      (integer? duration) (dmp/multiply 1000000 duration)

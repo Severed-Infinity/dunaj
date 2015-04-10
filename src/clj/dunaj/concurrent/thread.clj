@@ -24,7 +24,7 @@
   [clojure.bootstrap :refer [defmacro def+ v1]]
   [dunaj.type :refer [Any KeywordMap Maybe U AnyFn]]
   [dunaj.boolean :refer [Boolean and not xor]]
-  [dunaj.math :refer [Integer zero? rem]]
+  [dunaj.math :refer [Integer+ zero? rem]]
   [dunaj.host.number :refer [int long]]
   [dunaj.compare :refer [not= identical? nil?]]
   [dunaj.state :refer
@@ -65,19 +65,19 @@
 
 ;;;; Public API
 
-(def+ ^:const max-priority :- Integer
+(def+ ^:const max-priority :- Integer+
   "A thread maximum priority constant."
   {:added v1
    :see '[min-priority default-priority thread Thread]}
   java.lang.Thread/MAX_PRIORITY)
 
-(def+ ^:const min-priority :- Integer
+(def+ ^:const min-priority :- Integer+
   "A thread minimum priority constant."
   {:added v1
    :see '[max-priority default-priority thread Thread]}
   java.lang.Thread/MIN_PRIORITY)
 
-(def+ ^:const default-priority :- Integer
+(def+ ^:const default-priority :- Integer+
   "A thread default priority constant."
   {:added v1
    :see '[min-priority max-priority thread Thread]}
@@ -229,7 +229,7 @@
    :see '[thread sleep daemon interrupt!]}
   ([thread :- Thread]
    (join thread 0))
-  ([thread :- Thread, timeout :- (U IDuration Integer)]
+  ([thread :- Thread, timeout :- (U IDuration Integer+)]
    (let [ms (long (milliseconds timeout))
          ns (int (rem (nanoseconds timeout) 1000000))]
      (if (and (zero? ms) (zero? ns))
@@ -242,7 +242,7 @@
   Throws if interrupted."
   {:added v1
    :see '[interrupt! join thread daemon]}
-  [duration :- (U IDuration Integer)]
+  [duration :- (U IDuration Integer+)]
   (let [ms (long (milliseconds duration))
         ns (int (rem (nanoseconds duration) 1000000))]
     (java.lang.Thread/sleep ms ns)))

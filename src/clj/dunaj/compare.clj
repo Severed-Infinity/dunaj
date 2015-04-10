@@ -41,7 +41,7 @@
   [dunaj.type :refer [Predicate Fn Any Va Unknown R]]
   [dunaj.boolean :refer [Boolean]]
   [dunaj.host.int :refer [Int iint iadd imul i31 i0 i1]]
-  [dunaj.math :refer [Integer]])
+  [dunaj.math :refer [Integer+]])
  (:import [java.lang String]))
 
 
@@ -135,7 +135,7 @@
    :on-interface java.lang.Comparable
    :see '[compare natural-comparator]
    :forbid-extensions true}
-  (-compare-to :- Integer
+  (-compare-to :- Integer+
     "Returns a negative integer, zero, or a positive integer if
     `_this_` is less than, equal to, or greater than the `_other_`.
     When implementing `-compare-to`, mind not to mix ordered and
@@ -149,10 +149,10 @@
         `_other_`."
    :added v1
    :see '[IComparable comparable? natural-comparator]
-   :tsig (Fn [Integer IComparable Any])
+   :tsig (Fn [Integer+ IComparable Any])
    :category "Comparison"})
 
-(def+ natural-comparator :- (Fn [Integer Any Any])
+(def+ natural-comparator :- (Fn [Integer+ Any Any])
   "A comparator which uses object's natural ordering
   (implemented with `IComparable`) for comparison."
   {:added v1

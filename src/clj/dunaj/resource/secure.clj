@@ -26,7 +26,7 @@
   [dunaj.boolean :refer [Boolean and or not true? false? boolean]]
   [dunaj.host :refer [Class+ Batch keyword->class proxy]]
   [dunaj.host.int :refer [Int iint iadd i0 i1 imin i== ipos? i< i<<]]
-  [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
+  [dunaj.math :refer [Integer+ max neg? == < zero? nneg?]]
   [dunaj.compare :refer [nil? = identical?]]
   [dunaj.state :refer [IOpenAware ICancellable ICloneable
                        ensure-open io! open? realized?]]
@@ -120,7 +120,7 @@
 
 (defprotocol ^:private ITls
   (-tls-process! :- nil [this])
-  (-reduce-batched* :- Any [this size-hint :- (Maybe Integer),
+  (-reduce-batched* :- Any [this size-hint :- (Maybe Integer+),
                             reducef :- AnyFn, init :- Any])
   (-set-net-recv! :- nil [this val :- Any])
   (-set-app-recv! :- nil [this val :- Any])

@@ -23,7 +23,7 @@
   [dunaj.boolean :refer [Boolean and or not]]
   [dunaj.host :refer [keyword->class]]
   [dunaj.host.int :refer [Int iint iadd izero? iand ipos? ior i0]]
-  [dunaj.math :refer [Integer max neg?]]
+  [dunaj.math :refer [Integer+ max neg?]]
   [dunaj.bit :as bit]
   [dunaj.compare :refer [nil? identical?]]
   [dunaj.state :refer [IOpenAware IReference IMutable ICloneable
@@ -127,8 +127,8 @@
     this))
 
 (defprotocol ISelector
-  (-select :- Integer [this timeout-ms :- Integer])
-  (-select-now :- Integer [this]))
+  (-select :- Integer+ [this timeout-ms :- Integer+])
+  (-select-now :- Integer+ [this]))
 
 (defreleasable ^:private SelectorResource
   "Selector resource type."
@@ -254,7 +254,7 @@
   [& {:as opts}]
   (merge selector-factory opts))
 
-(defn select :- Integer
+(defn select :- Integer+
   "Returns number of ready resources among ones registered within
   `_selector_`. Blocks until some resources are ready or until
   `_timeout_` is reached."
@@ -264,10 +264,10 @@
   ([selector :- SelectorResource]
    (select selector nil))
   ([selector :- SelectorResource,
-    timeout :- (U nil Integer IDuration)]
+    timeout :- (U nil Integer+ IDuration)]
    (-select selector (milliseconds timeout))))
 
-(defn select-now :- Integer
+(defn select-now :- Integer+
   "Returns number of ready resources among ones registered within
   `_selector_`. Returns immediatelly."
   {:added v1

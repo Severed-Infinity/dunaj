@@ -27,7 +27,7 @@
                       keyword->class class-instance?]]
   [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]
   [dunaj.host.number :refer [long]]
-  [dunaj.math :refer [Integer integer? max neg? == < zero? nneg?]]
+  [dunaj.math :refer [Integer+ integer? max neg? == < zero? nneg?]]
   [dunaj.compare :refer [nil? = identical?]]
   [dunaj.state :refer
    [IOpenAware IReference IMutable IAdjustable ICloneable
@@ -87,18 +87,18 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-http-batch-size :- Integer
+(def+ ^:private default-http-batch-size :- Integer+
   "Default size for http batch."
   8192)
 
-(defn ^:private provide-http-batch-size :- Integer
+(defn ^:private provide-http-batch-size :- Integer+
   "Returns http batch size taking into account given batch size hint."
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (provide-batch-size (max (or size-hint 0) default-http-batch-size)))
 
 (defn ^:private socket-address :- java.net.InetSocketAddress
   "Returns an instance of a socket address."
-  [address :- (Maybe String), port :- (Maybe Integer)]
+  [address :- (Maybe String), port :- (Maybe Integer+)]
   (let [port (or port 0)
         address (when address
                   (java.net.InetAddress/getByName address))]
@@ -126,7 +126,7 @@
 (deftype HttpReader
   "Reads from the http resource. Passable thread local."
   [c :- java.net.URLConnection,
-   batch-size :- (Maybe Integer),
+   batch-size :- (Maybe Integer+),
    resource :- (I IFailable IOpenAware),
    ^:volatile-mutable thread :- (Maybe Thread)]
   IRed
@@ -168,7 +168,7 @@
 
 (defreleasable ^:private HttpResource
   "Connected HTTP resource type."
-  [c :- java.net.URLConnection, batch-size :- Integer,
+  [c :- java.net.URLConnection, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable thread :- (Maybe Thread),
    ^:volatile-mutable error :- (Maybe IException)
    ^:volatile-mutable open? :- Boolean,

@@ -25,7 +25,7 @@
                       keyword->class class-instance? proxy]]
   [dunaj.host.int :refer [iint iinc i0 i-1 i< iadd]]
   [dunaj.host.array :refer [char-array]]
-  [dunaj.math :refer [Integer max neg?]]
+  [dunaj.math :refer [Integer+ max neg?]]
   [dunaj.compare :refer [nil? =]]
   [dunaj.state :refer
    [IOpenAware ICloneable io!
@@ -72,14 +72,14 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-host-batch-size :- Integer
+(def+ ^:private default-host-batch-size :- Integer+
   "Default size for host batch."
   8192)
 
-(defn ^:private provide-host-batch-size :- Integer
+(defn ^:private provide-host-batch-size :- Integer+
   "Returns host batch size taking into account given batch
   size hint."
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (provide-batch-size (max (or size-hint 0) default-host-batch-size)))
 
 (defn ^:private classpath-channel
@@ -114,7 +114,7 @@
   "Reads always from the begining of the classpath resource.
   Passable thread local."
   [class-loader :- (Maybe java.lang.ClassLoader), x :- (U String Uri),
-   batch-size :- (Maybe Integer),
+   batch-size :- (Maybe Integer+),
    ^:volatile-mutable rch
    :- (Maybe java.nio.channels.ReadableByteChannel),
    ^:volatile-mutable thread :- (Maybe Thread),
@@ -164,7 +164,7 @@
   "Classpath resource type. Passable thread local."
   [^:volatile-mutable rch
    :- (Maybe java.nio.channels.ReadableByteChannel),
-   batch-size :- (Maybe Integer), config :- {},
+   batch-size :- (Maybe Integer+), config :- {},
    ^:volatile-mutable thread :- (Maybe Thread),
    ^:volatile-mutable error :- (Maybe IException)]
   IConfig
@@ -212,7 +212,7 @@
 (defreleasable ^:private OStreamResource
   "OutputStream backed resource type. Passable thread local."
   [wch :- (Maybe java.nio.channels.WritableByteChannel),
-   stream :- java.io.OutputStream, batch-size :- (Maybe Integer),
+   stream :- java.io.OutputStream, batch-size :- (Maybe Integer+),
    config :- {}, keep-open? :- Boolean,
    ^:volatile-mutable thread :- (Maybe Thread),
    ^:volatile-mutable error :- (Maybe IException)]
@@ -241,7 +241,7 @@
 
 (defrecord OStreamResourceFactory
   "Factory type for OutputStream backed resources."
-  [stream :- java.io.OutputStream, batch-size :- (Maybe Integer),
+  [stream :- java.io.OutputStream, batch-size :- (Maybe Integer+),
    keep-open? :- Boolean]
   IAcquirableFactory
   (-acquire! [this]
@@ -254,7 +254,7 @@
 (defreleasable ^:private IStreamResource
   "InputStream backed resource type. Passable thread local."
   [rch :- (Maybe java.nio.channels.ReadableByteChannel),
-   batch-size :- (Maybe Integer), config :- {}, keep-open? :- Boolean,
+   batch-size :- (Maybe Integer+), config :- {}, keep-open? :- Boolean,
    ^:volatile-mutable thread :- (Maybe Thread),
    ^:volatile-mutable error :- (Maybe IException)]
   IConfig
@@ -279,7 +279,7 @@
 
 (defrecord IStreamResourceFactory
   "Factory type for InputStream backed resources."
-  [stream :- java.io.InputStream, batch-size :- (Maybe Integer),
+  [stream :- java.io.InputStream, batch-size :- (Maybe Integer+),
    keep-open? :- Boolean]
   IAcquirableFactory
   (-acquire! [this]
@@ -291,7 +291,7 @@
 
 (defreleasable ^:private WriterResource
   "Writer backed resource type. Passable thread local."
-  [writer :- java.io.Writer, batch-size :- (Maybe Integer),
+  [writer :- java.io.Writer, batch-size :- (Maybe Integer+),
    config :- {}, keep-open? :- Boolean,
    ^:volatile-mutable thread :- (Maybe Thread),
    ^:volatile-mutable opened? :- Boolean,
@@ -328,7 +328,7 @@
 
 (defrecord WriterResourceFactory
   "Factory type for Writer backed resources."
-  [writer :- java.io.Writer, batch-size :- (Maybe Integer),
+  [writer :- java.io.Writer, batch-size :- (Maybe Integer+),
    keep-open? :- Boolean]
   IAcquirableFactory
   (-acquire! [this]
@@ -340,7 +340,7 @@
 (deftype ReaderResourceReader
   "Reads from the reader resource. Passable thread local."
   [reader :- java.io.Reader,
-   batch-size :- (Maybe Integer),
+   batch-size :- (Maybe Integer+),
    resource :- (I IFailable IOpenAware),
    ^:volatile-mutable thread :- (Maybe Thread)]
   IRed
@@ -383,7 +383,7 @@
 
 (defreleasable ^:private ReaderResource
   "Reader backed resource type. Passable thread local."
-  [reader :- java.io.Reader, batch-size :- (Maybe Integer),
+  [reader :- java.io.Reader, batch-size :- (Maybe Integer+),
    config :- {}, keep-open? :- Boolean,
    ^:volatile-mutable thread :- (Maybe Thread),
    ^:volatile-mutable opened? :- Boolean,
@@ -413,7 +413,7 @@
 
 (defrecord ReaderResourceFactory
   "Factory type for Reader backed resources."
-  [reader :- java.io.Reader, batch-size :- (Maybe Integer),
+  [reader :- java.io.Reader, batch-size :- (Maybe Integer+),
    keep-open? :- Boolean]
   IAcquirableFactory
   (-acquire! [this]

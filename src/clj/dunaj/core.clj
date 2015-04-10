@@ -147,7 +147,7 @@
             definterface bean->map])
     (refer dunaj.host.int [])
     (refer dunaj.math
-           [Number number? Integer integer? Float float? Decimal
+           [Number number? Integer+ integer? Float+ float? Decimal
             decimal? Rational rational? numerical? num zero? one?
             pos? neg? npos? nneg? even? odd? < <= > >= ==
             trunc + - * / inc dec min max quot rem mod round floor

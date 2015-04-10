@@ -53,7 +53,7 @@
   [clojure.bootstrap :refer [assert-primitive v1 not-implemented]]
   [dunaj.type :refer [Any Fn Va I U Maybe Predicate]]
   [dunaj.boolean :refer [Boolean and or not boolean]]
-  [dunaj.math :refer [Integer Float >= rem < neg? <= zero? > == /]]
+  [dunaj.math :refer [Integer+ Float+ >= rem < neg? <= zero? > == /]]
   [dunaj.math.unchecked :as mu]
   [dunaj.host :refer [Batch AnyBatch keyword->class]]
   [dunaj.host.int :refer
@@ -97,7 +97,7 @@
   []
   (java.util.concurrent.ThreadLocalRandom/current))
 
-(def+ ^:dynamic ^:private *default-rng-batch-size* :- Integer
+(def+ ^:dynamic ^:private *default-rng-batch-size* :- Integer+
   32)
 
 (defn ^:private reduce-batched-rng
@@ -121,14 +121,14 @@
     (af init batch)))
 
 (deftype RWrap
-  [ret :- Any, pval :- Integer, left :- Int, other :- Any])
+  [ret :- Any, pval :- Integer+, left :- Int, other :- Any])
 
 (deftype BRWrap
-  [ret :- Any, pval :- Integer, left :- Int,
+  [ret :- Any, pval :- Integer+, left :- Int,
    obatch :- Any, other :- Any])
 
 (defn ^:private r-advance :- Any
-  [ret :- Any, pval :- Integer, left :- Int, other :- Any]
+  [ret :- Any, pval :- Integer+, left :- Int, other :- Any]
   (cond (reduced? ret) (reduced (->RWrap @ret pval left other))
         (postponed? ret)
         (postponed (->RWrap @ret pval left other)
@@ -164,7 +164,7 @@
   (doto (.getDeclaredField java.util.Random "DOUBLE_UNIT")
     (.setAccessible true)))
 
-(defn ^:private get-double-unit :- Float
+(defn ^:private get-double-unit :- Float+
   "Returns DOUBLE_UNIT value"
   []
   (.get double-unit nil))
@@ -411,7 +411,7 @@
   ([] (rng thread-local-rng))
   ([factory :- IRngFactory]
    (-rng factory))
-  ([factory :- IRngFactory, seed :- Integer]
+  ([factory :- IRngFactory, seed :- Integer+]
    (-rng (assoc factory :seed seed)))
   ([factory :- IRngFactory, key :- Keyword, val :- Any
     & keyvals :- Any]
@@ -421,7 +421,7 @@
 
 (deftype IntegerReducing
   "An augmented reducing type for integers* transducer."
-  [r :- IReducing, begin :- (Maybe Integer), end :- (Maybe Integer)]
+  [r :- IReducing, begin :- (Maybe Integer+), end :- (Maybe Integer+)]
   IReducing
   (-init [this] (._init r))
   (-finish [this wrap]
@@ -459,7 +459,7 @@
   {:added v1
    :see '[integers rand-integer rng booleans]
    :category "Transducers"}
-  [begin :- (Maybe Integer), end :- (Maybe Integer)]
+  [begin :- (Maybe Integer+), end :- (Maybe Integer+)]
   ([r]
    (when (and begin end (>= begin end)) (throw (index-out-of-bounds)))
    (->IntegerReducing r begin end))
@@ -545,8 +545,8 @@
    :category "Transducers"}
   ([] (integers* nil nil))
   ([coll :- []] (integers nil nil coll))
-  ([end :- (Maybe Integer), coll :- []] (integers nil end coll))
-  ([begin :- (Maybe Integer), end :- (Maybe Integer), coll :- []]
+  ([end :- (Maybe Integer+), coll :- []] (integers nil end coll))
+  ([begin :- (Maybe Integer+), end :- (Maybe Integer+), coll :- []]
    (if (and
         (satisfies? IBatchedRed coll)
         (item-types-match? (keyword->class :byte) (item-type coll)))
@@ -555,7 +555,7 @@
 
 (deftype FloatReducing
   "An augmented reducing type for floats* transducer."
-  [r :- IReducing, begin :- (Maybe Integer), end :- (Maybe Integer)]
+  [r :- IReducing, begin :- (Maybe Integer+), end :- (Maybe Integer+)]
   IReducing
   (-init [this] (._init r))
   (-finish [this wrap]
@@ -593,7 +593,7 @@
   {:added v1
    :see '[floats rand gaussian]
    :category "Transducers"}
-  [begin :- (Maybe Float), end :- (Maybe Float)]
+  [begin :- (Maybe Float+), end :- (Maybe Float+)]
   ([r]
    (when (and begin end (>= begin end)) (throw (index-out-of-bounds)))
    (->FloatReducing r begin end))
@@ -681,8 +681,8 @@
    :category "Transducers"}
   ([] (floats*))
   ([coll :- []] (floats nil nil coll))
-  ([end :- (Maybe Float), coll :- []] (floats nil end coll))
-  ([begin :- (Maybe Float), end :- (Maybe Float), coll :- []]
+  ([end :- (Maybe Float+), coll :- []] (floats nil end coll))
+  ([begin :- (Maybe Float+), end :- (Maybe Float+), coll :- []]
    (if (and
         (satisfies? IBatchedRed coll)
         (item-types-match? (keyword->class :byte) (item-type coll)))
@@ -765,7 +765,7 @@
 
 ;;; Convenience functions
 
-(defn rand :- Float
+(defn rand :- Float+
   "Returns a random floating point number, with optional
   `_begin_` (inclusive) and `_end_` (exclusive) bounds. Default value
   for `_begin_` is 0.0 and default value for `_end_` is 1.0."
@@ -784,12 +784,12 @@
                     ~begin ~end)))}
   ([]
    (.nextDouble (tlrng)))
-  ([end :- Float]
+  ([end :- Float+]
    (.nextDouble (tlrng) end))
-  ([begin :- Float, end :- Float]
+  ([begin :- Float+, end :- Float+]
    (.nextDouble (tlrng) begin end)))
 
-(defn rand-integer :- Integer
+(defn rand-integer :- Integer+
   "Returns a random integer number, with optional
   `_begin_` (inclusive) and `_end_` (exclusive) bounds.
   One arg version sets `_begin_` to 0."
@@ -807,8 +807,8 @@
       `(.nextLong (java.util.concurrent.ThreadLocalRandom/current)
                   ~begin ~end)))}
   ([] (.nextLong (tlrng)))
-  ([end :- Integer] (.nextLong (tlrng) (long end)))
-  ([begin :- Integer, end :- Integer]
+  ([end :- Integer+] (.nextLong (tlrng) (long end)))
+  ([begin :- Integer+, end :- Integer+]
    (.nextLong (tlrng) (long begin) (long end))))
 
 (defn rand-nth :- Any
@@ -824,7 +824,7 @@
 
 (deftype SampleReducing
   "Reducing type for sample."
-  [prob :- Float, sample-rng :- [], r :- IReducing]
+  [prob :- Float+, sample-rng :- [], r :- IReducing]
   IReducing
   (-init [this] (._init r))
   (-finish [this wrap]
@@ -877,7 +877,7 @@
   {:added v1
    :see '[rand rand-integer rand-nth gaussian]
    :category "Transducers"}
-  [prob :- Float]
+  [prob :- Float+]
   ([r] (->SampleReducing prob (rng splittable-rng) r))
   :count false
   :section false)

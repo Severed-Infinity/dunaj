@@ -314,7 +314,7 @@
     (if (cc/vector? fn-sig) (list 'dunaj.type/Fn fn-sig) fn-sig)))
 
 ;; TODO: support for nil not eliminating non-primitive hints
-;; e.g. (Fn [nil nil] [Integer Integer])
+;; e.g. (Fn [nil nil] [Integer+ Integer+])
 (cc/defn decorate-vec
   "Returns vec `_v_` decorated with hints taken from `_vsigs_`,
   which is a `[sigs sigs sigs...]`."
@@ -1084,13 +1084,11 @@
   (cc/or (cc/and (cc/class? v)
                  (cc/= "java.lang" (.getName (.getPackage ^java.lang.Class v))))
          (cc/and (cc/var? v)
-                 (cc/not (cc/= "loop" (cc/name s)))
                  (cc/identical? cns (.ns ^clojure.lang.Var v)))))
 
 (cc/defn remove-mappings! [ns]
   (cc/doseq [[s v] (cc/ns-map ns)]
     (when (should-remove? s v)
-      (clojure.core/print s " ")
       (cc/ns-unmap ns s))))
 
 (cc/defmacro bare-ns

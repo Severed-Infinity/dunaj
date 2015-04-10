@@ -36,7 +36,7 @@
  (:require [clojure.core :refer [let assert]]
            [clojure.bootstrap :refer [defalias defn v1]]
            [dunaj.type :refer [Fn Va]]
-           [dunaj.math :refer [Number Integer]]))
+           [dunaj.math :refer [Number]]))
 
 
 ;;;; Public API

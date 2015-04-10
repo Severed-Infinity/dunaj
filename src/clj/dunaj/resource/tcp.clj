@@ -23,7 +23,7 @@
   [dunaj.boolean :refer [Boolean and or not true? false?]]
   [dunaj.host :refer [Class+ BatchManager Batch AnyBatch]]
   [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]
-  [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
+  [dunaj.math :refer [Integer+ max neg? == < zero? nneg?]]
   [dunaj.compare :refer [nil? = identical?]]
   [dunaj.state :refer [IOpenAware IReference IMutable io!]]
   [dunaj.flow :refer [let loop when-not when when-let]]
@@ -68,13 +68,13 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-tcp-batch-size :- Integer
+(def+ ^:private default-tcp-batch-size :- Integer+
   "Default size for tcp batch."
   8192)
 
-(defn ^:private provide-tcp-batch-size :- Integer
+(defn ^:private provide-tcp-batch-size :- Integer+
   "Returns tcp batch size taking into account given batch size hint."
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (provide-batch-size (max (or size-hint 0) default-tcp-batch-size)))
 
 (defn ^:private get-query-map :- {Keyword String}
@@ -139,7 +139,7 @@
 
 (defn ^:private socket-address :- java.net.InetSocketAddress
   "Returns an instance of a socket address."
-  [address :- (Maybe String), port :- (Maybe Integer)]
+  [address :- (Maybe String), port :- (Maybe Integer+)]
   (let [port (or port 0)
         address (when address
                   (java.net.InetAddress/getByName address))]
@@ -189,7 +189,7 @@
 
 (defreleasable ^:private TcpResource
   "Connected TCP resource type."
-  [ch :- java.nio.channels.SocketChannel, batch-size :- Integer,
+  [ch :- java.nio.channels.SocketChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)
@@ -218,7 +218,7 @@
 
 (defreleasable ^:private TcpServerResource
   "TCP Server resource type."
-  [ch :- java.nio.channels.ServerSocketChannel, batch-size :- Integer,
+  [ch :- java.nio.channels.ServerSocketChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)

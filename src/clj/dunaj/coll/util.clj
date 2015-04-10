@@ -31,7 +31,7 @@
   [dunaj.boolean :refer [Boolean and or not]]
   [dunaj.host :refer [Class+ class-instance?]]
   [dunaj.host.int :refer [Int iint iinc izero? ipos? idec iloop]]
-  [dunaj.math :refer [Integer == dec]]
+  [dunaj.math :refer [Integer+ == dec]]
   [dunaj.compare :refer [nil? natural-comparator defsentinel]]
   [dunaj.flow :refer
    [cond let when if-let when-not loop if-not]]
@@ -213,7 +213,7 @@
 
 (deftype Batched
   [requested-type :- (U nil Class Type),
-   size-hint :- (Maybe Integer),
+   size-hint :- (Maybe Integer+),
    coll :- IRed]
   IRed
   (-reduce [this reducef init]
@@ -234,7 +234,7 @@
   ([requested-type :- (U nil Class Type), coll :- IRed]
    (batched requested-type nil coll))
   ([requested-type :- (U nil Class Type),
-    size-hint :- (Maybe Integer),
+    size-hint :- (Maybe Integer+),
     coll :- IRed]
    (->Batched requested-type size-hint coll)))
 
@@ -260,7 +260,7 @@
     reducef :- AnyFn, init :- Any, coll :- IRed]
    (reduce-batched requested-type nil reducef init coll))
   ([requested-type :- (U nil Class Type),
-    size-hint :- (Maybe Integer),
+    size-hint :- (Maybe Integer+),
     reducef :- AnyFn, init :- Any, coll :- IRed]
    (strip-reduced
     (if (and (satisfies? IBatchedRed coll)
@@ -280,12 +280,12 @@
    (fold-batched* coll nil nil @default-fold-pool
                   @default-fold-size combinef reducef))
   ([requested-type :- (U nil Class Type),
-    size-hint :- (Maybe Integer),
+    size-hint :- (Maybe Integer+),
     combinef :- AnyFn, reducef :- AnyFn, coll :- IFoldable]
    (fold-batched* coll requested-type size-hint @default-fold-pool
                   @default-fold-size combinef reducef))
   ([requested-type :- (U nil Class Type),
-    size-hint :- (Maybe Integer), n :- Integer,
+    size-hint :- (Maybe Integer+), n :- Integer+,
     combinef :- AnyFn, reducef :- AnyFn, coll :- IFoldable]
    (fold-batched* coll requested-type size-hint @default-fold-pool
                   n combinef reducef)))
@@ -335,7 +335,7 @@
   ([combinef :- AnyFn, reducef :- AnyFn, coll :- IFoldable]
    (fold-unpacked* coll @default-fold-pool @default-fold-size
                    combinef reducef))
-  ([n :- Integer,
+  ([n :- Integer+,
     combinef :- AnyFn, reducef :- AnyFn, coll :- IFoldable]
    (fold-unpacked* coll @default-fold-pool n combinef reducef)))
 
@@ -385,7 +385,7 @@
    :see '[doall doseq dored for]}
   ([coll :- []]
    (dorun nil coll))
-  ([n :- (Maybe Integer), coll :- []]
+  ([n :- (Maybe Integer+), coll :- []]
    (if n
      (reduce #(if (izero? %) (reduced %2) (idec %)) (iint n) coll)
      (reduce nop coll))
@@ -399,7 +399,7 @@
    :see '[dorun doseq dored for]}
   ([coll :- []]
    (doall nil coll))
-  ([n :- (Maybe Integer), coll :- []]
+  ([n :- (Maybe Integer+), coll :- []]
    (let [s (seq coll)]
      (if n
        (iloop [s s, n (iint n)]

@@ -154,7 +154,7 @@
   [dunaj.boolean :refer [Boolean boolean and or not]]
   [dunaj.host :refer [class class-instance? AnyBatch Class+]]
   [dunaj.host.int :refer [iinc i0 iint]]
-  [dunaj.math :refer [Integer > == zero? odd?]]
+  [dunaj.math :refer [Integer+ > == zero? odd?]]
   [dunaj.compare :refer [sentinel nil? identical? defsentinel]]
   [dunaj.state :refer [IReference]]
   [dunaj.flow :refer [if-not cond let when-not when loop if-let]]
@@ -326,7 +326,7 @@
     postponed results returned from underlying collection,
     if the implementation has one."
     [this item-type :- (U nil Class+ Type),
-     size-hint :- (Maybe Integer), reducef :- (Fn [Any Any AnyBatch]),
+     size-hint :- (Maybe Integer+), reducef :- (Fn [Any Any AnyBatch]),
      init :- Any]))
 
 (defn ensure-batchable :- IBatchedRed
@@ -386,7 +386,7 @@
 (defn ^:private reduce-batched* :- Any
   ([coll :- [], reducef :- AnyFn, init :- Any]
    (if (nil? coll) init (-reduce-batched coll nil nil reducef init)))
-  ([item-type :- (U nil Class+ Type), size-hint :- (Maybe Integer),
+  ([item-type :- (U nil Class+ Type), size-hint :- (Maybe Integer+),
     coll :- [], reducef :- AnyFn, init :- Any]
    (if (nil? coll)
        init
@@ -816,7 +816,7 @@
   when `_n_` is 0."
   {:added v1
    :see '[nthrest next nnext first seq]
-   :tsig (Fn [(Maybe ISeq) [] Integer])
+   :tsig (Fn [(Maybe ISeq) [] Integer+])
    :category "Seqs"})
 
 (defalias nthrest
@@ -824,7 +824,7 @@
   `_n_` is 0."
   {:added v1
    :see '[nthnext rest first seq]
-   :tsig (Fn [ISeq [] Integer])
+   :tsig (Fn [ISeq [] Integer+])
    :category "Seqs"})
 
 (defmacro when-first
@@ -869,12 +869,12 @@
    :on-interface clojure.lang.Counted
    :forbid-extensions true
    :category "Features"}
-  (-count :- Integer
+  (-count :- Integer+
     "Returns the size of `_this_`, in constant time."
     {:on 'count}
     [this]))
 
-(defn count :- Integer
+(defn count :- Integer+
   "Returns the size of a collection `_coll_`."
   {:added v1
    :see '[empty? full? counted? several? single?]
@@ -975,11 +975,11 @@
    :see '[capacity brimming?]
    :category "Features"
    :predicate 'capped?}
-  (-capacity :- Integer
+  (-capacity :- Integer+
     "Returns capacity of a given `_this_`."
     [this]))
 
-(defn capacity :- Integer
+(defn capacity :- Integer+
   "Returns capacity of a given capped `_coll_`."
   {:added v1
    :see '[brimming? count capped? full?]
@@ -1204,7 +1204,7 @@
     "Returns item at `_index_` position, or returns `_not-found_`
     if position is out of bounds."
     {:on 'nth}
-    [this index :- Integer not-found :- Any]))
+    [this index :- Integer+, not-found :- Any]))
 
 (defn nth :- Any
   "Returns item at `_index_` position, or returns `_not-found_`
@@ -1214,14 +1214,14 @@
   {:added v1
    :see '[get get-in contains? indexed?]
    :category "Features"}
-  ([coll :- [], index :- Integer]
+  ([coll :- [], index :- Integer+]
    (when-not (nil? coll)
      (let [nothing (sentinel)
            r (nth coll index nothing)]
        (if (identical? r nothing)
          (throw (java.lang.IndexOutOfBoundsException.))
          r))))
-  ([coll :- [], index :- Integer, not-found :- Any]
+  ([coll :- [], index :- Integer+, not-found :- Any]
    (if (nil? coll) not-found (-nth coll index not-found))))
 
 ;; c.c.nth is patched to support ILookup in c.l.RT
@@ -1387,7 +1387,7 @@
     of similar type and will share underlying data with `_this_` and
     thus will hold onto all original items. Operation is constant
     time though. Returned collection does not have to be persistent."
-    [this begin :- Integer, end :- Integer]))
+    [this begin :- Integer+, end :- Integer+]))
 
 (defprotocol ISortedSectionable
   "Value protocol for sorted sectionable collections."
@@ -1480,7 +1480,7 @@
    :category "Features"}
   ([coll :- IEditable]
    (-edit coll))
-  ([coll :- IEditable, capacity-hint :- (Maybe Integer)]
+  ([coll :- IEditable, capacity-hint :- (Maybe Integer+)]
    (when capacity-hint (not-implemented))
    (-edit coll)))
 

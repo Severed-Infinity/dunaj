@@ -33,7 +33,7 @@
   [clojure.bootstrap :refer [v1]]
   [dunaj.type :refer [Fn Any Maybe Va I U Predicate]]
   [dunaj.boolean :refer [or]]
-  [dunaj.math :refer [Integer]]
+  [dunaj.math :refer [Integer+]]
   [dunaj.compare :refer [sentinel identical? nil?]]
   [dunaj.flow :refer [let when]]
   [dunaj.poly :refer [defprotocol extend-protocol!]]
@@ -61,7 +61,7 @@
               "Collection must contain only one item.")))
     val))
 
-(def+ ^:dynamic ^:private *default-formatter-batch-size* :- Integer
+(def+ ^:dynamic ^:private *default-formatter-batch-size* :- Integer+
   "Default batch size for formatters."
   32)
 
