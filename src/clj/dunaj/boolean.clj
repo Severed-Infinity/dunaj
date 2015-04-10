@@ -56,6 +56,7 @@
     [defalias deftype defmacro v1 defn let fn]]
    [dunaj.type :refer [Fn Any Predicate Macro Va]]))
 
+
 ;;;; Public API
 
 (deftype Boolean+

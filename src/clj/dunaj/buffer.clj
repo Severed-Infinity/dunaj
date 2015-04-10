@@ -49,7 +49,8 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn U Maybe]]
    [dunaj.boolean :refer [Boolean+ not or and boolean]]
-   [dunaj.host :refer [ArrayManager AnyArray Class+ provide-class]]
+   [dunaj.host :refer
+    [ArrayManager AnyArray Class+ provide-class]]
    [dunaj.host.int :refer [Int iint iadd isub i>= ipos? i> i== i0
                            izero? iinc idec inpos? i< i2 imul]]
    [dunaj.math :refer [<]]
@@ -67,12 +68,12 @@
    [dunaj.function :refer [defn fn]]
    [dunaj.concurrent.forkjoin :refer [IFoldable fork join invoke]]
    [dunaj.coll.helper :refer
-    [adaptCbuS fold-sectionable prepare-ordered-section advance-fn
-     red-to-seq]]
+    [adaptCbuS fold-sectionable prepare-ordered-section advance-fn red-to-seq]]
    [dunaj.host.array :refer [array-manager]]
    [dunaj.host.batch :refer
     [batch-support? batch-on item-types-match?]]
-   [dunaj.error :refer [no-such-element ex-info illegal-argument]]
+   [dunaj.error :refer
+    [no-such-element ex-info illegal-argument]]
    [dunaj.string :refer [->str]]
    [dunaj.identifier :refer [Keyword]]
    [dunaj.state.var :refer [declare]]))
@@ -261,8 +262,7 @@
           (.set am arr pos val)
           (let [npos (iinc pos)]
             (set! pos (if (i== npos cam) (i0) npos)))
-          (when (i== l (isub capacity (i2)))
-            (set! ff? (boolean true)))
+          (when (i== l (isub capacity (i2))) (set! ff? (boolean true)))
           this)))))
 
 (deftype DroppingBuffer [fb]
@@ -327,8 +327,7 @@
       (let [npos (iinc pos)]
         (.set am arr pos val)
         (set! pos (if (i== npos cam) (i0) npos))
-        (when (i== (-count this) (idec cam))
-          (set! ff? (boolean true)))))
+        (when (i== (-count this) (idec cam)) (set! ff? (boolean true)))))
     this))
 
 (deftype PromiseBuffer

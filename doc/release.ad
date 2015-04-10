@@ -6,9 +6,6 @@ ITERNAL TODO:
 ** clone for promise
 * unify otherwise clause in docstrings
 
-* ISeqable on all IRed
-* 
-
 == Update dependencies:
 
 * git checkout master, git pull parent master

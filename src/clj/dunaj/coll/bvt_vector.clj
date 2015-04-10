@@ -31,10 +31,10 @@
   types:
 
   * <<dunaj.coll.tuple.api.ad#,tuples>> for efficient representation
-  of small vectors
+    of small vectors
 
   * <<dunaj.coll.rrbt-vector.api.ad#,RRB-Tree vectors>> for efficient
-  catenation or insertion/removal of items in the middle of a
+    catenation or insertion/removal of items in the middle of a
     vector.
 
   * <<dunaj.coll.primitive-vector.api.ad#,primitive vectors>>
@@ -113,7 +113,7 @@
                  (recur ret (.arrayFor vec (i<< nchi (i5)))
                         (iinc nchi) (i0)))]
         (af init (.arrayFor vec begin)
-           (iinc (idiv begin (i32))) (iand begin (i31)))))))
+            (iinc (idiv begin (i32))) (iand begin (i31)))))))
 
 (def+ ^:private mt :- java.lang.reflect.Field
   (doto (.getDeclaredField
@@ -226,8 +226,7 @@
         (reduce* coll reducef init))))
   clojure.lang.ArrayChunk
   (-reduce [this reducef init]
-    (let [coll 
-          (adapt oam (get-aca this) (get-aco this) (get-ace this))]
+    (let [coll (adapt oam (get-aca this) (get-aco this) (get-ace this))]
       (reduce* coll reducef init)))
   clojure.lang.PersistentVector$ChunkedSeq
   (-reduce [this reducef init]

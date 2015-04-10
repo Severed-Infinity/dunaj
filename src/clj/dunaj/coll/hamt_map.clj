@@ -50,8 +50,7 @@
      one? multiply inc dec npos? /]]
    [dunaj.compare :refer
     [IHash IEquiv nil? hash IComparable sentinel identical?]]
-   [dunaj.flow :refer [when-let cond loop let when delay
-                       when-not if-let doto if-some]]
+   [dunaj.flow :refer [when-let cond loop let when delay when-not if-let doto if-some]]
    [dunaj.threading :refer [->]]
    [dunaj.feature :refer [IMeta IPersistentMeta meta]]
    [dunaj.poly :refer [deftype defrecord extend-protocol!]]

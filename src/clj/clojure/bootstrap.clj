@@ -380,7 +380,8 @@
            m-sigs (cc/fn [v] (cc/filter #(== (count %)
                                              (inc (count-argvec v)))
                                         (:method-sigs fn-sig)))
-           primitives? #(cc/contains? prima (primitive-code %))]
+           primitives? #(cc/contains? prima
+                                      (primitive-code %))]
     ;; TODO: optionally warn if primitive hints cannot be generated
     (map (cc/fn [[v & body]]
            (cc/let [coll (m-sigs v)
@@ -629,8 +630,7 @@
            (conj ret
                  `(~(if parasite?
                       `clojure.dunaj-deftype/defprotocol2
-                      `clojure.dunaj-deftype/defprotocol)
-                   ~name ~@stripped)
+                      `clojure.dunaj-deftype/defprotocol) ~name ~@stripped)
                  #_(`(clojure.core/alter-var-root
                       (var ~name) assoc :on-interface
                       (eval (:on ~name)))))
@@ -676,8 +676,7 @@
                               ~argvec
                               (clojure.core/or
                                (clojure.core/instance? ~parasite? ~'x)
-                               (clojure.dunaj-deftype/satisfies?
-                                ~name ~'x))))
+                               (clojure.dunaj-deftype/satisfies? ~name ~'x))))
                      forbidden?
                      (cc/let [iname
                               (or (:on-interface (meta name))
@@ -730,8 +729,7 @@
                                            (clojure.core/name '~name))
                                           f#))}
                               ~argvec
-                              (clojure.dunaj-deftype/satisfies?
-                               ~name ~'x))))
+                              (clojure.dunaj-deftype/satisfies? ~name ~'x))))
                ret))
            (apply list ret)))
         (cc/let [out-sig? (cc/identical? :- (second sig))

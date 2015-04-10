@@ -137,7 +137,7 @@
       (i== x (iARROWHEAD)) (i== x (iAT))))
 
 (deftype WrapperParser
-    "Type for wrapper macro parser."
+  "Type for wrapper macro parser."
   [config :- {}, first-val :- Any]
   IParserMachine
   (-parse-value! [this value parents]

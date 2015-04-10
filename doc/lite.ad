@@ -1,21 +1,21 @@
-Changes
+Differences from Dunaj
 
 * no qualified special symbols
 ** cannot shadow special symbols with custom macros
-** canno unmap special symbols
-* Cannot have deftypes for some classes. Caused by unqualified
-  type hints in clojure.core
-** http://dev.clojure.org/jira/browse/CLJ-1232
-** http://dev.clojure.org/jira/browse/CLJ-1514
-** Most needed classes: String, Class
+** cannot unmap special symbols
+* default imported classes are left untouched
+  (they are unmapped in Dunaj)
+** A consequence of this is that it is now not possible to 
+   define e.g. String or Class deftype
+** clashing deftypes have now + suffix
+** String+, Class+, Number+, Integer+, Float+, Thread+
 * more verbose ns declaration
 ** no :api declaration
+** use dunaj.core/dunaj-ns instead
 * no additional primitive types
 ** mainly boolean and int are missed
 ** iloop behaves the same as loop
 * slower than Dunaj
-* changes in types
-** Class+ instead of Class
 * no custom capacity hint in `edit`
 * fewer support for ICounted
 * if ILookup, must also implement
@@ -25,22 +25,10 @@ Changes
 ** 2 args c.l.IIndexed/nth
 * types no longer seqable (use d.c.h/red-to-seq instead)
 ** batches
-* no support c.c.contains?
+* no support for c.c.contains?
 ** array adaptors
 ** reversed vector sections
-** 
 * strings are not counted
-
-TODO
-
 * more boilerplate for custom collection types
 ** handling of Seqable, Indexed, Counted, Lookup
-* check unchecked math tweaks in Compiler and how to go around this
-
-=== Details
-
-* dunaj.host
-** . macro
-** set! macro
-** Class type
-** new macro
+* TODO: check unchecked math tweaks in Compiler and how to go around this

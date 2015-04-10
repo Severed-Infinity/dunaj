@@ -20,7 +20,7 @@
   * `:replacement` - replacement string
   * `:malformed-mode` - see `charset-formatter` for available options
   * `:unmappable-mode` - see `charset-formatter` for available
-  options"
+    options"
   {:authors ["Jozef Wagner"]}
   (:refer-clojure :exclude
    [reduce satisfies? map < comp reduced? deftype let -> identity fn

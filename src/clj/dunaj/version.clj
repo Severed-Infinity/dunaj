@@ -18,17 +18,17 @@
   {:authors ["Jozef Wagner"]}
   (:refer-clojure :exclude [= when-let let when defn or defrecord])
   (:require [clojure.bootstrap :refer [v1]]
-           [dunaj.type :refer [Maybe]]
-           [dunaj.boolean :refer [Boolean+ or]]
-           [dunaj.compare :refer [=]]
-           [dunaj.flow :refer [when-let when let]]
-           [dunaj.poly :refer [defrecord]]
-           [dunaj.coll :refer [IRed]]
-           [dunaj.function :refer [defn]]
-           [dunaj.string :refer [ICanonical ->str]]
-           [dunaj.identifier :refer [Symbol]]
-           [dunaj.state.var :refer [defalias]]
-           [dunaj.uri :refer [Uri uri]]))
+            [dunaj.type :refer [Maybe]]
+            [dunaj.boolean :refer [Boolean+ or]]
+            [dunaj.compare :refer [=]]
+            [dunaj.flow :refer [when-let when let]]
+            [dunaj.poly :refer [defrecord]]
+            [dunaj.coll :refer [IRed]]
+            [dunaj.function :refer [defn]]
+            [dunaj.string :refer [ICanonical ->str]]
+            [dunaj.identifier :refer [Symbol]]
+            [dunaj.state.var :refer [defalias]]
+            [dunaj.uri :refer [Uri uri]]))
 
 
 ;;;; Public API

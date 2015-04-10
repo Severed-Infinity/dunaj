@@ -155,8 +155,7 @@
    [clojure.dunaj-deftype :refer [satisfies? extend-protocol]]
    [clojure.core.protocols :refer [coll-reduce]]
    [clojure.bootstrap :refer
-    [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec
-     not-implemented]]
+    [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec not-implemented]]
    [dunaj.type :refer [Fn Any Va Maybe AnyFn U Signature]]
    [dunaj.boolean :refer [Boolean+ boolean and or not]]
    [dunaj.host :refer [class class-instance? AnyBatch Class+]]
@@ -164,7 +163,8 @@
    [dunaj.math :refer [Integer+ > == zero? odd?]]
    [dunaj.compare :refer [sentinel nil? identical? defsentinel]]
    [dunaj.state :refer [IReference]]
-   [dunaj.flow :refer [if-not cond let when-not when loop if-let]]
+   [dunaj.flow :refer
+    [if-not cond let when-not when loop if-let]]
    [dunaj.threading :refer [->]]
    [dunaj.poly :refer [Type deftype defprotocol identical-type?]]))
 
@@ -223,7 +223,7 @@
    ret #(throw (java.lang.UnsupportedOperationException.)) uadvancef))
 
 (defn advance :- Any
-   "Continues with the reduction of a `_postponed_` result and returns
+  "Continues with the reduction of a `_postponed_` result and returns
   the reduced result, applying same rules as in the `reduce`
   function. May again return another postponed object. Usually much
   slower than `unsafe-advance!`, but can be called multiple times

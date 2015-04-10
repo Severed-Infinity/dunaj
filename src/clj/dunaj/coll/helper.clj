@@ -601,10 +601,8 @@
              ob)
         u? (if (nil? ou)
              (and
-              (clojure.dunaj-deftype/satisfies?
-               dunaj.coll/IUnpackedRed coll)
-              (clojure.dunaj-deftype/satisfies?
-               dunaj.coll/IUnpackedRed to))
+              (clojure.dunaj-deftype/satisfies? dunaj.coll/IUnpackedRed coll)
+              (clojure.dunaj-deftype/satisfies? dunaj.coll/IUnpackedRed to))
              ou)
         s? (if (nil? os)
              (and (sectionable? coll) (sectionable? to))
