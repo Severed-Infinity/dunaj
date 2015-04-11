@@ -35,7 +35,7 @@
    [dunaj.poly :refer [reify]]
    [dunaj.coll :refer [ILookup conj seq seq? rest next]]
    [dunaj.function :refer [fn defn]]
-   [dunaj.string :refer [->str]]
+   [dunaj.string :refer [String+ ->str]]
    [dunaj.identifier :refer [Symbol symbol? name]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.state.var :refer [Var defalias def+]]))

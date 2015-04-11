@@ -28,7 +28,7 @@
    [dunaj.poly :refer [deftype]]
    [dunaj.coll :refer [ILookup]]
    [dunaj.function :refer [defn]]
-   [dunaj.string :refer [ICanonical ->str]]
+   [dunaj.string :refer [ICanonical String+ ->str]]
    [dunaj.identifier :refer [name INamed]]))
 
 

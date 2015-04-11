@@ -41,7 +41,7 @@
    [dunaj.function :refer [defn]]
    [dunaj.host.array :refer [aset-char!]]
    [dunaj.host.batch :refer [item-types-match?]]
-   [dunaj.string :refer [last-index-of]]
+   [dunaj.string :refer [String+ last-index-of]]
    [dunaj.identifier :refer [symbol?]]
    [dunaj.state.basic :refer [local]]
    [dunaj.state.var :refer [defalias with-bindings]]

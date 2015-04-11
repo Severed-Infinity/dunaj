@@ -34,6 +34,7 @@
    [dunaj.flow :refer [when when-let]]
    [dunaj.feature :refer [IMeta]]
    [dunaj.function :refer [IInvocable]]
+   [dunaj.string :refer [String+]]
    [dunaj.identifier :refer
     [Symbol INamed INamespaced name namespace]]))
 

@@ -25,7 +25,7 @@
             [dunaj.poly :refer [defrecord]]
             [dunaj.coll :refer [IRed]]
             [dunaj.function :refer [defn]]
-            [dunaj.string :refer [ICanonical ->str]]
+            [dunaj.string :refer [String+ ICanonical ->str]]
             [dunaj.identifier :refer [Symbol]]
             [dunaj.state.var :refer [defalias]]
             [dunaj.uri :refer [Uri uri]]))

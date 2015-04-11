@@ -33,7 +33,7 @@
    [dunaj.poly :refer [extend-protocol!]]
    [dunaj.coll :refer [first slice]]
    [dunaj.function :refer [IInvocable]]
-   [dunaj.string :refer [ICanonical ReversedStringSection
+   [dunaj.string :refer [String+ ICanonical ReversedStringSection
                          StringSection str string?]]))
 
 

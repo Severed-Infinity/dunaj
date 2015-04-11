@@ -36,7 +36,7 @@
    [dunaj.coll :refer
     [empty? several? first rest contains? dissoc map? assoc]]
    [dunaj.function :refer [fn defn]]
-   [dunaj.string :refer [string?]]
+   [dunaj.string :refer [string? String+]]
    [dunaj.time :as dt :refer [IDuration milliseconds nanoseconds]]
    [dunaj.identifier :refer [Keyword]]
    [dunaj.error :refer [illegal-argument]]))

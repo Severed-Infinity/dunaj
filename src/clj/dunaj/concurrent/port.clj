@@ -42,6 +42,7 @@
    [dunaj.function :refer [apply nop fn complement defn partial]]
    [dunaj.concurrent :refer [IExecutor locking execute]]
    [dunaj.buffer :refer [promise-buffer]]
+   [dunaj.string :refer [String+]]
    [dunaj.time :refer [IDuration]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.error :refer [IException]]

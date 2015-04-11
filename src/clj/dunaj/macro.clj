@@ -25,6 +25,7 @@
    [dunaj.type :refer [Fn Any Macro]]
    [dunaj.boolean :refer [Boolean+]]
    [dunaj.function :refer [defn]]
+   [dunaj.string :refer [String+]]
    [dunaj.identifier :refer [Symbol]]))
 
 

@@ -39,7 +39,7 @@
    [dunaj.coll :refer [assoc first transduce count seq]]
    [dunaj.function :refer [defn comp identity apply fn]]
    [dunaj.char :refer [whitespace? char]]
-   [dunaj.string :refer [->str str]]
+   [dunaj.string :refer [String+ ->str str]]
    [dunaj.identifier :refer [name Symbol symbol]]
    [dunaj.error :refer
     [IException exception? illegal-state ex-data]]

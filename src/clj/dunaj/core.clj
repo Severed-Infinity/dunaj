@@ -133,8 +133,6 @@
     (alter-meta! clojure.core/*ns* assoc :qualified-specials true)
     ;; Refer peculiar special symbols directly. This is needed only
     ;; for syntax quote to work correctly when handling those symbols.
-    (clojure.core/import [java.lang String Class])
-    (refer clojure.core [])
     ;; Refer common API
     (refer dunaj.type
            [Any AnyFn Fn Maybe Va Predicate KeywordMap U I Required

@@ -35,7 +35,8 @@
    [dunaj.flow :refer [let doto cond]]
    [dunaj.threading :refer [->]]
    [dunaj.coll :refer [slice count]]
-   [dunaj.string :refer [->str canonical ICanonical -canonical]]))
+   [dunaj.string :refer
+    [String+ ->str canonical ICanonical -canonical]]))
 
 
 ;;;; Implementation details
