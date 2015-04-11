@@ -31,7 +31,7 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Operations"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [defmethod get-method cons some print-method]]
    [clojure.set :as cs]

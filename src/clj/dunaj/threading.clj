@@ -28,7 +28,7 @@
      <<dunaj.threading.last.api.ad#,dunaj.threading.last>>
      namespace."]]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [defalias v1]]
    [dunaj.type :refer [Macro]]))

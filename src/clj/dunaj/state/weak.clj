@@ -18,7 +18,7 @@
   ones, but they allow the referenced object to be cleared only
   when memory is running low."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core.async]
    [clojure.bootstrap :refer [v1]]

@@ -19,7 +19,7 @@
 
   Printer supports naive pretty mode with ANSI color support."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [scratch v1]]
    [dunaj.type :refer [AnyFn Any Fn Maybe U I]]

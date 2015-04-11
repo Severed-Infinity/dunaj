@@ -26,7 +26,7 @@
   * regular expression - parsing regexes
   * `html` - basic html printer"
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Fn Any Maybe Va I U Predicate]]

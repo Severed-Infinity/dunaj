@@ -16,7 +16,7 @@
   Precision as implemented by host."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Hyperbolic"]}
-  (:api bare)
+  (:api bare-ws)
   (:require [clojure.core :refer [.]]
             [clojure.bootstrap :refer [defn v1 fn]]
             [dunaj.math :refer [Float]])

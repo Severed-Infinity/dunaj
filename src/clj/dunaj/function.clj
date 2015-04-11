@@ -40,7 +40,7 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Transformations" "Memoization"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [throw var satisfies? str]]
    [clojure.bootstrap :as cb :refer [defalias defprotocol def+ v1]]

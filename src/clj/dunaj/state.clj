@@ -19,7 +19,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Mutation" "Auxiliary"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer
     [recur if apply count when when-not throw reduce partition

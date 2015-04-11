@@ -18,7 +18,7 @@
   "General concurrency facilities, futures, promises."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [var try throw fn*]]
    [clojure.bootstrap :refer [defmacro defalias def+ v1]]

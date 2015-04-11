@@ -14,7 +14,7 @@
   "Fast printer engine with helper functions."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Colorer" "Indentation"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn Maybe I U AnyFn KeywordMap]]

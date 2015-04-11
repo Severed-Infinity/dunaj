@@ -13,7 +13,7 @@
 (ns dunaj.resource.helper
   "Resource helpers."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Maybe U I Fn]]

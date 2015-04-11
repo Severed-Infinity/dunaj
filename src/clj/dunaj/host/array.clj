@@ -37,7 +37,7 @@
    :categories ["Primary"
                 ["Primitives"
                  "Functions specific to host primitive types."]]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer
     [str declare get first second throw every? interpose pr-str map]]

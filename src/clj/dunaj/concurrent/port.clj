@@ -21,7 +21,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Ports" "Operations" "Mult" "Mix" "Pub"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer
     [add-watch constantly assert atom remove-watch disj empty?]]

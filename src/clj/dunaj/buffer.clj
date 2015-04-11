@@ -42,7 +42,7 @@
   CAUTION: There are no synchronization guarantees for buffer types,
   use them with care!"
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn U Maybe]]

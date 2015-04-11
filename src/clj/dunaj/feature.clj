@@ -14,7 +14,7 @@
   "Feature protocols for metadata, configuration and validation."
   {:authors ["Jozef Wagner"]
    :categories ["Metadata" "Configuration"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [atom extend-type apply satisfies?]]
    [clojure.bootstrap :refer [deftype defn defprotocol defalias v1]]

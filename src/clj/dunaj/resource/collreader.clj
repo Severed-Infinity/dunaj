@@ -17,7 +17,7 @@
   public vars and there is *no need to require this namespace*
   directly."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require [dunaj.boolean :refer [Boolean and or not]]
             [dunaj.host.int :refer [iint iinc i0 i-1 i< iadd]]
             [dunaj.compare :refer [nil? =]]

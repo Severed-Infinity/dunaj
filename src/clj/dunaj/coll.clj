@@ -139,7 +139,7 @@
                 "Mutable" "Factory"]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer
     [throw extend-protocol satisfies? partition apply assert str meta

@@ -42,7 +42,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright
    "2012, 2015, Michał Marczyk, Rich Hickey and Clojure contributors"}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core.rrb-vector]
    [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]

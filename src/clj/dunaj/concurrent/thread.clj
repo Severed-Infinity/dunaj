@@ -17,7 +17,7 @@
   for creating daemon threads, which are threads on which JVM doesn't
   wait when exiting."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [defmacro def+ v1]]
    [dunaj.type :refer [Any KeywordMap Maybe U AnyFn]]

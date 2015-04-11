@@ -17,7 +17,7 @@
   collection types."
   {:categories ["Primary" "Empty collections" "Factories"]
    :authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Maybe Fn I U]]

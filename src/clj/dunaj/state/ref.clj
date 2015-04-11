@@ -33,7 +33,7 @@
   https://github.com/cgrand/megaref[Megarefs])"
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [doseq keys ref-set ref-min-history
                          ref-max-history ref-history-count]]

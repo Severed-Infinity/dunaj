@@ -18,7 +18,7 @@
   "Instants (RFC 3339) and duration protocol."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [var format]]
    [clojure.instant :refer [validated parse-timestamp]]

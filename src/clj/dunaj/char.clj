@@ -25,7 +25,7 @@
   {:categories ["Primary" "Predicates" "Operations"]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [defn defalias v1]]
    [dunaj.type :refer [Maybe Any AnyFn Fn U Predicate]]

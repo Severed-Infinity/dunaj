@@ -15,7 +15,7 @@
   recipes."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Generators" "Transducers"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Maybe Any AnyFn U I Va Predicate Fn]]

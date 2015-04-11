@@ -15,7 +15,7 @@
   machines."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Lazy"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Fn Maybe Any U I AnyFn Predicate]]

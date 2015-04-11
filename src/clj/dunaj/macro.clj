@@ -18,7 +18,7 @@
   "Macros. &nbsp; icon:magic[]"
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [defalias v1 not-implemented]]
    [dunaj.type :refer [Fn Any Macro]]

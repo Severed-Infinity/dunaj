@@ -40,7 +40,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Comparison" "Operations" "Rounding"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :as cc :refer
     [. if ratio? assert apply hash-map cond -> = binding when-not

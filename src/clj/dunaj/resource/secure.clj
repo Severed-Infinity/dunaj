@@ -16,7 +16,7 @@
   WARNING: Needs review from someone who knows TLS protocol and
   SSLEngine better than me."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core.async]
    [clojure.bootstrap :refer [v1]]

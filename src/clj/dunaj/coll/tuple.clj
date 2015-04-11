@@ -50,7 +50,7 @@
   rear of the collection."
   {:categories ["Primary" "Pairs"]
    :authors ["Jozef Wagner" "Zachary Tellman"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer
     [map pr-str interpose re-find list vec doall range mapcat last

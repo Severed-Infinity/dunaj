@@ -16,7 +16,7 @@
   Supports Clojure-like version scheme:
   `MAJOR.MINOR.INCREMENTAL-QUALIFIER-SNAPSHOT`"
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require [clojure.bootstrap :refer [v1]]
             [dunaj.type :refer [Maybe]]
             [dunaj.boolean :refer [Boolean or]]

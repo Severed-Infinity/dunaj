@@ -13,7 +13,7 @@
 (ns dunaj.resource.host
   "Classpath and stream backed host resources."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]

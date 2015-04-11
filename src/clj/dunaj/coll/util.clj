@@ -20,7 +20,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Iterations" "Reducers" "Maps" "Walk"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [lazy-seq cons]]
    [clojure.bootstrap :refer [v1 not-implemented]]

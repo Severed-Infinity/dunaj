@@ -55,7 +55,7 @@
                  booleans, as there is no batch support for them."]]
    :additional-copyright
    "2012, 2015, Michał Marczyk, Rich Hickey and Clojure contributors"}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core.rrb-vector :refer [vector-of]]
    [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]

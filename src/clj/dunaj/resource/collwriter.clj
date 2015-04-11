@@ -17,7 +17,7 @@
   public vars and there is *no need to require this namespace*
   directly."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require [clojure.core.async]
             [dunaj.boolean :refer [Boolean and or not]]
             [dunaj.host :refer [keyword->class Array ArrayManager]]

@@ -34,7 +34,7 @@
     `<<dunaj.coll.api.ad#assoc,assoc>>` and
     `<<dunaj.coll.api.ad#dissoc,dissoc>>`"
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.boolean :refer [and or not]]

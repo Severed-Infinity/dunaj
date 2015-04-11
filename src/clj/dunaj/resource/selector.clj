@@ -14,7 +14,7 @@
   "Selector resources."
   {:authors ["Jozef Wagner"]
    :categories ["Primary"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]

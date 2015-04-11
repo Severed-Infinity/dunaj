@@ -31,7 +31,7 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Comparison" "Hashing"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [if when-not do let]]
    [clojure.bootstrap :refer

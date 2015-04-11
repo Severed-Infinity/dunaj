@@ -20,7 +20,7 @@
   NOTE: Documentation needs more work."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [scratch v1]]
    [dunaj.type :refer [Any AnyFn U I Maybe Fn Macro]]

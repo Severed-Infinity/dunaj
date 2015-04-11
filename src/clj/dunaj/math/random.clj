@@ -46,7 +46,7 @@
   bytes to the collection of integers, floats, etc."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Transducers"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [assert-primitive v1 not-implemented]]
    [dunaj.type :refer [Any Fn Va I U Maybe Predicate]]

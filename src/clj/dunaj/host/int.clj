@@ -22,7 +22,7 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Comparison" "Operations"
                 "Bitwise" "Numbers" "ASCII"]}
-  (:api bare)
+  (:api bare-ws)
   (:require [clojure.core :refer [. fn]]
             [clojure.bootstrap :refer [deftype defmacro defn v1]]
             [dunaj.type :refer [Any]]

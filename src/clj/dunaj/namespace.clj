@@ -21,7 +21,7 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Mappings"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer
     [set map list into first second find-ns chunked-seq? chunk-first

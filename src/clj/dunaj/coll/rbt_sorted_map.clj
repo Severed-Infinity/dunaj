@@ -31,7 +31,7 @@
   rather than ones in this namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [take-while]]
    [clojure.bootstrap :refer [v1 not-implemented]]

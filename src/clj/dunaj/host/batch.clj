@@ -31,7 +31,7 @@
   may not store received batch between two calls, as batches
   are usually reused (cleared and filled with next data)."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [assert throw get var declare]]
    [clojure.bootstrap :refer [def+ v1 deftype replace-var!]]

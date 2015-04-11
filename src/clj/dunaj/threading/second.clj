@@ -31,7 +31,7 @@
   NOTE: Documentation needs more work."
   {:authors ["Jozef Wagner"]
    :additional-copyright "2013, 2015, LonoCloud"}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [defalias v1]]
    [lonocloud.synthread]

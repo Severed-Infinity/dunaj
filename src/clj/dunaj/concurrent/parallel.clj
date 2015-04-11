@@ -30,7 +30,7 @@
      "See <<Primary,ordered section>> for slower
      but ordered version of functions for parallel computation."]]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]

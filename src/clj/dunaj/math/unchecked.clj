@@ -28,7 +28,7 @@
     unchecked operations with fastest performance."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require [clojure.core :refer [reduce . let]]
             [clojure.bootstrap :refer [defalias defn v1]]
             [dunaj.type :refer [Fn Va]]

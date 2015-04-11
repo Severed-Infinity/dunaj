@@ -14,7 +14,7 @@
   "Resource for fetching data through http with very basic
   functionalities."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]

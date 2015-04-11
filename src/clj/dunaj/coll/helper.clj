@@ -28,7 +28,7 @@
      characteristics of original collection. That way Dunaj can
      provide more features for processed collections apart from
      `IRed`."]]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer
     [throw str gensym for keyword? list symbol map? conj count first

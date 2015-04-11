@@ -26,7 +26,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Operations"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer
     [aget . throw ->> -> declare set! first second atom]]

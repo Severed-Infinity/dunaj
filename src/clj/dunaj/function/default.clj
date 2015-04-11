@@ -18,7 +18,7 @@
   public vars and there is *no need to require this namespace*
   directly."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [dunaj.type :refer [I Any Fn U Maybe Predicate]]
    [dunaj.compare :refer [nil?]]

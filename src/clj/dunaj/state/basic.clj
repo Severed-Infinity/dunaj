@@ -18,7 +18,7 @@
   "Atom, Box, Local and other basic reference types."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [reset! compare-and-set!]]
    [clojure.bootstrap :refer [v1]]

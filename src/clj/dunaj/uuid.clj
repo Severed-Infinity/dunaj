@@ -20,7 +20,7 @@
   A data reader literal `#uuid` is available for
   a convenient UUID creation."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [assoc]]
    [clojure.bootstrap :refer [v1]]

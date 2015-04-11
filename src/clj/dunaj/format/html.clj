@@ -13,7 +13,7 @@
 (ns dunaj.format.html
   "A very basic Hiccup like HTML printer."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn Maybe U I]]

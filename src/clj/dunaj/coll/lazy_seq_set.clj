@@ -33,7 +33,7 @@
   * Conversion to persistent set: `<<dunaj.coll.api.ad#conj,conj>>`
     and `<<dunaj.coll.api.ad#disj,disj>>`"
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.boolean :refer [and or not]]

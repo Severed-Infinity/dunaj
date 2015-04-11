@@ -20,7 +20,7 @@
   {:authors ["Chris Houser" "Christophe Grand"
              "Stephen Gilardi" "Michel Salim" "Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Maybe Fn Any Va U]]

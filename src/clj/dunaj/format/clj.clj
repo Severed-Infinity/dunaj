@@ -13,7 +13,7 @@
 (ns dunaj.format.clj
   "CLJ formatter."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [quote fn*]]
    [clojure.bootstrap :refer [v1]]

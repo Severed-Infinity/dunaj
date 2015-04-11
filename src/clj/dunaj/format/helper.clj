@@ -13,7 +13,7 @@
 (ns dunaj.format.helper
   "Helper fns for formatter implementations."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn]]

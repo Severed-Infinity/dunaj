@@ -18,7 +18,7 @@
   public vars and there is *no need to require this namespace*
   directly."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [every? subvec]]
    [dunaj.type :refer [Any AnyFn Maybe]]

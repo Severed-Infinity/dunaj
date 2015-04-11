@@ -29,7 +29,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Multimethods"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer
     [methods prefers symbol throw get map? some cons remove ->>]]

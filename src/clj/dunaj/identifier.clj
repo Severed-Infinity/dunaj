@@ -18,7 +18,7 @@
   "Symbolic identifiers and related protocols."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer
     [defalias defprotocol defn deftype replace-var! v1 scratch]]

@@ -49,7 +49,7 @@
   fails."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require [clojure.core :refer [agent-error]]
             [clojure.bootstrap :refer [v1]]
             [dunaj.type :refer [Fn Maybe U Any AnyFn Va]]

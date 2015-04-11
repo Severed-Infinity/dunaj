@@ -58,7 +58,7 @@
   * `#{}` is equivalent to `(Maybe dunaj.coll/IPersistentSet)`
   ****"
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer
     [when satisfies? throw when-not reduce empty? = first map or if

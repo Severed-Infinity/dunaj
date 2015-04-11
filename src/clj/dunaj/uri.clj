@@ -16,7 +16,7 @@
   A data reader literal `#uri` is available for
   a convenient URI creation."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [U]]

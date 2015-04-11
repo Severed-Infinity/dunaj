@@ -46,7 +46,7 @@
   Resources can implement custom error handling."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Scope" "System"]}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]

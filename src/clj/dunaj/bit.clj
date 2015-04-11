@@ -61,7 +61,7 @@
      <<dunaj.host.int.api.ad#Shifts, bitwise operators on Ints>>."]]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [defalias v1]]
    [dunaj.type :refer [Fn Va]]

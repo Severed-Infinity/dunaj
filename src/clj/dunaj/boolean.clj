@@ -48,7 +48,7 @@
      "See also <<dunaj.bit.api.ad#Logic, bitwise logic operators>>."]]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.core :refer [if seq recur first inc rest odd? cons]]
    [clojure.bootstrap :refer
