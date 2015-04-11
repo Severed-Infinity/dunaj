@@ -11,7 +11,7 @@
   :source-paths ["src/clj"]
   :java-source-paths ["src/jvm"]
   :main ^:skip-aot dunaj.main
-  :aot [bare.core dunaj.core dunaj.main] ;; see CLJ-1650
+  :aot [bare-ws.core bare.core dunaj.core dunaj.main] ;; see CLJ-1650
 ;  :aot :all
 ;  :clean-non-project-classes true
   :auto-clean false

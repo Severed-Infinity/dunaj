@@ -14,7 +14,7 @@
 
 (ns dunaj.main
   "Top level main function for REPL and scripts."
-  (:api bare)
+  (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [AnyFn Maybe Any]]
@@ -24,7 +24,7 @@
    [dunaj.math :refer [zero?]]
    [dunaj.compare :refer [= not= sentinel identical?]]
    [dunaj.flow :refer
-    [loop if recur do let cond when-not eval when when-let doto]]
+    [loop let cond when-not eval when when-let doto]]
    [dunaj.threading :refer [->]]
    [dunaj.feature :refer [meta]]
    [dunaj.coll :refer [count assoc first conj seq empty?]]
@@ -32,7 +32,7 @@
    [dunaj.function :refer [defn fn apply identity]]
    [dunaj.char :refer [Char whitespace? char]]
    [dunaj.string :refer [String ->str canonical str]]
-   [dunaj.error :refer [IException]]
+   [dunaj.error :refer [IException finally]]
    [dunaj.namespace :refer [resolve]]
    [dunaj.identifier :refer [Keyword name symbol]]
    [dunaj.macro :refer [defmacro]]

@@ -19,7 +19,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
   (:api bare-ws)
-  (:require [clojure.bootstrap :refer [v1 set!]]
+  (:require [clojure.bootstrap :refer [v1]]
             [dunaj.type :refer [Macro]]
             [dunaj.flow :refer [when]]
             [dunaj.function :refer [defn]]
