@@ -228,13 +228,13 @@
   function. May again return another postponed object. Usually much
   slower than `unsafe-advance!`, but can be called multiple times
   for same postponed object. May not always be supported."
-   {:added v1
-    :inline (fn [x] `((.-advancef
-                      ~(with-meta x {:tag 'dunaj.coll.Postponed}))))
-    :category "Primary"
-    :see '[postponed unsafe-advance! dunaj.coll.helper/advance-fn]}
-   [postponed :- Postponed]
-   ((.-advancef postponed)))
+  {:added v1
+   :inline (fn [x] `((.-advancef
+                     ~(with-meta x {:tag 'dunaj.coll.Postponed}))))
+   :category "Primary"
+   :see '[postponed unsafe-advance! dunaj.coll.helper/advance-fn]}
+  [postponed :- Postponed]
+  ((.-advancef postponed)))
 
 (defn unsafe-advance! :- Any
   "Continues with the reduction of a `_postponed_` result and returns

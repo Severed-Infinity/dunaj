@@ -76,7 +76,7 @@
    :see '[boolean false? true? Boolean+]}
   java.lang.Boolean)
 
-(deftype Boolean+
+#_(deftype Boolean+
   "A boolean type, which has two values, `true` and `false`.
 
   TIP: Identical to `Boolean` type, meant to be used in Dunaj lite.
