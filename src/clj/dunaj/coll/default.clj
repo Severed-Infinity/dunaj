@@ -24,7 +24,6 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Maybe Fn I U]]
    [dunaj.host :refer [Class+]]
-   [dunaj.math :refer []]
    [dunaj.poly :refer [Type defrecord]]
    [dunaj.coll :refer
     [ICollectionFactory ISorted IConvolutionFactory IRed

@@ -54,10 +54,9 @@
   IMutable
   (-reset! [this f] (.setValidator x f) f))
 
-(clojure.core/macroexpand 
- '(extend-type clojure.lang.IRef
-    IValidator
-    (-validator [this] (->Validator4IRef this))))
+(extend-type clojure.lang.IRef
+  IValidator
+  (-validator [this] (->Validator4IRef this)))
 
 (defprotocol IMeta
   "A feature protocol for objects carying metadata."

@@ -219,14 +219,14 @@
   [requested-type :- (U nil Class Type),
    size-hint :- (Maybe Integer+),
    coll :- IRed]
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IRed
   (-reduce [this reducef init]
     (if (and (satisfies? IBatchedRed coll)
              (item-types-match? requested-type (item-type coll)))
       (reduce-batched* requested-type size-hint coll reducef init)
-      (reduce* (batch requested-type size-hint coll) reducef init)))
-  ISeqable
-  (-seq [this] (red-to-seq this)))
+      (reduce* (batch requested-type size-hint coll) reducef init))))
 
 (defn batched :- IRed
   "Returns a collection that reduces on batched values."
@@ -296,13 +296,13 @@
 
 (deftype Unpacked
   [coll :- IRed]
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IRed
   (-reduce [this reducef init]
     (if (satisfies? IUnpackedRed coll)
       (reduce-unpacked* coll reducef init)
-      (reduce* coll (unpacked-fn reducef) init)))
-  ISeqable
-  (-seq [this] (red-to-seq this)))
+      (reduce* coll (unpacked-fn reducef) init))))
 
 (defn unpacked :- IRed
   "Returns a collection that reduces on unpacked values. Works on any

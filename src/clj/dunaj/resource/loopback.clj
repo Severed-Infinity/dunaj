@@ -83,6 +83,8 @@
    ch :- ISourcePort, non-blocking? :- Boolean]
   ICloneable
   (-clone [this] (throw (unsupported-operation)))
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IRed
   (-reduce [this reducef init]
     (ensure-io)
@@ -99,9 +101,7 @@
                 (if-some [v (<!! ch)]
                   (recur (reducef ret v) false)
                   ret)))]
-      (af init false)))
-  ISeqable
-  (-seq [this] (red-to-seq this)))
+      (af init false))))
 
 (defreleasable LoopbackResource
   [config :- {}, buf :- Any, ch :- Any,

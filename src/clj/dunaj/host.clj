@@ -59,7 +59,7 @@
   {:added v1
    :highlight :host}
   [field-access-form expr]
-  `(do (set! ~field-access-form ~expr) nil))
+  `(do (clojure.core/set! ~field-access-form ~expr) nil))
 
 #_(defmacro .
   "The '.' macro is the basis for access to host.

@@ -566,6 +566,8 @@
 
 (deftype PreTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn]
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IRed
   (-reduce [this reducef init]
     (let [bf #(if (branch-fn %) (cons (seq (children-fn %)) %2) %2)
@@ -577,12 +579,12 @@
                        nothers (cons (next children) (next others))]
                    (recur (reducef ret val) (bf val nothers)))
                  (recur ret (next others))))]
-      (af (reducef init root) (bf root nil))))
-  ISeqable
-  (-seq [this] (red-to-seq this)))
+      (af (reducef init root) (bf root nil)))))
 
 (deftype PostTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn]
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IRed
   (-reduce [this reducef init]
     (let [bf #(pair % (when (branch-fn %) (seq (children-fn %))))
@@ -598,15 +600,15 @@
                                 (cons (pair node (next children))
                                       (next others))))
                    (recur (reducef ret node) (next others)))))]
-      (af init (cons (bf root) nil))))
-  ISeqable
-  (-seq [this] (red-to-seq this)))
+      (af init (cons (bf root) nil)))))
 
 (deftype ITWrap [node :- Any, i :- Int, children :- Any])
 
 (deftype InTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn,
    n :- Int]
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IRed
   (-reduce [this reducef init]
     (let [bf #(let [b? (branch-fn %)]
@@ -633,14 +635,14 @@
                                      (next others))))
                   (nothing? node) (recur ret (next others))
                   :else (recur (reducef ret node) (next others)))))]
-      (af init (cons (bf root) nil))))
-  ISeqable
-  (-seq [this] (red-to-seq this)))
+      (af init (cons (bf root) nil)))))
 
 (declare mapcat)
 
 (deftype LevelTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn]
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IRed
   (-reduce [this reducef init]
     (let [bf #(when (branch-fn %) (children-fn %))
@@ -648,9 +650,7 @@
           af (advance-fn [ret level]
                (nil? level) ret
                :else (recur (reduce* level reducef ret) (nl level)))]
-      (af (reducef init root) (nl (tuple root)))))
-  ISeqable
-  (-seq [this] (red-to-seq this)))
+      (af (reducef init root) (nl (tuple root))))))
 
 (defn traverse :- IRed
   "Returns a collection recipe which contains nodes from tree

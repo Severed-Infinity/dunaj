@@ -82,7 +82,7 @@
    :category "Conditionals"
    :highlight :flow}
   [& args]
-  `(if ~@args))
+  `(clojure.core/if ~@args))
 
 (defalias if-not
   "Evaluates `_test_`. If logical false, evaluates and returns
@@ -276,7 +276,7 @@
    :category "Iteration"
    :highlight :flow}
   [& args]
-  `(recur ~@args))
+  `(clojure.core/recur ~@args))
 
 (defmacro loop
   "Evaluates the `_body_` in a lexical context in which the symbols in
@@ -345,7 +345,7 @@
    :category "Evaluation"
    :highlight :flow}
   [form]
-  `(quote ~form))
+  `(clojure.core/quote ~form))
 
 #_(defmacro do
   "Evaluates the `_exprs_` in order and returns the value of the
@@ -356,7 +356,7 @@
    :highlight :flow
    :indent 0}
   [& exprs]
-  `(do ~@exprs))
+  `(clojure.core/do ~@exprs))
 
 ;;; Delayed evaluation
 

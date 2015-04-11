@@ -45,6 +45,8 @@
 
 (deftype ^:private RegexParser
   [pattern :- java.util.regex.Pattern, coll :- ICharSequence]
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IRed
   (-reduce [this reducef init]
     (let [m (.matcher pattern coll)
@@ -56,9 +58,7 @@
                  (.find m)
                  (recur (reducef ret (clojure.core/re-groups m)))
                  :else ret))]
-      (af init)))
-  ISeqable
-  (-seq [this] (red-to-seq this)))
+      (af init))))
 
 
 ;;;; Public API

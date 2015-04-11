@@ -170,6 +170,8 @@
     (ensure-thread-local thread)
     (set! thread new-thread)
     this)
+  ISeqable
+  (-seq [this] (red-to-seq this))
   IRed
   (-reduce [this reducef init]
     (ensure-io)
@@ -200,9 +202,7 @@
                    (recur
                     (reducef ret (payload-fn (.flip batch))) false)))
                 :else ret))]
-      (af init false)))
-  ISeqable
-  (-seq [this] (red-to-seq this)))
+      (af init false))))
 
 (defn ^:private get-query-map :- {Keyword String}
   "Returns map of parsed query params from a given uri `x`."
