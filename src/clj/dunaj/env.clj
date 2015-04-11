@@ -29,7 +29,7 @@
    [dunaj.poly :refer [reify]]
    [dunaj.coll :refer [IRed assoc]]
    [dunaj.function :refer [defn apply]]
-   [dunaj.string :refer [String str]]
+   [dunaj.string :refer [str String]]
    [dunaj.identifier :refer [Symbol]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.state.var :refer [Var defalias def+ defonce declare]]

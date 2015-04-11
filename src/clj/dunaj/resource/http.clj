@@ -183,10 +183,10 @@
     this)
   IReleasable
   (-release! [this]
-    (set! open? false)
+    (set! open? (boolean false))
     (when realized? (fragile this (.close (.getInputStream c)))))
   IHttpResource
-  (-set-realized! [this] (set! realized? true))
+  (-set-realized! [this] (set! realized? (boolean true)))
   (-update-status! [this]
     (ensure-thread-local thread)
     (ensure-open this)
@@ -225,7 +225,7 @@
     (when realized?
       (throw (illegal-state
               "Connection has already been established.")))
-    (set! realized? true)
+    (set! realized? (boolean true))
     (fragile this (.setDoOutput c true))
     (when (counted? coll)
       (fragile this

@@ -27,7 +27,7 @@
    [dunaj.state :refer [IReference]]
    [dunaj.function :refer [fn comp]]
    [dunaj.host.array :refer [adapt]]
-   [dunaj.string :refer [String hyphen-case]]
+   [dunaj.string :refer [hyphen-case String]]
    [dunaj.identifier :refer [INamed keyword namespace name]]))
 
 

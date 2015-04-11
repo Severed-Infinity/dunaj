@@ -28,10 +28,12 @@
    [dunaj.flow :refer [let loop cond when]]
    [dunaj.feature :refer [IConfig]]
    [dunaj.poly :refer [reify defprotocol deftype defrecord]]
-   [dunaj.coll :refer [IRed ICounted IBatchedRed IHomogeneous reduced?
-                       -reduce-batched provide-collection assoc]]
+   [dunaj.coll :refer
+    [IRed ICounted IBatchedRed IHomogeneous reduced? ISeqable
+     -reduce-batched provide-collection assoc]]
    [dunaj.function :refer [fn defn]]
-   [dunaj.coll.helper :refer [reduce-with-batched* advance-fn]]
+   [dunaj.coll.helper :refer
+    [reduce-with-batched* advance-fn red-to-seq]]
    [dunaj.host.array :refer [array]]
    [dunaj.host.batch :refer [select-item-type provide-batch-size]]
    [dunaj.concurrent.thread :refer

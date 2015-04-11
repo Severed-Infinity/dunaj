@@ -18,7 +18,7 @@
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]
    [dunaj.type :refer [Fn AnyFn Any Maybe U I]]
-   [dunaj.boolean :refer [Boolean or and not]]
+   [dunaj.boolean :refer [Boolean or and not boolean]]
    [dunaj.host :refer [keyword->class class-instance?]]
    [dunaj.host.int :refer [i0 iinc]]
    [dunaj.math :refer [Integer integer? pos? odd? max neg? == min]]
@@ -102,7 +102,7 @@
   IOpenAware
   (-open? [this] opened?)
   IReleasable
-  (-release! [this] (set! opened? false) (close! ch))
+  (-release! [this] (set! opened? (boolean false)) (close! ch))
   IReadable
   (-read! [this] (->LoopbackResourceReader this buf ch non-blocking?))
   IWritable

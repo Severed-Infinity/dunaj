@@ -323,7 +323,7 @@
                    (perror "invalid item " item#))
                  (let [nss# (iinc nss#)]
                    (if (i== nss# (acount ~arr)) ~value (recur nss#))))
-               (do (set! ~ss nss#) this#))))
+               (do (set! ~ss (iint nss#)) this#))))
          (~'-analyze-eof! [this#]
            (eof-handler this# config# ~value
                         ~(->str name " literal tokenizer machine"))))

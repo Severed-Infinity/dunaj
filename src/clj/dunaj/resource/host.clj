@@ -305,7 +305,7 @@
     this)
   IReleasable
   (-release! [this]
-    (set! opened? false)
+    (set! opened? (boolean false))
     (when-not keep-open? (fragile this (.close writer)))
     nil)
   IFlushable
@@ -395,7 +395,7 @@
     this)
   IReleasable
   (-release! [this]
-    (set! opened? false)
+    (set! opened? (boolean false))
     (when-not keep-open? (fragile this (.close reader)))
     nil)
   IReadable

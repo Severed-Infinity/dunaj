@@ -44,9 +44,7 @@
    [dunaj.compare :refer [IComparable IHash IEquiv IHashBasis not=
                           hash-from-basis hash = nil? identical?]]
    [dunaj.state :refer [IReference reset! ICloneable]]
-   [dunaj.flow :refer
-    [let loop doto when cond when-not if-let delay]]
-   [dunaj.threading.last :as ->>]
+   [dunaj.flow :refer [let loop doto when cond when-not if-let delay]]
    [dunaj.poly :refer [satisfies? defprotocol deftype]]
    [dunaj.coll :refer
     [IEmptyable IRed ISeq IEmptyAware ICapped IEditable IFlippable

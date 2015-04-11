@@ -108,7 +108,7 @@
   {:added v1
    :see '[execute ITaskExecutor]}
   [executor :- ITaskExecutor, executable :- Function]
-  (-submit executor executable))
+  (.submit executor ^java.util.concurrent.Callable executable))
 
 ;; extending on the interface!
 (extend-type! java.util.concurrent.Future
@@ -155,7 +155,8 @@
   ([f :- Function]
    (future-call *default-future-executor* f))
   ([executor :- ITaskExecutor, f :- Function]
-   (-submit executor (binding-conveyor-fn f))))
+   (.submit executor ^java.util.concurrent.Callable
+            (binding-conveyor-fn f))))
 
 (defmacro future
   "Takes a `_body_` of expressions and yields an `IFuture` object
