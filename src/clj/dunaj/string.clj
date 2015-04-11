@@ -418,7 +418,10 @@
             (recur (iinc i) (iadd (iint v) (imul (i31) ret))))))))))
 
 (deftype String
-  "A type for strings."
+  "A type for strings.
+
+  WARNING: This type is not available in Dunaj lite,
+  please use `String+` instead."
   {:added v1
    :category "Primary"
    :see '[ICharSequence ->str str empty-string]
@@ -488,6 +491,15 @@
 
   ;; Abstract types
   ICharSequence)
+
+(deftype String+
+  "A type for strings.
+
+  TIP: Identical to `String` type, meant to be used in Dunaj lite."
+  {:added v1
+   :category "Primary"
+   :see '[ICharSequence ->str str empty-string String]}
+  java.lang.String)
 
 (def+ empty-string :- String
   "An empty string."

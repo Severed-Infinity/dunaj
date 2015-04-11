@@ -65,11 +65,29 @@
   --
   JVM host specific: `false` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#FALSE[`Boolean/FALSE`]
   and `true` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#TRUE[`Boolean/TRUE`]
-  --"
+  --
+
+  WARNING: This type is not available in Dunaj lite,
+  please use `Boolean+` instead."
   {:added v1
    :predicate 'boolean?
    :category "Primary"
-   :see '[boolean false? true?]}
+   :see '[boolean false? true? Boolean+]}
+  java.lang.Boolean)
+
+(deftype Boolean+
+  "A boolean type, which has two values, `true` and `false`.
+
+  TIP: Identical to `Boolean` type, meant to be used in Dunaj lite.
+
+  [NOTE]
+  --
+  JVM host specific: `false` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#FALSE[`Boolean/FALSE`]
+  and `true` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#TRUE[`Boolean/TRUE`]
+  --"
+  {:added v1
+   :category "Primary"
+   :see '[boolean false? true? Boolean]}
   java.lang.Boolean)
 
 (defalias boolean
