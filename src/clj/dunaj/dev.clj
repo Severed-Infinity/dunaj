@@ -19,7 +19,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
   (:api bare)
-  (:require [clojure.bootstrap :refer [v1]]
+  (:require [clojure.bootstrap :refer [v1 set!]]
             [dunaj.type :refer [Macro]]
             [dunaj.flow :refer [when]]
             [dunaj.function :refer [defn]]
@@ -51,7 +51,7 @@
   needed to resolve host method calls or field accesses."
   {:added v1}
   []
-  `(clojure.core/set! clojure.core/*warn-on-reflection* true))
+  `(set! clojure.core/*warn-on-reflection* true))
 
 (defmacro not-implemented
   "Macro for cases where some part of code is not implemented yet."

@@ -26,7 +26,7 @@
    [clojure.core :refer
     [set map list into first second find-ns chunked-seq? chunk-first
      chunk-next persistent! transient ns-name all-ns create-ns throw
-     remove-ns gensym ns-unmap ns-aliases the-ns]]
+     remove-ns gensym ns-unmap ns-aliases the-ns quote .]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn U Maybe Va I]]
    [dunaj.boolean :refer [Boolean and not]]
@@ -253,14 +253,14 @@
    :see '[unmap! intern! refer! create! dunaj.env/current-ns]}
   [ns & import-symbols-or-lists]
   (let [specs (map #(if (and (seq? %)
-                             (= 'clojure.core/quote (first %)))
+                             (= `quote (first %)))
                       (second %)
                       %)
                    import-symbols-or-lists)
         ns-symbol ns
         ns (gensym)]
     `(let [~ns (clojure.core/the-ns ~ns-symbol)]
-       ~@(map #(list `clojure.core/. ns 'importClass
+       ~@(map #(list `. ns 'importClass
                      (clojure.lang.RT/classForName %))
                 (reduce1 (fn [v spec]
                           (if (symbol? spec)

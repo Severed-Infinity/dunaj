@@ -20,7 +20,7 @@
    :additional-copyright true}
   (:api bare)
   (:require
-   [clojure.core :refer [var try throw]]
+   [clojure.core :refer [var try throw fn*]]
    [clojure.bootstrap :refer [defmacro defalias def+ v1]]
    [dunaj.type :refer [Fn Any I Macro]]
    [dunaj.boolean :refer [and]]
@@ -179,7 +179,7 @@
     `(future-call (clojure.core/or
                    ~(:executor m)
                    (clojure.core/var-get default-future-executor))
-                  (^{:once true} clojure.core/fn* [] ~@body))))
+                  (^{:once true} fn* [] ~@body))))
 
 ;;; Promise
 

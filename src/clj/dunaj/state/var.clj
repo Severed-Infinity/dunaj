@@ -215,7 +215,7 @@
    :see '[replace-var]}
   ([dest source-var]
    `(clojure.core/alter-var-root
-     (clojure.core/var ~dest)
+     (var ~dest)
      (clojure.core/constantly @~source-var))))
 
 (defalias bindings

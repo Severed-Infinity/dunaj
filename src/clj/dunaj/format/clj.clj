@@ -15,6 +15,7 @@
   {:authors ["Jozef Wagner"]}
   (:api bare)
   (:require
+   [clojure.core :refer [quote fn*]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
    [dunaj.boolean :refer [Boolean and or not true? false?]]
@@ -224,7 +225,7 @@
           args (reduce rf [] (range 1 (inc max-arg)))
           args (if-let [x (get argmap -1)] (conj args '& x) args)]
       (reset! state (dissoc @state :fn-env))
-      (->lst 'clojure.core/fn* args value)))
+      (->lst `fn* args value)))
   (-parse-eof! [this parents]
     (eof-handler this config this "fn parser machine"))
   ILazyParserMachine
@@ -336,13 +337,13 @@
 
 (defn ^:private syntax-quote
   [form gensyms-ref cns]
-  (let [ret (cond (clojure.lang.Compiler/isSpecial form)
-                  (->lst 'clojure.core/quote
+  (let [ret (cond (clojure.core/special-symbol? form)
+                  (->lst `quote
                         (if (nil? (namespace form))
                           (symbol "clojure.core" (name form))
                           form))
                   (symbol? form)
-                  (->lst 'clojure.core/quote
+                  (->lst `quote
                         (syntax-quote-symbol form gensyms-ref cns))
                   (unquote? form)
                   (second form)
@@ -354,7 +355,7 @@
                   (or (keyword? form) (number? form)
                       (char? form) (string? form))
                   form
-                  :else (->lst 'clojure.core/quote form))]
+                  :else (->lst `quote form))]
     (if (and (satisfies? IMeta form) (not (empty? (meta form))))
       (->lst 'clojure.core/with-meta ret
             (syntax-quote (meta form) gensyms-ref cns))
@@ -736,7 +737,7 @@
          (i== x (iBANG)) (edn-lineskip-literal config state x)
          (i== x (iLT)) (perror "invalid reader macro " (char x))
          (i== x (iQUOTE)) (regex-literal config state)
-         (i== x (iAPOS)) (->WrapperParser config 'clojure.core/var)
+         (i== x (iAPOS)) (->WrapperParser config `var)
          (and (i== x (iEQ)) (:read-eval config)) (->EvalParser config)
          (i== x (iARROWHEAD)) (metadata-parser config state)
          (i== x (iLPAR))
@@ -1090,7 +1091,7 @@
                             (= \# (last (name %)))
                             (nneg? (.indexOf ^java.lang.String
                                              (name %) "__")))))]
-    (and (= 'clojure.core/fn* (first coll))
+    (and (= `fn* (first coll))
          (== 3 (count coll))
          (vector? (second coll))
          (nil? (meta (second coll)))
@@ -1184,10 +1185,10 @@
   (when (double? coll)
     (let [f (first coll)]
       (cond
-       (= 'clojure.core/var f)
+       (= `var f)
        (->CljPrefixPrettyPrinter
         config state (string-to-batch! "#'") 2 (rest coll))
-       (= 'clojure.core/quote f)
+       (= `quote f)
        (->CljPrefixPrettyPrinter
         config state (string-to-batch! "'") 1 (rest coll))
        (= 'clojure.core/deref f)
@@ -1464,7 +1465,7 @@
             (i== x (iLPAR)) (edn-lst-container config state)
             (i== x (iRPAR)) edn-par-close
             (i== x (iAPOS))
-            (->WrapperParser config 'clojure.core/quote)
+            (->WrapperParser config `quote)
             (i== x (iAT)) (->WrapperParser config 'clojure.core/deref)
             (i== x (iTILDE))
             (->UnquoteDispatchTokenizerMachine config state)

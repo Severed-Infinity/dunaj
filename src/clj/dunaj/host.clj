@@ -490,8 +490,8 @@
     `(reify dunaj.host.BatchManager
        (itemType [_] ~ets)
        (wrap [_ ~garr offset# length#]
-         (clojure.core/. ~bts ~'wrap ~tgarr offset# length#))
-       (allocate [_ size#] (clojure.core/. ~bts ~'allocate size#))
+         (. ~bts ~'wrap ~tgarr offset# length#))
+       (allocate [_ size#] (. ~bts ~'allocate size#))
        (readOnly [_ ~gbuf] (.asReadOnlyBuffer ~tgbuf))
        (get [_ ~gbuf] (.get ~tgbuf))
        (get [_ ~gbuf index#] (.get ~tgbuf index#))

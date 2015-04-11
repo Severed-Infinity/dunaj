@@ -21,7 +21,7 @@
    :categories ["Primary" "Conditionals" "Iteration" "Evaluation"]}
   (:api bare)
   (:require
-   [clojure.core :refer [locking list list* var throw satisfies?]]
+   [clojure.core :refer [locking list list* var throw satisfies? fn*]]
    [clojure.bootstrap :refer
     [defalias defmacro defprotocol deftype defn v1 replace-var!]]
    [dunaj.type :refer [Macro Fn Va Any]]
@@ -415,7 +415,7 @@
    :see '[force delay dunaj.state/deref IDelay dunaj.state/realized?]
    :category "Evaluation"}
   [& body]
-  (list `->RetryingDelay nil (list* `clojure.core/fn* [] body)))
+  (list `->RetryingDelay nil (list* `fn* [] body)))
 
 (defn force :- Any
   "If `_x_` is a `IDelay`, returns the (possibly cached) value of its

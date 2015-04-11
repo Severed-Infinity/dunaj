@@ -23,7 +23,7 @@
   (:require
    [clojure.core :refer
     [recur if apply count when when-not throw reduce partition
-     extend-protocol]]
+     extend-protocol var]]
    [clojure.bootstrap :refer
     [defmacro defprotocol deftype defn def+ v1
      replace-var! milliseconds loop let fn]]
@@ -55,7 +55,7 @@
   [& body]
   ;; JVM HOST
   `(clojure.core/with-bindings
-     {(clojure.core/var *io-thread*) (java.lang.Thread/currentThread)}
+     {(var *io-thread*) (java.lang.Thread/currentThread)}
      (clojure.core/io! ~@body)))
 
 (defn ensure-io :- nil

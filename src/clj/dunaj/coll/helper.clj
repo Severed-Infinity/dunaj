@@ -522,10 +522,10 @@
         to (gensym "to__")
         bs []
         bs (if (nil? c) (conj bs c? `(counted? ~to)) bs)
-        bs (if (nil? b) (conj bs b? `(clojure.core/satisfies?
+        bs (if (nil? b) (conj bs b? `(satisfies?
                                       dunaj.coll/IBatchedRed ~to)) bs)
         bs (if (nil? u)
-             (conj bs u? `(clojure.core/satisfies?
+             (conj bs u? `(satisfies?
                            dunaj.coll/IUnpackedRed ~to))
              bs)
         bs (if (nil? s) (conj bs s? `(sectionable? ~to)) bs)
@@ -581,13 +581,13 @@
   (let [c? (if (nil? oc) (and (counted? coll) (counted? to)) oc)
         b? (if (nil? ob)
              (and
-              (clojure.core/satisfies? dunaj.coll/IBatchedRed coll)
-              (clojure.core/satisfies? dunaj.coll/IBatchedRed to))
+              (satisfies? dunaj.coll/IBatchedRed coll)
+              (satisfies? dunaj.coll/IBatchedRed to))
              ob)
         u? (if (nil? ou)
              (and
-              (clojure.core/satisfies? dunaj.coll/IUnpackedRed coll)
-              (clojure.core/satisfies? dunaj.coll/IUnpackedRed to))
+              (satisfies? dunaj.coll/IUnpackedRed coll)
+              (satisfies? dunaj.coll/IUnpackedRed to))
              ou)
         s? (if (nil? os)
              (and (sectionable? coll) (sectionable? to))
@@ -998,7 +998,7 @@
         (fn [~r]
           (let ~(or (:let bm) [])
             (if (class-instance? dunaj.coll.IReducing ~r)
-              ~(cons 'clojure.core/do (rest (:xform bm)))
+              ~(cons `do (rest (:xform bm)))
               (let [traits# :- XTraits ~r
                     ~tc (.-count traits#)
                     ~ts (.-section traits#)

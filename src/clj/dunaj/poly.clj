@@ -174,7 +174,7 @@
    :inline
    (fn [c x]
      `(clojure.core/let [c# ~c
-                         c# (clojure.core/if (clojure.core/class? c#)
+                         c# (if (clojure.core/class? c#)
                               c#
                               (:on-class c#))]
         (clojure.lang.Util/isInstance ^java.lang.Class c# ~x)))}

@@ -151,10 +151,10 @@
 
 (defmacro ^:private release-throw
   ([s val opts]
-   `(dunaj.error/throw
+   `(throw
      (dunaj.error/ex-info ~s {:value ~val :opts ~opts})))
   ([s val opts cause]
-   `(dunaj.error/throw
+   `(throw
      (dunaj.error/ex-info
       ~s {:value ~val :opts ~opts :cause ~cause}))))
 
@@ -305,15 +305,15 @@
                 scope)
         body (if defaults? (next body) body)]
     `(let [scope# (dunaj.state.basic/atom ~scope)
-           ret# (dunaj.error/try
+           ret# (try
                   (dunaj.state.var/with-bindings
-                    {(dunaj.state.var/var dunaj.resource/*scope*)
+                    {(var dunaj.resource/*scope*)
                      scope#
-                     (dunaj.state.var/var
+                     (var
                       dunaj.resource/*scope-thread*)
                      (dunaj.concurrent.thread/current-thread)}
                     ~@body)
-                  (clojure.core/catch java.lang.Throwable t#
+                  (catch java.lang.Throwable t#
                     (release-scope! scope# :fail t#)))]
        (pair ret# scope#))))
 
@@ -347,7 +347,7 @@
                 scope)
         body (if defaults? (next body) body)]
     `(let [scope# (dunaj.state.basic/atom ~scope)
-           ret# (dunaj.error/try
+           ret# (try
                   (dunaj.state.var/with-bindings
                     {(dunaj.state.var/var dunaj.resource/*scope*)
                      scope#
@@ -355,7 +355,7 @@
                       dunaj.resource/*scope-thread*)
                      (dunaj.concurrent.thread/current-thread)}
                     ~@body)
-                  (clojure.core/catch java.lang.Throwable t#
+                  (catch java.lang.Throwable t#
                     (release-scope! scope# :fail t#)))]
        (release-scope! scope# :success)
        ret#)))
