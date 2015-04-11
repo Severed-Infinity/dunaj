@@ -38,8 +38,7 @@
    [dunaj.threading :refer [->> ->]]
    [dunaj.compare :refer [identical? nil? defsentinel]]
    [dunaj.state :refer [reset! IReference clone]]
-   [dunaj.flow :refer
-    [let when cond when-not loop if-not if-let]]
+   [dunaj.flow :refer [let when cond when-not loop if-not if-let]]
    [dunaj.feature :refer [IConfig assoc-meta]]
    [dunaj.poly :refer [Type satisfies? defrecord defprotocol deftype]]
    [dunaj.coll :refer

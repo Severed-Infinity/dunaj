@@ -92,9 +92,8 @@
    [dunaj.state.weak :refer [weak]]
    [dunaj.state.basic :refer [atom]]
    [dunaj.state.var :refer [Var var? def+ declare alter-root!]]
-   [dunaj.error :refer
-    [IException ex-info illegal-argument
-     unsupported-operation npe fail-aware? error]]
+   [dunaj.error :refer [IException ex-info illegal-argument
+                        unsupported-operation npe fail-aware? error]]
    [dunaj.uri :refer [Uri uri uri?]]
    [dunaj.coll.tuple :refer [tuple val key pair]]
    [dunaj.coll.util :refer [into revlist doseq merge some recipe]]

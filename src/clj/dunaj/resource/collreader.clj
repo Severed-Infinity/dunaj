@@ -21,7 +21,7 @@
    [and or not nil? = reset! let cond loop when reify defprotocol
     deftype defrecord first seq next empty? conj fn defn defmacro
     if-let])
-  (:require [dunaj.boolean :refer [and or not]]
+  (:require [dunaj.boolean :refer [Boolean+ and or not]]
             [dunaj.host.int :refer [iint iinc i0 i-1 i< iadd]]
             [dunaj.compare :refer [nil? =]]
             [dunaj.state :refer [reset! trade! alter!]]

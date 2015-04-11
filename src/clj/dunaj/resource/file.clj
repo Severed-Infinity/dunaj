@@ -45,8 +45,8 @@
    [dunaj.string :refer [String+ string?]]
    [dunaj.uri :refer [Uri uri uri? absolute? resolve]]
    [dunaj.state.var :refer [def+ declare]]
-   [dunaj.error :refer [IException IFailAware IFailable opened-fragile
-                        fail! error fragile]]
+   [dunaj.error :refer [IException IFailAware IFailable
+                        opened-fragile fail! error fragile]]
    [dunaj.coll.recipe :refer [keep]]
    [dunaj.coll.util :refer [merge]]
    [dunaj.resource :refer

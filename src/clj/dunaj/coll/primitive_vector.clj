@@ -76,8 +76,7 @@
     [nneg? < integer? dec >= > add neg? inc dec zero? ==]]
    [dunaj.compare :refer
     [IHash IEquiv IComparable nil? hash = identical?]]
-   [dunaj.flow :refer
-    [cond loop let when if-not when-not case condp]]
+   [dunaj.flow :refer [cond loop let when if-not when-not case condp]]
    [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
    [dunaj.threading :refer [->]]
    [dunaj.poly :refer [Type deftype extend-type! defrecord]]

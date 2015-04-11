@@ -45,9 +45,8 @@
     [IThreadLocal IPassableThreadLocal Thread+
      current-thread ensure-thread-local]]
    [dunaj.string :refer [string?]]
-   [dunaj.error :refer
-    [IException IFailAware IFailable fail! error
-     fragile opened-fragile unsupported-operation]]
+   [dunaj.error :refer [IException IFailAware IFailable fail! error
+                        fragile opened-fragile unsupported-operation]]
    [dunaj.state.var :refer [def+]]
    [dunaj.coll.recipe :refer [keep]]
    [dunaj.coll.util :refer [merge]]

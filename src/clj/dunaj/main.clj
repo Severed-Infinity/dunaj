@@ -35,7 +35,7 @@
    [dunaj.host.array :refer [aget]]
    [dunaj.function :refer [defn fn apply identity]]
    [dunaj.char :refer [Char whitespace? char]]
-   [dunaj.string :refer [->str canonical str]]
+   [dunaj.string :refer [String+ ->str canonical str]]
    [dunaj.error :refer [IException]]
    [dunaj.namespace :refer [resolve]]
    [dunaj.identifier :refer [Keyword name symbol]]

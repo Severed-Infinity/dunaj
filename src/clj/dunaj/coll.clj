@@ -163,8 +163,7 @@
    [dunaj.math :refer [Integer+ > == zero? odd?]]
    [dunaj.compare :refer [sentinel nil? identical? defsentinel]]
    [dunaj.state :refer [IReference]]
-   [dunaj.flow :refer
-    [if-not cond let when-not when loop if-let]]
+   [dunaj.flow :refer [if-not cond let when-not when loop if-let]]
    [dunaj.threading :refer [->]]
    [dunaj.poly :refer [Type deftype defprotocol identical-type?]]))
 
@@ -331,7 +330,7 @@
     references and care must be taken to correctly handle
     postponed results returned from underlying collection,
     if the implementation has one."
-    [this item-type :- (U nil Class+ Type),
+    [this item-type :- (U nil Class Type),
      size-hint :- (Maybe Integer+), reducef :- (Fn [Any Any AnyBatch]),
      init :- Any]))
 
@@ -392,7 +391,7 @@
 (defn ^:private reduce-batched* :- Any
   ([coll :- [], reducef :- AnyFn, init :- Any]
    (if (nil? coll) init (-reduce-batched coll nil nil reducef init)))
-  ([item-type :- (U nil Class+ Type), size-hint :- (Maybe Integer+),
+  ([item-type :- (U nil Class Type), size-hint :- (Maybe Integer+),
     coll :- [], reducef :- AnyFn, init :- Any]
    (if (nil? coll)
        init
@@ -1442,12 +1441,12 @@
    :see '[item-type]
    :category "Features"
    :predicate 'homogeneous?}
-  (-item-type :- (U nil Class+ Type)
+  (-item-type :- (U nil Class Type)
     "Returns type of items in `_this_` homogeneous collection. Returns
     `nil` if `_this_` can produce items of any requested type."
     [this]))
 
-(defn item-type :- (U nil Class+ Type)
+(defn item-type :- (U nil Class Type)
   "Returns type of items in `_coll_` homogeneous collection. Returns
   `nil` if `_coll_` can produce items of any requested type.
   Throws if `_coll_` is not homogeneous."

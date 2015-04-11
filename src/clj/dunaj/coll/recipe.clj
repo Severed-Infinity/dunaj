@@ -43,8 +43,8 @@
    [dunaj.math.unchecked :as mu]
    [dunaj.compare :refer
     [nil? IHash IEquiv = hash sentinel identical? defsentinel]]
-   [dunaj.flow :refer [let cond delay if-not while
-                       if-some when when-not if-let]]
+   [dunaj.flow :refer
+    [let cond delay if-not while if-some when when-not if-let]]
    [dunaj.state :refer
     [IPending IReference deref clone ICloneable reset!]]
    [dunaj.feature :refer [IMeta IPersistentMeta]]

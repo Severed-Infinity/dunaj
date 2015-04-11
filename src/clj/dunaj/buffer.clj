@@ -49,8 +49,7 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn U Maybe]]
    [dunaj.boolean :refer [Boolean+ not or and boolean]]
-   [dunaj.host :refer
-    [ArrayManager AnyArray Class+ provide-class]]
+   [dunaj.host :refer [ArrayManager AnyArray Class+ provide-class]]
    [dunaj.host.int :refer [Int iint iadd isub i>= ipos? i> i== i0
                            izero? iinc idec inpos? i< i2 imul]]
    [dunaj.math :refer [<]]
@@ -63,17 +62,15 @@
      IFullAware IRed IHomogeneous IBatchedRed IUnpackedRed
      ISectionable IMutableCollection IMutableStacked ISettleable
      count empty? full? pop! item-type -count reduced? postponed?
-     postponed advance -capacity -conj! -pop! -peek -settle!
-     -full?]]
+     postponed advance -capacity -conj! -pop! -peek -settle! -full?]]
    [dunaj.function :refer [defn fn]]
    [dunaj.concurrent.forkjoin :refer [IFoldable fork join invoke]]
-   [dunaj.coll.helper :refer
-    [adaptCbuS fold-sectionable prepare-ordered-section advance-fn red-to-seq]]
+   [dunaj.coll.helper :refer [adaptCbuS fold-sectionable advance-fn
+                              prepare-ordered-section red-to-seq]]
    [dunaj.host.array :refer [array-manager]]
    [dunaj.host.batch :refer
     [batch-support? batch-on item-types-match?]]
-   [dunaj.error :refer
-    [no-such-element ex-info illegal-argument]]
+   [dunaj.error :refer [no-such-element ex-info illegal-argument]]
    [dunaj.string :refer [->str]]
    [dunaj.identifier :refer [Keyword]]
    [dunaj.state.var :refer [declare]]))
@@ -368,7 +365,7 @@
           dunaj.concurrent.port/chan]}
   ([n :- Int]
    (buffer nil n))
-  ([type :- (U nil Keyword Class+ Type), n :- Int]
+  ([type :- (U nil Keyword Class Type), n :- Int]
    (when (inpos? n)
      (throw (illegal-argument "n is not positive integer.")))
    (let [am :- ArrayManager
@@ -390,7 +387,7 @@
           dunaj.concurrent.port/chan]}
   ([n :- Int]
    (stretching-buffer nil n))
-  ([type :- (U nil Keyword Class+ Type), n :- Int]
+  ([type :- (U nil Keyword Class Type), n :- Int]
    (when (inpos? n)
      (throw (illegal-argument "n is not positive integer.")))
    (let [am :- ArrayManager
@@ -410,7 +407,7 @@
           stretching-buffer]}
   ([n :- Int]
    (dropping-buffer nil n))
-  ([type :- (U nil Keyword Class+ Type), n :- Int]
+  ([type :- (U nil Keyword Class Type), n :- Int]
    (->DroppingBuffer (buffer type n))))
 
 (defn sliding-buffer :- IMutableCollection
@@ -423,7 +420,7 @@
           stretching-buffer]}
   ([n :- Int]
    (sliding-buffer nil n))
-  ([type :- (U nil Keyword Class+ Type), n :- Int]
+  ([type :- (U nil Keyword Class Type), n :- Int]
    (when (inpos? n)
      (throw (illegal-argument "n is not positive integer.")))
    (let [am :- ArrayManager

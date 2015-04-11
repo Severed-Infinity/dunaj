@@ -45,8 +45,7 @@
    [dunaj.math :refer
     [max min < == > neg? + inc >= inc dec - pos? * /]]
    [dunaj.compare :refer [identical? nil? = defsentinel]]
-   [dunaj.flow :refer
-    [when when-not cond let loop if-not]]
+   [dunaj.flow :refer [when when-not cond let loop if-not]]
    [dunaj.threading :refer [->]]
    [dunaj.poly :refer
     [deftype defprotocol extend-protocol! defrecord]]

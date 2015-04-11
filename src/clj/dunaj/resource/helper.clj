@@ -41,9 +41,8 @@
      current-thread ensure-thread-local]]
    [dunaj.string :refer [String+ string?]]
    [dunaj.macro :refer [defmacro]]
-   [dunaj.error :refer
-    [IFailAware IFailable fail! error
-     fragile opened-fragile unsupported-operation]]
+   [dunaj.error :refer [IFailAware IFailable fail! error fragile
+                        opened-fragile unsupported-operation]]
    [dunaj.state.var :refer [alter-root!]]
    [dunaj.coll.util :refer [merge reduce-batched]]
    [dunaj.coll.default]

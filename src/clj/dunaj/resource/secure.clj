@@ -33,8 +33,7 @@
    [dunaj.compare :refer [nil? = identical?]]
    [dunaj.state :refer [IOpenAware ICancellable ICloneable
                         ensure-open io! open? realized?]]
-   [dunaj.flow :refer
-    [let loop cond when-not when condp when-let]]
+   [dunaj.flow :refer [let loop cond when-not when condp when-let]]
    [dunaj.feature :refer [IConfig config]]
    [dunaj.poly :refer [reify defrecord deftype defprotocol]]
    [dunaj.coll :refer

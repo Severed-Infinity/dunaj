@@ -49,7 +49,8 @@
      unsafe-advance! provide-sequential counted? count first ISeqable
      -reduce-batched unsafe-postponed]]
    [dunaj.function :refer [fn defn identity apply]]
-   [dunaj.coll.helper :refer [reduce-with-batched* reduce* red-to-seq]]
+   [dunaj.coll.helper :refer
+    [reduce-with-batched* reduce* red-to-seq]]
    [dunaj.concurrent.thread :refer
     [Thread+ IThreadLocal IPassableThreadLocal
      current-thread ensure-thread-local]]
@@ -72,9 +73,8 @@
      item-types-match?]]
    [dunaj.string :refer [String+ string? ->str str]]
    [dunaj.error :refer
-    [IFailAware IFailable IException
-     illegal-argument illegal-state fragile io
-     opened-fragile fail! unsupported-operation]]
+    [IFailAware IFailable IException illegal-argument illegal-state
+     fragile io opened-fragile fail! unsupported-operation]]
    [dunaj.buffer :refer [dropping-buffer]]
    [dunaj.format :refer [parse]]
    [dunaj.regex]

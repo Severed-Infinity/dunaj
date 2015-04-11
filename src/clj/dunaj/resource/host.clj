@@ -33,8 +33,7 @@
    [dunaj.state :refer
     [IOpenAware ICloneable io!
      ensure-io open? ensure-open reset! trade! alter!]]
-   [dunaj.flow :refer
-    [let cond when when-let when-not loop if-let]]
+   [dunaj.flow :refer [let cond when when-let when-not loop if-let]]
    [dunaj.feature :refer [IConfig]]
    [dunaj.poly :refer [reify defprotocol deftype defrecord]]
    [dunaj.coll :refer
@@ -55,9 +54,8 @@
    [dunaj.state.var :refer [def+ declare]]
    [dunaj.state.basic :refer [local atom]]
    [dunaj.macro :refer [defmacro]]
-   [dunaj.error :refer
-    [IException IFailAware IFailable
-     fragile illegal-argument unsupported-operation]]
+   [dunaj.error :refer [IException IFailAware IFailable error fragile
+                        illegal-argument unsupported-operation]]
    [dunaj.coll.tuple :refer [pair]]
    [dunaj.coll.util :refer [merge]]
    [dunaj.coll.default :refer [empty-que]]

@@ -53,9 +53,8 @@
    [dunaj.host.batch :refer [provide-batch-size]]
    [dunaj.string :refer [String+ string? ->str str split]]
    [dunaj.error :refer
-    [IFailAware IFailable IException
-     illegal-argument illegal-state fragile io
-     opened-fragile fail! unsupported-operation]]
+    [IFailAware IFailable IException illegal-argument illegal-state
+     fragile io opened-fragile fail! unsupported-operation]]
    [dunaj.buffer :refer [dropping-buffer]]
    [dunaj.format :refer [parse]]
    [dunaj.regex]

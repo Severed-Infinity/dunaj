@@ -33,8 +33,7 @@
    [dunaj.host :refer [proxy proxy-super class-instance? class]]
    [dunaj.math :refer [Integer+ dec + - min]]
    [dunaj.compare :refer [= not=]]
-   [dunaj.flow :refer
-    [when-let cond let when dotimes loop if-let]]
+   [dunaj.flow :refer [when-let cond let when dotimes loop if-let]]
    [dunaj.feature :refer [IMeta meta assoc-meta]]
    [dunaj.threading :refer [->]]
    [dunaj.coll :refer [assoc first transduce count seq]]
