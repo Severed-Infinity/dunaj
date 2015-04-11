@@ -153,7 +153,8 @@
    [clojure.dunaj-deftype :refer [satisfies? extend-protocol]]
    [clojure.core.protocols :refer [coll-reduce]]
    [clojure.bootstrap :refer
-    [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec not-implemented]]
+    [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec
+     not-implemented]]
    [dunaj.type :refer [Fn Any Va Maybe AnyFn U Signature]]
    [dunaj.boolean :refer [Boolean+ boolean and or not]]
    [dunaj.host :refer [class class-instance? AnyBatch Class+]]

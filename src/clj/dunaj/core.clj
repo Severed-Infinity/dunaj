@@ -320,6 +320,8 @@
     (refer dunaj.repl [])))
 
 (defmacro dunaj-ns
+  "Loads Dunaj. To be used in Dunaj lite, and in cases where
+  given ns won't be AOT compiled."
   [& decls]
   (let [gen-decl 
         (fn [[kn & args]]
