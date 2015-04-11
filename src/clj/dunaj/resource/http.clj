@@ -42,7 +42,8 @@
      unsafe-advance! provide-sequential counted? count first
      -reduce-batched unsafe-postponed]]
    [dunaj.function :refer [fn defn identity apply]]
-   [dunaj.coll.helper :refer [reduce-with-batched* reduce*]]
+   [dunaj.coll.helper :refer
+    [reduce-with-batched* reduce* red-to-seq]]
    [dunaj.concurrent.thread :refer
     [Thread IThreadLocal IPassableThreadLocal
      current-thread ensure-thread-local]]

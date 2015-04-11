@@ -61,7 +61,7 @@
      postponed? advance unsafe-advance!]]
    [dunaj.function :refer [IInvocable fn defn apply constantly nop]]
    [dunaj.coll.helper :refer
-    [coll->iterator strip-reduced reduce-unpacked*]]
+    [coll->iterator strip-reduced reduce-unpacked* red-to-seq]]
    [dunaj.error :refer [ex-info]]
    [dunaj.state.basic :refer [atom]]
    [dunaj.coll.tuple :refer [tuple pair key val]]

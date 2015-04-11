@@ -43,7 +43,7 @@
    [dunaj.coll.helper :refer
     [defxform cloned-advance-fn reduce-batched* reduced-advance
      reduce-augmented* reduce* finish-advance strip-reduced
-     reduce-with-batched*]]
+     reduce-with-batched* red-to-seq]]
    [dunaj.error :refer [illegal-argument ex-info]]
    [dunaj.feature :refer [IConfig]]
    [dunaj.host.batch :refer [batch-manager item-types-match? batch]]

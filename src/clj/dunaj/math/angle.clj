@@ -19,8 +19,7 @@
   (:api bare-ws)
   (:require [clojure.core :refer [.]]
             [clojure.bootstrap :refer [defn v1 fn]]
-            [dunaj.math :refer [Float]])
-  (:import [java.lang Math]))
+            [dunaj.math :refer [Float]]))
 
 
 ;;;; Public API

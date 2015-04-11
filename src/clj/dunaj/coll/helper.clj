@@ -43,7 +43,7 @@
                            imax idiv i== iint i<= izero? ione? i< i>]]
    [dunaj.math :refer [Integer == neg? > zero?]]
    [dunaj.compare :refer [nil? = identical? compare]]
-   [dunaj.flow :refer [let cond when when-not loop]]
+   [dunaj.flow :refer [let cond when when-not loop when-let]]
    [dunaj.feature :refer [assoc-meta]]
    [dunaj.poly :refer
     [Type extend-protocol! defprotocol deftype satisfies?]]
@@ -131,6 +131,13 @@
 ;; TODO: add it to the public API?
 (def+ red->seq* :- Any
   @#'dunaj.coll/red->seq*)
+
+(defn red-to-seq :- (Maybe ISeq)
+  "Returns nil or a non-empty seq from a given reducible coll."
+  {:added v1
+   :category "Reducers"}
+  [coll :- []]
+  (when-let [r (-reduce coll #(postponed %2) nil)] (red->seq* r)))
 
 (def+ reduce-unpacked*
   "Returns the result of unpacked reduction of `_coll_` with
