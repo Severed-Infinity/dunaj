@@ -51,7 +51,6 @@
   (:refer-clojure :exclude
    [boolean or not true? false? and deftype let fn defn defmacro])
   (:require   
-   [clojure.core :refer [seq first inc rest odd? cons]]
    [clojure.bootstrap :refer
     [defalias deftype defmacro v1 defn let fn]]
    [dunaj.type :refer [Fn Any Predicate Macro Va]]))

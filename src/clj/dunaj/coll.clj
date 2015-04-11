@@ -150,8 +150,6 @@
     identical? defprotocol loop cond defmacro odd? if-let class ==
     and])
   (:require
-   [clojure.core :refer
-    [partition apply assert str meta with-meta lazy-seq gensym cons]]
    [clojure.dunaj-deftype :refer [satisfies? extend-protocol]]
    [clojure.core.protocols :refer [coll-reduce]]
    [clojure.bootstrap :refer

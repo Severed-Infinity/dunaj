@@ -45,7 +45,6 @@
     partial every-pred some-fn apply complement constantly satisfies?
     boolean conj let meta defprotocol cond if-let assoc and])
   (:require
-   [clojure.core :refer [str]]
    [clojure.dunaj-deftype :refer [satisfies?]]
    [clojure.bootstrap :as cb :refer [defalias defprotocol def+ v1]]
    [dunaj.type :refer [Fn Any AnyFn I U Va Predicate Signature Macro]]

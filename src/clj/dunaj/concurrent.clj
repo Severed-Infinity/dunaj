@@ -22,7 +22,6 @@
    [future-call future promise future? locking first rest let map?
     long fn empty? when defn nil? defprotocol defmacro apply and])
   (:require
-   [clojure.core :refer [var try throw fn*]]
    [clojure.bootstrap :refer [defmacro defalias def+ v1]]
    [dunaj.type :refer [Fn Any I Macro]]
    [dunaj.boolean :refer [and]]

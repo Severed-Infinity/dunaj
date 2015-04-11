@@ -25,8 +25,6 @@
    [deftype conj! conj let meta fn when defn reify defprotocol
     partial defmacro locking if-let apply assoc complement and])
   (:require
-   [clojure.core :refer
-    [add-watch constantly assert atom remove-watch disj empty?]]
    [clojure.core.async.impl.dispatch]
    [clojure.core.async.impl.protocols :as cap]
    [clojure.bootstrap :refer [v1 not-implemented]]

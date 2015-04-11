@@ -29,9 +29,6 @@
    [gen-class bases .. gen-interface definterface class? proxy-super
     proxy class supers deftype let defn defmacro defrecord])
   (:require
-   [clojure.core :refer
-    [case reify gensym symbol str = with-meta not nil? when or
-     if-let cond]]
    [clojure.dunaj-deftype]
    [clojure.bootstrap :refer [defmacro deftype defalias defn def+ let
                               v1 primitive-type-hint defrecord]]

@@ -34,10 +34,6 @@
     counted? zero? nil? not identical? defprotocol true? loop cond
     reduced defmacro false? == apply compare and])
   (:require
-   [clojure.core :refer
-    [str gensym for keyword? list symbol map? conj count first
-     take-while drop-while vector? cons hash-map second contains?
-     list? concat]]
    [clojure.bootstrap :refer
     [defmacro v1 def+ not-implemented strip-sigs-vec get-sigs-vec]]
    [dunaj.type :refer [Any AnyFn Fn Maybe U]]

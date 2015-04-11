@@ -31,7 +31,6 @@
     defmacro keyword next if-let to-array == count apply assoc and
     coll?])
   (:require
-   [clojure.core :refer [lazy-seq cons]]
    [clojure.bootstrap :refer [v1 not-implemented]]
    [clojure.set]
    [dunaj.type :refer [U Maybe Any AnyFn Fn Va Predicate Macro]]

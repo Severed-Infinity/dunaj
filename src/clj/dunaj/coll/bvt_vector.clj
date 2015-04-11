@@ -54,7 +54,6 @@
     conj let -> doto meta fn empty? hash when > defn or counted? nil?
     not >= loop integer? cond inc next count defrecord and])
   (:require
-   [clojure.core :refer [subvec]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn Va U I Maybe]]
    [dunaj.boolean :refer [and or not]]

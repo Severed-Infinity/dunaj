@@ -23,8 +23,7 @@
    :categories ["Primary" "Comparison" "Operations"
                 "Bitwise" "Numbers" "ASCII"]}
   (:refer-clojure :exclude [deftype defn defmacro])
-  (:require [clojure.core :refer [fn]]
-            [clojure.bootstrap :refer [deftype defmacro defn v1]]
+  (:require [clojure.bootstrap :refer [deftype defmacro defn v1]]
             [dunaj.type :refer [Any]]
             [dunaj.boolean :refer [Boolean+]]))
 

@@ -36,7 +36,6 @@
     empty? hash when-not when defn declare or instance? not identical?
     empty cond if-let apply and])
   (:require
-   [clojure.core :refer [defmethod get-method cons some print-method]]
    [clojure.set :as cs]
    [clojure.bootstrap :refer [v1]]
    [clojure.pprint]

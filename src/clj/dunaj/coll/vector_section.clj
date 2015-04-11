@@ -24,7 +24,6 @@
     declare or counted? zero? nth nil? not defprotocol empty >= loop
     integer? cond inc next == count defrecord and])
   (:require
-   [clojure.core :refer [every? subvec]]
    [dunaj.type :refer [Any AnyFn Maybe]]
    [dunaj.boolean :refer [and or not]]
    [dunaj.host.int :refer

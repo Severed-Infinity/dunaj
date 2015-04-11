@@ -36,7 +36,6 @@
     when-not when defn or counted? nil? not identical? loop cond
     reduced class max count and])
   (:require
-   [clojure.core :refer [assert get declare]]
    [clojure.bootstrap :refer [def+ v1 deftype replace-var!]]
    [dunaj.type :refer [U Maybe AnyFn Any Fn]]
    [dunaj.boolean :refer [Boolean+ not and or]]

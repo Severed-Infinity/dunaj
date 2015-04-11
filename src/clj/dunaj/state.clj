@@ -23,7 +23,6 @@
    [reset! io! deref realized? boolean deftype let fn defn
     extend-protocol identical? defprotocol loop defmacro odd?])
   (:require
-   [clojure.core :refer [apply count when when-not reduce partition]]
    [clojure.dunaj-deftype :refer [extend-protocol]]
    [clojure.bootstrap :refer
     [defmacro defprotocol deftype defn def+ v1

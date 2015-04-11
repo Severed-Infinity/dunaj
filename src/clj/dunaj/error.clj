@@ -18,7 +18,6 @@
    [ex-data error-mode error-handler ex-info namespace comp let fn
     when defn name defprotocol defmacro keyword class])
   (:require
-   [clojure.core :refer [extend-protocol map into do]]
    [clojure.stacktrace]
    [clojure.bootstrap :refer
     [defprotocol defn defalias defmacro v1 not-implemented]]

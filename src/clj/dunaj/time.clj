@@ -22,7 +22,6 @@
    [decimal? = dec neg? num deftype let -> doto long fn hash quot defn
     rem nil? defprotocol integer? cond bigdec count defrecord and])
   (:require
-   [clojure.core :refer [format]]
    [clojure.instant :refer [validated parse-timestamp]]
    [clojure.bootstrap :refer
     [replace-var! def+ defprotocol deftype defrecord v1 fn defn]]

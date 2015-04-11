@@ -35,8 +35,6 @@
     get-method defmulti parents defrecord boolean when-let let meta fn
     defn or class? identical? class supers and])
   (:require
-   [clojure.core :refer
-    [methods prefers symbol get map? some cons remove ->>]]
    [clojure.bootstrap :refer [defalias def+ v1 type-map defn fn]]
    [dunaj.type :refer [Signature Required Fn Any U Va Macro]]
    [dunaj.boolean :refer [Boolean+ boolean or and]]

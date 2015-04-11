@@ -18,7 +18,6 @@
    [meta reset-meta! alter-meta! satisfies? deftype let when defn
     reset! extend-type identical? defprotocol])
   (:require
-   [clojure.core :refer [atom apply]]
    [clojure.bootstrap :refer [deftype defn defprotocol defalias v1]]
    [clojure.dunaj-deftype :refer [extend-type satisfies?]]
    [dunaj.type :refer [Any KeywordMap I Fn AnyFn]]

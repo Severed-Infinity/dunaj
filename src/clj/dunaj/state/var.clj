@@ -27,7 +27,6 @@
    [thread-bound? find-var with-bindings bound? var? declare defonce
     namespace deftype when-let when defn name defmacro])
   (:require
-   [clojure.core :refer [var-set constantly]]
    [clojure.bootstrap :as cb :refer [defmacro deftype defn v1]]
    [dunaj.type :refer [Fn Any Va AnyFn Maybe Macro]]
    [dunaj.boolean :refer [Boolean+]]

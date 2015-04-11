@@ -34,7 +34,6 @@
     object-array cond reduced defmacro next if-let == count assoc
     char-array defrecord and])
   (:require
-   [clojure.core :refer [aget ->> -> declare first second atom]]
    [clojure.bootstrap :refer [def+ defn defrecord defalias defmacro
                               v1 not-implemented]]
    [dunaj.type :refer [Maybe Any AnyFn Fn U Predicate]]

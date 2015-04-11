@@ -37,8 +37,6 @@
    [ensure dosync alter ref commute dissoc = deftype let empty?
     when-not defn declare identical? defprotocol cond if-let])
   (:require
-   [clojure.core :refer [doseq keys ref-set ref-min-history
-                         ref-max-history ref-history-count]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn Va Macro]]
    [dunaj.math :refer [Integer+]]

@@ -20,7 +20,6 @@
    :additional-copyright true}
   (:refer-clojure :exclude [atom deftype defn declare])
   (:require
-   [clojure.core :refer [reset! compare-and-set!]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn Va Maybe]]
    [dunaj.state :refer [IReference IAtomic IMutable ICloneable]]

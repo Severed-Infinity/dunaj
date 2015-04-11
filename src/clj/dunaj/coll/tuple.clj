@@ -57,9 +57,6 @@
     integer? condp gensym cond partial defmacro inc next case list? ==
     count apply assoc compare defrecord and symbol? ->> coll?])
   (:require
-   [clojure.core :refer
-    [map pr-str interpose re-find list vec doall range mapcat last
-     butlast into reduce first second]]
    [clojure.bootstrap :refer [v1]]
    [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
    [dunaj.type :refer [Any]]

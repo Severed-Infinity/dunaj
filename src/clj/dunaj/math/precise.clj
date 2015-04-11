@@ -31,8 +31,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
   (:refer-clojure :exclude [+ inc - * dec defn])
-  (:require [clojure.core :refer [let assert]]
-            [clojure.bootstrap :refer [defalias defn v1]]
+  (:require [clojure.bootstrap :refer [defalias defn v1]]
             [dunaj.type :refer [Fn Va]]
             [dunaj.math :refer [Number+]]))
 

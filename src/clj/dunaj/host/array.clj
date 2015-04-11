@@ -45,8 +45,6 @@
     when-not when > defn or zero? nth nil? not >= loop integer? cond
     class == count apply and])
   (:require
-   [clojure.core :refer
-    [str declare get first second every? interpose pr-str map]]
    [clojure.bootstrap :refer [deftype defn defalias def+ v1]]
    [dunaj.type :refer [Fn Va U Any Maybe Predicate Macro]]
    [dunaj.boolean :refer [Boolean+ and or not]]

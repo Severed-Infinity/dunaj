@@ -24,7 +24,6 @@
     force dotimes letfn loop condp cond if-let case comment when-some
     satisfies? deftype defn nil? defprotocol defmacro ==])
   (:require
-   [clojure.core :refer [locking list list*]]
    [clojure.dunaj-deftype :refer [satisfies?]]
    [clojure.bootstrap :refer
     [defalias defmacro defprotocol deftype defn v1 replace-var!]]
@@ -437,7 +436,6 @@
 ;;;; Testing
 
 (clojure.core/require
- '[clojure.core :refer [keyword]]
  '[clojure.bootstrap :refer
    [assert-boolean assert-primitive assert-int]]
  '[dunaj.host.int :refer [iint]]

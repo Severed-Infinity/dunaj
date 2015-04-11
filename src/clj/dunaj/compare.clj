@@ -35,13 +35,12 @@
    [= some? hash not= nil? identical? distinct? compare fn defn
     defonce defprotocol defmacro defrecord])
   (:require
-  [clojure.core :refer [when-not let]]
-  [clojure.bootstrap :refer
-   [defprotocol defalias defn defonce v1 def+ defrecord fn defmacro]]
-  [dunaj.type :refer [Predicate Fn Any Va Unknown R]]
-  [dunaj.boolean :refer [Boolean+]]
-  [dunaj.host.int :refer [Int iint iadd imul i31 i0 i1]]
-  [dunaj.math :refer [Integer+]]))
+   [clojure.bootstrap :refer
+    [defprotocol defalias defn defonce v1 def+ defrecord fn defmacro]]
+   [dunaj.type :refer [Predicate Fn Any Va Unknown R]]
+   [dunaj.boolean :refer [Boolean+]]
+   [dunaj.host.int :refer [Int iint iadd imul i31 i0 i1]]
+   [dunaj.math :refer [Integer+]]))
 
 
 ;;;; Public API

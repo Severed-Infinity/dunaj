@@ -23,7 +23,6 @@
   (:refer-clojure :exclude
     [num deftype biginteger let -> defn byte-array cond])
   (:require
-   [clojure.core :refer [assoc]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [U Fn Any]]
    [dunaj.math :refer [INumerical num Integer+]]

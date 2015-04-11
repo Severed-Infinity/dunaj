@@ -39,7 +39,6 @@
     integer? cond reduced proxy inc if-let to-array == count apply
     assoc defrecord constantly and])
   (:require
-   [clojure.core :refer [take-while]]
    [clojure.bootstrap :refer [v1 not-implemented]]
    [dunaj.type :refer [Any Fn U I Va Maybe AnyFn]]
    [dunaj.boolean :refer [Boolean+ boolean and or not]]
