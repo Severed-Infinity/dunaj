@@ -40,7 +40,7 @@
   (:api bare-ws)
   (:require
    [clojure.core :refer
-    [str declare get first second throw every? interpose pr-str map]]
+    [str declare get first second every? interpose pr-str map]]
    [clojure.bootstrap :refer [deftype defn defalias def+ v1]]
    [dunaj.type :refer [Fn Va U Any Maybe Predicate Macro]]
    [dunaj.boolean :refer [Boolean and or not]]

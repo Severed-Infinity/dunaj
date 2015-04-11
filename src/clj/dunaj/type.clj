@@ -60,9 +60,8 @@
   {:authors ["Jozef Wagner"]}
   (:api bare-ws)
   (:require
-   [clojure.core :refer
-    [when satisfies? throw when-not reduce empty? = first map or if
-     second eval]]
+   [clojure.core :refer [when satisfies? when-not reduce empty? =
+                         first map or second eval]]
    [clojure.bootstrap :refer
     [replace-var! deftype defprotocol defn def+ type-hint let
      defrecord v1 if-let primitive-type-hint common-type-hint]]))

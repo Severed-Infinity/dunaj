@@ -15,7 +15,6 @@
   {:authors ["Jozef Wagner"]}
   (:api bare-ws)
   (:require
-   [clojure.core :refer [quote fn*]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
    [dunaj.boolean :refer [Boolean and or not true? false?]]

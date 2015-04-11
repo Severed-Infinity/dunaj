@@ -23,7 +23,7 @@
    :categories ["Primary" "Comparison" "Operations"
                 "Bitwise" "Numbers" "ASCII"]}
   (:api bare-ws)
-  (:require [clojure.core :refer [. fn]]
+  (:require [clojure.core :refer [fn]]
             [clojure.bootstrap :refer [deftype defmacro defn v1]]
             [dunaj.type :refer [Any]]
             [dunaj.boolean :refer [Boolean]]))
@@ -1601,7 +1601,6 @@
 
 (clojure.core/require
  '[clojure.bootstrap :refer [assert-int assert-boolean]])
-(clojure.core/require '[clojure.core :refer [if recur]])
 
 (iloop [x (i10)]
   (assert-int x)

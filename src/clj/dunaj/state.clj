@@ -22,8 +22,7 @@
   (:api bare-ws)
   (:require
    [clojure.core :refer
-    [recur if apply count when when-not throw reduce partition
-     extend-protocol var]]
+    [apply count when when-not reduce partition extend-protocol]]
    [clojure.bootstrap :refer
     [defmacro defprotocol deftype defn def+ v1
      replace-var! milliseconds loop let fn]]

@@ -33,7 +33,7 @@
    :additional-copyright true}
   (:api bare-ws)
   (:require
-   [clojure.core :refer [if when-not do let]]
+   [clojure.core :refer [when-not let]]
    [clojure.bootstrap :refer
     [defprotocol defalias defn defonce v1 def+ defrecord fn defmacro]]
    [dunaj.type :refer [Predicate Fn Any Va Unknown R]]

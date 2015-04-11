@@ -17,8 +17,7 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Hyperbolic"]}
   (:api bare-ws)
-  (:require [clojure.core :refer [.]]
-            [clojure.bootstrap :refer [defn v1 fn]]
+  (:require [clojure.bootstrap :refer [defn v1 fn]]
             [dunaj.math :refer [Float]]))
 
 

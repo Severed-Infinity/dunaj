@@ -23,8 +23,7 @@
     ["Folds" "Additional helper functions for folds can be found at
              <<dunaj.coll.helper.api.ad#Folds,dunaj.coll.helper>>."]]}
   (:api bare-ws)
-  (:require [clojure.core :refer [var throw]]
-            [clojure.core.reducers :refer [coll-fold]]
+  (:require [clojure.core.reducers :refer [coll-fold]]
             [clojure.bootstrap :refer [def+ v1 replace-var!]]
             [dunaj.type :refer [Fn Any AnyFn U Maybe]]
             [dunaj.boolean :refer [and or not Boolean true?]]

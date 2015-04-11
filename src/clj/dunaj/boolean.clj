@@ -50,7 +50,7 @@
    :additional-copyright true}
   (:api bare-ws)
   (:require
-   [clojure.core :refer [if seq recur first inc rest odd? cons]]
+   [clojure.core :refer [seq first inc rest odd? cons]]
    [clojure.bootstrap :refer
     [defalias deftype defmacro v1 defn let fn]]
    [dunaj.type :refer [Fn Any Predicate Macro Va]]))

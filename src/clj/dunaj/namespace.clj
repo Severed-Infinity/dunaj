@@ -25,8 +25,8 @@
   (:require
    [clojure.core :refer
     [set map list into first second find-ns chunked-seq? chunk-first
-     chunk-next persistent! transient ns-name all-ns create-ns throw
-     remove-ns gensym ns-unmap ns-aliases the-ns quote .]]
+     chunk-next persistent! transient ns-name all-ns create-ns
+     remove-ns gensym ns-unmap ns-aliases the-ns]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn U Maybe Va I]]
    [dunaj.boolean :refer [Boolean and not]]

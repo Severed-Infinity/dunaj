@@ -28,8 +28,7 @@
    :categories ["Primary" "Operations"]}
   (:api bare-ws)
   (:require
-   [clojure.core :refer
-    [aget . throw ->> -> declare set! first second atom]]
+   [clojure.core :refer [aget ->> -> declare set! first second atom]]
    [clojure.bootstrap :refer [def+ defn defrecord defalias defmacro
                               v1 not-implemented]]
    [clojure.bridge]

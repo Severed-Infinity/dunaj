@@ -141,9 +141,8 @@
    :additional-copyright true}
   (:api bare-ws)
   (:require
-   [clojure.core :refer
-    [throw extend-protocol satisfies? partition apply assert str meta
-     with-meta lazy-seq gensym cons]]
+   [clojure.core :refer [extend-protocol satisfies? partition lazy-seq
+                         assert str meta with-meta apply gensym cons]]
    [clojure.core.protocols :refer [coll-reduce]]
    [clojure.bootstrap :refer
     [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec]]

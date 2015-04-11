@@ -20,7 +20,7 @@
    :additional-copyright true}
   (:api bare-ws)
   (:require
-   [clojure.core :refer [var format]]
+   [clojure.core :refer [format]]
    [clojure.instant :refer [validated parse-timestamp]]
    [clojure.bootstrap :refer
     [replace-var! def+ defprotocol deftype defrecord v1 fn defn]]

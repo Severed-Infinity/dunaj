@@ -20,7 +20,6 @@
    :additional-copyright true}
   (:api bare-ws)
   (:require
-   [clojure.core :refer [var try throw fn*]]
    [clojure.bootstrap :refer [defmacro defalias def+ v1]]
    [dunaj.type :refer [Fn Any I Macro]]
    [dunaj.boolean :refer [and]]

@@ -42,7 +42,7 @@
    :additional-copyright true}
   (:api bare-ws)
   (:require
-   [clojure.core :refer [throw var satisfies? str]]
+   [clojure.core :refer [satisfies? str]]
    [clojure.bootstrap :as cb :refer [defalias defprotocol def+ v1]]
    [dunaj.type :refer [Fn Any AnyFn I U Va Predicate Signature Macro]]
    [dunaj.boolean :refer [Boolean and boolean]]

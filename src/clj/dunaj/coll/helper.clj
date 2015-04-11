@@ -31,7 +31,7 @@
   (:api bare-ws)
   (:require
    [clojure.core :refer
-    [throw str gensym for keyword? list symbol map? conj count first
+    [str gensym for keyword? list symbol map? conj count first
      take-while drop-while vector? cons hash-map second contains?
      list? concat]]
    [clojure.bootstrap :refer

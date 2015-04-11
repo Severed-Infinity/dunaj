@@ -33,7 +33,7 @@
   {:authors ["Jozef Wagner"]}
   (:api bare-ws)
   (:require
-   [clojure.core :refer [assert throw get var declare]]
+   [clojure.core :refer [assert get declare]]
    [clojure.bootstrap :refer [def+ v1 deftype replace-var!]]
    [dunaj.type :refer [U Maybe AnyFn Any Fn]]
    [dunaj.boolean :refer [Boolean not and or]]
