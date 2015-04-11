@@ -33,14 +33,14 @@
    [dunaj.host :refer [Class class-instance?]]
    [dunaj.compare :refer [nil? =]]
    [dunaj.state :refer [IMutable IReference IAtomic ICloneable]]
-   [dunaj.flow :refer [let loop]]
+   [dunaj.flow :refer [let loop doto]]
    [dunaj.poly :refer [reify]]
    [dunaj.coll :refer [ILookup conj seq seq? rest next]]
    [dunaj.function :refer [fn defn]]
    [dunaj.string :refer [String ->str]]
    [dunaj.identifier :refer [Symbol symbol? name]]
    [dunaj.macro :refer [defmacro]]
-   [dunaj.state.var :refer [Var defalias]]))
+   [dunaj.state.var :refer [Var defalias def+]]))
 
 
 ;;;; Implementation details
@@ -69,9 +69,15 @@
     (persistent! (reduce1 clojure.core/conj! (transient to) from))
     (reduce1 conj to from)))
 
-(defn ^:private ^java.util.concurrent.atomic.AtomicReference get-ar
-  [symbol]
-  (.-aliases ^clojure.lang.Namespace (the-ns symbol)))
+(def+ ^:private ar :- java.lang.reflect.Field
+  "Makes internal aliases ref public."
+  (doto (.getDeclaredField clojure.lang.Namespace "aliases")
+    (.setAccessible true)))
+
+(defn ^:private get-ar :- java.util.concurrent.atomic.AtomicReference
+  "Returns char array from a string."
+  [sym]
+  (.get ar (the-ns sym)))
 
 (defn ^:private ns->sym
   [m]

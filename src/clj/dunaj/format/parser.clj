@@ -42,7 +42,7 @@
      Transducer unsafe-postponed]]
    [dunaj.coll.helper :refer
     [advance-fn finish-advance defxform reduce-augmented* reduce*
-     reduce-batched* reduced-advance strip-reduced]]
+     reduce-batched* reduced-advance strip-reduced red-to-seq]]
    [dunaj.function :refer [fn defn apply complement identity comp]]
    [dunaj.host.array :refer [array aget acount array-manager]]
    [dunaj.host.batch :refer

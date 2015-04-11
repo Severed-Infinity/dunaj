@@ -64,7 +64,7 @@
    [dunaj.concurrent.forkjoin :refer [IFoldable]]
    [dunaj.coll.helper :refer
     [equiv-ordered equals-ordered prepare-ordered-section index-of
-     compare-ordered fold-sectionable coll->iterator
+     compare-ordered fold-sectionable coll->iterator red-to-seq
      coll->list-iterator advance-fn]]
    [dunaj.host.batch :refer
     [batch-manager select-item-type batch-on batch-support?]]))

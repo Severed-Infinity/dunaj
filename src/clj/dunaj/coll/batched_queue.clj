@@ -32,15 +32,15 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.host :refer [class-instance?]]
    [dunaj.compare :refer [IHash IEquiv nil?]]
-   [dunaj.flow :refer [when-let cond loop let]]
+   [dunaj.flow :refer [when-let cond loop let doto]]
    [dunaj.feature :refer [IMeta IPersistentMeta]]
    [dunaj.poly :refer [deftype defrecord]]
    [dunaj.coll :refer
     [IEmptyable IRed ISeq ISequential IPersistentCollection IStacked
      IPersistentList IEmptyAware IPeekable ICounted ICollectionFactory
      ISeqable collection first next reverse reversible? reduce conj
-     seq postponed postponed? reduced?]]
-   [dunaj.function :refer [apply fn]]
+     seq postponed postponed? reduced? count]]
+   [dunaj.function :refer [apply fn defn]]
    [dunaj.coll.helper :refer [reduce* advance-fn]]
    [dunaj.state.var :refer [def+]]
    [dunaj.coll.empty-list]
@@ -48,6 +48,22 @@
 
 
 ;;;; Public API
+
+(def+ ^:private br :- java.lang.reflect.Field
+  (doto (.getDeclaredField clojure.lang.PersistentQueue "r")
+    (.setAccessible true)))
+
+(defn ^:private get-br
+  [v :- clojure.lang.PersistentQueue]
+  (.get br v))
+
+(def+ ^:private bf :- java.lang.reflect.Field
+  (doto (.getDeclaredField clojure.lang.PersistentQueue "f")
+    (.setAccessible true)))
+
+(defn ^:private get-bf
+  [v :- clojure.lang.PersistentQueue]
+  (.get bf v))
 
 (deftype BatchedQueue
   "Batched Queue."
@@ -83,6 +99,21 @@
 
 ;;; Factory
 
+(def+ ^:private qc :- java.lang.reflect.Constructor
+  (doto (.getDeclaredConstructor
+         clojure.lang.PersistentQueue
+         (dunaj.host.array/array
+          Class
+          [clojure.lang.IPersistentMap
+           java.lang.Integer/TYPE
+           clojure.lang.ISeq
+           clojure.lang.PersistentVector]))
+    (.setAccessible true)))
+
+(defn ^:private invoke-qc :- clojure.lang.PersistentQueue
+  [meta cnt s]
+  (.newInstance qc (dunaj.host.array/array java.lang.Object
+                                           [meta cnt s nil])))
 (defrecord BatchedQueueFactory
   "Factory for batched queue."
   []

@@ -57,7 +57,7 @@
    [dunaj.math :refer
     [nneg? < integer? dec >= > add neg? inc dec zero? ==]]
    [dunaj.compare :refer [IHash IEquiv IComparable nil? hash =]]
-   [dunaj.flow :refer [cond loop let when if-not]]
+   [dunaj.flow :refer [cond loop let when if-not doto]]
    [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
    [dunaj.poly :refer [deftype extend-type!]]
    [dunaj.coll :refer
@@ -77,6 +77,7 @@
    [dunaj.coll.vector-section :refer
     [IReversedVectorSectionHelper IVectorSectionHelper
      reversed-vector-section vector-section]]
+   [dunaj.state.var :refer [def+]]
    [dunaj.coll.bvt-vector]))
 
 
@@ -105,6 +106,33 @@
                       i
                       (isub i (aget rngs (idec idx))))]
               (recur i (aget arr idx) (isub shift (i5))))))))))
+
+(def+ ^:private rshift :- java.lang.reflect.Field
+  (doto (.getDeclaredField
+         clojure.core.rrb_vector.rrbt.Transient "shift")
+    (.setAccessible true)))
+
+(defn ^:private get-rshift :- Int
+  [v :- clojure.core.rrb_vector.rrbt.Transient]
+  (.get rshift v))
+
+(def+ ^:private rtail :- java.lang.reflect.Field
+  (doto (.getDeclaredField
+         clojure.core.rrb_vector.rrbt.Transient "tail")
+    (.setAccessible true)))
+
+(defn ^:private get-rtail
+  [v :- clojure.core.rrb_vector.rrbt.Transient]
+  (.get rtail v))
+
+(def+ ^:private rroot :- java.lang.reflect.Field
+  (doto (.getDeclaredField
+         clojure.core.rrb_vector.rrbt.Transient "root")
+    (.setAccessible true)))
+
+(defn ^:private get-rroot
+  [v :- clojure.core.rrb_vector.rrbt.Transient]
+  (.get rroot v))
 
 (defn offset-transient :- Int
   "Returns offset into array in rrbt `vec` for a given `i`.

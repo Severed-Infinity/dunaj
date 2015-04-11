@@ -60,7 +60,7 @@
                            i32 idiv imul idec iand inneg? inpos? i31]]
    [dunaj.math :refer [nneg? < integer? dec >= > add neg? inc dec]]
    [dunaj.compare :refer [IHash IEquiv IComparable nil? hash =]]
-   [dunaj.flow :refer [cond loop let when if-not]]
+   [dunaj.flow :refer [cond loop let when if-not doto]]
    [dunaj.threading :refer [->]]
    [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
    [dunaj.poly :refer [deftype defrecord extend-protocol!]]
@@ -111,6 +111,26 @@
                         (iinc nchi) (i0)))]
         (af init (.arrayFor vec begin)
             (iinc (idiv begin (i32))) (iand begin (i31)))))))
+
+(def+ ^:private mt :- java.lang.reflect.Field
+  (doto (.getDeclaredField
+         clojure.lang.PersistentVector$TransientVector "tail")
+    (.setAccessible true)))
+
+(defn ^:private get-mt :- AnyArray
+  [v :- clojure.lang.PersistentVector$TransientVector]
+  (.get mt v))
+
+(def+ ^:private maf :- java.lang.reflect.Method
+  (doto (.getDeclaredMethod
+         clojure.lang.PersistentVector$TransientVector
+         "arrayFor"
+         (dunaj.host.array/array Class [java.lang.Integer/TYPE]))
+    (.setAccessible true)))
+
+(defn ^:private invoke-maf :- AnyArray
+  [v :- clojure.lang.PersistentVector$TransientVector, i :- Int]
+  (.invoke maf v (dunaj.host.array/array [i])))
 
 (defn ^:private reduce-mutable-vector :- Any
   "Reduce section of a mutable BVT Vector."
@@ -168,6 +188,30 @@
             (idec (idiv nend (i32))) (iand nend (i31)))))))
 
 (def+ ^:private oam (array-manager java.lang.Object))
+
+(def+ ^:private aca :- java.lang.reflect.Field
+  (doto (.getDeclaredField clojure.lang.ArrayChunk "array")
+    (.setAccessible true)))
+
+(def+ ^:private aco :- java.lang.reflect.Field
+  (doto (.getDeclaredField clojure.lang.ArrayChunk "off")
+    (.setAccessible true)))
+
+(def+ ^:private ace :- java.lang.reflect.Field
+  (doto (.getDeclaredField clojure.lang.ArrayChunk "end")
+    (.setAccessible true)))
+
+(defn ^:private get-aca :- AnyArray
+  [v :- clojure.lang.ArrayChunk]
+  (.get aca v))
+
+(defn ^:private get-aco :- Int
+  [v :- clojure.lang.ArrayChunk]
+  (.get aco v))
+
+(defn ^:private get-ace :- Int
+  [v :- clojure.lang.ArrayChunk]
+  (.get ace v))
 
 (extend-protocol! IRed
   clojure.lang.ArraySeq

@@ -22,7 +22,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"
             :distribution :repo
             :comments "same as Clojure"}
-  :profiles {:uberjar {:aot [bare.core dunaj.core dunaj.main]
+  :profiles {:uberjar {:aot [bare-ws.core bare.core dunaj.core dunaj.main]
                        :omit-source true}}
 ;;  :jvm-opts ^:replace ["-Xms3G" "-Xmx3G" "-XX:-UseConcMarkSweepGC" "-server"]
 )

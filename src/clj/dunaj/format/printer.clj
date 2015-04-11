@@ -45,7 +45,7 @@
      IPersistentList settle! edit]]
    [dunaj.coll.helper :refer
     [reduce* reduce-with-batched* reduce-augmented* finish-advance
-     defxform reduced-advance strip-reduced]]
+     defxform reduced-advance strip-reduced red-to-seq]]
    [dunaj.host.array :refer [array-manager array aget acount]]
    [dunaj.host.batch :refer
     [batch-manager select-item-type batch-support?

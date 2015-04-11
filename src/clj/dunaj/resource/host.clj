@@ -18,7 +18,7 @@
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-   [dunaj.boolean :refer [Boolean and or not]]
+   [dunaj.boolean :refer [Boolean and or not boolean]]
    [dunaj.host :refer [Batch AnyArray ArrayManager Array
                        keyword->class class-instance? proxy]]
    [dunaj.host.int :refer [iint iinc i0 i-1 i< iadd]]
@@ -34,10 +34,10 @@
    [dunaj.coll :refer
     [IRed ICounted IBatchedRed IHomogeneous assoc slice first reduce
      item-type reduced? postponed? reduced postponed unsafe-advance!
-     advance seq next empty? peek pop conj unsafe-postponed]]
+     advance seq next empty? peek pop conj unsafe-postponed ISeqable]]
    [dunaj.function :refer [fn defn]]
    [dunaj.coll.helper :refer
-    [reduce-with-batched* reduce* advance-fn]]
+    [reduce-with-batched* reduce* advance-fn red-to-seq]]
    [dunaj.host.array :refer [aset-char! array-manager]]
    [dunaj.host.batch :refer [select-item-type provide-batch-size]]
    [dunaj.concurrent.thread :refer

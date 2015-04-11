@@ -123,7 +123,7 @@
         (clojure.core/println "realizing lazy seq"))
       (af (reduce* s reducef init) s (val data))))
   ISeqable
-  (-seq [this] (clojure.bridge/red-to-seq this))
+  (-seq [this] (red-to-seq this))
   ICounted
   (-count [this] (realize-set! this) (count (get-coll data-ref)))
   ILookup

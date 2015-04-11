@@ -37,7 +37,8 @@
    [dunaj.feature :refer [assoc-meta meta]]
    [dunaj.poly :refer [extend-protocol! reify deftype defprotocol]]
    [dunaj.coll :refer
-    [IMutableCollection IRed conj assoc editable? edit settle! conj!]]
+    [IMutableCollection IRed conj assoc editable? edit settle! conj!
+     ISeqable]]
    [dunaj.function :refer [apply nop fn complement defn partial]]
    [dunaj.concurrent :refer [IExecutor locking execute]]
    [dunaj.buffer :refer [promise-buffer]]

@@ -292,7 +292,7 @@
    :see '[thread-call daemon dunaj.concurrent.port/thread]}
   [& body]
   (let [[opts body] (opts-body body)]
-    `(thread-call (^{:once true} clojure.core/fn* [] ~@body) ~opts)))
+    `(thread-call (^{:once true} fn* [] ~@body) ~opts)))
 
 (defn daemon-call :- Thread
   "Executes `_f_` in new daemon thread returning immediately to the
@@ -317,4 +317,4 @@
   [& body]
   (let [[opts body] (opts-body body)
         opts (assoc opts :daemon true)]
-    `(thread-call (^{:once true} clojure.core/fn* [] ~@body) ~opts)))
+    `(thread-call (^{:once true} fn* [] ~@body) ~opts)))

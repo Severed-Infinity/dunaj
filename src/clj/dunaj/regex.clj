@@ -28,8 +28,9 @@
    [dunaj.math :refer [Integer]]
    [dunaj.flow :refer [let loop cond]]
    [dunaj.poly :refer [deftype]]
-   [dunaj.coll :refer [IRed reduced? postponed postponed?
+   [dunaj.coll :refer [IRed reduced? postponed postponed? ISeqable
                        unsafe-advance! count nth unsafe-postponed]]
+   [dunaj.coll.helper :refer [red-to-seq]]
    [dunaj.host.array :refer [adapt]]
    [dunaj.function :refer [fn defn]]
    [dunaj.string :refer

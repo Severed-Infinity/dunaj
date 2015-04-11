@@ -34,12 +34,12 @@
    [dunaj.poly :refer
     [reify defrecord deftype defprotocol satisfies?]]
    [dunaj.coll :refer
-    [IRed ICounted IBatchedRed IHomogeneous IUnpackedRed seq
+    [IRed ICounted IBatchedRed IHomogeneous IUnpackedRed seq ISeqable
      -reduce-unpacked second nth reduced? -reduce-batched rest empty?
      item-type reduce contains? assoc conj postponed? postponed
      unsafe-advance! unsafe-postponed]]
    [dunaj.function :refer [fn defn identity]]
-   [dunaj.coll.helper :refer []]
+   [dunaj.coll.helper :refer [red-to-seq]]
    [dunaj.concurrent.thread :refer
     [Thread IThreadLocal IPassableThreadLocal current-thread
      ensure-thread-local]]

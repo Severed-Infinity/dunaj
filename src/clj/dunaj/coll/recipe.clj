@@ -60,7 +60,7 @@
      defxform reducing-function fold* strip-reduced reduced-advance
      split-adjust reduce-augmented* transduce* transfold*
      adaptcbUs adaptcbus adaptCbuS adaptcs adaptbu adaptu adaptCS
-     advance-fn finish-advance reduce-with-batched*]]
+     advance-fn finish-advance reduce-with-batched* red-to-seq]]
    [dunaj.host.batch :refer
     [decide-item-type item-types-match?
      provide-batch-size batch-manager select-item-type]]

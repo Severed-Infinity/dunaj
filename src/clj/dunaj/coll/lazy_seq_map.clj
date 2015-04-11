@@ -106,7 +106,7 @@
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
   ISeqable
-  (-seq [this] (clojure.bridge/red-to-seq this))
+  (-seq [this] (red-to-seq this))
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [data @data-ref

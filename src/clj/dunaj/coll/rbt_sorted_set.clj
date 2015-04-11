@@ -73,7 +73,7 @@
     [IFoldable fork join invoke -fold]]
    [dunaj.coll.helper :refer
     [fold-sectionable fold-every reduce* fold* reduce-unpacked*
-     coll->iterator]]
+     coll->iterator red-to-seq]]
    [dunaj.host.array :refer
     [array-manager array to-array aget acount adapt]]
    [dunaj.state.var :refer [def+ declare]]
@@ -142,7 +142,7 @@
                           (.comparator coll) begin end)
       init))
   ISeqable
-  (-seq [this] (clojure.bridge/red-to-seq this))
+  (-seq [this] (red-to-seq this))
   ILookup
   (-contains? [this key]
     (if (range-check (.comparator coll) key ascending? begin end)

@@ -52,10 +52,10 @@
     [IRed IBatchedRed reduced? postponed? postponed reduced advance
      unsafe-advance! item-type IHomogeneous IUnpackedRed -section
      -reduce-batched IReducing ISectionable ICounted count counted?
-     sectionable?]]
+     sectionable? ISeqable]]
    [dunaj.concurrent.forkjoin :refer [IFoldable folding]]
    [dunaj.coll.helper :refer
-    [transduce* reduce* reduce-augmented* adapt* defxform
+    [transduce* reduce* reduce-augmented* adapt* defxform red-to-seq
      finish-advance advance-fn reduced-advance strip-reduced
      reduce-unpacked* reduce-batched* cloned-advance-fn adapt]]
    [dunaj.function :refer [defn fn]]))

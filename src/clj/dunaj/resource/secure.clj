@@ -21,7 +21,7 @@
    [clojure.core.async]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-   [dunaj.boolean :refer [Boolean and or not true? false?]]
+   [dunaj.boolean :refer [Boolean and or not true? false? boolean]]
    [dunaj.host :refer [Class Batch keyword->class proxy]]
    [dunaj.host.int :refer [Int iint iadd i0 i1 imin i== ipos? i< i<<]]
    [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
@@ -32,11 +32,11 @@
    [dunaj.feature :refer [IConfig config]]
    [dunaj.poly :refer [reify defrecord deftype defprotocol]]
    [dunaj.coll :refer
-    [IRed ICounted IBatchedRed IHomogeneous seq postponed
+    [IRed ICounted IBatchedRed IHomogeneous seq postponed ISeqable
      second nth reduced? rest empty? unsafe-advance! unsafe-postponed
      item-type reduce contains? assoc conj postponed?]]
    [dunaj.function :refer [Function fn defn identity]]
-   [dunaj.coll.helper :refer [reduce-with-batched*]]
+   [dunaj.coll.helper :refer [reduce-with-batched* red-to-seq]]
    [dunaj.buffer :refer [dropping-buffer]]
    [dunaj.concurrent.thread :refer
     [Thread IThreadLocal IPassableThreadLocal current-thread
@@ -181,11 +181,12 @@
   (-fail! [this ex] (when (nil? error) (set! error ex)) nil)
   IReleasable
   (-release! [this]
-    (set! opened? false)
+    (set! opened? (boolean false))
     (locking this
       (when (nil? error)
         ;; unblock buffer overflows
-        (.clear ^java.nio.Buffer (.-app-recv this))
+        (when (.-app-recv this)
+          (.clear ^java.nio.Buffer (.-app-recv this)))
         (with-scope
           (let [sel (acquire! (selector))]
             (register! sel transport :write)
@@ -212,7 +213,8 @@
                          (or (postponed? (.-input this))
                              (ipos? (.position net-recv))
                              (ipos? (.position net-send))))
-                (.clear ^java.nio.Buffer (.-app-recv this))
+                (when (.-app-recv this)
+                  (.clear ^java.nio.Buffer (.-app-recv this)))
                 (select sel 1000)
                 ;; following sleep is probably unnecessary
                 (java.lang.Thread/sleep 50)
@@ -246,7 +248,7 @@
   (-tls-process! [this]
     ;; should finish remaining stuff also if resource is closed
     (when error (throw error))
-    (set! retry? true)
+    (set! retry? (boolean true))
     (when (and pending (realized? pending))
       @pending ;; throw any pending exceptions
       (set! pending nil))
@@ -333,14 +335,14 @@
                 (let [ar (provide-byte-batch
                           app-recv (app-batch-size eng) false)]
                   (set! app-recv ar))
-                (set! retry? false))
+                (set! retry? (boolean false)))
             javax.net.ssl.SSLEngineResult$Status/BUFFER_UNDERFLOW
             (do (trace "net-recv buff underflow")
                 (let [nr (provide-byte-batch
                           net-recv (net-batch-size eng)
                           direct-buffers?)]
                   (set! net-recv nr))
-                (set! retry? false))
+                (set! retry? (boolean false)))
             nil)))
       ;; app-send -> net-send
       (.flip app-send)
@@ -354,13 +356,13 @@
                         net-send (net-batch-size eng)
                         direct-buffers?)]
                 (set! net-send ns))
-              (set! retry? false))
+              (set! retry? (boolean false)))
           javax.net.ssl.SSLEngineResult$Status/BUFFER_UNDERFLOW
           (do (trace "app-send buff underflow")
               (let [as (provide-byte-batch
                         app-send (app-batch-size eng) false)]
                 (set! app-send as))
-              (set! retry? false))
+              (set! retry? (boolean false)))
           nil))
       ;; run tasks and retry on OKed NEED_(UN)WRAP
       (condp = (.getHandshakeStatus eng)

@@ -31,10 +31,10 @@
    [dunaj.poly :refer [reify defprotocol deftype defrecord]]
    [dunaj.coll :refer
     [IRed ICounted IBatchedRed IHomogeneous postponed? postponed
-     unsafe-advance! reduce unsafe-postponed
+     unsafe-advance! reduce unsafe-postponed ISeqable
      reduced? -reduce-batched provide-collection assoc conj]]
    [dunaj.function :refer [fn defn]]
-   [dunaj.coll.helper :refer []]
+   [dunaj.coll.helper :refer [red-to-seq]]
    [dunaj.host.array :refer [array]]
    [dunaj.host.batch :refer [select-item-type]]
    [dunaj.time :refer [IDuration milliseconds]]

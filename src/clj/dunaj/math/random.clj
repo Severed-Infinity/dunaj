@@ -66,13 +66,13 @@
    [dunaj.poly :refer [defprotocol deftype defrecord satisfies?]]
    [dunaj.feature :refer [IConfig]]
    [dunaj.coll :refer
-    [IRed IBatchedRed IHomogeneous IIndexed IReducing
+    [IRed IBatchedRed IHomogeneous IIndexed IReducing ISeqable
      count nth item-type assoc first reduced seq next
      reduced? postponed postponed? advance unsafe-advance!]]
    [dunaj.coll.helper :refer
     [reduce* reduce-batched* advance-fn finish-advance
      defxform defreducing reduced-advance strip-reduced
-     reduce-with-batched* cloned-advance-fn]]
+     reduce-with-batched* cloned-advance-fn red-to-seq]]
    [dunaj.function :refer [apply defn fn]]
    [dunaj.concurrent.thread :refer
     [Thread IThreadLocal current-thread ensure-thread-local]]

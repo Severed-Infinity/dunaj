@@ -39,7 +39,7 @@
     [IRed ICounted IBatchedRed IHomogeneous IUnpackedRed seq single?
      -reduce-unpacked second nth reduced? -reduce-batched rest empty?
      item-type reduce contains? assoc conj postponed? postponed
-     unsafe-advance! provide-sequential counted? count first
+     unsafe-advance! provide-sequential counted? count first ISeqable
      -reduce-batched unsafe-postponed]]
    [dunaj.function :refer [fn defn identity apply]]
    [dunaj.coll.helper :refer

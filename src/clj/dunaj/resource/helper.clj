@@ -28,9 +28,10 @@
    [dunaj.coll :refer
     [IRed ICounted IBatchedRed IHomogeneous item-type Postponed
      reduced? -reduce-batched contains? get reduce first assoc conj
-     postponed? postponed unsafe-advance! unsafe-postponed]]
+     postponed? postponed unsafe-advance! unsafe-postponed ISeqable]]
    [dunaj.function :refer [fn defn partial]]
-   [dunaj.coll.helper :refer [reduce-with-batched* reduce*]]
+   [dunaj.coll.helper :refer
+    [reduce-with-batched* reduce* red-to-seq]]
    [dunaj.host.batch :refer [provide-batch-size select-item-type]]
    [dunaj.concurrent.thread :refer
     [Thread IThreadLocal IPassableThreadLocal

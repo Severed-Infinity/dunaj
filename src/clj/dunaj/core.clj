@@ -31,16 +31,16 @@
             [dunaj.math.angle]
             [dunaj.bit]
             [dunaj.host.number]
-            [dunaj.compare]
+            [dunaj.compare :refer [=]]
             [dunaj.state]
-            [dunaj.flow :refer [let]]
+            [dunaj.flow :refer [let if-not]]
             [dunaj.threading]
             [dunaj.threading.last]
             [dunaj.threading.second]
             [dunaj.feature :refer [alter-meta!]]
             [dunaj.poly]
-            [dunaj.coll :refer [second assoc]]
-            [dunaj.function :refer [defn fn]]
+            [dunaj.coll :refer [second assoc empty? first]]
+            [dunaj.function :refer [defn fn apply]]
             [dunaj.concurrent]
             [dunaj.concurrent.forkjoin]
             [dunaj.coll.helper]
@@ -49,7 +49,7 @@
             [dunaj.char]
             [dunaj.string]
             [dunaj.time]
-            [dunaj.identifier]
+            [dunaj.identifier :refer [symbol name]]
             [dunaj.error]
             [dunaj.concurrent.thread]
             [dunaj.macro :refer [defmacro]]
@@ -82,8 +82,8 @@
             [dunaj.coll.lazy-seq-map]
             [dunaj.coll.lazy-seq-set]
             [dunaj.coll.util]
-            [dunaj.coll.default :refer [vec set]]
-            [dunaj.coll.recipe :refer [remove]]
+            [dunaj.coll.default :refer [vec set ->lst]]
+            [dunaj.coll.recipe :refer [remove filter map]]
             [dunaj.function.default]
             [dunaj.math.random]
             [dunaj.format]
@@ -321,3 +321,22 @@
            [scratch warn-on-reflection! not-implemented assert
             time set-trace! trace set-color! pt])
     (refer dunaj.repl [])))
+
+(defmacro dunaj-ns
+  "Loads Dunaj. To be used in Dunaj lite, and in cases where
+  given ns won't be AOT compiled."
+  [& decls]
+  (let [gen-decl 
+        (fn [[kn & args]]
+          (apply ->lst (symbol "clojure.core" (name kn)) 
+                 (map #(->lst `quote %) args)))
+        gen-decls #(map gen-decl %)
+        ff #(= :refer-dunaj (first %))
+        dd (vec (filter ff decls))
+        decls (remove ff decls)]
+    `(do
+       (clojure.bootstrap/remove-mappings! clojure.core/*ns*)
+       ~(if-not (empty? dd)
+          `(apply init-api ~(->lst `quote (first dd)))
+          `(init-api nil))
+       ~@(gen-decls decls))))

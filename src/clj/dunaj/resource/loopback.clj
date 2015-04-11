@@ -35,11 +35,11 @@
     [instance? reify satisfies? defprotocol deftype defrecord]]
    [dunaj.feature :refer [IConfig]]
    [dunaj.coll :refer
-    [count contains? next first IRed IBatchedRed sequential? empty?
-     -reduce-batched reduced? get reduce unsafe-postponed full?
+    [count contains? next first IRed IBatchedRed sequential? empty? get
+     -reduce-batched reduced? reduce unsafe-postponed full? ISeqable
      map? assoc update-in conj postponed? unsafe-advance! postponed]]
    [dunaj.function :refer [apply defn invocable? fn partial]]
-   [dunaj.coll.helper :refer [recipe]]
+   [dunaj.coll.helper :refer [recipe red-to-seq]]
    [dunaj.host.batch :refer [select-item-type batch-manager]]
    [dunaj.concurrent :refer [future]]
    [dunaj.concurrent.port :as dp :refer

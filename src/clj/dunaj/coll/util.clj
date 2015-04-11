@@ -35,7 +35,7 @@
    [dunaj.feature :refer [assoc-meta meta]]
    [dunaj.poly :refer [Type identical-type? satisfies? deftype]]
    [dunaj.coll :refer
-    [ISeq IRed IPersistentCollection IBatchedRed IUnpackedRed
+    [ISeq IRed IPersistentCollection IBatchedRed IUnpackedRed ISeqable
      IPersistentMap IPersistentList Transducer indexed? nth
      seq? -reduce postponed transduce catenable? cat editable? count
      edit settle! reduce conj! conj invertible? invert item-type next
@@ -49,7 +49,7 @@
     [IFoldable default-fold-pool default-fold-size]]
    [dunaj.coll.helper :refer
     [reduce-batched* red->seq* reduce-unpacked* reduce* strip-reduced
-     fold* fold-batched* fold-unpacked* adaptb]]
+     fold* fold-batched* fold-unpacked* adaptb red-to-seq]]
    [dunaj.host.batch :refer [item-types-match? batch]]
    [dunaj.host.array :refer
     [array-manager to-array array array-manager-from object-array]]

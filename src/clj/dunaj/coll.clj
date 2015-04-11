@@ -145,7 +145,8 @@
                          assert str meta with-meta apply gensym cons]]
    [clojure.core.protocols :refer [coll-reduce]]
    [clojure.bootstrap :refer
-    [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec]]
+    [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec
+     not-implemented]]
    [dunaj.type :refer [Fn Any Va Maybe AnyFn U Signature]]
    [dunaj.boolean :refer [Boolean boolean and or not]]
    [dunaj.host :refer [class class-instance? AnyBatch Class]]
@@ -1158,7 +1159,7 @@
 ;; c.c.contains? is patched to support ILookup in c.l.RT
 ;; c.c.get is patched to support ILookup in c.l.RT
 
-(defalias get-in
+(defn get-in
   "Returns the value in a nested associative structure,
   where `_ks_` is a sequence of keys. Returns `nil` if the key
   is not present, or the `_not-found_` value if supplied."
@@ -1166,7 +1167,19 @@
    :see '[get nth contains? lookup?]
    :category "Features"
    :tsig (Fn [Any Any [Any]]
-             [Any Any [Any] Any])})
+             [Any Any [Any] Any])}
+  ([m ks]
+   (reduce get m ks))
+  ([m ks not-found]
+   (loop [sentinel (java.lang.Object.)
+          m m
+          ks (seq ks)]
+     (if ks
+       (let [m (get m (first ks) sentinel)]
+         (if (identical? sentinel m)
+           not-found
+           (recur sentinel m (next ks))))
+       m))))
 
 ;;; Indexed collections
 

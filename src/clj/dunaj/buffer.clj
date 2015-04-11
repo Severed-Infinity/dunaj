@@ -46,7 +46,7 @@
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn U Maybe]]
-   [dunaj.boolean :refer [Boolean not or and]]
+   [dunaj.boolean :refer [Boolean not or and boolean]]
    [dunaj.host :refer [ArrayManager AnyArray Class provide-class]]
    [dunaj.host.int :refer [Int iint iadd isub i>= ipos? i> i== i0
                            izero? iinc idec inpos? i< i2 imul]]
@@ -56,15 +56,15 @@
    [dunaj.flow :refer [when let cond when-not]]
    [dunaj.poly :refer [deftype Type defprotocol]]
    [dunaj.coll :refer
-    [ICapped IPeekable IEmptyAware ICounted IIndexed
+    [ICapped IPeekable IEmptyAware ICounted IIndexed ISeqable
      IFullAware IRed IHomogeneous IBatchedRed IUnpackedRed
      ISectionable IMutableCollection IMutableStacked ISettleable
      count empty? full? pop! item-type -count reduced? postponed?
      postponed advance -capacity -conj! -pop! -peek -settle! -full?]]
    [dunaj.function :refer [defn fn]]
    [dunaj.concurrent.forkjoin :refer [IFoldable fork join invoke]]
-   [dunaj.coll.helper :refer
-    [adaptCbuS fold-sectionable prepare-ordered-section advance-fn]]
+   [dunaj.coll.helper :refer [adaptCbuS fold-sectionable advance-fn
+                              prepare-ordered-section red-to-seq]]
    [dunaj.host.array :refer [array-manager]]
    [dunaj.host.batch :refer
     [batch-support? batch-on item-types-match?]]

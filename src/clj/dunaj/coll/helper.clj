@@ -48,8 +48,8 @@
    [dunaj.poly :refer
     [Type extend-protocol! defprotocol deftype satisfies?]]
    [dunaj.coll :refer
-    [Reduced IHomogeneous IRed ICounted ISectionable IBatchedRed
-     IUnpackedRed reduced? reduced red? section rest -section
+    [Reduced IHomogeneous IRed ICounted ISectionable IBatchedRed ISeq
+     IUnpackedRed reduced? reduced red? section rest -section ISeqable
      sequential? -reduce-batched -reduce reduce -reduce-unpacked
      sectionable? seq counted? item-type postponed IReducing
      postponed? advance unsafe-advance!]]

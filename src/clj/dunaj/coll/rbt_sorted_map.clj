@@ -71,7 +71,7 @@
    [dunaj.concurrent.forkjoin :refer
     [IFoldable fork join invoke -fold]]
    [dunaj.coll.helper :refer
-    [fold-every reduce* fold* reduce-unpacked*
+    [fold-every reduce* fold* reduce-unpacked* red-to-seq
      coll->iterator strip-reduced]]
    [dunaj.host.array :refer
     [array-manager array to-array aget acount adapt]]
@@ -289,7 +289,7 @@
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
   ISeqable
-  (-seq [this] (clojure.bridge/red-to-seq this))
+  (-seq [this] (red-to-seq this))
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (if-let [tree (.-tree coll)]

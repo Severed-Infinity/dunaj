@@ -429,6 +429,8 @@
   (rseq [this] (seq (-reverse this)))
   clojure.lang.IEditableCollection
   (asTransient [this] (edit this nil))
+  clojure.lang.Associative
+  (containsKey [this key] (-contains? this key))
 
   ;; JVM interop
   java.lang.Object

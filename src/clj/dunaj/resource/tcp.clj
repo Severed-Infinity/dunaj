@@ -30,9 +30,9 @@
    [dunaj.coll :refer
     [IRed ICounted IBatchedRed IHomogeneous IUnpackedRed seq contains?
      -reduce-unpacked second nth reduced? rest empty? unsafe-advance!
-     item-type reduce assoc conj postponed? postponed]]
+     item-type reduce assoc conj postponed? postponed ISeqable]]
    [dunaj.function :refer [fn defn identity]]
-   [dunaj.coll.helper :refer []]
+   [dunaj.coll.helper :refer [red-to-seq]]
    [dunaj.concurrent.thread :refer [current-thread]]
    [dunaj.concurrent.port :refer [chan put! <!! close!]]
    [dunaj.time :refer [milliseconds]]

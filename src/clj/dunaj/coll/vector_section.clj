@@ -45,7 +45,7 @@
    [dunaj.function :refer [IInvocable fn defn]]
    [dunaj.coll.helper :refer
     [equiv-ordered coll->iterator index-of coll->list-iterator
-     equals-ordered compare-ordered fold-sectionable
+     equals-ordered compare-ordered fold-sectionable red-to-seq
      prepare-ordered-section]]
    [dunaj.concurrent.forkjoin :refer [IFoldable]]
    [dunaj.error :refer [index-out-of-bounds]]

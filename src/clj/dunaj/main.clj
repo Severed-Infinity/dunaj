@@ -32,7 +32,7 @@
    [dunaj.function :refer [defn fn apply identity]]
    [dunaj.char :refer [Char whitespace? char]]
    [dunaj.string :refer [String ->str canonical str]]
-   [dunaj.error :refer [IException finally]]
+   [dunaj.error :refer [IException]]
    [dunaj.namespace :refer [resolve]]
    [dunaj.identifier :refer [Keyword name symbol]]
    [dunaj.macro :refer [defmacro]]
