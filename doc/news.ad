@@ -3,18 +3,16 @@ Announcing Dunaj lite
 +
 Starting from the version 0.4.0, Dunaj now provides a library
 only version called Dunaj lite. The codebase is shared, and Dunaj
-lite supports nearly all of Dunaj's functionalities. The main
-differences are:
+lite supports nearly all of Dunaj's functionalities.
+Dunaj lite is ideal for cases where you want to evaluate Dunaj
+in existing projects, or in cases you cannot or don't want to use
+custom Clojure forks. See http://lite.dunaj.org[Dunaj lite] homepage
+for more information. The main differences are:
 +
 * more verbose and less elegant usage
 * small decrease of performance
 * no qualified special symbols
 * no changes to primitive types
-+
-Dunaj lite is ideal for cases where you want to evaluate Dunaj
-in existing projects, or in cases you cannot or don't want to use
-custom Clojure forks.
-See http://lite.dunaj.org[Dunaj lite] homepage for more information.
 
 2015/04/13 ::
 Dunaj v0.4.0 has been released

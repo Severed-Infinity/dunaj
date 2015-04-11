@@ -205,7 +205,7 @@ Moreover, postponed reductions are an elegant representation for
 non-blocking data sources, e.g. non-blocking network I/O.
 
 [NOTE]
-----
+====
 In Dunaj lite, collection implementers have to provide an explicit
 implementation for ISeqable. The recommended way is following:
 [source,clojure,linesnum]
@@ -213,7 +213,7 @@ implementation for ISeqable. The recommended way is following:
 ISeqable
 (-seq [this] (dunaj.coll.helper/red-to-seq this))
 --
-----
+====
 
 == Source-aware recipes
 
