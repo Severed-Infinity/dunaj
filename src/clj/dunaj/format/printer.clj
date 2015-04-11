@@ -20,7 +20,7 @@
    [dunaj.type :refer [Any Fn Maybe I U AnyFn KeywordMap]]
    [dunaj.boolean :refer [Boolean or not and boolean]]
    [dunaj.host :refer
-    [Class AnyBatch BatchManager keyword->class set! class-instance?]]
+    [Class AnyBatch BatchManager keyword->class class-instance?]]
    [dunaj.host.int :refer
     [iint iinc i== i< isub izero? idec ineg? i> i< i<< iadd iloop i0
      i1 i2 i3 i4 i5 i8 ixFF ione? i-1 imul i27 idigit? ioctal? ihexa?
@@ -32,7 +32,7 @@
    [dunaj.math.unchecked :as mu]
    [dunaj.compare :refer [identical? nil?]]
    [dunaj.state :refer [reset! realized? IReference clone]]
-   [dunaj.flow :refer [if let when cond when-not loop recur do condp
+   [dunaj.flow :refer [let when cond when-not loop condp
                        if-not if-let delay while]]
    [dunaj.threading :refer [-> ->>]]
    [dunaj.feature :refer [IConfig meta]]
@@ -54,7 +54,7 @@
    [dunaj.function :refer [Function fn defn apply comp identity]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.error :refer
-    [throw illegal-argument illegal-state unsupported-operation]]
+    [illegal-argument illegal-state unsupported-operation]]
    [dunaj.identifier :refer [INamed Keyword name symbol symbol?]]
    [dunaj.state.var :refer [Var def+]]
    [dunaj.state.basic :refer [unsynchronized-reference]]

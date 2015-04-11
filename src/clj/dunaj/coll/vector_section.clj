@@ -32,8 +32,7 @@
    [dunaj.compare :refer
     [IHash IHashBasis IEquiv IComparable nil? hash = hash-from-basis
      basis-seed next-basis ordered-hash-factory]]
-   [dunaj.flow :refer
-    [when-let cond loop recur if let do when delay when-not]]
+   [dunaj.flow :refer [when-let cond loop let when delay when-not]]
    [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
    [dunaj.poly :refer [deftype defrecord defprotocol]]
    [dunaj.coll :refer
@@ -49,7 +48,7 @@
      equals-ordered compare-ordered fold-sectionable
      prepare-ordered-section]]
    [dunaj.concurrent.forkjoin :refer [IFoldable]]
-   [dunaj.error :refer [throw index-out-of-bounds]]
+   [dunaj.error :refer [index-out-of-bounds]]
    [dunaj.state.var :refer [declare]]))
 
 

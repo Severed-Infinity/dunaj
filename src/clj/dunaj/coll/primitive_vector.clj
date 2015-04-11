@@ -72,8 +72,7 @@
     [nneg? < integer? dec >= > add neg? inc dec zero? ==]]
    [dunaj.compare :refer
     [IHash IEquiv IComparable nil? hash = identical?]]
-   [dunaj.flow :refer
-    [cond loop recur if let do when if-not when-not case condp]]
+   [dunaj.flow :refer [cond loop let when if-not when-not case condp]]
    [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
    [dunaj.threading :refer [->]]
    [dunaj.poly :refer [Type deftype extend-type! defrecord]]
@@ -96,7 +95,7 @@
     [fold-sectionable prepare-ordered-section equals-ordered
      equiv-ordered reduce* advance-fn]]
    [dunaj.string :refer [->str]]
-   [dunaj.error :refer [throw index-out-of-bounds illegal-argument]]
+   [dunaj.error :refer [index-out-of-bounds illegal-argument]]
    [dunaj.state.var :refer [def+ declare]]
    [dunaj.coll.vector-section :refer
     [IReversedVectorSectionHelper IVectorSectionHelper

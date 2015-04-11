@@ -32,8 +32,8 @@
    [dunaj.math.unchecked :as mu]
    [dunaj.compare :refer
     [nil? IHash IEquiv = hash sentinel identical? defsentinel]]
-   [dunaj.flow :refer [let if cond delay recur if-not do while
-                       if-some when when-not if-let]]
+   [dunaj.flow :refer
+    [let cond delay if-not while if-some when when-not if-let]]
    [dunaj.state :refer
     [IPending IReference deref clone ICloneable reset!]]
    [dunaj.feature :refer [IMeta IPersistentMeta]]
@@ -67,7 +67,7 @@
    [dunaj.host.array :refer [array-manager]]
    [dunaj.string :refer [String empty-string MutableString]]
    [dunaj.identifier :refer [Keyword]]
-   [dunaj.error :refer [throw ex-info illegal-argument]]
+   [dunaj.error :refer [ex-info illegal-argument]]
    [dunaj.state.var :refer [declare def+ replace-var!]]
    [dunaj.state.basic :refer [unsynchronized-reference]]
    [dunaj.buffer :refer [sliding-buffer buffer]]

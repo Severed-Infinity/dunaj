@@ -26,7 +26,7 @@
    [clojure.bootstrap :refer [scratch v1]]
    [dunaj.type :refer [Fn Any AnyFn Maybe U I]]
    [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [Batch set! keyword->class class-instance?]]
+   [dunaj.host :refer [Batch keyword->class class-instance?]]
    [dunaj.host.int :refer
     [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imax iadd
      iloop i0 i1 i2 i3 i4 i5 i8 iFF ione? i-1 imul i10 idiv idigit?
@@ -39,8 +39,7 @@
    [dunaj.math :refer
     [max min < == > neg? + inc >= inc dec - pos? * /]]
    [dunaj.compare :refer [identical? nil? = defsentinel]]
-   [dunaj.flow :refer
-    [if when when-not cond do let loop recur if-not]]
+   [dunaj.flow :refer [when when-not cond let loop if-not]]
    [dunaj.threading :refer [->]]
    [dunaj.poly :refer
     [deftype defprotocol extend-protocol! defrecord]]
@@ -48,7 +47,7 @@
     [first rest seq second reduce empty? slice count nth conj assoc
      ISeq ISeqable sequential? settle! edit conj! assoc!]]
    [dunaj.function :refer [fn defn identity apply]]
-   [dunaj.error :refer [throw illegal-state unsupported-operation]]
+   [dunaj.error :refer [illegal-state unsupported-operation]]
    [dunaj.identifier :refer [INamed name symbol]]
    [dunaj.char :refer [Char char]]
    [dunaj.string :refer

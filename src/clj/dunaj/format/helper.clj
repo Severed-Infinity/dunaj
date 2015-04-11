@@ -21,7 +21,7 @@
     [ArrayManager Batch BatchManager AnyBatch Array keyword->class]]
    [dunaj.host.int :refer [Int iadd i0 i<]]
    [dunaj.state :refer [IReference]]
-   [dunaj.flow :refer [doto if let do]]
+   [dunaj.flow :refer [doto let]]
    [dunaj.function :refer [defn]]
    [dunaj.host.array :refer [array-manager]]
    [dunaj.host.batch :refer [batch-on]]

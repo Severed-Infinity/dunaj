@@ -27,7 +27,7 @@
    [dunaj.compare :refer [not= identical? nil?]]
    [dunaj.state :refer
     [IReference IOpenAware IMutable IAdjustable open?]]
-   [dunaj.flow :refer [when-not let when if doto when-let cond]]
+   [dunaj.flow :refer [when-not let when doto when-let cond]]
    [dunaj.feature :refer [IConfig IMutableConfig config]]
    [dunaj.poly :refer [defprotocol deftype]]
    [dunaj.coll :refer
@@ -36,7 +36,7 @@
    [dunaj.string :refer [string? String]]
    [dunaj.time :as dt :refer [IDuration milliseconds nanoseconds]]
    [dunaj.identifier :refer [Keyword]]
-   [dunaj.error :refer [throw illegal-argument]]))
+   [dunaj.error :refer [illegal-argument]]))
 
 
 ;;;; Implementation details

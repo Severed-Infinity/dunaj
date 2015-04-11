@@ -23,7 +23,7 @@
    [dunaj.boolean :refer [Boolean]]
    [dunaj.math :refer [Integer]]
    [dunaj.compare :refer [IComparable identical?]]
-   [dunaj.flow :refer [if condp]]
+   [dunaj.flow :refer [condp]]
    [dunaj.poly :refer [deftype]]
    [dunaj.coll :refer [ILookup]]
    [dunaj.function :refer [defn]]

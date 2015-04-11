@@ -19,12 +19,12 @@
    [clojure.core.async]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
    [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [Class BatchManager Batch AnyBatch set!]]
+   [dunaj.host :refer [Class BatchManager Batch AnyBatch]]
    [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]
    [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
    [dunaj.compare :refer [nil? = identical?]]
    [dunaj.state :refer [IOpenAware IReference IMutable io!]]
-   [dunaj.flow :refer [let loop recur if do when-not when when-let]]
+   [dunaj.flow :refer [let loop when-not when when-let]]
    [dunaj.feature :refer [IConfig]]
    [dunaj.poly :refer [defrecord deftype defprotocol satisfies?]]
    [dunaj.coll :refer
@@ -47,9 +47,8 @@
    [dunaj.host.batch :refer [provide-batch-size]]
    [dunaj.string :refer [String string? ->str str split]]
    [dunaj.error :refer
-    [IFailAware IFailable IException
-     throw illegal-argument illegal-state fragile io
-     opened-fragile fail! try catch unsupported-operation]]
+    [IFailAware IFailable IException illegal-argument illegal-state
+     fragile io opened-fragile fail! unsupported-operation]]
    [dunaj.buffer :refer [dropping-buffer]]
    [dunaj.format :refer [parse]]
    [dunaj.regex]

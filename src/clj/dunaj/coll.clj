@@ -149,13 +149,12 @@
     [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec]]
    [dunaj.type :refer [Fn Any Va Maybe AnyFn U Signature]]
    [dunaj.boolean :refer [Boolean boolean and or not]]
-   [dunaj.host :refer [. class class-instance? set! AnyBatch Class]]
+   [dunaj.host :refer [class class-instance? AnyBatch Class]]
    [dunaj.host.int :refer [iinc i0 iint]]
    [dunaj.math :refer [Integer > == zero? odd?]]
    [dunaj.compare :refer [sentinel nil? identical? defsentinel]]
    [dunaj.state :refer [IReference]]
-   [dunaj.flow :refer
-    [if if-not cond let when-not when loop recur if-let]]
+   [dunaj.flow :refer [if-not cond let when-not when loop if-let]]
    [dunaj.threading :refer [->]]
    [dunaj.poly :refer [Type deftype defprotocol identical-type?]]))
 

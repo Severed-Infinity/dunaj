@@ -33,7 +33,7 @@
    [dunaj.host :refer [Class class-instance?]]
    [dunaj.compare :refer [nil? =]]
    [dunaj.state :refer [IMutable IReference IAtomic ICloneable]]
-   [dunaj.flow :refer [let loop recur if do]]
+   [dunaj.flow :refer [let loop]]
    [dunaj.poly :refer [reify]]
    [dunaj.coll :refer [ILookup conj seq seq? rest next]]
    [dunaj.function :refer [fn defn]]

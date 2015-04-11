@@ -46,7 +46,7 @@
    [dunaj.compare :refer [nil? identical?]]
    [dunaj.threading :refer [->]]
    [dunaj.state :refer [ICloneable clone]]
-   [dunaj.flow :refer [let if do cond loop recur when doto when-not]]
+   [dunaj.flow :refer [let cond loop when doto when-not]]
    [dunaj.poly :refer [Type extend-protocol! satisfies?]]
    [dunaj.coll :refer
     [IRed IBatchedRed reduced? postponed? postponed reduced advance

@@ -21,13 +21,13 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
    [dunaj.boolean :refer [and or not]]
-   [dunaj.host :refer [keyword->class set!]]
+   [dunaj.host :refer [keyword->class]]
    [dunaj.host.int :refer [iint iloop iadd]]
    [dunaj.math :refer [Integer max neg?]]
    [dunaj.compare :refer [nil?]]
    [dunaj.state :refer [IOpenAware IReference IMutable
                         ensure-io reset! ensure-open open?]]
-   [dunaj.flow :refer [let loop recur if do cond when when-let]]
+   [dunaj.flow :refer [let loop cond when when-let]]
    [dunaj.feature :refer [IConfig]]
    [dunaj.poly :refer [reify defprotocol deftype defrecord]]
    [dunaj.coll :refer
@@ -40,8 +40,8 @@
    [dunaj.concurrent.thread :refer
     [Thread current-thread ensure-thread-local]]
    [dunaj.string :refer [string?]]
-   [dunaj.error :refer [IException IFailAware IFailable try catch
-                        throw fail! error fragile opened-fragile]]
+   [dunaj.error :refer [IException IFailAware IFailable
+                        fail! error fragile opened-fragile]]
    [dunaj.state.var :refer [def+]]
    [dunaj.coll.recipe :refer [keep]]
    [dunaj.coll.util :refer [merge]]

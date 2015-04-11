@@ -44,7 +44,7 @@
     [IHash IEquiv nil? hash IComparable identical? =
      hash-from-basis basis-seed next-basis unordered-hash-factory]]
    [dunaj.flow :refer
-    [when-let cond loop recur if let do when when-not if-let if-not]]
+    [when-let cond loop let when when-not if-let if-not]]
    [dunaj.state :refer [IPending IReference alter! reset!]]
    [dunaj.feature :refer [IMeta IPersistentMeta meta assoc-meta]]
    [dunaj.poly :refer [deftype]]
@@ -62,7 +62,7 @@
    [dunaj.function :refer [IInvocable fn defn apply constantly nop]]
    [dunaj.coll.helper :refer
     [coll->iterator strip-reduced reduce-unpacked*]]
-   [dunaj.error :refer [ex-info throw]]
+   [dunaj.error :refer [ex-info]]
    [dunaj.state.basic :refer [atom]]
    [dunaj.coll.tuple :refer [tuple pair key val]]
    [dunaj.coll.hamt-map]

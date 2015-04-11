@@ -20,7 +20,7 @@
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
    [dunaj.boolean :refer [Boolean and or not]]
    [dunaj.host :refer [Batch AnyArray ArrayManager Array
-                       keyword->class set! class-instance? proxy]]
+                       keyword->class class-instance? proxy]]
    [dunaj.host.int :refer [iint iinc i0 i-1 i< iadd]]
    [dunaj.host.array :refer [char-array]]
    [dunaj.math :refer [Integer max neg?]]
@@ -28,8 +28,7 @@
    [dunaj.state :refer
     [IOpenAware ICloneable io!
      ensure-io open? ensure-open reset! trade! alter!]]
-   [dunaj.flow :refer
-    [let recur if do cond when when-let when-not loop if-let]]
+   [dunaj.flow :refer [let cond when when-let when-not loop if-let]]
    [dunaj.feature :refer [IConfig]]
    [dunaj.poly :refer [reify defprotocol deftype defrecord]]
    [dunaj.coll :refer
@@ -50,9 +49,8 @@
    [dunaj.state.var :refer [def+ declare]]
    [dunaj.state.basic :refer [local atom]]
    [dunaj.macro :refer [defmacro]]
-   [dunaj.error :refer
-    [IException IFailAware IFailable
-     throw error fragile illegal-argument unsupported-operation]]
+   [dunaj.error :refer [IException IFailAware IFailable error fragile
+                        illegal-argument unsupported-operation]]
    [dunaj.coll.tuple :refer [pair]]
    [dunaj.coll.util :refer [merge]]
    [dunaj.coll.default :refer [empty-que]]

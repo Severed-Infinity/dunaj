@@ -34,7 +34,7 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn I Va Maybe]]
    [dunaj.boolean :refer [Boolean boolean and or not]]
-   [dunaj.host :refer [AnyArray ArrayManager set!]]
+   [dunaj.host :refer [AnyArray ArrayManager]]
    [dunaj.host.int :refer [Int iint iinc i< iadd i2 i0]]
    [dunaj.math :refer
     [nneg? < integer? == <= quot dec >= zero? mod > subtract add neg?
@@ -42,8 +42,7 @@
    [dunaj.compare :refer
     [IHash IEquiv nil? hash IComparable identical?]]
    [dunaj.flow :refer
-    [when-let cond loop recur if let do when delay when-not if-let
-     doto if-some]]
+    [when-let cond loop let when delay when-not if-let doto if-some]]
    [dunaj.threading :refer [->]]
    [dunaj.feature :refer [IMeta IPersistentMeta meta]]
    [dunaj.poly :refer [deftype defrecord extend-protocol!]]

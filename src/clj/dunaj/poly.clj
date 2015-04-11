@@ -39,7 +39,7 @@
    [dunaj.host :refer [Class class class? class-instance? supers]]
    [dunaj.compare :refer [identical?]]
    [dunaj.state :refer [ICloneable]]
-   [dunaj.flow :refer [if let when-let]]
+   [dunaj.flow :refer [let when-let]]
    [dunaj.feature :refer [IConfig meta]]))
 
 

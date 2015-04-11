@@ -20,8 +20,7 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Fn Maybe Any U I AnyFn Predicate]]
    [dunaj.boolean :refer [Boolean boolean or not and]]
-   [dunaj.host :refer
-    [Class AnyBatch BatchManager keyword->class set!]]
+   [dunaj.host :refer [Class AnyBatch BatchManager keyword->class]]
    [dunaj.host.int :refer
     [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imin iadd
      iloop i0 i1 i2 i3 i4 i5 i8 ixFF ione? i-1 imul idigit? ioctal?
@@ -32,8 +31,7 @@
    [dunaj.threading :refer [->> ->]]
    [dunaj.compare :refer [identical? nil? defsentinel]]
    [dunaj.state :refer [reset! IReference clone]]
-   [dunaj.flow :refer
-    [if let when cond when-not loop recur do if-not if-let]]
+   [dunaj.flow :refer [let when cond when-not loop if-not if-let]]
    [dunaj.feature :refer [IConfig assoc-meta]]
    [dunaj.poly :refer [Type satisfies? defrecord defprotocol deftype]]
    [dunaj.coll :refer
@@ -53,9 +51,9 @@
    [dunaj.string :refer [String ->str str empty-string camel-case]]
    [dunaj.identifier :refer [INamed name symbol]]
    [dunaj.macro :refer [defmacro gensym]]
-   [dunaj.error :refer [throw ex-info illegal-state]]
+   [dunaj.error :refer [ex-info illegal-state]]
    [dunaj.state.basic :refer [unsynchronized-reference]]
-   [dunaj.state.var :refer [Var var def+]]
+   [dunaj.state.var :refer [Var def+]]
    [dunaj.coll.recipe :refer [partition throwing-cap map take-while]]
    [dunaj.coll.lazy-seq :refer [lazy-seq]]
    [dunaj.coll.cons-seq :refer [cons]]

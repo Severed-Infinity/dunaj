@@ -26,7 +26,7 @@
    [dunaj.boolean :refer [Boolean and]]
    [dunaj.host.int :refer [i== iCOLON i0 i1 iint]]
    [dunaj.compare :refer [IHash IComparable =]]
-   [dunaj.flow :refer [if cond]]
+   [dunaj.flow :refer [cond]]
    [dunaj.feature :refer [IMeta IPersistentMeta]]
    [dunaj.poly :refer [extend-protocol!]]
    [dunaj.coll :refer [first slice]]

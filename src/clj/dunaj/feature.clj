@@ -22,7 +22,7 @@
    [dunaj.compare :refer [identical?]]
    [dunaj.state :refer
     [IMutable IReference IAtomic atomic? reset! alter!]]
-   [dunaj.flow :refer [when if let do]]))
+   [dunaj.flow :refer [when let]]))
 
 
 ;;;; Public API

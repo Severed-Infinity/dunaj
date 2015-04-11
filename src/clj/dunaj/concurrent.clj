@@ -28,7 +28,7 @@
    [dunaj.compare :refer [nil?]]
    [dunaj.state :refer [IReference IBlockingReference ICancellable
                         ICancelledAware IPending ICloneable]]
-   [dunaj.flow :refer [let when if]]
+   [dunaj.flow :refer [let when]]
    [dunaj.poly :refer [defprotocol extend-type!]]
    [dunaj.coll :refer [empty? first rest several? map?]]
    [dunaj.function :refer [Function apply fn defn]]))

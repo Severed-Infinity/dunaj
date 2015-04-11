@@ -18,8 +18,8 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
    [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [Class class? set! keyword->class]]
-   [dunaj.flow :refer [if when when-not cond do let loop recur case]]
+   [dunaj.host :refer [Class class? keyword->class]]
+   [dunaj.flow :refer [when when-not cond let loop case]]
    [dunaj.feature :refer [IMeta IPersistentMeta meta meta-ref]]
    [dunaj.poly :refer
     [defprotocol deftype extend-protocol! defrecord]]
@@ -29,7 +29,7 @@
      sequential? conj assoc map? list? vector? set? double? seq?
      counted? provide-sequential next update pop peek]]
    [dunaj.function :refer [Function fn defn identity apply]]
-   [dunaj.state.var :refer [Var var var? declare def+]]
+   [dunaj.state.var :refer [Var var? declare def+]]
    [dunaj.identifier :refer [INamed name keyword? symbol? named?]]
    [dunaj.string :refer [->str empty-string str index-of string?]]
    [dunaj.coll.cons-seq :refer [cons]]

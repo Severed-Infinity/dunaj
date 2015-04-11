@@ -31,8 +31,7 @@
    [dunaj.host.int :refer [Int iint iinc izero? ipos? idec iloop]]
    [dunaj.math :refer [Integer == dec]]
    [dunaj.compare :refer [nil? natural-comparator defsentinel]]
-   [dunaj.flow :refer
-    [cond let if when if-let when-not loop recur if-not]]
+   [dunaj.flow :refer [cond let when if-let when-not loop if-not]]
    [dunaj.feature :refer [assoc-meta meta]]
    [dunaj.poly :refer [Type identical-type? satisfies? deftype]]
    [dunaj.coll :refer

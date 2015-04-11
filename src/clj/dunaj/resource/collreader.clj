@@ -22,7 +22,7 @@
             [dunaj.host.int :refer [iint iinc i0 i-1 i< iadd]]
             [dunaj.compare :refer [nil? =]]
             [dunaj.state :refer [reset! trade! alter!]]
-            [dunaj.flow :refer [let recur if do cond loop if-let]]
+            [dunaj.flow :refer [let cond loop if-let]]
             [dunaj.feature :refer [assoc-meta]]
             [dunaj.poly :refer [reify defprotocol deftype defrecord]]
             [dunaj.coll :refer [first item-type seq next empty? conj]]

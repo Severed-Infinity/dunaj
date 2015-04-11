@@ -43,7 +43,7 @@
                            imax idiv i== iint i<= izero? ione? i< i>]]
    [dunaj.math :refer [Integer == neg? > zero?]]
    [dunaj.compare :refer [nil? = identical? compare]]
-   [dunaj.flow :refer [if do let cond recur when when-not loop]]
+   [dunaj.flow :refer [let cond when when-not loop]]
    [dunaj.feature :refer [assoc-meta]]
    [dunaj.poly :refer
     [Type extend-protocol! defprotocol deftype satisfies?]]

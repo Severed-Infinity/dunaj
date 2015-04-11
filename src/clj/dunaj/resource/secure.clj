@@ -22,14 +22,13 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
    [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [Class Batch keyword->class set! proxy]]
+   [dunaj.host :refer [Class Batch keyword->class proxy]]
    [dunaj.host.int :refer [Int iint iadd i0 i1 imin i== ipos? i< i<<]]
    [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
    [dunaj.compare :refer [nil? = identical?]]
    [dunaj.state :refer [IOpenAware ICancellable ICloneable
                         ensure-open io! open? realized?]]
-   [dunaj.flow :refer
-    [let loop recur if do cond when-not when condp when-let]]
+   [dunaj.flow :refer [let loop cond when-not when condp when-let]]
    [dunaj.feature :refer [IConfig config]]
    [dunaj.poly :refer [reify defrecord deftype defprotocol]]
    [dunaj.coll :refer
@@ -52,8 +51,8 @@
    [dunaj.host.array :refer [array aget]]
    [dunaj.host.batch :refer [provide-batch-size item-types-match?]]
    [dunaj.error :refer
-    [IFailAware IFailable IException throw illegal-argument
-     illegal-state fragile io fail! try catch unsupported-operation]]
+    [IFailAware IFailable IException illegal-argument
+     illegal-state fragile io fail! unsupported-operation]]
    [dunaj.resource :refer
     [IReleasable IReadable IAcquirableFactory IWritable
      acquire! -write! -read! with-scope]]

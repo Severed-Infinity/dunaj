@@ -30,9 +30,9 @@
   (:api bare-ws)
   (:require
    [clojure.bootstrap :refer [v1]]
-   [dunaj.host :refer [set! class-instance?]]
+   [dunaj.host :refer [class-instance?]]
    [dunaj.compare :refer [IHash IEquiv nil?]]
-   [dunaj.flow :refer [when-let cond loop recur if let do]]
+   [dunaj.flow :refer [when-let cond loop let]]
    [dunaj.feature :refer [IMeta IPersistentMeta]]
    [dunaj.poly :refer [deftype defrecord]]
    [dunaj.coll :refer

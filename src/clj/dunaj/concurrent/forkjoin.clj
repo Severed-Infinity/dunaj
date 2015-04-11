@@ -31,7 +31,7 @@
             [dunaj.host :refer [class-instance?]]
             [dunaj.math :refer [Integer]]
             [dunaj.compare :refer [nil? identical?]]
-            [dunaj.flow :refer [if do let cond if-not when]]
+            [dunaj.flow :refer [let cond if-not when]]
             [dunaj.threading :refer [->>]]
             [dunaj.poly :refer
              [defprotocol deftype extend-protocol! satisfies?]]

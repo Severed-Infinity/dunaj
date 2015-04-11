@@ -61,7 +61,7 @@
    [dunaj.bit :as bit]
    [dunaj.compare :refer [nil?]]
    [dunaj.state :refer [ICloneable clone]]
-   [dunaj.flow :refer [cond if let do recur loop when doto]]
+   [dunaj.flow :refer [cond let loop when doto]]
    [dunaj.threading :refer [->]]
    [dunaj.poly :refer [defprotocol deftype defrecord satisfies?]]
    [dunaj.feature :refer [IConfig]]
@@ -80,8 +80,8 @@
    [dunaj.host.batch :refer [provide-batch-size batch-manager
                              select-item-type item-types-match?]]
    [dunaj.identifier :refer [Keyword name]]
-   [dunaj.error :refer [throw index-out-of-bounds]]
-   [dunaj.state.var :refer [Var var def+]]
+   [dunaj.error :refer [index-out-of-bounds]]
+   [dunaj.state.var :refer [Var def+]]
    [dunaj.coll.default :refer [->map]]
    [dunaj.coll.util :refer [merge]]
    [dunaj.coll.recipe :refer [->ObjectWrap cloning-advance]]))

@@ -31,7 +31,7 @@
    [dunaj.math.precise :as dmp]
    [dunaj.host.number :refer [bigdec long]]
    [dunaj.compare :refer [IHash IEquiv = hash nil?]]
-   [dunaj.flow :refer [let if doto cond]]
+   [dunaj.flow :refer [let doto cond]]
    [dunaj.threading :refer [->]]
    [dunaj.coll :refer [slice count]]
    [dunaj.string :refer

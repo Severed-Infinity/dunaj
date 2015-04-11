@@ -24,8 +24,7 @@
             [dunaj.flow :refer [when]]
             [dunaj.function :refer [defn]]
             [dunaj.macro :refer [defmacro]]
-            [dunaj.error :refer [throw]]
-            [dunaj.state.var :refer [defalias def+ reset-root! var]]
+            [dunaj.state.var :refer [defalias def+ reset-root!]]
             [dunaj.env :refer [pr! color print!]]))
 
 

@@ -21,7 +21,7 @@
    [dunaj.boolean :refer
     [Boolean and or not boolean boolean? true? false?]]
    [dunaj.host :refer [Class BatchManager Batch AnyBatch
-                       keyword->class set! class-instance?]]
+                       keyword->class class-instance?]]
    [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]
    [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
    [dunaj.compare :refer [nil? = identical?]]
@@ -29,7 +29,7 @@
     [IOpenAware IReference IMutable IAdjustable ICloneable
      ensure-io reset! adjust! ensure-open io!]]
    [dunaj.flow :refer
-    [let loop recur if do cond when-not when condp if-let when-let]]
+    [let loop cond when-not when condp if-let when-let]]
    [dunaj.feature :refer [IConfig]]
    [dunaj.poly :refer
     [reify defrecord deftype defprotocol satisfies?]]
@@ -60,8 +60,8 @@
    [dunaj.host.batch :refer [provide-batch-size select-item-type
                              batch-manager item-types-match?]]
    [dunaj.string :refer [String string? ->str str split]]
-   [dunaj.error :refer [IFailAware IFailable IException io catch try
-                        throw illegal-argument illegal-state fragile
+   [dunaj.error :refer [IFailAware IFailable IException io
+                        illegal-argument illegal-state fragile
                         opened-fragile fail! unsupported-operation]]
    [dunaj.buffer :refer [dropping-buffer]]
    [dunaj.format :refer [parse]]

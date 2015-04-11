@@ -18,12 +18,12 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Maybe U I Fn]]
    [dunaj.boolean :refer [and or not]]
-   [dunaj.host :refer [Batch keyword->class set! class-instance?]]
+   [dunaj.host :refer [Batch keyword->class class-instance?]]
    [dunaj.host.int :refer [i== i0 iint iloop iadd]]
    [dunaj.math :refer [Integer max neg? == zero?]]
    [dunaj.state :refer [IOpenAware IReference IMutable ICloneable
                         ensure-io reset! ensure-open open?]]
-   [dunaj.flow :refer [let loop recur if do cond when if-not if-let]]
+   [dunaj.flow :refer [let loop cond when if-not if-let]]
    [dunaj.poly :refer [reify deftype]]
    [dunaj.coll :refer
     [IRed ICounted IBatchedRed IHomogeneous item-type Postponed
@@ -37,9 +37,8 @@
      current-thread ensure-thread-local]]
    [dunaj.string :refer [String string?]]
    [dunaj.macro :refer [defmacro]]
-   [dunaj.error :refer
-    [IFailAware IFailable try catch throw fail! error
-     fragile opened-fragile unsupported-operation]]
+   [dunaj.error :refer [IFailAware IFailable fail! error fragile
+                        opened-fragile unsupported-operation]]
    [dunaj.state.var :refer [alter-root!]]
    [dunaj.coll.util :refer [merge reduce-batched]]
    [dunaj.coll.default]

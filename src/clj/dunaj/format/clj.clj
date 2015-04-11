@@ -19,7 +19,7 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
    [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [class? set! keyword->class class-instance?]]
+   [dunaj.host :refer [class? keyword->class class-instance?]]
    [dunaj.host.int :refer
     [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imax iadd
      iloop i0 i1 i2 i3 i4 i5 i8 iFF i-1 idigit? ioctal? iCAPITAL_M iFF
@@ -35,8 +35,8 @@
    [dunaj.threading :refer [->]]
    [dunaj.compare :refer [identical? nil? = sentinel]]
    [dunaj.state :refer [reset! alter!]]
-   [dunaj.flow :refer [if when when-not cond do let if-let eval loop
-                       recur case condp if-not when-let]]
+   [dunaj.flow :refer [when when-not cond let if-let eval loop
+                       case condp if-not when-let]]
    [dunaj.feature :refer
     [IMeta IPersistentMeta assoc-meta meta meta-ref]]
    [dunaj.poly :refer
@@ -48,9 +48,9 @@
    [dunaj.function :refer [fn defn identity constantly apply]]
    [dunaj.host.batch :refer [batch-manager]]
    [dunaj.host.array :refer [array-manager array]]
-   [dunaj.error :refer [throw illegal-state unsupported-operation]]
+   [dunaj.error :refer [illegal-state unsupported-operation]]
    [dunaj.macro :refer [defmacro gensym]]
-   [dunaj.state.var :refer [Var var var? declare def+]]
+   [dunaj.state.var :refer [Var var? declare def+]]
    [dunaj.state.basic :refer [unsynchronized-reference]]
    [dunaj.identifier :refer
     [name symbol namespace keyword? symbol? keyword]]

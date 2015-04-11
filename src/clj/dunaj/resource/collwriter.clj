@@ -25,7 +25,7 @@
             [dunaj.compare :refer [nil? =]]
             [dunaj.state :refer [reset! trade! alter!]]
             [dunaj.feature :refer [assoc-meta]]
-            [dunaj.flow :refer [let recur if do cond loop when]]
+            [dunaj.flow :refer [let cond loop when]]
             [dunaj.poly :refer [reify defprotocol deftype defrecord]]
             [dunaj.coll :refer [first item-type seq next empty? conj]]
             [dunaj.function :refer [fn defn]]

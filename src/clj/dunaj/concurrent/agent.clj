@@ -64,7 +64,7 @@
             [dunaj.concurrent :refer [IExecutor]]
             [dunaj.time :refer [IDuration milliseconds nanoseconds]]
             [dunaj.error :refer [IFailAware IErrorHandleable]]
-            [dunaj.state.var :refer [Var def+ defalias var]]))
+            [dunaj.state.var :refer [Var def+ defalias]]))
 
 
 ;;;; Implementation details

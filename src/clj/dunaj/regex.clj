@@ -26,7 +26,7 @@
    [dunaj.host :refer [class-instance?]]
    [dunaj.host.int :refer [Int iint iadd i0 isub izero? i==]]
    [dunaj.math :refer [Integer]]
-   [dunaj.flow :refer [if do let loop recur cond]]
+   [dunaj.flow :refer [let loop cond]]
    [dunaj.poly :refer [deftype]]
    [dunaj.coll :refer [IRed reduced? postponed postponed?
                        unsafe-advance! count nth unsafe-postponed]]
@@ -34,7 +34,7 @@
    [dunaj.function :refer [fn defn]]
    [dunaj.string :refer
     [ICanonical ICharSequence String str provide-char-sequence]]
-   [dunaj.error :refer [throw unsupported-operation]]
+   [dunaj.error :refer [unsupported-operation]]
    [dunaj.state.var :refer [defalias]]
    [dunaj.format :refer [IParserFactory]]))
 

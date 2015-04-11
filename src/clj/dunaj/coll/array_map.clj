@@ -41,14 +41,14 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn U I Va Maybe AnyFn]]
    [dunaj.boolean :refer [Boolean boolean and or not]]
-   [dunaj.host :refer [AnyArray ArrayManager set!]]
+   [dunaj.host :refer [AnyArray ArrayManager]]
    [dunaj.host.int :refer
     [Int iint iinc i< iadd i2 i0 imul isub idiv]]
    [dunaj.math :refer [nneg? < integer? == <= quot dec >= zero? mod >
                        subtract add neg? one? multiply inc dec /]]
    [dunaj.compare :refer
     [IHash IEquiv nil? hash IComparable sentinel identical?]]
-   [dunaj.flow :refer [when-let cond loop recur if let do when delay
+   [dunaj.flow :refer [when-let cond loop let when delay
                        when-not if-let doto if-some if-not]]
    [dunaj.threading :refer [->]]
    [dunaj.feature :refer [IMeta IPersistentMeta meta]]

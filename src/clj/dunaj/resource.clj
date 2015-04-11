@@ -52,7 +52,7 @@
    [clojure.core.async]
    [dunaj.type :refer [Fn AnyFn Any Maybe U I]]
    [dunaj.boolean :refer [Boolean or and not]]
-   [dunaj.host :refer [keyword->class class-instance? set!]]
+   [dunaj.host :refer [keyword->class class-instance?]]
    [dunaj.host.int :refer [i0]]
    [dunaj.math :refer [Integer integer? pos? odd? max neg? == min]]
    [dunaj.state :refer
@@ -61,8 +61,7 @@
      ensure-open open?]]
    [dunaj.compare :refer [identical? = nil?]]
    [dunaj.flow :refer
-    [if when let when-not when-let loop cond do condp if-let if-not
-     recur when]]
+    [when let when-not when-let loop cond condp if-let if-not when]]
    [dunaj.threading :refer [->>]]
    [dunaj.buffer :refer [buffer]]
    [dunaj.poly :refer
@@ -85,10 +84,9 @@
    [dunaj.identifier :refer [Keyword]]
    [dunaj.state.weak :refer [weak]]
    [dunaj.state.basic :refer [atom]]
-   [dunaj.state.var :refer [Var var var? def+ declare alter-root!]]
-   [dunaj.error :refer
-    [IException ex-info illegal-argument throw
-     try unsupported-operation npe fail-aware? error]]
+   [dunaj.state.var :refer [Var var? def+ declare alter-root!]]
+   [dunaj.error :refer [IException ex-info illegal-argument
+                        unsupported-operation npe fail-aware? error]]
    [dunaj.uri :refer [Uri uri uri?]]
    [dunaj.coll.tuple :refer [tuple val key pair]]
    [dunaj.coll.util :refer [into revlist doseq merge some recipe]]
@@ -349,9 +347,9 @@
     `(let [scope# (dunaj.state.basic/atom ~scope)
            ret# (try
                   (dunaj.state.var/with-bindings
-                    {(dunaj.state.var/var dunaj.resource/*scope*)
+                    {(var dunaj.resource/*scope*)
                      scope#
-                     (dunaj.state.var/var
+                     (var
                       dunaj.resource/*scope-thread*)
                      (dunaj.concurrent.thread/current-thread)}
                     ~@body)

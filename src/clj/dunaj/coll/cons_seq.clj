@@ -33,7 +33,7 @@
    [dunaj.boolean :refer [Boolean]]
    [dunaj.host :refer [class-instance?]]
    [dunaj.host.int :refer [Int iint isub i== i0 iinc]]
-   [dunaj.flow :refer [if loop recur let cond]]
+   [dunaj.flow :refer [loop let cond]]
    [dunaj.feature :refer [IMeta IPersistentMeta]]
    [dunaj.poly :refer [deftype extend-protocol! identical-type?]]
    [dunaj.coll :refer

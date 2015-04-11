@@ -45,11 +45,11 @@
    [dunaj.type :refer [Fn Va U Any Maybe Predicate Macro]]
    [dunaj.boolean :refer [Boolean and or not]]
    [dunaj.host :refer [Class ArrayManager AnyArray Array
-                       class-instance? class provide-class set!]]
+                       class-instance? class provide-class]]
    [dunaj.host.int :refer
     [iint iinc idec isub Int imul i== iadd i0 i31 iloop i1 i< inneg?]]
    [dunaj.math :refer [nneg? integer? < >= Integer == > zero?]]
-   [dunaj.flow :refer [delay when-not let loop when if cond recur]]
+   [dunaj.flow :refer [delay when-not let loop when cond]]
    [dunaj.compare :refer
     [IComparable IHash IEquiv IHashBasis nil? =
      hash-from-basis next-basis basis-seed ordered-hash-factory]]

@@ -19,7 +19,7 @@
    [clojure.core.async]
    [dunaj.type :refer [Fn AnyFn Any Maybe U I]]
    [dunaj.boolean :refer [Boolean or and not]]
-   [dunaj.host :refer [keyword->class class-instance? set!]]
+   [dunaj.host :refer [keyword->class class-instance?]]
    [dunaj.host.int :refer [i0 iinc]]
    [dunaj.math :refer [Integer integer? pos? odd? max neg? == min]]
    [dunaj.state :refer
@@ -27,8 +27,8 @@
      atomic? switch! IAdjustable IReference IMutable ensure-io
      ensure-open open? ICloneable]]
    [dunaj.compare :refer [identical? = nil?]]
-   [dunaj.flow :refer [if when let when-not when-let loop cond do
-                       condp if-let if-not recur when if-some]]
+   [dunaj.flow :refer [when let when-not when-let loop cond
+                       condp if-let if-not when if-some]]
    [dunaj.threading :refer [->>]]
    [dunaj.buffer :refer [buffer]]
    [dunaj.poly :refer
@@ -50,9 +50,9 @@
    [dunaj.identifier :refer [Keyword]]
    [dunaj.state.weak :refer [weak]]
    [dunaj.state.basic :refer [atom]]
-   [dunaj.state.var :refer [Var var var? def+ declare alter-root!]]
-   [dunaj.error :refer [IException ex-info illegal-argument throw npe
-                        try unsupported-operation fail-aware? error]]
+   [dunaj.state.var :refer [Var var? def+ declare alter-root!]]
+   [dunaj.error :refer [IException ex-info illegal-argument npe
+                        unsupported-operation fail-aware? error]]
    [dunaj.uri :refer [Uri uri uri?]]
    [dunaj.coll.tuple :refer [tuple]]
    [dunaj.coll.util :refer [into revlist doseq merge]]

@@ -59,7 +59,7 @@
    [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
    [dunaj.type :refer [Any]]
    [dunaj.boolean :refer [and or not]]
-   [dunaj.host :refer [. set! class-instance?]]
+   [dunaj.host :refer [class-instance?]]
    [dunaj.host.int :refer [Int iint iadd imul i31 i0 i1 isub i< iinc]]
    [dunaj.math :refer
     [nneg? < integer? == <= quot dec >= zero? mod > subtract
@@ -68,8 +68,7 @@
     [IHash IEquiv nil? hash IComparable identical? =
      IHashBasis hash-from-basis compare basis-seed hash-basis
      next-basis ordered-hash-factory -hash-basis]]
-   [dunaj.flow :refer
-    [when-let cond loop recur if let do when delay condp case]]
+   [dunaj.flow :refer [when-let cond loop let when delay condp case]]
    [dunaj.feature :refer
     [IMeta IPersistentMeta -assoc-meta assoc-meta meta]]
    [dunaj.threading :refer [-> ->>]]
@@ -96,7 +95,7 @@
    [dunaj.macro :refer [defmacro gensym]]
    [dunaj.string :refer [->str]]
    [dunaj.identifier :refer [symbol? symbol]]
-   [dunaj.error :refer [throw index-out-of-bounds illegal-argument]]
+   [dunaj.error :refer [index-out-of-bounds illegal-argument]]
    [dunaj.state.var :refer [def+ declare]]
    [dunaj.coll.empty-list]
    [dunaj.coll.cons-seq]

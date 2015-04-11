@@ -40,7 +40,7 @@
    [dunaj.math :refer [Integer < + zero? dec]]
    [dunaj.compare :refer [decode-nil encode-nil]]
    [dunaj.state :refer [deref]]
-   [dunaj.flow :refer [cond if let loop recur when when-let do]]
+   [dunaj.flow :refer [cond let loop when when-let]]
    [dunaj.threading :refer [->]]
    [dunaj.poly :refer [deftype]]
    [dunaj.coll :refer
@@ -49,7 +49,7 @@
    [dunaj.function :refer [fn defn apply]]
    [dunaj.coll.helper :refer
     [reduce* defxform finish-advance reduced-advance strip-reduced]]
-   [dunaj.error :refer [throw unsupported-operation]]
+   [dunaj.error :refer [unsupported-operation]]
    [dunaj.concurrent :refer
     [ITaskExecutor default-future-executor submit]]
    [dunaj.concurrent.port :refer

@@ -24,7 +24,7 @@
    [clojure.bootstrap :refer [scratch v1]]
    [dunaj.type :refer [AnyFn Any Fn Maybe U I]]
    [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [set! keyword->class class-instance?]]
+   [dunaj.host :refer [keyword->class class-instance?]]
    [dunaj.host.int :refer
     [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imax iadd
      iloop i0 i1 i2 i3 i4 i5 i8 iFF ione? i-1 imul i10 idiv idigit?
@@ -47,9 +47,9 @@
      assoc map? settle! edit conj! assoc!]]
    [dunaj.coll.helper]
    [dunaj.threading :refer [->]]
-   [dunaj.flow :refer [if when when-not cond do let if-let loop recur
+   [dunaj.flow :refer [when when-not cond let if-let loop
                        case condp if-not when-let]]
-   [dunaj.error :refer [throw illegal-state ex-info]]
+   [dunaj.error :refer [illegal-state ex-info]]
    [dunaj.poly :refer [satisfies?]]
    [dunaj.state :refer [reset! IReference]]
    [dunaj.state.var :refer [Var def+ declare]]

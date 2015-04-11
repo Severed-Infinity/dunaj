@@ -33,7 +33,7 @@
    [dunaj.boolean :refer [Boolean and]]
    [dunaj.math :refer [Integer]]
    [dunaj.state :refer [IOpenAware -open? IReference]]
-   [dunaj.flow :refer [let when if if-let]]
+   [dunaj.flow :refer [let when if-let]]
    [dunaj.feature :refer [assoc-meta meta]]
    [dunaj.poly :refer [extend-protocol! reify deftype defprotocol]]
    [dunaj.coll :refer
@@ -45,7 +45,7 @@
    [dunaj.time :refer [IDuration]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.error :refer [IException]]
-   [dunaj.state.var :refer [Var var def+]]))
+   [dunaj.state.var :refer [Var def+]]))
 
 
 ;;;; Implementation details

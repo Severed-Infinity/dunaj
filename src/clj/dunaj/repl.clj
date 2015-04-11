@@ -28,8 +28,7 @@
    [dunaj.host :refer [proxy proxy-super class-instance? class]]
    [dunaj.math :refer [Integer dec + - min]]
    [dunaj.compare :refer [= not=]]
-   [dunaj.flow :refer
-    [when-let cond if let when dotimes loop recur if-let]]
+   [dunaj.flow :refer [when-let cond let when dotimes loop if-let]]
    [dunaj.feature :refer [IMeta meta assoc-meta]]
    [dunaj.threading :refer [->]]
    [dunaj.coll :refer [assoc first transduce count seq]]
@@ -38,10 +37,10 @@
    [dunaj.string :refer [String ->str str]]
    [dunaj.identifier :refer [name Symbol symbol]]
    [dunaj.error :refer
-    [IException exception? throw illegal-state ex-data]]
+    [IException exception? illegal-state ex-data]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.namespace :refer [resolve all publics]]
-   [dunaj.state.var :refer [defalias def+ var with-bindings]]
+   [dunaj.state.var :refer [defalias def+ with-bindings]]
    [dunaj.concurrent.thread :refer [Thread current-thread]]
    [dunaj.coll.util :refer [doseq sort-by recipe dored sort]]
    [dunaj.coll.recipe :refer

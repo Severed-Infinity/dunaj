@@ -36,8 +36,8 @@
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [I]]
-   [dunaj.host :refer [set! class-instance?]]
-   [dunaj.flow :refer [cond recur if let do]]
+   [dunaj.host :refer [class-instance?]]
+   [dunaj.flow :refer [cond let]]
    [dunaj.feature :refer [IMeta IPersistentMeta]]
    [dunaj.poly :refer [reify deftype defrecord]]
    [dunaj.coll :refer

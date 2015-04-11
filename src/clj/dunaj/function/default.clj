@@ -23,7 +23,7 @@
    [dunaj.type :refer [I Any Fn U Maybe Predicate]]
    [dunaj.compare :refer [nil?]]
    [dunaj.state :refer [alter!]]
-   [dunaj.flow :refer [retrying-delay if cond let if-let]]
+   [dunaj.flow :refer [retrying-delay cond let if-let]]
    [dunaj.feature :refer [meta update-meta]]
    [dunaj.poly :refer [defrecord]]
    [dunaj.coll :refer [collection get contains? ICollectionFactory

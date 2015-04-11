@@ -39,7 +39,7 @@
    [dunaj.type :refer [Any Fn U I Va Maybe AnyFn]]
    [dunaj.boolean :refer [Boolean boolean and or not]]
    [dunaj.host :refer
-    [AnyArray ArrayManager set! class-instance? proxy]]
+    [AnyArray ArrayManager class-instance? proxy]]
    [dunaj.host.int :refer
     [Int iint iinc i< iadd i2 i0 inpos? ineg? izero? ixor]]
    [dunaj.math :refer
@@ -49,8 +49,7 @@
     [IHash IEquiv nil? hash IComparable identical? =
      next-basis unordered-hash-factory basis-seed hash-from-basis]]
    [dunaj.flow :refer
-    [when-let cond loop recur if let do when delay when-not if-let
-     doto if-some]]
+    [when-let cond loop let when delay when-not if-let doto if-some]]
    [dunaj.threading :refer [->]]
    [dunaj.feature :refer
     [IMeta IPersistentMeta IConfig meta assoc-meta -config]]

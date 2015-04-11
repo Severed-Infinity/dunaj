@@ -48,13 +48,13 @@
    [dunaj.type :refer [Any AnyFn Fn U Maybe]]
    [dunaj.boolean :refer [Boolean not or and]]
    [dunaj.host :refer
-    [ArrayManager AnyArray Class set! provide-class]]
+    [ArrayManager AnyArray Class provide-class]]
    [dunaj.host.int :refer [Int iint iadd isub i>= ipos? i> i== i0
                            izero? iinc idec inpos? i< i2 imul]]
    [dunaj.math :refer [<]]
    [dunaj.compare :refer [nil?]]
    [dunaj.state :refer [ICloneable clone]]
-   [dunaj.flow :refer [when if let cond do when-not recur]]
+   [dunaj.flow :refer [when let cond when-not]]
    [dunaj.poly :refer [deftype Type defprotocol]]
    [dunaj.coll :refer
     [ICapped IPeekable IEmptyAware ICounted IIndexed
@@ -70,8 +70,7 @@
    [dunaj.host.array :refer [array-manager]]
    [dunaj.host.batch :refer
     [batch-support? batch-on item-types-match?]]
-   [dunaj.error :refer
-    [throw no-such-element ex-info illegal-argument]]
+   [dunaj.error :refer [no-such-element ex-info illegal-argument]]
    [dunaj.string :refer [->str]]
    [dunaj.identifier :refer [Keyword]]
    [dunaj.state.var :refer [declare]]))

@@ -42,7 +42,7 @@
    [dunaj.host :refer [class-instance?]]
    [dunaj.host.int :refer [Int iadd iint]]
    [dunaj.compare :refer [IHash IEquiv identical? hash -hash =]]
-   [dunaj.flow :refer [if let cond when-not if-let when]]
+   [dunaj.flow :refer [let cond when-not if-let when]]
    [dunaj.feature :refer [IPersistentMeta IMeta meta assoc-meta]]
    [dunaj.poly :refer [instance? identical-type? satisfies? deftype]]
    [dunaj.coll :refer
@@ -51,8 +51,7 @@
      IPersistentCollection ICatenable cat]]
    [dunaj.function :refer [IInvocable apply defn]]
    [dunaj.string :refer [->str]]
-   [dunaj.error :refer
-    [throw unsupported-operation illegal-argument]]
+   [dunaj.error :refer [unsupported-operation illegal-argument]]
    [dunaj.state.var :refer [declare def+]]))
 
 

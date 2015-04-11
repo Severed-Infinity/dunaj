@@ -21,13 +21,13 @@
             [dunaj.type :refer [Maybe]]
             [dunaj.boolean :refer [Boolean or]]
             [dunaj.compare :refer [=]]
-            [dunaj.flow :refer [when-let if when let]]
+            [dunaj.flow :refer [when-let when let]]
             [dunaj.poly :refer [defrecord]]
             [dunaj.coll :refer [IRed]]
             [dunaj.function :refer [defn]]
             [dunaj.string :refer [String ICanonical ->str]]
             [dunaj.identifier :refer [Symbol]]
-            [dunaj.state.var :refer [defalias var]]
+            [dunaj.state.var :refer [defalias]]
             [dunaj.uri :refer [Uri uri]]))
 
 

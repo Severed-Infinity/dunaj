@@ -23,7 +23,6 @@
    [clojure.core :refer [reset! compare-and-set!]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn Va Maybe]]
-   [dunaj.host :refer [set!]]
    [dunaj.state :refer [IReference IAtomic IMutable ICloneable]]
    [dunaj.feature :refer [IMeta]]
    [dunaj.poly :refer [deftype]]
