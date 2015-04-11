@@ -535,10 +535,10 @@
         to (gensym "to__")
         bs []
         bs (if (nil? c) (conj bs c? `(counted? ~to)) bs)
-        bs (if (nil? b) (conj bs b? `(clojure.dunaj-deftype/satisfies?
+        bs (if (nil? b) (conj bs b? `(satisfies?
                                       dunaj.coll/IBatchedRed ~to)) bs)
         bs (if (nil? u)
-             (conj bs u? `(clojure.dunaj-deftype/satisfies?
+             (conj bs u? `(satisfies?
                            dunaj.coll/IUnpackedRed ~to))
              bs)
         bs (if (nil? s) (conj bs s? `(sectionable? ~to)) bs)
@@ -594,15 +594,13 @@
   (let [c? (if (nil? oc) (and (counted? coll) (counted? to)) oc)
         b? (if (nil? ob)
              (and
-              (clojure.dunaj-deftype/satisfies?
-               dunaj.coll/IBatchedRed coll)
-              (clojure.dunaj-deftype/satisfies?
-               dunaj.coll/IBatchedRed to))
+              (satisfies? dunaj.coll/IBatchedRed coll)
+              (satisfies? dunaj.coll/IBatchedRed to))
              ob)
         u? (if (nil? ou)
              (and
-              (clojure.dunaj-deftype/satisfies? dunaj.coll/IUnpackedRed coll)
-              (clojure.dunaj-deftype/satisfies? dunaj.coll/IUnpackedRed to))
+              (satisfies? dunaj.coll/IUnpackedRed coll)
+              (satisfies? dunaj.coll/IUnpackedRed to))
              ou)
         s? (if (nil? os)
              (and (sectionable? coll) (sectionable? to))

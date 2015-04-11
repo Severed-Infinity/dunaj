@@ -149,10 +149,19 @@
 (deftype Class+
   "A host class type.
 
-  WARNING: When using dunaj-lite, this type is called Class+."
+  WARNING: This type is not available in Dunaj lite,
+  please use `Class+` instead."
   {:added v1
-   :see '[class class-instance?]
+   :see '[class class-instance? Class+]
    :predicate 'class?}
+  java.lang.Class)
+
+(deftype Class+
+  "A host class type.
+
+  TIP: Identical to `Class` type, meant to be used in Dunaj lite."
+  {:added v1
+   :see '[class class-instance? Class]}
   java.lang.Class)
 
 (defalias class
@@ -483,7 +492,7 @@
         tgarr (with-meta garr {:tag (symbol (str ts "s"))})]
     `(reify dunaj.host.BatchManager
        (itemType [_] ~ets)
-       (~'wrap [_ ~garr offset# length#]
+       (wrap [_ ~garr offset# length#]
          (. ~bts ~'wrap ~tgarr offset# length#))
        (allocate [_ size#] (. ~bts ~'allocate size#))
        (readOnly [_ ~gbuf] (.asReadOnlyBuffer ~tgbuf))

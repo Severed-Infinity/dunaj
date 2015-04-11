@@ -25,6 +25,7 @@
     keyword str if-let false? case list? max == count apply assoc
     defrecord constantly and number? symbol?])
   (:require
+   [clojure.core :refer [quote fn*]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
    [dunaj.boolean :refer [Boolean+ and or not true? false?]]
@@ -234,7 +235,7 @@
           args (reduce rf [] (range 1 (inc max-arg)))
           args (if-let [x (get argmap -1)] (conj args '& x) args)]
       (reset! state (dissoc @state :fn-env))
-      (->lst 'clojure.core/fn* args value)))
+      (->lst `fn* args value)))
   (-parse-eof! [this parents]
     (eof-handler this config this "fn parser machine"))
   ILazyParserMachine
@@ -1100,7 +1101,7 @@
                             (= \# (last (name %)))
                             (nneg? (.indexOf ^java.lang.String
                                              (name %) "__")))))]
-    (and (= 'clojure.core/fn* (first coll))
+    (and (= `fn* (first coll))
          (== 3 (count coll))
          (vector? (second coll))
          (nil? (meta (second coll)))

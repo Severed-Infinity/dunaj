@@ -491,6 +491,15 @@
   ;; Abstract types
   ICharSequence)
 
+#_(deftype String+
+  "A type for strings.
+
+  TIP: Identical to `String` type, meant to be used in Dunaj lite."
+  {:added v1
+   :category "Primary"
+   :see '[ICharSequence ->str str empty-string String]}
+  java.lang.String)
+
 (def+ empty-string :- String
   "An empty string."
   {:added v1

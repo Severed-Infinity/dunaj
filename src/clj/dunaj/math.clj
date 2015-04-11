@@ -62,10 +62,25 @@
 
 ;;;; Public API
 
-(def+ Number+ :- Signature
-  "A type signature for numbers."
+#_(def+ Number :- Signature
+  "A type signature for numbers.
+
+  WARNING: This type signature is not available in Dunaj lite,
+  please use `Number+` instead."
   {:added v1
-   :see '[number? Integer+ Float+ Decimal Rational INumerical num]
+   :see '[number? Integer Float Decimal Rational INumerical num
+          Number+]
+   :category "Primary"}
+  java.lang.Number)
+
+(def+ Number+ :- Signature
+  "A type signature for numbers.
+
+  TIP: Identical to `Number` type signature,
+  meant to be used in Dunaj lite."
+  {:added v1
+   :see '[number? Integer Float Decimal Rational INumerical num
+          Number]
    :category "Primary"}
   java.lang.Number)
 
@@ -79,13 +94,28 @@
   [x :- Any]
   (class-instance? java.lang.Number x))
 
-(def+ Integer+ :- Signature
+#_(def+ Integer :- Signature
   "A type signature for integer numbers.
 
   IMPORTANT: This is not a host Integer type, but rather a type
-  signature for any integer type (e.g. JVM Integer, Byte, Short)."
+  signature for any integer type (e.g. JVM Integer, Byte, Short).
+
+  WARNING: This type signature is not available in Dunaj lite,
+  please use `Integer+` instead."
   {:added v1
-   :see '[integer? Number Float+ Decimal Rational dunaj.host.int/Int
+   :see '[integer? Number Float Decimal Rational dunaj.host.int/Int
+          dunaj.host.number/long Integer+]
+   :category "Primary"}
+  (U java.lang.Integer java.lang.Long clojure.lang.BigInt
+     java.math.BigInteger java.lang.Short java.lang.Byte))
+
+(def+ Integer+ :- Signature
+  "A type signature for integer numbers.
+
+  TIP: Identical to `Integer` type signature,
+  meant to be used in Dunaj lite."
+  {:added v1
+   :see '[integer? Number+ Float+ Decimal Rational dunaj.host.int/Int
           dunaj.host.number/long]
    :category "Primary"}
   (U java.lang.Integer java.lang.Long clojure.lang.BigInt
@@ -107,11 +137,25 @@
       (class-instance? java.math.BigInteger x)
       (class-instance? java.lang.Short x)))
 
-(def+ Float+ :- Signature
+#_(def+ Float :- Signature
   "A type signature for floating point numbers.
 
   IMPORTANT: This is not a host Float type, but rather a type
-  signature for any floating point type (e.g. JVM Float, Double)."
+  signature for any floating point type (e.g. JVM Float, Double).
+
+  WARNING: This type signature is not available in Dunaj lite,
+  please use `Float+` instead."
+  {:added v1
+   :see '[integer? Number Integer Decimal Rational
+          dunaj.host.number/double Float+]
+   :category "Primary"}
+  (U java.lang.Double java.lang.Float))
+
+(def+ Float+ :- Signature
+  "A type signature for floating point numbers.
+
+  TIP: Identical to `Float` type signature,
+  meant to be used in Dunaj lite."
   {:added v1
    :see '[integer? Number Float+ Decimal Rational
           dunaj.host.number/double]
