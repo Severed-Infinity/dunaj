@@ -18,7 +18,8 @@
    :categories ["Primary" "Hyperbolic"]}
   (:api bare-ws)
   (:require [clojure.bootstrap :refer [defn v1 fn]]
-            [dunaj.math :refer [Float]]))
+            [dunaj.math :refer [Float]])
+  (:import [java.lang Math]))
 
 
 ;;;; Public API

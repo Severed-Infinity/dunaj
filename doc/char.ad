@@ -4,7 +4,8 @@ type, without any wraping.
 
 TIP: JVM host specific: Dunaj supports primitive chars as
 function arguments and return values (subject to the number of
-arguments and combination of argument types).
+arguments and combination of argument types). Note that this feature
+is not available in Dunaj lite.
 
 Character type, constructor, predicates and other related
 functionalities are defined in <<dunaj.char.api.ad#,dunaj.char>>

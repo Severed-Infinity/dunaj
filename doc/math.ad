@@ -92,15 +92,18 @@ number types:
 * `<<dunaj.math.api.ad#Number,Number>>` type signature and
   `<<dunaj.math.api.ad#number{under}QMARK{under},number?>>`
   predicate - Any number.
+  In Dunaj lite, this type signature is named `Number+`
 * `<<dunaj.math.api.ad#Integer,Integer>>` and
   `<<dunaj.math.api.ad#integer{under}QMARK{under},integer?>>` -
   Integer numbers. Note that this is not a `java.lang.Integer` type.
+  In Dunaj lite, this type signature is named `Integer+`
 * `<<dunaj.math.api.ad#Decimal,Decimal>>` and
   `<<dunaj.math.api.ad#decimal{under}QMARK{under},decimal?>>` -
   Decimal numbers.
 * `<<dunaj.math.api.ad#Float,Float>>` and
   `<<dunaj.math.api.ad#float{under}QMARK{under},float?>>` - Floating
   point numbers. Note that this is not a `java.lang.Float` type.
+  In Dunaj lite, this type signature is named `Float+`
 * `<<dunaj.math.api.ad#Rational,Rational>>` and
   `<<dunaj.math.api.ad#rational{under}QMARK{under},rational?>>` -
   Rational numbers.
@@ -341,7 +344,7 @@ Following functionalities are available:
   (as Clojure automatically compiles integer literals and constants
   as longs)
 * `<<dunaj.host.int.api.ad#iloop,iloop>>` macro for loops that do not
-  promote ints to longs
+  promote ints to longs. This feature is not available in Dunaj lite.
 * Basic math facilities for working with ints
 * Bitwise manipulation operations on top of ints
 
@@ -385,6 +388,8 @@ macros and must be unintuitively enclosed in parens.
 --
 
 === Elimination of autoboxing
+
+CAUTION: This feature is not available in Dunaj lite.
 
 Clojure compiles functions into host classes that by default treat
 input arguments and the return value as instances of

@@ -125,7 +125,8 @@
   (doto (.getDeclaredMethod
          clojure.lang.PersistentVector$TransientVector
          "arrayFor"
-         (dunaj.host.array/array Class [java.lang.Integer/TYPE]))
+         (dunaj.host.array/array java.lang.Class
+                                 [java.lang.Integer/TYPE]))
     (.setAccessible true)))
 
 (defn ^:private invoke-maf :- AnyArray

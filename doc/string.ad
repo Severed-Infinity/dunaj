@@ -2,6 +2,10 @@ In Dunaj, a `<<dunaj.string.api.ad#String,String>>` type
 represents strings. This type directly maps to the host string
 type, without any wraping.
 
+WARNING: In Dunaj lite, the type name clashes with host class
+`java.lang.String`. Because of this, Dunaj provides type alias
+called `String+`, that can be used in place of `String`.
+
 String is an immutable and
 <<dunaj.coll.spi.ad#IHomogeneous,homogeneous>> collection of
 <<dunaj.char.api.ad#,characters>>.

@@ -38,7 +38,8 @@
    [dunaj.poly :refer [deftype defrecord satisfies?]]
    [dunaj.coll :refer
     [IReducing reduced IRed IHomogeneous reduced? item-type reducing
-     IBatchedRed postponed postponed? advance unsafe-advance! reduce]]
+     IBatchedRed postponed postponed? advance unsafe-advance! reduce
+     ISeqable]]
    [dunaj.function :refer [Function fn defn identity comp]]
    [dunaj.coll.helper :refer
     [defxform cloned-advance-fn reduce-batched* reduced-advance

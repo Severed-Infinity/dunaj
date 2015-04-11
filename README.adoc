@@ -1,6 +1,6 @@
 = Dunaj - An alternative core API for Clojure
 
-*See http://dunaj.org[Dunaj homepage] for documentation.*
+*See http://www.dunaj.org[Dunaj homepage] for documentation.*
 
 image::logo/dunaj.png[Dunaj logo]
 
@@ -17,7 +17,9 @@ left in `clojure.core` and still accessible for the brave ones.
 Dunaj is not a library, but rather a fork of Clojure,
 as changes to the Clojure itself were required. The changes to
 Clojure are hovewer minimal and most of Dunaj is implemented as
-a separate library.
+a separate library. A dedicated project called
+http://lite.dunaj.org[Dunaj lite] provides a library-only subset
+of Dunaj, that can be used with ordinary Clojure.
 
 Dunaj integrates well with Clojure. Most of existing Clojure
 libraries and tools can be used from Dunaj without any changes.

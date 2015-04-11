@@ -204,6 +204,17 @@ https://groups.google.com/d/topic/clojure/tiMTLJEt9fQ/discussion[is only partial
 Moreover, postponed reductions are an elegant representation for
 non-blocking data sources, e.g. non-blocking network I/O.
 
+[NOTE]
+----
+In Dunaj lite, collection implementers have to provide an explicit
+implementation for ISeqable. The recommended way is following:
+[source,clojure,linesnum]
+--
+ISeqable
+(-seq [this] (dunaj.coll.helper/red-to-seq this))
+--
+----
+
 == Source-aware recipes
 
 Collection recipes have the ability to be source-aware.

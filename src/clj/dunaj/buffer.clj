@@ -182,7 +182,7 @@
       (->FixedBuffer am narr last pos ff? cam)))
   IMutableStacked
   (-pop! [this]
-    (set! ff? false)
+    (set! ff? (boolean false))
     (.set am arr last (i0)) ;; clear old val, or else we leak
     (when (i== last pos)
       (throw (no-such-element "Cannot pop empty buffer.")))
@@ -195,7 +195,7 @@
     (.set am arr pos val)
     (let [npos (iinc pos)]
       (set! pos (if (i== npos cam) (i0) npos)))
-    (when (i== (-count this) (idec cam)) (set! ff? true))
+    (when (i== (-count this) (idec cam)) (set! ff? (boolean true)))
     this))
 
 (deftype StretchingBuffer
@@ -226,7 +226,7 @@
   IMutableStacked
   (-pop! [this]
     (when (or (i== capacity cam) (i== (-count this) (idec capacity)))
-      (set! ff? false))
+      (set! ff? (boolean false)))
     (.set am arr last (i0)) ;; clear old val, or else we leak
     (when (i== last pos)
       (throw (no-such-element "Cannot pop empty buffer.")))
@@ -255,7 +255,7 @@
           (.set am arr pos val)
           (let [npos (iinc pos)]
             (set! pos (if (i== npos cam) (i0) npos)))
-          (when (i== l (isub capacity (i2))) (set! ff? true))
+          (when (i== l (isub capacity (i2))) (set! ff? (boolean true)))
           this)))))
 
 (deftype DroppingBuffer [fb]
@@ -303,7 +303,7 @@
       (->SlidingBuffer am narr last pos ff? cam)))
   IMutableStacked
   (-pop! [this]
-    (set! ff? false)
+    (set! ff? (boolean false))
     (.set am arr last (i0)) ;; clear old val, or else we leak
     (when (i== last pos)
       (throw (no-such-element "Cannot pop empty buffer.")))
@@ -320,7 +320,7 @@
       (let [npos (iinc pos)]
         (.set am arr pos val)
         (set! pos (if (i== npos cam) (i0) npos))
-        (when (i== (-count this) (idec cam)) (set! ff? true))))
+        (when (i== (-count this) (idec cam)) (set! ff? (boolean true)))))
     this))
 
 (deftype PromiseBuffer

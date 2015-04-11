@@ -32,7 +32,7 @@
 
 (def v1 "1.0")
 
-(def vc "0.3.8")
+(def vc "0.4.0")
 
 ;;; Helpers
 
@@ -994,9 +994,12 @@
   ([form]
      `(clojure.core/assert
        (clojure.core/let [r# ~form]
-         (and (= :boolean (pt r#))
-              (or (true? r#) (false? r#))))
-       (str "form " '~form " does not yield a boolean primitive")))
+         (clojure.core/and
+          (clojure.core/= :boolean (pt r#))
+          (clojure.core/or (clojure.core/true? r#)
+                           (clojure.core/false? r#))))
+       (clojure.core/str
+        "form " '~form " does not yield a boolean primitive")))
   ([form & more]
      `(do (assert-boolean ~form)
           ~@(cc/map #(cc/list `assert-boolean %) more))))
@@ -1035,3 +1038,29 @@
          (var ~dest)
          (clojure.core/constantly ~source))
         nil)))
+
+(def cns (cc/the-ns 'clojure.core))
+
+(cc/defn should-remove?
+  [s v]
+  (cc/or #_(cc/and (cc/class? v)
+                 (cc/= "java.lang" (.getName (.getPackage ^java.lang.Class v))))
+         (cc/and (cc/var? v)
+                 (cc/identical? cns (.ns ^clojure.lang.Var v)))))
+
+(cc/defn remove-mappings! [ns]
+  (cc/doseq [[s v] (cc/ns-map ns)]
+    (when (should-remove? s v)
+      (cc/ns-unmap ns s))))
+
+(cc/defmacro bare-ns
+  [& decls]
+  (let [gen-decl 
+        (fn [[kn & args]]
+          (apply list (symbol "clojure.core" (name kn)) 
+                 (map #(list `quote %) args)))
+        gen-decls #(map gen-decl %)]
+    `(do
+       (remove-mappings! cc/*ns*)
+       ~@(gen-decls decls)
+       #_(clojure.core/import '[java.lang ~'Boolean ~'Number ~'Integer ~'Float]))))
