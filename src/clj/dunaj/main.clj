@@ -330,7 +330,7 @@
   Prints greeting if no eval options were present."
   [[_ & args] inits]
   (when-not (some #(= eval-opt (init-dispatch (first %))) inits)
-    (println! "Dunaj" (canonical (current-version))))
+    (println! "(Dunaj) Clojure" (canonical (current-version))))
   (repl :init (fn []
                 (initialize args inits)
                 (when-not (empty? repl-requires)

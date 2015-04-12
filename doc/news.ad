@@ -1,4 +1,4 @@
-2015/04/13 ::
+2015/04/12 ::
 Announcing Dunaj lite
 +
 Starting from the version 0.4.0, Dunaj now provides a library
@@ -14,7 +14,7 @@ for more information. The main differences are:
 * no qualified special symbols
 * no changes to primitive types
 
-2015/04/13 ::
+2015/04/12 ::
 Dunaj v0.4.0 has been released
 +
 This version is built on Clojure 1.7.0 beta1. Besides minor bugfixes,

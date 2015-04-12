@@ -1,0 +1,137 @@
+Dunaj lite is a library-only version of http://www.dunaj.org[Dunaj].
+
+Dunaj lite is ideal for cases where you want to evaluate Dunaj
+in existing projects, or in cases you cannot or don't want to use
+custom Clojure forks. The main differences are:
+
+* more verbose and less elegant usage
+* small decrease of performance
+* no qualified special symbols
+* no changes to primitive types
+
+== Differences from Dunaj
+
+Dunaj lite provides nearly identical functionality than Dunaj. There
+are differences, but for casual use the experience is the same as
+if using Dunaj.
+Following list of differences are relevant for users of Dunaj lite:
+
+* no qualified special symbols
+** cannot shadow special symbols with custom macros
+** cannot unmap special symbols
+* default imported classes are left untouched
+  (they are unmapped in Dunaj)
+** A consequence of this is that it is now not possible to 
+   define e.g. `String` or `Class` deftype
+** clashing deftypes have now `+` suffix
+** `String+`, `Class+`, `Number+`, `Integer+`, `Float+`, `Thread+`
+* more verbose ns declaration
+** no `:api` declaration
+** use `dunaj.core/dunaj-api!` instead (see next section)
+* no additional primitive types
+** mainly `boolean` and `int` are missed
+** `iloop` behaves the same as `loop`
+* a little bit slower than Dunaj
+
+Minor differnces that most users won't even notice:
+
+* no custom capacity hint in `edit`
+* fewer support for `ICounted`
+** e.g. strings are not counted
+* types that are no longer seqable (use `d.c.h/red-to-seq` instead)
+** batches
+* no support for `c.c.contains?` in following types
+** array adaptors
+** reversed vector sections
+
+
+Following list of differences are relevant for implementers of new
+collection types:
+
+* more boilerplate for custom collection types
+** handling of `Seqable`, `Indexed`, `Counted`, `Lookup`
+* if `ILookup`, must also implement
+** `c.l.ILookup/valAt`
+** something from `c.l.Associative`, `c.l.IPersistentSet`,
+   `j.l.Map` or `j.l.Set`
+* if `IIndexed`, must also implement
+** 2 args `c.l.IIndexed/nth`
+
+
+== Getting started
+
+You can start using Dunaj just like any other Clojure library.
+
+IMPORTANT: Dunaj lite requires Oracle JDK 8. Also note that so far
+Dunaj lite has only been tested under Linux.
+
+`*[org.dunaj/dunaj-lite "{current-version}"]*`
+
+[NOTE]
+You can also start using Dunaj lite with a
+https://github.com/dunaj-project/dunaj-lite-starter[dunaj-lite-starter]
+leiningen project. Clone starter repository with
+`git clone https://github.com/dunaj-project/dunaj-lite-starter.git`
+
+=== REPL
+
+After starting REPL (e.g. with `lein repl`), eval following
+to start working with Dunaj:
+
+[source,clojure,linesnum]
+--
+user=> (require 'dunaj.core)
+nil
+user=> (dunaj.core/dunaj!)
+#object[clojure.lang.Namespace 0xf273036 "dunaj.user"]
+dunaj.user=> (println! (str (print json [1 2 3] {:a "foo"})))
+[1,2,3] {"a":"foo"}
+nil
+--
+
+=== Use in sources
+
+To use Dunaj lite in your sources, disable refering
+clojure.core vars and call `dunaj.core/dunaj-api!` macro.
+
+[source,clojure,linesnum]
+--
+(ns dunaj-starter.core
+  (:refer-clojure :only [])
+  (:require [dunaj.core :refer [dunaj-api!]]))
+
+(dunaj-api!)
+
+(defn bar :- String
+  [s :- String]
+  (str (print "Hello %s!" s)))
+
+(defn foo :- nil
+  [s :- String]
+  (println! (bar s))
+  nil)
+
+(foo "World")
+--
+
+You can use `dunaj-api!` to custome whats get referred. Following
+example shows a bit more elaborate Dunaj referring.
+
+[source,clojure,linesnum]
+--
+(ns dunaj-starter.core
+  (:refer-clojure :only [])
+  (:require [dunaj.core :refer [dunaj-api!]]
+            [dunaj.set :refer [intersection]]))
+
+(dunaj-api!
+  (:refer-dunaj :exclude [+])
+  ;; you can require additional stuff here
+  (:require [dunaj.math.precise :refer [+]]))
+
+;; ...
+--
+
+++++
+<div id="blo"></div>
+++++
