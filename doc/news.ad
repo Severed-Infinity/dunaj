@@ -1,7 +1,34 @@
-2015/04/02 ::
-Blog post: http://blog.wagjo.com/set.html[Universal and Complement Sets]
+2015/04/13 ::
+Announcing Dunaj lite
 +
-Dunaj is full of small useful features and improvements. One of such features is the introduction of universal and complement sets, an addition which enables the representation of identity elements in reduction functions that handle set items.
+Starting from the version 0.4.0, Dunaj now provides a library
+only version called Dunaj lite. The codebase is shared, and Dunaj
+lite supports nearly all of Dunaj's functionalities.
+Dunaj lite is ideal for cases where you want to evaluate Dunaj
+in existing projects, or in cases you cannot or don't want to use
+custom Clojure forks. See http://lite.dunaj.org[Dunaj lite] homepage
+for more information. The main differences are:
++
+* more verbose and less elegant usage
+* small decrease of performance
+* no qualified special symbols
+* no changes to primitive types
+
+2015/04/13 ::
+Dunaj v0.4.0 has been released
++
+This version is built on Clojure 1.7.0 beta1. Besides minor bugfixes,
+this release of Dunaj is notable for the introduction of
+http://lite.dunaj.org[Dunaj lite], a library only subset of Dunaj.
+
+2015/04/02 ::
+Blog post: 
+http://blog.wagjo.com/set.html[Universal and Complement Sets]
++
+Dunaj is full of small useful features and improvements. One of such
+features is the introduction of universal and complement sets, an
+addition which enables the representation of identity elements in
+reduction functions that handle set items.
 
 2015/03/20 ::
 Dunaj v0.3.7 has been released

@@ -105,7 +105,7 @@
   (doto (.getDeclaredConstructor
          clojure.lang.PersistentQueue
          (dunaj.host.array/array
-          Class
+          java.lang.Class
           [clojure.lang.IPersistentMap
            java.lang.Integer/TYPE
            clojure.lang.ISeq

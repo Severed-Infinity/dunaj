@@ -16,6 +16,10 @@ in the `clojure.core` namespace, subject to standard refer rules.
 Dunaj's API does not contain any special symbols (`if`, `loop`
 and other special symbols are in Dunaj defined as macros).
 
+CAUTION: This feature is not available in Dunaj lite, and all
+special symbols work as in Clojure. Note that for `def`, Dunaj lite
+provides a `def+` macro that accepts type signatures.
+
 [source,clojure,linesnum]
 --
 (ns foo.bar)

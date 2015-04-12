@@ -12,7 +12,9 @@ approach.
 Most of Dunaj is implemented as a library, with changes to Clojure
 made only when there are no other options. Dunaj's goal is to
 maintain backwards compatibility with existing Clojure code,
-libraries and tooling.
+libraries and tooling. A http://lite.dunaj.org[library-only variant]
+with nearly identical features is provided for cases where custom
+Clojure forks are not wanted.
 
 Dunaj also tries to be more host agnostic. Host classes are less
 visible and less used in Dunaj, host specific functionalities are

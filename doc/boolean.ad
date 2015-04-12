@@ -7,9 +7,14 @@ when e.g. calling a function that expects a boolean argument.
 By definition, `nil` and `false` coerce to `false`, any other
 value coerces to `true`.
 
+WARNING: In Dunaj lite, the type name clashes with host class
+`java.lang.Boolean`. Because of this, Dunaj provides type alias
+called `Boolean+`, that can be used in place of `Boolean`.
+
 TIP: JVM host specific: Dunaj supports primitive booleans as
 function arguments and return values (subject to the number of
-arguments and combination of argument types).
+arguments and combination of argument types). Note that this
+feature is not available in Dunaj lite.
 
 [WARNING]
 --

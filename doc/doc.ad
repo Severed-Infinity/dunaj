@@ -105,6 +105,8 @@ To make this more bearable, Dunaj API preset automatically refers
 most commonly used vars. See `<<dunaj.core.api.ad#,dunaj.core>>` for
 list of automatically referred vars.
 
+NOTE: API presets functionality is not available in Dunaj lite.
+
 NOTE: An additional preset called `<<bare.core.api.ad#,bare>>`
 is provided that does not refer to any var, special symbols or host
 classes. Use this preset if complete control of what is referred in

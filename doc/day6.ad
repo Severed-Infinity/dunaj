@@ -55,7 +55,7 @@ Following functionalities are available:
 * Common int constants, including ASCII codes (as Clojure
   automatically compiles integer constants as longs)
 * `<<dunaj.host.int.api.ad#iloop,iloop>>` macro for loops that do not
-  promote ints to longs
+  promote ints to longs. THis feature is not available in Dunaj lite.
 * Basic math facilities for working with ints
 * Bitwise manipulation operations on top of ints
 
@@ -99,6 +99,8 @@ macros and must be unintuitively enclosed in parens.
 --
 
 == More primitive types for functions
+
+CAUTION: This feature is not available in Dunaj lite.
 
 Clojure compiles functions into host classes that by default treat
 input arguments and a return value as instances of

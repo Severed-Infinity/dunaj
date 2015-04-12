@@ -142,6 +142,10 @@ three built-in API presets:
   <<dunaj.core.api.ad#,most commonly used>> vars from Dunaj
   (out of more than 1700). No vars from `clojure.core` are included.
 
+CAUTION: API Presets functionality is not available in Dunaj lite.
+Please consult http://lite.dunaj.org[Dunaj lite documentation] for
+a way how to work around this limitation.
+
 Custom API presets can be easily created and used in the same way as
 the three built-in presets. Following examples shows how API presets
 are used.

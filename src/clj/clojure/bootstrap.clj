@@ -27,7 +27,7 @@
 
 (def v1 "1.0")
 
-(def vc "0.3.8")
+(def vc "0.4.0")
 
 ;;; Helpers
 
@@ -1100,4 +1100,3 @@
        (remove-mappings! cc/*ns*)
        ~@(gen-decls decls)
        #_(clojure.core/import '[java.lang ~'Boolean ~'Number ~'Integer ~'Float]))))
-

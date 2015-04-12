@@ -10,7 +10,7 @@ Everything is released under the same license as Clojure.
 
 Library used for the actual documentation generation can be used
 to generate documentation of any Clojure project, and will be released
-soon.
+soon as a separate project.
 
 == Annotated documentation
 
