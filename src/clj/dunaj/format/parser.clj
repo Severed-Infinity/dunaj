@@ -26,8 +26,7 @@
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Fn Maybe Any U I AnyFn Predicate]]
    [dunaj.boolean :refer [Boolean+ boolean or not and]]
-   [dunaj.host :refer
-    [Class+ AnyBatch BatchManager keyword->class]]
+   [dunaj.host :refer [Class+ AnyBatch BatchManager keyword->class]]
    [dunaj.host.int :refer
     [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imin iadd
      iloop i0 i1 i2 i3 i4 i5 i8 ixFF ione? i-1 imul idigit? ioctal?
