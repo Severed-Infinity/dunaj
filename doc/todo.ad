@@ -28,6 +28,7 @@ be added into Dunaj too.
 * Reader conditionals for CLJ parser
 * Type signatures support for CLJ pretty printer
 * Helpful error messages
+* reflect changes in synthread
 * More API presets (e.g. for unchecked or host int math)
 * Add more data formatters (parsers/printers), including binary
   codecs. (e.g. XML, Transit, Fressian)

@@ -17,8 +17,9 @@ for more information. The main differences are:
 2015/04/13 ::
 Dunaj v0.4.0 has been released
 +
-Besides minor bugfixes, this release is notable for the introduction
-of http://lite.dunaj.org[Dunaj lite], a library only subset of Dunaj.
+This version is built on Clojure 1.7.0 beta1. Besides minor bugfixes,
+this release of Dunaj is notable for the introduction of
+http://lite.dunaj.org[Dunaj lite], a library only subset of Dunaj.
 
 2015/04/02 ::
 Blog post: 

@@ -20,7 +20,6 @@ in that order:
 * tools.analyzer.jvm
 * core.async
 * core.rrb-vector
-* synthread
 
 == New version release:
 

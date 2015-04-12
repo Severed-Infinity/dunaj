@@ -123,7 +123,7 @@
 (defalias update
   {:added v1
    :tsig Macro}
-  lonocloud.synthread/assoc)
+  lonocloud.synthread/update)
 
 (defalias update-in
   {:added v1
@@ -140,12 +140,12 @@
    :tsig Macro}
   lonocloud.synthread/each-as)
 
-(defalias key
+#_(defalias key
   {:added v1
    :tsig Macro}
   lonocloud.synthread/key)
 
-(defalias val
+#_(defalias val
   {:added v1
    :tsig Macro}
   lonocloud.synthread/val)

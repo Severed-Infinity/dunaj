@@ -124,7 +124,7 @@
 (defalias update
   {:added v1
    :tsig Macro}
-  lonocloud.synthread-last/assoc)
+  lonocloud.synthread-last/update)
 
 (defalias update-in
   {:added v1

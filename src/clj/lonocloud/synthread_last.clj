@@ -1,7 +1,67 @@
-(ns lonocloud.synthread-last
-  (:use [lonocloud.synthread.isolate :only [isolate-ns]]
-        [lonocloud.synthread.impl :only [] :as impl]))
+(ns lonocloud.synthread-last)
+
+(defn copy-ns-from [from-ns]
+  (doseq [[sym target] (ns-map from-ns)]
+    (if (var? target)
+      (when-not (::isolated (meta target))
+        (.refer *ns* sym target))
+      (.importClass *ns* sym target)))
+  (doseq [[sym ns] (ns-aliases from-ns)]
+    (alias sym (symbol (str ns)))))
+
+(defn split-def [orig-ns def-macro [def-name & def-tail]]
+  (let [tmp (with-meta (symbol (str "__" def-name))
+              (meta def-name))]
+    `(do
+       (~def-macro ~tmp ~@def-tail)
+       (ns-unmap '~orig-ns '~def-name)
+       (intern '~orig-ns (with-meta '~def-name
+                           (assoc (meta (var ~tmp))
+                             ::isolated true))
+               (deref (var ~tmp))))))
+
+(defmacro isolate-ns
+  "Isolate the body of each definition (defaulting to defn's and
+  defmacro's) in the rest of this namespace from the vars being
+  defined. Access to these vars is available through the alias given
+  to the optional :as parameter. Useful only for namespaces that
+  provide many vars whose names conflict with clojure.core."
+  [& {:keys [as macros]}]
+  (let [orig-ns (symbol (str *ns*))
+        macros (or macros `[defn defmacro])]
+    `(do
+       (in-ns '~(symbol (str *ns* ".isolated")))
+       (copy-ns-from '~orig-ns)
+       ~(when as
+          `(alias '~as '~(symbol (str *ns*))))
+       ~@(for [macro macros
+               :let [unqualified-macro (symbol (name macro))]]
+           `(do
+              (ns-unmap *ns* '~unqualified-macro)
+              (clojure.core/defmacro ~unqualified-macro [& everything#]
+                (split-def '~orig-ns '~macro everything#)))))))
+
 (isolate-ns :as ->>)
+
+(defn replace-content
+     [o n]
+     (condp instance? o
+       (type n)                           (if (instance? clojure.lang.IObj o)
+                                            (with-meta n (meta o))
+                                            n)
+       clojure.lang.IMapEntry             (vec n)
+       clojure.lang.IRecord               (with-meta
+                                            (merge o (if (map? n) n
+                                                         (into {} (map vec n))))
+                                            (meta o))
+       clojure.lang.IPersistentList       (with-meta (apply list n) (meta o))
+       clojure.lang.IPersistentMap        (into (empty o) (map vec n))
+
+       clojure.lang.ISeq                  (with-meta (doall n) (meta o))
+       clojure.lang.IPersistentCollection (into (empty o) n)
+
+       clojure.lang.IObj                  (with-meta n (meta o))
+       n))
 
 ;; Section 0: special syntax support for updating and getting from a
 ;; sub-path.
@@ -241,7 +301,7 @@
        (impl/replace-content x# (cons (first x#)
                                       (->>/do (rest x#) ~@body))))))
 
-(defmacro assoc
+(defmacro update
   "Thread the value at each key through the pair form."
   [& body]
   (let [x (last body)
