@@ -12,6 +12,7 @@
 
 (ns dunaj.user
   "User namespace."
-  (:require [dunaj.core :refer [dunaj-ns]]))
+  (:refer-clojure :only [])
+  (:require [dunaj.core :refer [dunaj-api!]]))
 
-(dunaj-ns)
+(dunaj-api!)

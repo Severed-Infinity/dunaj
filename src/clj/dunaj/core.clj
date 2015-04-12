@@ -20,7 +20,7 @@
   (:refer-clojure :exclude
    [refer set first = map if-not remove let fn empty? vec second defn
     symbol name alter-meta! defmacro filter apply assoc])
-  (:require [clojure.bootstrap]
+  (:require [clojure.bootstrap :refer [v1]]
             [clojure.core.async]
             [clojure.dunaj-deftype]
             [dunaj.type]
@@ -337,3 +337,28 @@
           `(apply init-api ~(->lst `quote (first dd)))
           `(init-api nil))
        ~@(gen-decls decls))))
+
+(defmacro dunaj-api!
+  "Loads Dunaj API. To be used in Dunaj lite."
+  {:added v1}
+  [& decls]
+  (let [gen-decl 
+        (fn [[kn & args]]
+          (apply ->lst (symbol "clojure.core" (name kn)) 
+                 (map #(->lst `quote %) args)))
+        gen-decls #(map gen-decl %)
+        ff #(= :refer-dunaj (first %))
+        dd (vec (filter ff decls))
+        decls (remove ff decls)]
+    `(do
+       ~(if-not (empty? dd)
+          `(apply init-api ~(->lst `quote (first dd)))
+          `(init-api nil))
+       ~@(gen-decls decls))))
+
+(defn dunaj!
+  "Loads Dunaj."
+  {:added v1}
+  []
+  (clojure.core/require 'dunaj.user)
+  (in-ns 'dunaj.user))
