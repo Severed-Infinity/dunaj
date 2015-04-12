@@ -1,4 +1,4 @@
-(defproject org.dunaj/dunaj-lite "0.4.0"
+(defproject org.dunaj/dunaj-lite "0.4.1-SNAPSHOT"
   :description "Dunaj lite - An alternative core API for Clojure."
   :url "http://lite.dunaj.org"
   :dependencies [[org.clojure/clojure "1.7.0-beta1"]
