@@ -22,9 +22,11 @@
    :categories ["Primary" "Conditionals" "Iteration" "Evaluation"]}
   (:api bare)
   (:require
-   [clojure.core :refer [locking list list* var throw satisfies? fn*]]
+   [clojure.core :refer
+    [locking list list* var throw satisfies? fn* identical?]]
    [clojure.bootstrap :refer
     [defalias defmacro defprotocol deftype defn v1 replace-var!]]
+   [dunaj.boolean :refer [and or not]]
    [dunaj.type :refer [Macro Fn Va Any]]
    [dunaj.host :refer [set!]]
    [dunaj.compare :refer [nil?]]
@@ -122,7 +124,7 @@
      (let [form (clojure.core/first bindings)
            tst (clojure.core/second bindings)
            rst (clojure.core/rest (clojure.core/rest bindings))]
-       (if (clojure.core/identical? :let form)
+       (if (identical? :let form)
          `(dunaj.flow/let ~tst (if-let ~rst ~then ~else))
          `(dunaj.flow/let [temp# ~tst]
             (if temp#
@@ -195,18 +197,46 @@
    :indent 1
    :let-bindings true})
 
-(defalias cond
-  "Takes a set of test/expr pairs. It evaluates each test one at a
-  time. If a test returns logical true, cond evaluates and returns
-  the value of the corresponding expr and doesn’t evaluate any of
-  the other tests or exprs. `(cond)` returns `nil`."
+(defmacro cond
+  "Takes a set of `test`/`expr` pairs. It evaluates each `test` one
+  at a time. If a `test` returns logical `true`, `cond` evaluates and
+  returns the value of the corresponding `expr` and doesn’t evaluate
+  any of the other tests or exprs. `(cond)` returns `nil`.
+
+  Treats last argument as an implicit else, if number of arguments is
+  odd. If `test` is a vector, treats `test` as input to `if-let`.
+
+  `cond` supports several modifiers:
+
+  * `:let` - treats `expr` as a binding vec and establishes custom
+    locals that will be available for subsequent `test`/`expr` pairs
+  * `:when` - immediatelly returns `nil` if `expr` does not evaluate
+    to logical `true`. Continues with the rest of pairs otherwise.    
+  * `:when-let` - similar to `:when`, but treats `expr` as an input
+    to `when-let`.
+
+  Note that modifiers cannot be at a tail position."
   {:added v1
    :category "Conditionals"
-   :tsig Macro
    :highlight :flow
    :see '[condp case if when]
    :indent 0
-   :indent-group 2})
+   :indent-group 2}
+  [& clauses]
+  (when-let [[tst exp & rst] (clojure.core/seq clauses)]
+    (clojure.core/cond
+      (not (clojure.core/next clauses)) tst
+      (and (not (clojure.core/seq rst))
+           (or (identical? :let tst)
+               (identical? :when tst)
+               (identical? :when-let tst)))
+      (throw (java.lang.IllegalArgumentException.
+              "cond modifiers at tail position"))
+      (identical? :let tst) `(let ~exp (cond ~@rst))
+      (identical? :when tst) `(when ~exp (cond ~@rst))
+      (identical? :when-let tst) `(when-let ~exp (cond ~@rst))
+      (clojure.core/vector? tst) `(if-let ~tst ~exp (cond ~@rst))
+      :else `(if ~tst ~exp (cond ~@rst)))))
 
 (defalias condp
   "Takes a binary predicate `_pred_`, an expression `_expr_`,
