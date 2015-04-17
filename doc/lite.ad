@@ -9,58 +9,9 @@ custom Clojure forks. The main differences are:
 * no qualified special symbols
 * no changes to primitive types
 
-== Differences from Dunaj
-
-Dunaj lite provides nearly identical functionality than Dunaj. There
-are differences, but for casual use the experience is the same as
-if using Dunaj.
-Following list of differences are relevant for users of Dunaj lite:
-
-* no qualified special symbols
-** cannot shadow special symbols with custom macros
-** cannot unmap special symbols
-* default imported classes are left untouched
-  (they are unmapped in Dunaj)
-** A consequence of this is that it is now not possible to 
-   define e.g. `String` or `Class` deftype
-** clashing deftypes have now `+` suffix
-** `String+`, `Class+`, `Number+`, `Integer+`, `Float+`, `Thread+`
-* more verbose ns declaration
-** no `:api` declaration
-** use `dunaj.core/dunaj-api!` instead (see next section)
-* no additional primitive types
-** mainly `boolean` and `int` are missed
-** `iloop` behaves the same as `loop`
-* a little bit slower than Dunaj
-
-Minor differnces that most users won't even notice:
-
-* no custom capacity hint in `edit`
-* fewer support for `ICounted`
-** e.g. strings are not counted
-* types that are no longer seqable (use `d.c.h/red-to-seq` instead)
-** batches
-* no support for `c.c.contains?` in following types
-** array adaptors
-** reversed vector sections
-
-
-Following list of differences are relevant for implementers of new
-collection types:
-
-* more boilerplate for custom collection types
-** handling of `Seqable`, `Indexed`, `Counted`, `Lookup`
-* if `ILookup`, must also implement
-** `c.l.ILookup/valAt`
-** something from `c.l.Associative`, `c.l.IPersistentSet`,
-   `j.l.Map` or `j.l.Set`
-* if `IIndexed`, must also implement
-** 2 args `c.l.IIndexed/nth`
-
-
 == Getting started
 
-You can start using Dunaj just like any other Clojure library.
+You can start using Dunaj lite just like any other Clojure library.
 
 IMPORTANT: Dunaj lite requires Oracle JDK 8. Also note that so far
 Dunaj lite has only been tested under Linux.
@@ -131,6 +82,55 @@ example shows a bit more elaborate Dunaj referring.
 
 ;; ...
 --
+
+== Differences from Dunaj
+
+Dunaj lite provides nearly identical functionality than Dunaj. There
+are differences, but for casual use the experience is the same as
+if using Dunaj.
+Following list of differences are relevant for users of Dunaj lite:
+
+* no qualified special symbols
+** cannot shadow special symbols with custom macros
+** cannot unmap special symbols
+* default imported classes are left untouched
+  (they are unmapped in Dunaj)
+** A consequence of this is that it is now not possible to 
+   define e.g. `String` or `Class` deftype
+** clashing deftypes have now `+` suffix
+** `String+`, `Class+`, `Number+`, `Integer+`, `Float+`, `Thread+`
+* more verbose ns declaration
+** no `:api` declaration
+** use `dunaj.core/dunaj-api!` instead (see next section)
+* no additional primitive types
+** mainly `boolean` and `int` are missed
+** `iloop` behaves the same as `loop`
+* a little bit slower than Dunaj
+
+Minor differnces that most users won't even notice:
+
+* no custom capacity hint in `edit`
+* fewer support for `ICounted`
+** e.g. strings are not counted
+* types that are no longer seqable (use `d.c.h/red-to-seq` instead)
+** batches
+* no support for `c.c.contains?` in following types
+** array adaptors
+** reversed vector sections
+
+
+Following list of differences are relevant for implementers of new
+collection types:
+
+* more boilerplate for custom collection types
+** handling of `Seqable`, `Indexed`, `Counted`, `Lookup`
+* if `ILookup`, must also implement
+** `c.l.ILookup/valAt`
+** something from `c.l.Associative`, `c.l.IPersistentSet`,
+   `j.l.Map` or `j.l.Set`
+* if `IIndexed`, must also implement
+** 2 args `c.l.IIndexed/nth`
+
 
 ++++
 <div id="blo"></div>
