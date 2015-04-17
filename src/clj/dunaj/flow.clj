@@ -17,7 +17,8 @@
 (ns dunaj.flow
   "Control Flow. Conditionals, loops, evaluation."
   {:authors ["Jozef Wagner"]
-   :additional-copyright true
+   :additional-copyright
+   "2008, 2015, Rich Hickey and Clojure contributors, Christophe Grand"
    :categories ["Primary" "Conditionals" "Iteration" "Evaluation"]}
   (:api bare)
   (:require
@@ -93,10 +94,21 @@
    :indent 1})
 
 (defmacro if-let
-  "bindings => binding-form test
+  "binding => binding-form test
 
-  If test is logical true, evaluates `_then_` with binding-form bound
-  to the value of test, if not, yields `_else_`"
+  If all tests are logical `true`, evaluates `_then_`
+  with binding-forms bound to the value of tests, if not, yields
+  `_else_`. Accepts multiple bindings.
+
+  Supports `:let` modifier as binding-form, in which case it treats
+  a corresponding test as a bindings vec. This is used to introduce
+  locals that are not subject to the trueness comparison.
+
+  `_else_` clause must not use any binding-form or any custom locals
+  created with `:let` modifier in any way.
+
+  WARNING: A subset of the bound locals may be visible in the
+  `_else_` expr. Do not rely on this behaviour."
   {:added v1
    :highlight :flow
    :indent 1
@@ -106,11 +118,17 @@
   ([bindings then]
    `(dunaj.flow/if-let ~bindings ~then nil))
   ([bindings then else & oldform]
-   (let [form (bindings 0) tst (clojure.core/rest bindings)]
-     `(dunaj.flow/let [temp# ~@tst]
-        (if temp#
-          (dunaj.flow/let [~form temp#] ~then)
-          ~else)))))
+   (if (clojure.core/seq bindings)
+     (let [form (clojure.core/first bindings)
+           tst (clojure.core/second bindings)
+           rst (clojure.core/rest (clojure.core/rest bindings))]
+       (if (clojure.core/identical? :let form)
+         `(dunaj.flow/let ~tst (if-let ~rst ~then ~else))
+         `(dunaj.flow/let [temp# ~tst]
+            (if temp#
+              (dunaj.flow/let [~form temp#] (if-let ~rst ~then ~else))
+              ~else))))
+     then)))
 
 (defalias if-some
   "bindings => binding-form test
@@ -145,18 +163,24 @@
    :highlight :flow
    :indent 1})
 
-(defalias when-let
-  "bindings => binding-form test
+(defmacro when-let
+  "binding => binding-form test
 
-  When test is `true`, evaluates `_body_` with binding-form bound to
-  the value of test."
+  When test is logically `true`, evaluates `_body_` with binding-form
+  bound to the value of test. Accepts multiple bindings. Evaluates
+  `_body_` only if all test are logically `true`.
+
+  Supports `:let` modifier as binding-form, in which case it treats
+  a corresponding test as a bindings vec. This is used to introduce
+  locals that are not subject to the trueness comparison."
   {:added v1
    :category "Conditionals"
-   :tsig Macro
    :highlight :flow
    :see '[if-let when if cond case]
    :indent 1
-   :let-bindings true})
+   :let-bindings true}
+  [bindings & body]
+  `(if-let ~bindings (clojure.core/do ~@body)))
 
 (defalias when-some
   "bindings => binding-form test
