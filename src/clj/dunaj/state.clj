@@ -108,9 +108,9 @@
    :see '[reference? blocking-reference?]
    :category "Primary"}
   ([ref :- IReference]
-     (-deref ref))
+   (-deref ref))
   ([ref :- IBlockingReference, timeout :- Any, timeout-val :- Any]
-     (-deref-for ref (milliseconds timeout) timeout-val)))
+   (-deref-for ref (milliseconds timeout) timeout-val)))
 
 ;; Support IReference for Clojure code
 (replace-var! clojure.core/deref)
@@ -160,14 +160,14 @@
    :see '[adjustable? reset!]
    :category "Mutation"}
   ([ref :- IAdjustable, key :- Any, val :- Any]
-     (-adjust! ref key val))
+   (-adjust! ref key val))
   ([ref :- IAdjustable, key :- Any, val :- Any & keyvals :- Any]
-     (when (odd? (count keyvals))
-       (throw (java.lang.IllegalArgumentException.
-               "odd number of arguments to adjust!")))
-     (reduce (fn [r [k v]] (-adjust! r k v))
-             (adjust! ref key val)
-             (partition 2 keyvals))))
+   (when (odd? (count keyvals))
+     (throw (java.lang.IllegalArgumentException.
+             "odd number of arguments to adjust!")))
+   (reduce (fn [r [k v]] (-adjust! r k v))
+           (adjust! ref key val)
+           (partition 2 keyvals))))
 
 (defprotocol IAtomic
   "A state protocol for atomic value references."

@@ -486,18 +486,16 @@
   ([factory :- (U IMemoizationFactory
                   (I IConvolutionFactory ICollectionFactory)),
     f :- AnyFn]
-   (let [mf (cond
-              (satisfies? IMemoizationFactory factory)
-              (-memoize factory f)
-              (and (satisfies? IConvolutionFactory factory)
-                   (satisfies? ICollectionFactory factory))
-              (-memoize (assoc *default-memoization-factory*
-                               :cache-factory factory)
-                        f)
-              :else
-              (throw (java.lang.UnsupportedOperationException.
-                      (str "Factory must be either a memoization"
-                           " or convolution factory."))))]
+   (let [mf (cond (satisfies? IMemoizationFactory factory)
+                  (-memoize factory f)
+                  (and (satisfies? IConvolutionFactory factory)
+                       (satisfies? ICollectionFactory factory))
+                  (-memoize (assoc *default-memoization-factory*
+                                   :cache-factory factory)
+                            f)
+                  (throw (java.lang.UnsupportedOperationException.
+                          (str "Factory must be either a memoization"
+                               " or convolution factory."))))]
      (update-meta mf assoc ::original f)))
   ([memoization-factory f & {:as opts}]
    (memoize (conj memoization-factory opts) f)))

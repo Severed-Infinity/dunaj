@@ -216,9 +216,9 @@
     (let [cnt (count args)]
       (cond (== 1 cnt) (get this (first args))
             (== 2 cnt) (get this (first args) (second args))
-            :else (throw (java.lang.RuntimeException.
-                          (clojure.core/str
-                           "Wrong number of args (" cnt ")"))))))
+            (throw
+             (java.lang.RuntimeException.
+              (clojure.core/str "Wrong number of args (" cnt ")"))))))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -352,9 +352,9 @@
     (let [cnt (count args)]
       (cond (== 1 cnt) (get this (first args))
             (== 2 cnt) (get this (first args) (second args))
-            :else (throw (java.lang.RuntimeException.
-                          (clojure.core/str
-                           "Wrong number of args (" cnt ")"))))))
+            (throw
+             (java.lang.RuntimeException.
+              (clojure.core/str "Wrong number of args (" cnt ")"))))))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -768,18 +768,15 @@
   (when string
     (let [camel-fn
           (fn [wrap :- (Maybe CamelWrap), c]
-            (if (nil? wrap)
+            (cond
+              (nil? wrap)
               (->CamelWrap
                (edit (->str (dunaj.char/upper-case c))) false)
-              (let [ret (.-ret wrap)
-                    camelize? (.-camelize wrap)]
-                (cond
-                 (i== (iMINUS) (iint c))
-                 (->CamelWrap ret true)
-                 camelize?
-                 (->CamelWrap
-                  (conj! ret (dunaj.char/upper-case c)) false)
-                 :else (->CamelWrap (conj! ret c) false)))))
+              :let [ret (.-ret wrap), camelize? (.-camelize wrap)]
+              (i== (iMINUS) (iint c)) (->CamelWrap ret true)
+              camelize? (->CamelWrap
+                         (conj! ret (dunaj.char/upper-case c)) false)
+              :else (->CamelWrap (conj! ret c) false)))
           r (reduce camel-fn nil string)]
       (if r
         (settle! (.-ret ^dunaj.string.CamelWrap r))
@@ -852,22 +849,20 @@
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (cond
-     (izero? count) (combinef)
-     (i<= count (iint n)) (reduce-fn this reducef (combinef))
-     :else
-     (if-let [split (split-adjust #(partitionf (aget arr %))
-                                  (iadd offset (idiv count (i2)))
-                                  (iadd offset count))]
-       (let [c1 (->StringPartition arr partitionf offset
-                                   (isub split offset))
-             c2 (->StringPartition arr partitionf split
-                                   (isub count (isub split offset)))
-             fc (fn [child]
-                  #(-fold child reduce-fn pool n combinef reducef))]
-         (invoke pool #(let [f1 (fc c1)
-                             t2 (fork (fc c2))]
-                         (combinef (f1) (join t2)))))
-       (reduce-fn this reducef (combinef))))))
+      (izero? count) (combinef)
+      (i<= count (iint n)) (reduce-fn this reducef (combinef))
+      [split (split-adjust #(partitionf (aget arr %))
+                           (iadd offset (idiv count (i2)))
+                           (iadd offset count))]
+      (let [c1 (->StringPartition
+                arr partitionf offset (isub split offset))
+            c2 (->StringPartition
+                arr partitionf split (isub count (isub split offset)))
+            fc (fn [child]
+                 #(-fold child reduce-fn pool n combinef reducef))]
+        (invoke pool #(let [f1 (fc c1), t2 (fork (fc c2))]
+                        (combinef (f1) (join t2)))))
+      :else (reduce-fn this reducef (combinef)))))
 
 (defn partition-by :- IRed
   "Applies `_partitionf_` to each value in `_string_`, splitting it

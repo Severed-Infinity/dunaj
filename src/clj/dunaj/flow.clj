@@ -124,8 +124,19 @@
      (let [form (clojure.core/first bindings)
            tst (clojure.core/second bindings)
            rst (clojure.core/rest (clojure.core/rest bindings))]
-       (if (identical? :let form)
+       (clojure.core/cond
+         (identical? :let form)
          `(dunaj.flow/let ~tst (if-let ~rst ~then ~else))
+         (identical? :- tst)
+         `(dunaj.flow/let [temp# :- ~(clojure.core/first rst)
+                           ~(clojure.core/second rst)]
+            (if temp#
+              (dunaj.flow/let [~form :- ~(clojure.core/first rst)
+                               temp#]
+                (if-let ~(clojure.core/rest (clojure.core/rest rst))
+                  ~then ~else))
+              ~else))
+         :else
          `(dunaj.flow/let [temp# ~tst]
             (if temp#
               (dunaj.flow/let [~form temp#] (if-let ~rst ~then ~else))
@@ -215,7 +226,8 @@
   * `:when-let` - similar to `:when`, but treats `expr` as an input
     to `when-let`.
 
-  Note that modifiers cannot be at a tail position."
+  Note that modifiers cannot be at a tail position. Moreover, it is
+  not idiomatic to use modifier as first `test`."
   {:added v1
    :category "Conditionals"
    :highlight :flow

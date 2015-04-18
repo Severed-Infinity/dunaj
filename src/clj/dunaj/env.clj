@@ -146,8 +146,7 @@
    :category "Primary"
    :see '[compiling?]}
   []
-  (when-let [f clojure.core/*file*]
-    (uri f)))
+  (when-let [f clojure.core/*file*] (uri f)))
 
 (defn current-ns :- Symbol
   "Returns a symbol representing the current namespace."

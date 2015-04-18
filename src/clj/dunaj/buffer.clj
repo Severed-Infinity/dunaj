@@ -12,11 +12,11 @@
 
 (ns dunaj.buffer
   "Unsynchronized mutable collections with predefined capacity.
-  
+
   Buffers are very fast FIFO mutable collections which have their
   fixed capacity set at the creation time. They support following
   functionalities:
-  
+
   * `<<dunaj.coll.api.ad#peek,peek>>` for getting the first inserted
     value.
   * `<<dunaj.coll.api.ad#conj_BANG_,conj!>>` for inserting new
@@ -53,7 +53,7 @@
    [dunaj.math :refer [<]]
    [dunaj.compare :refer [nil?]]
    [dunaj.state :refer [ICloneable clone]]
-   [dunaj.flow :refer [when let cond when-not]]
+   [dunaj.flow :refer [when let when-not cond]]
    [dunaj.poly :refer [deftype Type defprotocol]]
    [dunaj.coll :refer
     [ICapped IPeekable IEmptyAware ICounted IIndexed ISeqable
@@ -116,13 +116,11 @@
       (throw
        (illegal-argument
         (->str "requested type is not supported" requested-type))))
-    (if (ipos? (-count this))
-      (if (i> begin end)
-        (let [af (advance-fn [ret :- Any]
-                   (reducef ret (batch-on arr 0 end)))]
-          (af (reducef init (batch-on arr begin (.count am arr)))))
-        (reducef init (batch-on arr begin end)))
-      init))
+    (let [rf #(reducef %1 (batch-on arr %2 %3))
+          af (advance-fn [ret :- Any] (rf ret 0 end))]
+      (cond (izero? (-count this)) init
+            (i> begin end) (af (rf init begin (.count am arr)))
+            :else (rf init begin end))))
   IHomogeneous
   (-item-type [this] (.itemType am))
   IIndexed ;; Undocumented support for IIndexed
@@ -237,25 +235,25 @@
   (-conj! [this val]
     (let [l (-count this)]
       (if (and ff? (i== l (idec cam)))
-        (do
-          (let [ncam (imul cam (i2))
-                narr (.allocate am ncam)
-                special? (i> last pos)
-                _ (if special?
-                    (java.lang.System/arraycopy
-                     arr last narr (i0) (isub cam last))
-                    (java.lang.System/arraycopy arr last narr (i0) l))
-                _ (when special?
-                    (java.lang.System/arraycopy
-                     arr 0 narr (isub cam last) pos))
-                nb (->StretchingBuffer
-                    am narr 0 l capacity true ncam)]
-            (dunaj.coll/-conj! nb val)))
+        (let [ncam (imul cam (i2))
+              narr (.allocate am ncam)
+              special? (i> last pos)
+              _ (if special?
+                  (java.lang.System/arraycopy
+                   arr last narr (i0) (isub cam last))
+                  (java.lang.System/arraycopy arr last narr (i0) l))
+              _ (when special?
+                  (java.lang.System/arraycopy
+                   arr 0 narr (isub cam last) pos))
+              nb (->StretchingBuffer
+                  am narr 0 l capacity true ncam)]
+          (dunaj.coll/-conj! nb val))
         (do
           (.set am arr pos val)
           (let [npos (iinc pos)]
             (set! pos (if (i== npos cam) (i0) npos)))
-          (when (i== l (isub capacity (i2))) (set! ff? (boolean true)))
+          (when (i== l (isub capacity (i2)))
+            (set! ff? (boolean true)))
           this)))))
 
 (deftype DroppingBuffer [fb]
@@ -320,7 +318,8 @@
       (let [npos (iinc pos)]
         (.set am arr pos val)
         (set! pos (if (i== npos cam) (i0) npos))
-        (when (i== (-count this) (idec cam)) (set! ff? (boolean true)))))
+        (when (i== (-count this) (idec cam))
+          (set! ff? (boolean true)))))
     this))
 
 (deftype PromiseBuffer
@@ -344,7 +343,7 @@
     this)
   IMutableCollection
   (-conj! [this nval]
-    (when (nil? val) (set! val nval))    
+    (when (nil? val) (set! val nval))
     this))
 
 (defn promise-buffer :- IMutableCollection

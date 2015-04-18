@@ -109,10 +109,9 @@
   {:added v1
    :see '[symbol?]}
   ([x :- INamed]
-   (cond
-     (string? x) (clojure.lang.Symbol/intern x)
-     (symbol? x) x
-     :else (clojure.lang.Symbol/intern (namespace x) (name x))))
+   (cond (string? x) (clojure.lang.Symbol/intern x)
+         (symbol? x) x
+         :else (clojure.lang.Symbol/intern (namespace x) (name x))))
   ([ns :- (Maybe String), name :- String]
    (clojure.lang.Symbol/intern ns name)))
 

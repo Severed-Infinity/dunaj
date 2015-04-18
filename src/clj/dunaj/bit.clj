@@ -31,23 +31,23 @@
   TIP: JVM host specific: It is usually more performant to use
   <<dunaj.host.int.api.ad#Bitwise,dunaj.host.int>> when handling
   numeric data from host (e.g. array indexes, enums, lenghts).
-  
+
   [TIP]
   --
   When using numeric constants, remember that `CLJ` format supports
   hexadecimal and binary notations for integer literals.
   It will make your code more readable.
-  
+
   [source,clojure,linenums]
   ----
   (binary (bit/and 2r10110 2r11011))
   ;;=> \"00010010\"
-  
+
   (hexa (bit/and 0x0F0 0x1BC))
   ;;=> \"0x00B0\"
   ----
   --
-  
+
   NOTE: Prefer aliasing this namespace (as shown in the usage
   example) to refering its functions."
   {:categories

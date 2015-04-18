@@ -1171,15 +1171,12 @@
   ([m ks]
    (reduce get m ks))
   ([m ks not-found]
-   (loop [sentinel (java.lang.Object.)
-          m m
-          ks (seq ks)]
-     (if ks
-       (let [m (get m (first ks) sentinel)]
-         (if (identical? sentinel m)
-           not-found
-           (recur sentinel m (next ks))))
-       m))))
+   (let [sentinel (java.lang.Object.)]
+     (loop [m m, ks (seq ks)]
+       (cond (nil? ks) m
+             :let [m (get m (first ks) sentinel)]
+             (identical? sentinel m) not-found
+             :else (recur m (next ks)))))))
 
 ;;; Indexed collections
 
@@ -1908,15 +1905,14 @@
                       (-assoc key3 val3)
                       (-assoc key4 val4))]
          (loop [coll coll kvs (seq keyvals)]
-           (if kvs
-             (if (next kvs)
-               (recur (-assoc coll (first kvs) (second kvs))
-                      (nnext kvs))
-               (throw
-                (java.lang.IllegalArgumentException.
-                 (str "assoc expects even number of arguments "
-                      "after map/vector, found odd number"))))
-             coll)))))))
+           (cond
+             (nil? kvs) coll
+             (next kvs) (recur (-assoc coll (first kvs) (second kvs)) 
+                               (nnext kvs))
+             (throw
+              (java.lang.IllegalArgumentException.
+               (str "assoc expects even number of arguments"
+                    " after map/vector, found odd number"))))))))))
 
 (defalias assoc-in
   "Associates a value in a nested associative structure, where
@@ -2132,9 +2128,9 @@
    :see '[map? dissoc dissoc-one dissoc!]
    :category "Persistent"}
   [m :- (Maybe IPersistentMap), [k & ks]]
-  (if ks
-    (if-let [v (get m k)] (assoc m k (dissoc-in v ks)) m)
-    (dissoc m k)))
+  (cond (nil? ks) (dissoc m k)
+        [v (get m k)] (assoc m k (dissoc-in v ks))
+        :else m))
 
 (defprotocol IPersistentMultiMap
   "Abstract type value protocol for persistent multimaps."
