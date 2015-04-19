@@ -222,7 +222,7 @@
   * `:let` - treats `expr` as a binding vec and establishes custom
     locals that will be available for subsequent `test`/`expr` pairs
   * `:when` - immediatelly returns `nil` if `expr` does not evaluate
-    to logical `true`. Continues with the rest of pairs otherwise.    
+    to logical `true`. Continues with the rest of pairs otherwise.
   * `:when-let` - similar to `:when`, but treats `expr` as an input
     to `when-let`.
 

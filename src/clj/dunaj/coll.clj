@@ -17,7 +17,7 @@
 (ns dunaj.coll
   "Immutable, mutable and persistent collections.
   Reducers and transducers icon:puzzle-piece[].
-  
+
   In Dunaj, a collection in a broadest sense is defined as an object
   that implements `<<dunaj.coll.spi.ad#IRed,IRed>>`.
   There are no other requirements for such object.
@@ -28,7 +28,7 @@
   Other names for a collection that at least implements `IRed`
   include '`reducible`', '`reducible collection`' or just
   '`a collection`' (last one is the most used in Dunaj docs).
-  
+
   .Major groups of collections
   ****
   In addition to reducible collections, dunaj defines 5 mutually
@@ -36,7 +36,7 @@
 
   [discrete]
   === Immutable collections
-  
+
   - implement `IRed`
   - do not implement `<<dunaj.coll.spi.ad#IPersistentCollection,IPersistentCollection>>`
     nor `<<dunaj.coll.spi.ad#ISeq,ISeq>>`
@@ -63,7 +63,7 @@
 
   [discrete]
   === Seqs
-  
+
   - implement `IRed`, `IPersistentCollection` and `ISeq`
   - are usually wrappers on top of other collections
   - have items stored in memory or lazily evaluated with caching
@@ -73,7 +73,7 @@
 
   [discrete]
   === Mutable collections
-  
+
   - do not necessarily implement `IRed`
   - if implement `IRed`, must also be
     `<<dunaj.concurrent.thread.spi.ad#IThreadLocal,IThreadLocal>>` or
@@ -115,18 +115,18 @@
   Dunaj collection protocols). Standard host collections are already
   supported, and extensions are available for host interfaces too
   (e.g. http://docs.oracle.com/javase/8/docs/api/java/util/List.html[`j.u.List`], http://docs.oracle.com/javase/8/docs/api/java/util/Collection.html[`j.u.Collection`] on JVM)
-  
+
   A host array is not considered a collection.
   Use `<<dunaj.host.array.api.ad#adapt,dunaj.host.array/adapt>>`
   function to transform array into a Dunaj collection variant.
-  
+
   [NOTE]
   --
   Every collection which implements `IRed` is seqable
   (transformable to `ISeq`) in O(1).
-  
+
   Docstrings mention what kind of collection they expect or provide:
-  
+
   * e.g. if docstring states that a function accepts a collection,
     user can pass any object implementing `IRed`
   * pay attention to what kind of collection a function produces
@@ -1907,7 +1907,7 @@
          (loop [coll coll kvs (seq keyvals)]
            (cond
              (nil? kvs) coll
-             (next kvs) (recur (-assoc coll (first kvs) (second kvs)) 
+             (next kvs) (recur (-assoc coll (first kvs) (second kvs))
                                (nnext kvs))
              (throw
               (java.lang.IllegalArgumentException.

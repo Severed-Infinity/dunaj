@@ -19,25 +19,25 @@
   Basic characteristics of a resource is its limited availability
   within a computer system. Additional informations are available in
   the <<resources.ad#,resource specification>>.
-  
+
   User acquires a resource with acquire! function. Resource
   is a stateful object and is released within a given scope.
   Resource can be in one of following states:
-  
+
   * OPEN (dunaj.state/open?)
   * FAILED (dunaj.error/error)
   * CANCELLED (dunaj.state/cancelled?)
   * CLOSED (not observable)
   * RELEASING (not observable)
-  
+
   State transitions:
-  
+
   * after acquiring: OPEN or FAILED
   * when working with resource: OPEN -> OPEN, OPEN -> FAILED
   * evaluation hits end of scope: OPEN -> RELEASING
   * after release is done: RELEASING -> CLOSED, RELEASING -> FAILED
   * cancelling the release process: RELEASING -> CANCELLED.
-  
+
   NOTE: Resources with composite bands implement classic collection
   protocols (IIndexed, ILookup, ICounted). Resources where
   individuals items can be sent/received implement ISourcePort
@@ -688,7 +688,7 @@
 ;; should be selected.
 
 (defn slurp :- IRed
-  "Returns a utf-8 collection recipe of data read from resource 
+  "Returns a utf-8 collection recipe of data read from resource
   factory `_res_`, which was opened for immutable reading. May
   supply custom `_parser_` if encoding other than utf-8 is needed."
   {:added v1
