@@ -18,7 +18,7 @@
   `<<dunaj.lib.api.ad#ns,ns>>` macro."
   {:authors ["Jozef Wagner"]}
   (:api bare)
-  (:require [clojure.bootstrap]
+  (:require [clojure.bootstrap :refer [v1]]
             [clojure.core.async]
             [clojure.bridge]
             [dunaj.type]
@@ -33,7 +33,7 @@
             [dunaj.host.number]
             [dunaj.compare :refer [=]]
             [dunaj.state]
-            [dunaj.flow :refer [let if-not]]
+            [dunaj.flow :refer [let if-not quote]]
             [dunaj.threading]
             [dunaj.threading.last]
             [dunaj.threading.second]
@@ -340,3 +340,28 @@
           `(apply init-api ~(->lst `quote (first dd)))
           `(init-api nil))
        ~@(gen-decls decls))))
+
+(defmacro dunaj-api!
+  "Loads Dunaj API. To be used in Dunaj lite."
+  {:added v1}
+  [& decls]
+  (let [gen-decl
+        (fn [[kn & args]]
+          (apply ->lst (symbol "clojure.core" (name kn))
+                 (map #(->lst `quote %) args)))
+        gen-decls #(map gen-decl %)
+        ff #(= :refer-dunaj (first %))
+        dd (vec (filter ff decls))
+        decls (remove ff decls)]
+    `(do
+       ~(if-not (empty? dd)
+          `(apply init-api ~(->lst `quote (first dd)))
+          `(init-api nil))
+       ~@(gen-decls decls))))
+
+(defn dunaj!
+  "Loads Dunaj."
+  {:added v1}
+  []
+  (clojure.core/require 'dunaj.user)
+  (clojure.core/in-ns-bare 'dunaj.user))
