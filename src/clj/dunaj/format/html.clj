@@ -62,12 +62,11 @@
   IContainerPrinterMachine
   (-children [this parents]
     (let [c (rest coll)
-          sc (first c)
-          c (cond (map? sc) c
-                  (keyword? sc) (cons {:class sc} (rest c))
-                  (symbol? sc) (cons {:id sc} (rest c))
-                  :else (cons {} c))]
-      c))
+          sc (first c)]
+      (cond (map? sc) c
+            (keyword? sc) (cons {:class sc} (rest c))
+            (symbol? sc) (cons {:id sc} (rest c))
+            :else (cons {} c))))
   (-print-before! [this bm batch parents]
     (let [b (string-to-batch! (->str "<" (name (first coll))))]
       (print! batch bm state b)))

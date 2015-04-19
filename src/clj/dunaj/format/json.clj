@@ -113,21 +113,20 @@
     (let [batch :- (Batch java.lang.Character) batch
           begin (.position batch)]
       (loop []
-        (if-not (.hasRemaining batch)
-          (do (string-cat-batch!
-               ts batch begin (.position batch) state)
-              this)
-          (let [pos (.position batch)
-                x (iint (.get batch))]
-            (if (json-number-element? x)
+        (cond (not (.hasRemaining batch))
+              (do (string-cat-batch!
+                   ts batch begin (.position batch) state)
+                  this)
+              :let [pos (.position batch), x (iint (.get batch))]
+              (json-number-element? x)
               (do (when (or (i== x (iDOT))
                             (i== x (iCAPITAL_E))
                             (i== x (iSMALL_E)))
                     (set! decimal? true))
                   (recur))
-              (do (string-cat-batch! ts batch begin pos state)
-                  (.position batch pos)
-                  (-analyze-eof! this))))))))
+              :else (do (string-cat-batch! ts batch begin pos state)
+                        (.position batch pos)
+                        (-analyze-eof! this))))))
   (-analyze-eof! [this]
     (let [s :- String (settle! ts)]
       (cond (not decimal?) (let [bi (java.math.BigInteger. s)]

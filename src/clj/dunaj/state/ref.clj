@@ -162,8 +162,7 @@
   (-adjust! [this key val]
     (cond (identical? key :min-history) (ref-min-history r val)
           (identical? key :max-history) (ref-max-history r val)
-          :else (throw
-                 (illegal-argument
+          (throw (illegal-argument
                   "Key must be :min-history or :max-history")))))
 
 (declare ref)

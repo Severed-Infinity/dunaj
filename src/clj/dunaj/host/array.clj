@@ -504,7 +504,8 @@
   (get ams (provide-class item-type)))
 
 (defn array-manager-from :- (Maybe ArrayManager)
-  "Returns array manager from an existing array `arr`."
+  "Returns array manager from an existing array `arr`, or `nil`
+  if given array is not supported."
   {:added v1
    :category "Primary"
    :see '[array-manager]}
@@ -590,8 +591,8 @@
     (let [cnt (count args)]
       (cond (== 1 cnt) (nth this (first args))
             (== 2 cnt) (nth this (first args) (second args))
-            :else (throw (java.lang.RuntimeException.
-                          (str "Wrong number of args (" cnt ")"))))))
+            (throw (java.lang.RuntimeException.
+                    (str "Wrong number of args (" cnt ")"))))))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -734,8 +735,8 @@
     (let [cnt (count args)]
       (cond (== 1 cnt) (nth this (first args))
             (== 2 cnt) (nth this (first args) (second args))
-            :else (throw (java.lang.RuntimeException.
-                          (str "Wrong number of args (" cnt ")"))))))
+            (throw (java.lang.RuntimeException.
+                    (str "Wrong number of args (" cnt ")"))))))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -847,8 +848,8 @@
     (let [cnt (count args)]
       (cond (== 1 cnt) (nth this (first args))
             (== 2 cnt) (nth this (first args) (second args))
-            :else (throw (java.lang.RuntimeException.
-                          (str "Wrong number of args (" cnt ")"))))))
+            (throw (java.lang.RuntimeException.
+                    (str "Wrong number of args (" cnt ")"))))))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -900,10 +901,9 @@
 (defn ^:private array-coll :- (U ArrayColl BatchableArrayColl)
   "Returns instance of ArrayColl with delayed hashes."
   [am :- ArrayManager, arr :- AnyArray, begin :- Int, end :- Int]
-  (let [end (iint end)]
-    ((if (batch-support? (.itemType am))
-       ->BatchableArrayColl
-       ->ArrayColl)
+  (let [end (iint end)
+        bs? (batch-support? (.itemType am))]
+    ((if bs? ->BatchableArrayColl ->ArrayColl)
      am arr begin end
      (delay
       (iloop [i (iint begin), ret (basis-seed ordered-hash-factory)]

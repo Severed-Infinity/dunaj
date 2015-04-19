@@ -136,25 +136,22 @@
 ;; ported from JDK sources
 (defn ^:private iprocess
   [f ret val begin end]
-  (if (nil? end)
-    (f ret val)
-    (let [bound (long end)
-          origin (long (or begin 0))
-          n (long (mu/subtract bound origin))
-          xr (long val)
-          m (long (mu/dec n))]
-      (cond
-       ;; range larger than int
-       (neg? bound)
-       (if (and (<= origin xr) (< xr end)) (f ret xr) ret)
-       ;; bound is power of 2
-       (zero? (bit/and n m))
-       (f ret (mu/add origin (long (bit/and xr m))))
-       ;; discard values which would corrupt uniformity
-       :else (let [u (long (bit/>>> xr 1)), xr (long (rem u n))]
-               (if (neg? (mu/add u (long (mu/subtract m xr))))
-                 ret
-                 (f ret (mu/add origin xr))))))))
+  (cond (nil? end) (f ret val)
+        :let [bound (long end)
+              origin (long (or begin 0))
+              n (long (mu/subtract bound origin))
+              xr (long val)
+              m (long (mu/dec n))]
+        ;; range larger than int
+        (neg? bound)
+        (if (and (<= origin xr) (< xr end)) (f ret xr) ret)
+        ;; bound is power of 2
+        (zero? (bit/and n m))
+        (f ret (mu/add origin (long (bit/and xr m))))
+        ;; discard values which would corrupt uniformity
+        :let [u (long (bit/>>> xr 1)), xr (long (rem u n))]
+        (neg? (mu/add u (long (mu/subtract m xr)))) ret
+        :else (f ret (mu/add origin xr))))
 
 (def+ ^:private double-unit :- java.lang.reflect.Field
   "Makes internal DOUBLE_UNIT field public. >= JDK8 only"
@@ -172,18 +169,16 @@
 ;; ported from JDK sources
 (defn ^:private fprocess
   [f ret val begin end]
-  (if (and (nil? end) (nil? begin))
-    (f ret val)
-    (let [bound (double (or end 1.0))
-          origin (double (or begin 0.0))
-          r val
-          r (mu/add origin
-                    (mu/multiply val (mu/subtract bound origin)))]
-      (if (>= r bound)
+  (cond (and (nil? end) (nil? begin)) (f ret val)
+        :let [bound (double (or end 1.0))
+              origin (double (or begin 0.0))
+              r (mu/add origin
+                        (mu/multiply val (mu/subtract bound origin)))]
+        (>= r bound)
         (f ret (java.lang.Double/longBitsToDouble
-            (mu/subtract (java.lang.Double/doubleToLongBits bound)
-                         1)))
-        (f ret r)))))
+                (mu/subtract (java.lang.Double/doubleToLongBits bound)
+                             1)))
+        :else (f ret r)))
 
 
 ;;;; Public API
@@ -425,20 +420,18 @@
     (let [ret (.-ret ^dunaj.math.random.RWrap wrap)
           pval (.-pval ^dunaj.math.random.RWrap wrap)
           left (.-left ^dunaj.math.random.RWrap wrap)
-          other (.-other ^dunaj.math.random.RWrap wrap)]
-      (let [nval (mu/add (bit/and 255 (long val))
-                         (bit/<< (long pval) 8))]
-        (cond (i== left (i4))
-              (r-advance ret 0 (idec left) nval)
-              (izero? left)
-              (let [nval (iadd (iand (iFF) (iint val))
-                               (i<< (iint pval) (i8)))
-                    nval (mu/add (long nval)
-                                 (bit/<< (long other) 32))]
-                (r-advance
-                 (iprocess #(._step r % %2) ret nval begin end)
-                 0 (i7) 0))
-              :else (r-advance ret nval (idec left) other))))))
+          other (.-other ^dunaj.math.random.RWrap wrap)
+          nval (mu/add (bit/and 255 (long val))
+                       (bit/<< (long pval) 8))]
+      (cond
+        (i== left (i4)) (r-advance ret 0 (idec left) nval)
+        (izero? left)
+        (let [nval (iadd (iand (iFF) (iint val))
+                         (i<< (iint pval) (i8)))
+              nval (mu/add (long nval) (bit/<< (long other) 32))]
+          (r-advance (iprocess #(._step r % %2) ret nval begin end)
+                     0 (i7) 0))
+        :else (r-advance ret nval (idec left) other)))))
 
 (defxform integers*
   "Returns a transducer for converting collection of random bytes into
@@ -691,23 +684,19 @@
     (let [ret (.-ret ^dunaj.math.random.RWrap wrap)
           pval (.-pval ^dunaj.math.random.RWrap wrap)
           left (.-left ^dunaj.math.random.RWrap wrap)]
-      (if (izero? left)
-        (let [v1 (double pval)
-              v2 (double val)
-              s (mu/add (mu/* v1 v1) (mu/* v2 v2))]
-          (if (or (== s 0) (>= s 1))
-            (r-advance ret 0 (i1) 0)
-            (let [multiplier
-                  (java.lang.StrictMath/sqrt
-                   (/ (mu/multiply
-                       -2 (java.lang.StrictMath/log s))
-                      s))
+      (cond (not (izero? left)) (r-advance ret val (i0) 0)
+            :let [v1 (double pval)
+                  v2 (double val)
+                  s (mu/add (mu/* v1 v1) (mu/* v2 v2))]
+            (or (== s 0) (>= s 1)) (r-advance ret 0 (i1) 0)
+            :else
+            (let [ms (mu/multiply -2 (java.lang.StrictMath/log s))
+                  multiplier (java.lang.StrictMath/sqrt (/ ms s))
                   ng (mu/multiply multiplier v2)
                   g  (mu/multiply multiplier v1)
                   nret (._step r ret g)
                   af (advance-fn [ret] (._step r ret ng))]
-              (r-advance (af nret) 0 (i1) 0))))
-        (r-advance ret val (i0) 0)))))
+              (r-advance (af nret) 0 (i1) 0))))))
 
 (defxform gaussian
   "Returns a transducer for converting collection of random bytes into

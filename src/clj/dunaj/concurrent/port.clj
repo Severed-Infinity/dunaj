@@ -112,12 +112,11 @@
    (take! port fn1 false))
   ([port :- ISourcePort, fn1 :- (Fn [Any (Maybe PortVal)]),
     always-dispatch? :- Boolean]
-   (let [ret (-take! port (fn-handler fn1))]
-     (when ret
-       (let [val @ret]
-         (if always-dispatch?
-           (execute *default-port-executor* #(fn1 val))
-           (fn1 val))))
+   (when-let [ret (-take! port (fn-handler fn1))
+              :let [val @ret]]
+     (if always-dispatch?
+       (execute *default-port-executor* #(fn1 val))
+       (fn1 val))
      nil)))
 
 (defn <!! :- (Maybe PortVal)
@@ -170,11 +169,11 @@
    (put! port val fn1 false))
   ([port :- ITargetPort, val :- PortVal, fn1 :- (Fn [Any Boolean]),
     always-dispatch? :- Boolean]
-   (if-let [ret (-put! port val (fn-handler fn1))]
-     (let [retb @ret]
-       (if always-dispatch?
-         (execute *default-port-executor* (fn1 retb))
-         (fn1 retb)))
+   (if-let [ret (-put! port val (fn-handler fn1))
+            :let [retb @ret]]
+     (if always-dispatch?
+       (execute *default-port-executor* (fn1 retb))
+       (fn1 retb))
      true)))
 
 (defn >!! :- Boolean

@@ -214,14 +214,14 @@
   ([coll :- [], reduce-fn :- AnyFn, pool :- ForkJoinPool,
     n :- Integer, combinef :- AnyFn, reducef :- AnyFn]
    (let [reduce-fn (or reduce-fn reduce*)]
-     (if-not (satisfies? IFoldable coll)
-       ;; legacy collections accept classic reduce only
-       (cond (nil? coll) (combinef)
-             (identical? reduce* reduce-fn)
-             (coll-fold coll n combinef reducef)
-             :else (throw (java.lang.UnsupportedOperationException.)))
-       (-fold coll reduce-fn (or pool *default-fold-pool*)
-              n combinef reducef)))))
+     (cond (satisfies? IFoldable coll)
+           (-fold coll reduce-fn (or pool *default-fold-pool*)
+                  n combinef reducef)
+           ;; legacy collections accept classic reduce only
+           (nil? coll) (combinef)
+           (identical? reduce* reduce-fn)
+           (coll-fold coll n combinef reducef)
+           (throw (java.lang.UnsupportedOperationException.))))))
 
 (defn ^:private fold-augmented* :- Any
   "Returns a result of the folding of `_coll_` with `_reduce-fn_`

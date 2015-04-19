@@ -103,8 +103,7 @@
           (when (xor val (.isDaemon thread))
             (throw (illegal-argument
                     ":daemon property cannot be changed")))
-          :else (throw (illegal-argument
-                        "Key must be :name or :priority")))
+          (throw (illegal-argument "Key must be :name or :priority")))
     this))
 
 (deftype Thread

@@ -397,73 +397,67 @@
   (-analyze-batch! [this bm batch]
     (let [batch :- java.nio.CharBuffer batch]
       (iloop [begin (.position batch)]
-        (if-not (.hasRemaining batch)
+        (cond
+          (not (.hasRemaining batch))
           (do
             (string-cat-batch! sb batch begin (.position batch) state)
             this)
-          (let [pos (.position batch)
-                c (.get batch)
-                npos (.position batch)
-                x (iint c)]
-            (cond special?
-                  (cond unicode
-                        (let [nu (get-next-unicode unicode x)]
-                          (if (izero? special?)
-                            (do (set! sb (.append sb (char nu)))
-                                (set! special? false)
-                                (set! unicode nil))
-                            (do (set! special? (idec special?))
-                                (set! unicode nu)))
+          :let [pos (.position batch), c (.get batch),
+                npos (.position batch), x (iint c)]
+          special?
+          (cond unicode
+                (let [nu (get-next-unicode unicode x)]
+                  (if (izero? special?)
+                    (do (set! sb (.append sb (char nu)))
+                        (set! special? false)
+                        (set! unicode nil))
+                    (do (set! special? (idec special?))
+                        (set! unicode nu)))
+                  (recur npos))
+                octal
+                (cond (not (ioctal? x))
+                      (do (set! sb (.append sb (char octal)))
+                          (set! special? false)
+                          (set! octal nil)
+                          (.position batch (idec npos))
+                          (recur begin))
+                      :let [nu (get-next-octal octal x)]
+                      (neg? nu)
+                      (do (set! sb (.append sb (char octal)))
+                          (set! special? false)
+                          (set! octal nil)
+                          (.position batch (idec npos))
+                          (recur begin))
+                      (izero? special?)
+                      (do (set! sb (.append sb (char nu)))
+                          (set! special? false)
+                          (set! octal nil)
                           (recur npos))
-                        octal
-                        (if (ioctal? x)
-                          (let [nu (get-next-octal octal x)]
-                            (cond
-                             (neg? nu)
-                             (do
-                               (set! sb (.append sb (char octal)))
-                               (set! special? false)
-                               (set! octal nil)
-                               (.position batch (idec npos))
-                               (recur begin))
-                             (izero? special?)
-                             (do (set! sb (.append sb (char nu)))
-                                 (set! special? false)
-                                 (set! octal nil)
-                                 (recur npos))
-                             :else
-                             (do (set! special? (idec special?))
-                                 (set! octal nu)
-                                 (recur npos))))
-                          (do (set! sb (.append sb (char octal)))
-                              (set! special? false)
-                              (set! octal nil)
-                              (.position batch (idec npos))
-                              (recur begin)))
-                        (i== x (iSMALL_U)) ;; \u
-                        (do (set! special? (i3))
-                            (set! unicode (i0))
-                            (recur npos))
-                        (and octal-support? (ioctal? x))
-                        (do (set! special? (i1))
-                            (set! octal (get-next-octal (i0) x))
-                            (recur npos))
-                        :else
-                        (do (set! sb (.append sb (escape-fn x)))
-                            (set! special? false)
-                            (recur npos)))
-                  (invalid-pred x)
-                  (perror "invalid character " c)
-                  :else
-                  (cond
-                   (i== x (iQUOTE))
-                   (do (string-cat-batch! sb batch begin pos state)
-                       (settle! sb))
-                   (i== x (iBACKSLASH))
-                   (do (string-cat-batch! sb batch begin pos state)
-                       (set! special? true)
-                       (recur npos))
-                   :else (recur begin))))))))
+                      :else
+                      (do (set! special? (idec special?))
+                          (set! octal nu)
+                          (recur npos)))
+                (i== x (iSMALL_U)) ;; \u
+                (do (set! special? (i3))
+                    (set! unicode (i0))
+                    (recur npos))
+                (and octal-support? (ioctal? x))
+                (do (set! special? (i1))
+                    (set! octal (get-next-octal (i0) x))
+                    (recur npos))
+                :else
+                (do (set! sb (.append sb (escape-fn x)))
+                    (set! special? false)
+                    (recur npos)))
+          (invalid-pred x) (perror "invalid character " c)
+          (i== x (iQUOTE))
+          (do (string-cat-batch! sb batch begin pos state)
+              (settle! sb))
+          (i== x (iBACKSLASH))
+          (do (string-cat-batch! sb batch begin pos state)
+              (set! special? true)
+              (recur npos))
+          :else (recur begin)))))
   (-analyze-eof! [this]
     (eof-handler this config (settle! sb)
                  "string literal tokenizer machine")))
@@ -605,17 +599,15 @@
   (lazy-seq
    (let [s (seq coll),
          val ((or (first s) identity) parents), nseq (rest s)]
-     (cond (nil? s) empty-seq
-           (lazy-parser-machine? val)
-           (let [r (-parse-seq val nseq (conj parents val))
-                 nval (ct/key r)
-                 nseq (ct/val r)]
-             (if (identical? val nval)
-               ;; possible stack overflow here
-               (lazy-parser parents level-limit nseq)
-               (cons nval (lazy-parser parents level-limit nseq))))
-           :else
-           (cons val (lazy-parser parents level-limit nseq))))))
+     (cond
+       (nil? s) empty-seq
+       (not (lazy-parser-machine? val))
+       (cons val (lazy-parser parents level-limit nseq))
+       :let [r (-parse-seq val nseq (conj parents val))
+             nval (ct/key r), nseq (ct/val r)]
+       ;; possible stack overflow here
+       (identical? val nval) (lazy-parser parents level-limit nseq)
+       :else (cons nval (lazy-parser parents level-limit nseq))))))
 
 (defn take-until-token :- ISeq
   "Returns a lazy seq of parsed values from `_coll_`, up until
@@ -645,14 +637,11 @@
   (let [s (seq coll),
         val ((or (first s) identity) parents), nseq (rest s)]
     (cond (nil? s) nil
-          (lazy-parser-machine? val)
-          (let [r (-parse-seq val nseq (conj parents val))
-                nval (ct/key r)
-                nseq (ct/val r)]
-            (if (identical? val nval)
-              (recur parents level-limit nseq)
-              nval))
-          :else val)))
+          (not (lazy-parser-machine? val)) val
+          :let [r (-parse-seq val nseq (conj parents val))
+                nval (ct/key r), nseq (ct/val r)]
+          (identical? val nval) (recur parents level-limit nseq)
+          :else nval)))
 
 (defn drop-until-token :- ISeq
   "Returns a lazy seq of tokens with all tokens before `_pred_`
@@ -694,13 +683,10 @@
   (let [s (seq coll)
         val ((or (first s) identity) parents), nseq (next s)]
     (cond (nil? s) nil
-          (lazy-parser-machine? val)
-          (let [r (-parse-seq val nseq (conj parents val))
-                nval (ct/key r)
-                nseq (ct/val r)]
-            (if (identical? val nval)
-              (recur parents level-limit nseq)
-              nseq))
+          (not (lazy-parser-machine? val)) nseq
+          :let [r (-parse-seq val nseq (conj parents val))
+                nval (ct/key r), nseq (ct/val r)]
+          (identical? val nval) (recur parents level-limit nseq)
           :else nseq)))
 
 (defn process-one :- [Any ISeq]
@@ -754,11 +740,11 @@
                (let [ret (.-ret ^dunaj.format.parser.PWrap wrap)
                      machines
                      (.-machines ^dunaj.format.parser.PWrap wrap)]
-                 (loop [val nothing
-                        machines machines]
-                   (if-let [m (peek machines)]
-                     (recur (rf val m machines) (pop machines))
-                     (if (nothing? val) ret (._step r ret val))))))]
+                 (loop [val nothing, machines machines]
+                   (cond [m (peek machines)]
+                         (recur (rf val m machines) (pop machines))
+                         (nothing? val) ret
+                         :else (._step r ret val)))))]
       (-> (af (strip-reduced wrap))
           (reduced-advance (reduced? wrap))
           (finish-advance r))))
@@ -789,10 +775,8 @@
                     (->PWrap ret state
                              (conj (pop machines) res) (conj ris ni))
                     ;; parser machine has finished
-                    :else
-                    (recur ret res state (pop machines) ris)))
-                 (p-advance
-                  (._step r ret x) state machines is)))
+                    :else (recur ret res state (pop machines) ris)))
+                 (p-advance (._step r ret x) state machines is)))
           x (-dispatch-parser
              machine-factory config state val machines)]
       (if (parser-machine? x)
@@ -833,26 +817,21 @@
                 (postponed (.-ret ^dunaj.format.parser.TWrap @wrap)
                            #(af (advance wrap) (clone left-batch))
                            #(af (unsafe-advance! wrap) left-batch))
-                (nil? left-batch)
-                (let [ret (.-ret ^dunaj.format.parser.TWrap wrap)
+                (not (nil? left-batch))
+                (recur (._step this wrap left-batch) nil)
+                :let [ret (.-ret ^dunaj.format.parser.TWrap wrap)
                       m (.-machine ^dunaj.format.parser.TWrap wrap)
                       state (.-state ^dunaj.format.parser.TWrap wrap)]
-                  (if (nil? m)
-                    ret
-                    (let [res (-analyze-eof! m)]
-                      (cond
-                       (identical? m res) ret
-                       (leftover? res)
-                       (let [val (ct/key res)
-                             left-batch (ct/val res)]
-                         (recur (t-advance
-                                 (._step r ret val) state nil (i0))
-                                left-batch))
-                       :else
-                       (recur
-                        (t-advance (._step r ret res) state nil (i0))
-                        nil)))))
-                :else (recur (._step this wrap left-batch) nil)))]
+                (nil? m) ret
+                :let [res (-analyze-eof! m)]
+                (identical? m res) ret
+                (leftover? res)
+                (let [val (ct/key res), left-batch (ct/val res)]
+                  (recur (t-advance (._step r ret val) state nil (i0))
+                         left-batch))
+                :else
+                (recur (t-advance (._step r ret res) state nil (i0))
+                       nil)))]
       (-> (af (strip-reduced wrap) nil)
           (reduced-advance (reduced? wrap))
           (finish-advance r))))
@@ -888,23 +867,19 @@
                      (recur ret batch state x (i0))
                      :else
                      (recur (._step r ret x) batch state nil (i0))))
-                 :else
-                 (let [pos (.position batch)
+                 :let [pos (.position batch)
                        res (-analyze-batch! machine fbm batch)]
-                   (cond
-                     (tokenizer-machine? res)
-                     (let [ni (iadd i (isub (.position batch) pos))]
-                       (when (and (ipos? item-limit)
-                                  (i< item-limit ni))
-                         (perror "token item count reached " ni))
-                       (recur ret batch state res ni))
-                     (leftover? res)
-                     (recur (._step r ret (ct/key res))
-                            (prepend-unread fbm batch (ct/val res))
-                            state nil (i0))
-                     :else
-                     (recur
-                      (._step r ret res) batch state nil (i0))))))]
+                 (tokenizer-machine? res)
+                 (let [ni (iadd i (isub (.position batch) pos))]
+                   (when (and (ipos? item-limit) (i< item-limit ni))
+                     (perror "token item count reached " ni))
+                   (recur ret batch state res ni))
+                 (leftover? res)
+                 (recur (._step r ret (ct/key res))
+                        (prepend-unread fbm batch (ct/val res))
+                        state nil (i0))
+                 :else
+                 (recur (._step r ret res) batch state nil (i0))))]
       (af ret val state machine i))))
 
 (defxform tokenizer-engine*

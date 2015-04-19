@@ -158,14 +158,14 @@
           tl (.-tl ^dunaj.concurrent.parallel.UPMapWrap w)
           af (fn af [ret i]
                (cond
-                (reduced? ret) (do (close! och) ret)
-                (postponed? ret)
-                (postponed @ret
-                           #(af (advance ret) i)
-                           #(af (unsafe-advance! ret) i))
-                (zero? i) (do (close! och) ret)
-                :else (recur (._step r ret (decode-nil (<!! och)))
-                             (dec i))))]
+                 (reduced? ret) (do (close! och) ret)
+                 (postponed? ret)
+                 (postponed @ret
+                            #(af (advance ret) i)
+                            #(af (unsafe-advance! ret) i))
+                 (zero? i) (do (close! och) ret)
+                 :else (recur (._step r ret (decode-nil (<!! och)))
+                              (dec i))))]
       (close! ich)
       (-> (if och (af ret (count tl)) ret)
           (reduced-advance (reduced? wrap))

@@ -143,18 +143,16 @@
   [config :- {}, ^:unsynchronized-mutable mv :- Any]
   IParserMachine
   (-parse-value! [this value parents]
-    (if (nil? mv)
-      (do (set! mv value) this)
-      (let [m (cond (keyword? mv) {mv true}
+    (cond
+      (nil? mv) (do (set! mv value) this)
+      :let [m (cond (keyword? mv) {mv true}
                     (map? mv) mv
                     (or (symbol? mv) (string? mv)) {:tag mv}
                     :else (perror "unknown metadata type"))]
-        (if (satisfies? IPersistentMeta value)
-          (let [m (if (satisfies? IMeta value)
-                    (merge (meta value) m)
-                    m)]
-            (assoc-meta value m))
-          (let [mr (meta-ref value)] (alter! mr merge m) value)))))
+      (satisfies? IPersistentMeta value)
+      (let [m (if (satisfies? IMeta value) (merge (meta value) m) m)]
+        (assoc-meta value m))
+      :else (let [mr (meta-ref value)] (alter! mr merge m) value)))
   (-parse-eof! [this parents]
     (eof-handler this config this "metadata parser machine"))
   ILazyParserMachine
@@ -309,12 +307,11 @@
          csym (resolve-symbol csym cns)]
      (symbol nil (->str (name csym) ".")))
    (and (nil? (namespace sym)) (= \. (first (name sym)))) sym
-   :else
-   (let [mc (when-let [nss (namespace sym)]
+   :let [mc (when-let [nss (namespace sym)]
               (.getMapping cns (symbol nil nss)))]
-     (if (class-instance? java.lang.Class mc)
-       (symbol (.getName ^java.lang.Class mc) (name sym))
-       (resolve-symbol sym cns)))))
+   (class-instance? java.lang.Class mc)
+   (symbol (.getName ^java.lang.Class mc) (name sym))
+   :else (resolve-symbol sym cns)))
 
 (defn ^:private syntax-quote-collection
   [coll gensyms-ref cns]
@@ -338,9 +335,9 @@
   [form gensyms-ref cns]
   (let [ret (cond (clojure.core/special-symbol? form)
                   (->lst `quote
-                        (if (nil? (namespace form))
-                          (symbol "clojure.core" (name form))
-                          form))
+                         (if (nil? (namespace form))
+                           (symbol "clojure.core" (name form))
+                           form))
                   (symbol? form)
                   (->lst `quote
                         (syntax-quote-symbol form gensyms-ref cns))
@@ -408,71 +405,66 @@
     (let [batch ^java.nio.CharBuffer batch
           begin (.position batch)]
       (loop []
-        (if-not (.hasRemaining batch)
-          (do (string-cat-batch!
-               sb batch begin (.position batch) state)
-              this)
-          (let [pos (.position batch)
-                c (.get batch)
-                x (iint c)]
-            (cond
-             (clj-number-item? x)
-             (do
-               (cond (i== x (iDOT)) (set! decimal? true)
-                     (i== x (iCAPITAL_E)) (set! decimal? true)
-                     (i== x (iSMALL_E)) (set! decimal? true)
-                     (i== x (iCAPITAL_M)) (do (set! decimal? true)
-                                              (set! bigdec? true))
-                     (i== x (iCAPITAL_N)) (set! bigint? true)
-                     (and (nil? radix) (or (i== x (iSMALL_R))
-                                           (i== x (iCAPITAL_R))))
-                     (set! radix pos)
-                     (i== x (iSMALL_X)) (set! hexa pos)
-                     (i== x (iCAPITAL_X)) (set! hexa pos)
-                     (i== x (iSLASH)) (set! ratio pos)
-                     (nil? octal?) (set! octal? (i== x (iZERO))))
-               (recur))
-             (clj-delimiter? x)
-             (do (string-cat-batch! sb batch begin pos state)
-                 (.position batch pos)
-                 (-analyze-eof! this))
-             :else (perror "invalid number item " c)))))))
+        (cond (not (.hasRemaining batch))
+              (do (string-cat-batch!
+                   sb batch begin (.position batch) state)
+                  this)
+              :let [pos (.position batch), c (.get batch), x (iint c)]
+              (clj-number-item? x)
+              (do
+                (cond (i== x (iDOT)) (set! decimal? true)
+                      (i== x (iCAPITAL_E)) (set! decimal? true)
+                      (i== x (iSMALL_E)) (set! decimal? true)
+                      (i== x (iCAPITAL_M)) (do (set! decimal? true)
+                                               (set! bigdec? true))
+                      (i== x (iCAPITAL_N)) (set! bigint? true)
+                      (and (nil? radix) (or (i== x (iSMALL_R))
+                                            (i== x (iCAPITAL_R))))
+                      (set! radix pos)
+                      (i== x (iSMALL_X)) (set! hexa pos)
+                      (i== x (iCAPITAL_X)) (set! hexa pos)
+                      (i== x (iSLASH)) (set! ratio pos)
+                      (nil? octal?) (set! octal? (i== x (iZERO))))
+                (recur))
+              (clj-delimiter? x)
+              (do (string-cat-batch! sb batch begin pos state)
+                  (.position batch pos)
+                  (-analyze-eof! this))
+              :else (perror "invalid number item " c)))))
   (-analyze-eof! [this]
     (let [s ^java.lang.String (settle! sb)]
-      (cond ratio
-            (clojure.lang.Ratio.
-             (java.math.BigInteger. ^java.lang.String
-                                    (slice s 0 ratio))
-             (java.math.BigInteger. ^java.lang.String
-                                    (slice s (inc ratio))))
-            decimal?
-            (let [s (if bigdec? (slice s 0 (dec (count s))) s)]
-              (if (or bigdec? (:bigdec config))
-                (if clojure.core/*math-context*
-                  (java.math.BigDecimal. ^java.lang.String
-                   s clojure.core/*math-context*)
-                  (java.math.BigDecimal. ^java.lang.String s))
-                (java.lang.Double/valueOf ^java.lang.String s)))
-            :else
-            (let [r (cond radix
-                          (java.lang.Integer/valueOf
-                           ^java.lang.String
-                           (slice s (if sign? 1 0) radix))
-                          hexa 16
-                          octal? 8
-                          :else 10)
-                  from (cond radix (inc radix)
-                             hexa (if sign? 3 2)
-                             :else (if sign? 1 0))
-                  v (if bigint?
-                      (slice s from (dec (count s)))
-                      (slice s from))
-                  bn (java.math.BigInteger.
-                      ^java.lang.String v ^int r)
-                  n (if (or bigint? (>= (.bitLength bn) 64))
-                      (clojure.lang.BigInt/fromBigInteger bn)
-                      (.longValue bn))]
-              (if negative? (* -1 n) n))))))
+      (cond
+        ratio (clojure.lang.Ratio.
+               (java.math.BigInteger.
+                ^java.lang.String (slice s 0 ratio))
+               (java.math.BigInteger.
+                ^java.lang.String (slice s (inc ratio))))
+        decimal? (cond
+                   (not (or bigdec? (:bigdec config)))
+                   (java.lang.Double/valueOf ^java.lang.String s)
+                   :let [s (if bigdec? (slice s 0 (dec (count s))) s)]
+                   clojure.core/*math-context*
+                   (java.math.BigDecimal.
+                    ^java.lang.String s clojure.core/*math-context*)
+                   :else (java.math.BigDecimal. ^java.lang.String s))
+        :let [r (cond radix (java.lang.Integer/valueOf
+                             ^java.lang.String
+                             (slice s (if sign? 1 0) radix))
+                      hexa 16
+                      octal? 8
+                      :else 10)
+              from (cond radix (inc radix)
+                         hexa (if sign? 3 2)
+                         :else (if sign? 1 0))
+              v (if bigint?
+                  (slice s from (dec (count s)))
+                  (slice s from))
+              bn (java.math.BigInteger. ^java.lang.String v ^int r)
+              n (if (or bigint? (>= (.bitLength bn) 64))
+                  (clojure.lang.BigInt/fromBigInteger bn)
+                  (.longValue bn))]
+        negative? (* -1 n)
+        :else n))))
 
 (defn clj-number-literal
   "Returns CLJ Number Literal Tokenizer Machine."
@@ -501,7 +493,7 @@
         (i== x (iSMALL_N)) \u000a
         (i== x (iSMALL_R)) \u000d
         (i== x (iSMALL_T)) \u0009
-        :else (perror "invalid escape character " (char x))))
+        (perror "invalid escape character " (char x))))
 
 (def+ clj-string-literal
   "Function which returns a CLJ String Literal Tokenizer Machine."
@@ -617,23 +609,20 @@
     (let [batch ^java.nio.CharBuffer batch
           begin (.position batch)]
       (loop []
-        (if-not (.hasRemaining batch)
-          (do (string-cat-batch!
-               sb batch begin (.position batch) state)
-              this)
-          (let [pos (.position batch)
-                c (.get batch)
-                x (iint c)]
-            (cond
-             (clj-delimiter? x)
-             (do (string-cat-batch! sb batch begin pos state)
-                 (.position batch pos)
-                 (-analyze-eof! this))
-             (and special? (edn-symbol-digit? x))
-             (do (.position batch pos)
-                 (clj-number-literal config state (.charAt sb 0)))
-             (clj-symbol-item? x) (do (set! special? false) (recur))
-             :else (perror "invalid symbol character " c)))))))
+        (cond (not (.hasRemaining batch))
+              (do (string-cat-batch!
+                   sb batch begin (.position batch) state)
+                  this)
+              :let [pos (.position batch), c (.get batch), x (iint c)]
+              (clj-delimiter? x)
+              (do (string-cat-batch! sb batch begin pos state)
+                  (.position batch pos)
+                  (-analyze-eof! this))
+              (and special? (edn-symbol-digit? x))
+              (do (.position batch pos)
+                  (clj-number-literal config state (.charAt sb 0)))
+              (clj-symbol-item? x) (do (set! special? false) (recur))
+              :else (perror "invalid symbol character " c)))))
   (-analyze-eof! [this]
     (let [s ^java.lang.String (settle! sb)]
       (when-not (if keyword?
@@ -660,13 +649,11 @@
   Returns current string namespace name if `s` is nil."
   [s cns]
   (let [cns ^clojure.lang.Namespace (clojure.core/find-ns cns)]
-    (if (empty? s)
-      (name (.name cns))
-      (let [xs (symbol s)]
-        (if-let [ns (.lookupAlias cns xs)]
-          (name (.name ns))
-          (or (clojure.lang.Namespace/find xs)
-              (perror "could not resolve namespace for " s)))))))
+    (cond (empty? s) (name (.name cns))
+          :let [xs (symbol s)]
+          [ns (.lookupAlias cns xs)] (name (.name ns))
+          :else (or (clojure.lang.Namespace/find xs)
+                    (perror "could not resolve namespace for " s)))))
 
 (defn clj-symbol-literal
   "Returns CLJ Symbol Literal Tokenizer Machine."
@@ -692,22 +679,19 @@
   (-analyze-batch! [this bm batch]
     (let [batch ^java.nio.CharBuffer batch]
       (iloop [begin (.position batch)]
-        (if-not (.hasRemaining batch)
+        (cond
+          (not (.hasRemaining batch))
           (do (string-cat-batch!
                sb batch begin (.position batch) state)
               this)
-          (let [pos (.position batch)
-                c (.get batch)
-                npos (.position batch)
-                x (iint c)]
-            (cond
-             special? (do (set! special? false) (recur begin))
-             (i== x (iQUOTE))
-             (do (string-cat-batch! sb batch begin pos state)
-                 (java.util.regex.Pattern/compile (settle! sb)))
-             (i== x (iBACKSLASH))
-             (do (set! special? true) (recur begin))
-             :else (recur begin)))))))
+          :let [pos (.position batch), c (.get batch)
+                npos (.position batch), x (iint c)]
+          special? (do (set! special? false) (recur begin))
+          (i== x (iQUOTE))
+          (do (string-cat-batch! sb batch begin pos state)
+              (java.util.regex.Pattern/compile (settle! sb)))
+          (i== x (iBACKSLASH)) (do (set! special? true) (recur begin))
+          :else (recur begin)))))
   (-analyze-eof! [this]
     (eof-handler this config
                  (java.util.regex.Pattern/compile (settle! sb))
@@ -725,24 +709,22 @@
   [config state]
   ITokenizerMachine
   (-analyze-batch! [this bm batch]
-    (if (.hasRemaining ^java.nio.CharBuffer batch)
-      (let [batch ^java.nio.CharBuffer batch
-            x (iint (.get batch))]
-        (cond
-         (i== x (iUNDERSCORE)) (->DiscardParser config false)
-         (i== x (iLBRACE)) (edn-set-container config state)
-         (java.lang.Character/isAlphabetic x)
-         (clj-symbol-literal config state x true)
-         (i== x (iBANG)) (edn-lineskip-literal config state x)
-         (i== x (iLT)) (perror "invalid reader macro " (char x))
-         (i== x (iQUOTE)) (regex-literal config state)
-         (i== x (iAPOS)) (->WrapperParser config `var)
-         (and (i== x (iEQ)) (:read-eval config)) (->EvalParser config)
-         (i== x (iARROWHEAD)) (metadata-parser config state)
-         (i== x (iLPAR))
-         (do (.position batch (dec (.position batch))) clj-fn)
-         :else (perror "unknown dispatch character " (char x))))
-      this))
+    (cond
+      (not (.hasRemaining ^java.nio.CharBuffer batch)) this
+      :let [batch :- java.nio.CharBuffer batch, x (iint (.get batch))]
+      (i== x (iUNDERSCORE)) (->DiscardParser config false)
+      (i== x (iLBRACE)) (edn-set-container config state)
+      (java.lang.Character/isAlphabetic x)
+      (clj-symbol-literal config state x true)
+      (i== x (iBANG)) (edn-lineskip-literal config state x)
+      (i== x (iLT)) (perror "invalid reader macro " (char x))
+      (i== x (iQUOTE)) (regex-literal config state)
+      (i== x (iAPOS)) (->WrapperParser config `var)
+      (and (i== x (iEQ)) (:read-eval config)) (->EvalParser config)
+      (i== x (iARROWHEAD)) (metadata-parser config state)
+      (i== x (iLPAR))
+      (do (.position batch (dec (.position batch))) clj-fn)
+      :else (perror "unknown dispatch character " (char x))))
   (-analyze-eof! [this]
     (eof-handler this config this "dispatch tokenizer machine")))
 
@@ -758,14 +740,13 @@
   [config state]
   ITokenizerMachine
   (-analyze-batch! [this bm batch]
-    (if (.hasRemaining ^java.nio.CharBuffer batch)
-      (let [batch ^java.nio.CharBuffer batch
-            x (iint (.get batch))]
-        (if (i== x (iAT))
-          (->WrapperParser config 'clojure.core/unquote-splicing)
-          (do (.position batch (dec (.position batch)))
-              (->WrapperParser config 'clojure.core/unquote))))
-      this))
+    (cond
+      (not (.hasRemaining ^java.nio.CharBuffer batch)) this
+      :let [batch :- java.nio.CharBuffer batch, x (iint (.get batch))]
+      (i== x (iAT))
+      (->WrapperParser config 'clojure.core/unquote-splicing)
+      :else (do (.position batch (dec (.position batch)))
+                (->WrapperParser config 'clojure.core/unquote))))
   (-analyze-eof! [this]
     (eof-handler this config this
                  "unquote dispatch tokenizer machine")))
@@ -778,26 +759,22 @@
    ^:unsynchronized-mutable rest?]
   ITokenizerMachine
   (-analyze-batch! [this bm batch]
-    (if (.hasRemaining ^java.nio.CharBuffer batch)
-      (let [batch ^java.nio.CharBuffer batch
-            c (.get batch)
-            x (iint c)]
-        (cond (and (i== x (iAMP)) (empty? ts) (not rest?))
-              (do (set! rest? true) this)
-              (and (idigit? x) (not rest?))
-              (do (.append ts c) this)
-              (clj-delimiter? x)
-              (do (.position batch (dec (.position batch)))
-                  (-analyze-eof! this))
-              :else
-              (let [sts :- java.lang.StringBuilder (edit empty-string)
-                    sts (.append sts \%)
-                    sts (if rest? (.append sts \&) sts)
-                    sts (.append sts ts)
-                    sts (.append sts c)]
-                (->CljSymbolLiteralTokenizerMachine
-                 config state sts false false false))))
-      this))
+    (cond
+      (not (.hasRemaining ^java.nio.CharBuffer batch)) this
+      :let [batch :- java.nio.CharBuffer batch,
+            c (.get batch), x (iint c)]
+      (and (i== x (iAMP)) (empty? ts) (not rest?))
+      (do (set! rest? true) this)
+      (and (idigit? x) (not rest?)) (do (.append ts c) this)
+      (clj-delimiter? x) (do (.position batch (dec (.position batch)))
+                             (-analyze-eof! this))
+      :else (let [sts :- java.lang.StringBuilder (edit empty-string)
+                  sts (.append sts \%)
+                  sts (if rest? (.append sts \&) sts)
+                  sts (.append sts ts)
+                  sts (.append sts c)]
+              (->CljSymbolLiteralTokenizerMachine
+               config state sts false false false))))
   (-analyze-eof! [this]
     (clj-arg (cond rest? -1
                    (empty? ts) nil
@@ -1183,17 +1160,15 @@
   [config state coll]
   (when (double? coll)
     (let [f (first coll)]
-      (cond
-       (= `var f)
-       (->CljPrefixPrettyPrinter
-        config state (string-to-batch! "#'") 2 (rest coll))
-       (= `quote f)
-       (->CljPrefixPrettyPrinter
-        config state (string-to-batch! "'") 1 (rest coll))
-       (= 'clojure.core/deref f)
-       (->CljPrefixPrettyPrinter
-        config state (string-to-batch! "@") 1 (rest coll))
-       :else nil))))
+      (cond (= `var f)
+            (->CljPrefixPrettyPrinter
+             config state (string-to-batch! "#'") 2 (rest coll))
+            (= `quote f)
+            (->CljPrefixPrettyPrinter
+             config state (string-to-batch! "'") 1 (rest coll))
+            (= 'clojure.core/deref f)
+            (->CljPrefixPrettyPrinter
+             config state (string-to-batch! "@") 1 (rest coll))))))
 
 (defn ^:private alias-ns
   [^clojure.lang.Namespace cns nsn]
@@ -1218,10 +1193,10 @@
   (let [n (name sym)
         ns (namespace sym)
         ss (->str sym)]
-    (if (or (index-of n \.) (nil? ns) (nil? cns))
-      ss
-      (let [nns (resolve-ns cns sym)]
-        (if (nil? nns) (->str n) (->str nns \/ n))))))
+    (cond (or (index-of n \.) (nil? ns) (nil? cns)) ss
+          :let [nns (resolve-ns cns sym)]
+          (nil? nns) (->str n)
+          :else (->str nns \/ n))))
 
 (defn ^:private resolve-color
   [sym state cns]
@@ -1235,18 +1210,17 @@
           (or (nil? cns) (resolve-local state sym)) nil
           (clojure.core/special-symbol? sym)
           [:special-form :core :gvar]
-          :else
-          (when-let [v (clojure.core/ns-resolve cns sym)]
-            (if (var? v)
-              (let [vns (name (.-name (.-ns ^clojure.lang.Var v)))
-                    h (when-let [x (:highlight (meta v))]
-                        (if (sequential? x) x [x]))
-                    m (vec h)
-                    m (if (matches #"(dunaj\.).*|(clojure\.).*" vns)
-                        (conj m :core)
-                        m)]
-                (conj m :gvar))
-              [:host])))))
+          :when-let [v (clojure.core/ns-resolve cns sym)]
+          (var? v)
+          (let [vns (name (.-name (.-ns ^clojure.lang.Var v)))
+                h (when-let [x (:highlight (meta v))]
+                    (if (sequential? x) x [x]))
+                m (vec h)
+                m (if (matches #"(dunaj\.).*|(clojure\.).*" vns)
+                    (conj m :core)
+                    m)]
+            (conj m :gvar))
+          :else [:host])))
 
 (extend-protocol! ICljPrettyPrinter
   clojure.lang.IPersistentList
@@ -1315,10 +1289,10 @@
                   :else (resolve-color this state ns))]
       (when-not (valid-symbol? s) (perror "invalid symbol " s))
       (move-column! state (.remaining ^java.nio.Buffer b))
-      (print-colored! batch bm config state
-                      (apply color config state
-                             (concat c [:symbol :identifier]))
-                      b)))
+      (print-colored!
+       batch bm config state
+       (apply color config state (concat c [:symbol :identifier]))
+       b)))
   clojure.lang.Keyword
   (-print-pretty-clj! [this config state bm batch parents]
     (let [s (->str this)
