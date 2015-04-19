@@ -143,33 +143,25 @@
            (postponed @ret
                       #(af (advance ret) act (.clone buf))
                       #(af (unsafe-advance! ret) act buf))
-           :else
-           (if-let [n (if ascending?
-                        (right-node act)
-                        (left-node act))]
-             ;; has next subtree,
-             ;; push to buffer while it has other subtree
-             (let [nact :- clojure.lang.PersistentTreeMap$Node
-                   (loop [node
-                          :- clojure.lang.PersistentTreeMap$Node n]
-                     (if-let [l (if ascending?
-                                  (left-node node)
-                                  (right-node node))]
-                       (do (.addLast buf node) (recur l))
-                       (when (endp (.key node)) node)))]
-               (if nact
-                 (recur (reducef ret (.key nact) (.val nact))
-                        nact buf)
-                 ret))
-             ;; no next tree, pop from buffer
-             (let [nact :- clojure.lang.PersistentTreeMap$Node
-                   (.pollLast buf)]
-               (if (or (nil? nact) (not (endp (.key nact))))
-                 ret
-                 (recur (reducef ret (.key nact) (.val nact))
-                        nact buf))))))
-        buf :- java.util.ArrayDeque
-        (java.util.ArrayDeque.)
+           ;; has next subtree,
+           ;; push to buffer while it has other subtree
+           [n (if ascending? (right-node act) (left-node act))]
+           (let [nact :- clojure.lang.PersistentTreeMap$Node
+                 (loop [node :- clojure.lang.PersistentTreeMap$Node n]
+                   (if-let [l ((if ascending? left-node right-node)
+                               node)]
+                     (do (.addLast buf node) (recur l))
+                     (when (endp (.key node)) node)))]
+             (if nact
+               (recur (reducef ret (.key nact) (.val nact)) nact buf)
+               ret))
+           ;; no next tree, pop from buffer
+           :let [nact :- clojure.lang.PersistentTreeMap$Node
+                 (.pollLast buf)]
+           (or (nil? nact) (not (endp (.key nact)))) ret
+           :else (recur (reducef ret (.key nact) (.val nact))
+                        nact buf)))
+        buf :- java.util.ArrayDeque (java.util.ArrayDeque.)
         node :- clojure.lang.PersistentTreeMap$Node
         (if ascending?
           (loop [node :- clojure.lang.PersistentTreeMap$Node tree]
@@ -198,23 +190,21 @@
               (postponed @ret
                          #(af (advance ret) act (.clone buf))
                          #(af (unsafe-advance! ret) act buf))
-              :else
-              (if-let [r (right-node act)]
-                ;; has right subtree,
-                ;; push to buffer while it has left tree
-                (let [nact :- clojure.lang.PersistentTreeMap$Node
-                      (loop [node r]
-                        (if-let [l (left-node node)]
-                          (do (.addLast buf node) (recur l))
-                          node))]
-                  (recur (reducef ret (.key nact) (.val nact))
-                         nact buf))
-                ;; no right tree, pop from buffer
-                (if-let [nact :- clojure.lang.PersistentTreeMap$Node
-                         (.pollLast buf)]
-                  (recur (reducef ret (.key nact) (.val nact))
-                         nact buf)
-                  ret))))
+              ;; has right subtree,
+              ;; push to buffer while it has left tree
+              [r (right-node act)]
+              (let [nact :- clojure.lang.PersistentTreeMap$Node
+                    (loop [node r]
+                      (if-let [l (left-node node)]
+                        (do (.addLast buf node) (recur l))
+                        node))]
+                (recur (reducef ret (.key nact) (.val nact))
+                       nact buf))
+              ;; no right tree, pop from buffer
+              [nact :- clojure.lang.PersistentTreeMap$Node
+               (.pollLast buf)]
+              (recur (reducef ret (.key nact) (.val nact)) nact buf)
+              :else ret))
         buf (java.util.ArrayDeque.)
         node :- clojure.lang.PersistentTreeMap$Node
         (loop [node tree]
@@ -231,23 +221,21 @@
               (postponed @ret
                          #(af (advance ret) act (.clone buf))
                          #(af (unsafe-advance! ret) act buf))
-              :else
-              (if-let [l (left-node act)]
-                ;; has left subtree,
-                ;; push to buffer while it has right tree
-                (let [nact :- clojure.lang.PersistentTreeMap$Node
-                      (loop [node l]
-                        (if-let [r (right-node node)]
-                          (do (.addLast buf node) (recur r))
-                          node))]
-                  (recur (reducef ret (.key nact) (.val nact))
-                         nact buf))
-                ;; no left tree, pop from buffer
-                (if-let [nact :- clojure.lang.PersistentTreeMap$Node
-                         (.pollLast buf)]
-                  (recur (reducef ret (.key nact) (.val nact))
-                         nact buf)
-                  ret))))
+              ;; has left subtree,
+              ;; push to buffer while it has right tree
+              [l (left-node act)]
+              (let [nact :- clojure.lang.PersistentTreeMap$Node
+                    (loop [node l]
+                      (if-let [r (right-node node)]
+                        (do (.addLast buf node) (recur r))
+                        node))]
+                (recur (reducef ret (.key nact) (.val nact))
+                       nact buf))
+              ;; no left tree, pop from buffer
+              [nact :- clojure.lang.PersistentTreeMap$Node
+               (.pollLast buf)]
+              (recur (reducef ret (.key nact) (.val nact)) nact buf)
+              :else ret))
         buf (java.util.ArrayDeque.)
         node :- clojure.lang.PersistentTreeMap$Node
         (loop [node tree]

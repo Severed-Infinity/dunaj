@@ -16,9 +16,9 @@
 
 (ns dunaj.char
   "Character type, predicates and operations.
-  
+
   Dunaj uses host character type for `Char`.
-  
+
   TIP: JVM host specific: Dunaj supports primitive chars as
   function arguments and return values (subject to the number of
   arguments and combination of argument types)."

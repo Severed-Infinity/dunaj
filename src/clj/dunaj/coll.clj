@@ -17,7 +17,7 @@
 (ns dunaj.coll
   "Immutable, mutable and persistent collections.
   Reducers and transducers icon:puzzle-piece[].
-  
+
   In Dunaj, a collection in a broadest sense is defined as an object
   that implements `<<dunaj.coll.spi.ad#IRed,IRed>>`.
   There are no other requirements for such object.
@@ -28,7 +28,7 @@
   Other names for a collection that at least implements `IRed`
   include '`reducible`', '`reducible collection`' or just
   '`a collection`' (last one is the most used in Dunaj docs).
-  
+
   .Major groups of collections
   ****
   In addition to reducible collections, dunaj defines 5 mutually
@@ -36,7 +36,7 @@
 
   [discrete]
   === Immutable collections
-  
+
   - implement `IRed`
   - do not implement `<<dunaj.coll.spi.ad#IPersistentCollection,IPersistentCollection>>`
     nor `<<dunaj.coll.spi.ad#ISeq,ISeq>>`
@@ -63,7 +63,7 @@
 
   [discrete]
   === Seqs
-  
+
   - implement `IRed`, `IPersistentCollection` and `ISeq`
   - are usually wrappers on top of other collections
   - have items stored in memory or lazily evaluated with caching
@@ -73,7 +73,7 @@
 
   [discrete]
   === Mutable collections
-  
+
   - do not necessarily implement `IRed`
   - if implement `IRed`, must also be
     `<<dunaj.concurrent.thread.spi.ad#IThreadLocal,IThreadLocal>>` or
@@ -115,18 +115,18 @@
   Dunaj collection protocols). Standard host collections are already
   supported, and extensions are available for host interfaces too
   (e.g. http://docs.oracle.com/javase/8/docs/api/java/util/List.html[`j.u.List`], http://docs.oracle.com/javase/8/docs/api/java/util/Collection.html[`j.u.Collection`] on JVM)
-  
+
   A host array is not considered a collection.
   Use `<<dunaj.host.array.api.ad#adapt,dunaj.host.array/adapt>>`
   function to transform array into a Dunaj collection variant.
-  
+
   [NOTE]
   --
   Every collection which implements `IRed` is seqable
   (transformable to `ISeq`) in O(1).
-  
+
   Docstrings mention what kind of collection they expect or provide:
-  
+
   * e.g. if docstring states that a function accepts a collection,
     user can pass any object implementing `IRed`
   * pay attention to what kind of collection a function produces
@@ -1182,15 +1182,12 @@
   ([m ks]
    (reduce get m ks))
   ([m ks not-found]
-   (loop [sentinel (java.lang.Object.)
-          m m
-          ks (seq ks)]
-     (if ks
-       (let [m (get m (first ks) sentinel)]
-         (if (identical? sentinel m)
-           not-found
-           (recur sentinel m (next ks))))
-       m))))
+   (let [sentinel (java.lang.Object.)]
+     (loop [m m, ks (seq ks)]
+       (cond (nil? ks) m
+             :let [m (get m (first ks) sentinel)]
+             (identical? sentinel m) not-found
+             :else (recur m (next ks)))))))
 
 ;;; Indexed collections
 
@@ -1920,15 +1917,14 @@
                       (-assoc key3 val3)
                       (-assoc key4 val4))]
          (loop [coll coll kvs (seq keyvals)]
-           (if kvs
-             (if (next kvs)
-               (recur (-assoc coll (first kvs) (second kvs))
-                      (nnext kvs))
-               (throw
-                (java.lang.IllegalArgumentException.
-                 (str "assoc expects even number of arguments "
-                      "after map/vector, found odd number"))))
-             coll)))))))
+           (cond
+             (nil? kvs) coll
+             (next kvs) (recur (-assoc coll (first kvs) (second kvs))
+                               (nnext kvs))
+             (throw
+              (java.lang.IllegalArgumentException.
+               (str "assoc expects even number of arguments"
+                    " after map/vector, found odd number"))))))))))
 
 (defalias assoc-in
   "Associates a value in a nested associative structure, where
@@ -2144,9 +2140,9 @@
    :see '[map? dissoc dissoc-one dissoc!]
    :category "Persistent"}
   [m :- (Maybe IPersistentMap), [k & ks]]
-  (if ks
-    (if-let [v (get m k)] (assoc m k (dissoc-in v ks)) m)
-    (dissoc m k)))
+  (cond (nil? ks) (dissoc m k)
+        [v (get m k)] (assoc m k (dissoc-in v ks))
+        :else m))
 
 (defprotocol IPersistentMultiMap
   "Abstract type value protocol for persistent multimaps."

@@ -161,13 +161,11 @@
                 (reduced? ret) ret
                 (postponed? ret)
                 (unsafe-postponed @ret #(af (unsafe-advance! ret)))
-                (.isOpen rch)
-                (let [x (fragile resource (.read rch (.clear batch)))]
-                  (cond
-                   (neg? x) (do (fragile resource (.close s)) ret)
-                   (zero? x) (recur ret)
-                   :else (recur (reducef ret (.flip batch)))))
-                :else ret))]
+                (not (.isOpen rch)) ret
+                :let [x (fragile resource (.read rch (.clear batch)))]
+                (neg? x) (do (fragile resource (.close s)) ret)
+                (zero? x) (recur ret)
+                :else (recur (reducef ret (.flip batch)))))]
       (af init))))
 
 (defreleasable ^:private HttpResource
@@ -244,12 +242,12 @@
                 ^java.net.HttpURLConnection c (long (count coll)))))
     (let [s :- java.io.OutputStream
           (fragile this (.getOutputStream c))
-          ch (java.nio.channels.Channels/newChannel s)]
-      (let [res (basic-write! this ch batch-size thread coll)]
-        (fragile this (.close s))
-        ;; ensure request has been sent
-        (fragile this (.getInputStream c))
-        res))))
+          ch (java.nio.channels.Channels/newChannel s)
+          res (basic-write! this ch batch-size thread coll)]
+      (fragile this (.close s))
+      ;; ensure request has been sent
+      (fragile this (.getInputStream c))
+      res)))
 
 (def+ key->proxy-type
   {:direct java.net.Proxy$Type/DIRECT

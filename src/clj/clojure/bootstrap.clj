@@ -1079,8 +1079,10 @@
 
 (cc/defn should-remove?
   [s v]
-  (cc/or #_(cc/and (cc/class? v)
-                 (cc/= "java.lang" (.getName (.getPackage ^java.lang.Class v))))
+  (cc/or #_(cc/and
+            (cc/class? v)
+            (cc/= "java.lang"
+                  (.getName (.getPackage ^java.lang.Class v))))
          (cc/and (cc/var? v)
                  (cc/identical? cns (.ns ^clojure.lang.Var v)))))
 
@@ -1091,12 +1093,13 @@
 
 (cc/defmacro bare-ns
   [& decls]
-  (let [gen-decl 
+  (let [gen-decl
         (fn [[kn & args]]
-          (apply list (symbol "clojure.core" (name kn)) 
+          (apply list (symbol "clojure.core" (name kn))
                  (map #(list `quote %) args)))
         gen-decls #(map gen-decl %)]
     `(do
        (remove-mappings! cc/*ns*)
        ~@(gen-decls decls)
-       #_(clojure.core/import '[java.lang ~'Boolean ~'Number ~'Integer ~'Float]))))
+       #_(clojure.core/import
+          '[java.lang ~'Boolean ~'Number ~'Integer ~'Float]))))

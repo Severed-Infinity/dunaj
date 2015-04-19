@@ -64,13 +64,13 @@
   {:added v1
    :see '[uuid? random from-bytes]}
   ([val :- (U Uuid ICharSequence Integer+)]
-     (cond (uuid? val) val
-           (char-sequence? val)
-           (java.util.UUID/fromString (->str val))
-           :else
-           (let [b (biginteger val)]
+   (cond
+     (uuid? val) val
+     (char-sequence? val) (java.util.UUID/fromString (->str val))
+     :else (let [b (biginteger val)]
              (uuid (.longValue (.shiftRight b 64)) (.longValue b)))))
-  ([high :- Integer+, low :- Integer+] (java.util.UUID. high low)))
+  ([high :- Integer+, low :- Integer+]
+   (java.util.UUID. high low)))
 
 ;;; Reader literal
 

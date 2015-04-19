@@ -333,10 +333,9 @@
    (milliseconds duration instant false))
   ([duration :- (U IDuration Integer+), instant :- IInstant,
     before? :- Boolean]
-   (cond
-     (integer? duration) duration
-     (nil? duration) 0
-     :else (trunc (-milliseconds duration instant before?)))))
+   (cond (integer? duration) duration
+         (nil? duration) 0
+         :else (trunc (-milliseconds duration instant before?)))))
 
 (defn nanoseconds :- Integer+
   "Returns number of nanoseconds from `_duration_` relative to given
@@ -346,17 +345,16 @@
   milliseconds."
   {:added v1
    :see '[milliseconds duration?]}
-  ([duration :- (U IDuration Integer+)] (nanoseconds duration (now)))
+  ([duration :- (U IDuration Integer+)]
+   (nanoseconds duration (now)))
   ([duration :- (U IDuration Integer+), instant :- IInstant]
    (nanoseconds duration instant false))
   ([duration :- (U IDuration Integer+), instant :- IInstant,
     before? :- Boolean]
-   (cond
-     (integer? duration) (dmp/multiply 1000000 duration)
-     (nil? duration) 0
-     :else
-     (trunc
-      (dmp/multiply 1000000
-                    (-milliseconds duration instant before?))))))
+   (cond (integer? duration) (dmp/multiply 1000000 duration)
+         (nil? duration) 0
+         :else (trunc (dmp/multiply
+                       1000000
+                       (-milliseconds duration instant before?))))))
 
 (replace-var! clojure.bootstrap/milliseconds)

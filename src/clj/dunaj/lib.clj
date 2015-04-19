@@ -32,7 +32,7 @@
    [dunaj.host.int :refer [iint iinc i-1 i0 i< iadd]]
    [dunaj.compare :refer [nil?]]
    [dunaj.state :refer [io! reset!]]
-   [dunaj.flow :refer [let when when-let cond loop]]
+   [dunaj.flow :refer [let when-let cond loop]]
    [dunaj.feature :refer [config]]
    [dunaj.poly :refer [deftype satisfies?]]
    [dunaj.coll :refer
@@ -100,28 +100,26 @@
        (load! x path name))))
   ([x :- (U IRed java.io.Reader IAcquirableFactory IReadable),
     path :- (Maybe String), name :- (Maybe String)]
-   (let [be? (and (empty? path) (empty? name))]
-     (cond
-       ;; java Reader instance
-       (class-instance? java.io.Reader x)
-       (io!
-        ;;(clojure.core/println "loading..." path name)
-        (clojure.lang.Compiler/load
-         x (not-empty path)
-         (if (empty? name) "NO_SOURCE_FILE" name)))
-       ;; byte coll
-       (and (homogeneous? x)
-            (item-types-match? (keyword->class :byte) (item-type x)))
-       (recur (parse utf-8 x) path name)
-       ;; reducible, assume chars
-       (red? x) (recur (coll-reader x) path name)
-       ;; opened resource
-       (readable? x)
-       (if be?
-         (load! (read! x) (:uri (config x)))
-         (recur (read! x) path name))
-       ;; acquirable factory
-       :else (recur (acquire! x) path name)))))
+   (cond
+     ;; java Reader instance
+     (class-instance? java.io.Reader x)
+     (io!
+      ;;(clojure.core/println "loading..." path name)
+      (clojure.lang.Compiler/load
+       x (not-empty path)
+       (if (empty? name) "NO_SOURCE_FILE" name)))
+     ;; byte coll
+     (and (homogeneous? x)
+          (item-types-match? (keyword->class :byte) (item-type x)))
+     (recur (parse utf-8 x) path name)
+     ;; reducible, assume chars
+     (red? x) (recur (coll-reader x) path name)
+     ;; acquirable factory
+     (not (readable? x)) (recur (acquire! x) path name)
+     ;; opened resource
+     (and (empty? path) (empty? name))
+     (load! (read! x) (:uri (config x)))
+     :else (recur (read! x) path name))))
 
 (defalias require!
   "Same as `clojure.core/require`.

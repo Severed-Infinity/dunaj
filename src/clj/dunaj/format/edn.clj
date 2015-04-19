@@ -221,8 +221,9 @@
   (-parse-value! [this value parents]
     (let [sn (dunaj.identifier/name sym)
           ctor? (index-of sn \.)]
-      (if (and ctor? record?)
+      (cond
         ;; constructor or reader
+        (and ctor? record?)
         (do (when-not (:read-eval config)
               (perror "record construction not allowed"))
             (let [c (java.lang.Class/forName
@@ -233,15 +234,13 @@
                 (clojure.lang.Reflector/invokeConstructor
                  c (to-array value)))))
         ;; tagged literal
-        (if-let [dr (or
-                     (get (:tag-readers config) sym)
-                     (when-let [x (get
-                                   clojure.core/default-data-readers
-                                   sym)]
-                       @x))]
-          (dr value)
-          ((or (:default-tag-reader config) default-tag-reader)
-           sym value)))))
+        [dr (or
+             (get (:tag-readers config) sym)
+             (when-let [x (get clojure.core/default-data-readers sym)]
+               @x))]
+        (dr value)
+        :else ((or (:default-tag-reader config) default-tag-reader)
+               sym value))))
   (-parse-eof! [this parents]
     (eof-handler this config this "tagged parser machine"))
   ILazyParserMachine
@@ -296,27 +295,24 @@
     (let [batch :- java.nio.CharBuffer batch
           begin (.position batch)]
       (loop []
-        (if-not (.hasRemaining batch)
-          (do (string-cat-batch!
-               sb batch begin (.position batch) state)
-              this)
-          (let [pos (.position batch)
-                c (.get batch)
-                x (iint c)]
-            (cond
-             (edn-number-item? x)
-             (do (cond (i== x (iDOT)) (set! decimal? true)
-                       (i== x (iCAPITAL_E)) (set! decimal? true)
-                       (i== x (iSMALL_E)) (set! decimal? true)
-                       (i== x (iCAPITAL_M)) (do (set! decimal? true)
-                                                (set! bigdec? true))
-                       (i== x (iCAPITAL_N)) (set! bigint? true))
-                 (recur))
-             (edn-delimiter? x)
-             (do (string-cat-batch! sb batch begin pos state)
-                 (.position batch pos)
-                 (-analyze-eof! this))
-             :else (perror "invalid number item " c)))))))
+        (cond (not (.hasRemaining batch))
+              (do (string-cat-batch!
+                   sb batch begin (.position batch) state)
+                  this)
+              :let [pos (.position batch), c (.get batch), x (iint c)]
+              (edn-number-item? x)
+              (do (cond (i== x (iDOT)) (set! decimal? true)
+                        (i== x (iCAPITAL_E)) (set! decimal? true)
+                        (i== x (iSMALL_E)) (set! decimal? true)
+                        (i== x (iCAPITAL_M)) (do (set! decimal? true)
+                                                 (set! bigdec? true))
+                        (i== x (iCAPITAL_N)) (set! bigint? true))
+                  (recur))
+              (edn-delimiter? x)
+              (do (string-cat-batch! sb batch begin pos state)
+                  (.position batch pos)
+                  (-analyze-eof! this))
+              :else (perror "invalid number item " c)))))
   (-analyze-eof! [this]
     (let [s ^java.lang.String (settle! sb)]
       (if decimal?
@@ -387,19 +383,17 @@
       (iloop [max (i10)]
         (when (izero? max) ;; malicious input protection
           (perror "invalid edn character " (settle! sb)))
-        (if-not (.hasRemaining batch)
-          (do (string-cat-batch!
-               sb batch begin (.position batch) state)
-              this)
-          (let [pos (.position batch)
-                c (.get batch)
-                x (iint c)]
-            (if (and (or (not (empty? sb)) (i< max (i10)))
-                     (delimiter-pred x))
+        (cond (not (.hasRemaining batch))
+              (do (string-cat-batch!
+                   sb batch begin (.position batch) state)
+                  this)
+              :let [pos (.position batch), c (.get batch), x (iint c)]
+              (and (or (not (empty? sb)) (i< max (i10)))
+                   (delimiter-pred x))
               (do (string-cat-batch! sb batch begin pos state)
                   (.position batch pos)
                   (-analyze-eof! this))
-              (recur (idec max))))))))
+              :else (recur (idec max))))))
   (-analyze-eof! [this]
     (let [s ^java.lang.String (settle! sb)
           c (first s)
@@ -564,23 +558,20 @@
     (let [batch ^java.nio.CharBuffer batch
           begin (.position batch)]
       (loop []
-        (if-not (.hasRemaining batch)
-          (do (string-cat-batch!
-               sb batch begin (.position batch) state)
-              this)
-          (let [pos (.position batch)
-                c (.get batch)
-                x (iint c)]
-            (cond
-             (edn-delimiter? x)
-             (do (string-cat-batch! sb batch begin pos state)
-                 (.position batch pos)
-                 (-analyze-eof! this))
-             (and special? (edn-symbol-digit? x))
-             (do (.position batch pos)
-                 (edn-number-literal config state (.charAt sb 0)))
-             (edn-symbol-item? x) (do (set! special? false) (recur))
-             :else (perror "invalid symbol character " c)))))))
+        (cond (not (.hasRemaining batch))
+              (do (string-cat-batch!
+                   sb batch begin (.position batch) state)
+                  this)
+              :let [pos (.position batch), c (.get batch), x (iint c)]
+              (edn-delimiter? x)
+              (do (string-cat-batch! sb batch begin pos state)
+                  (.position batch pos)
+                  (-analyze-eof! this))
+              (and special? (edn-symbol-digit? x))
+              (do (.position batch pos)
+                  (edn-number-literal config state (.charAt sb 0)))
+              (edn-symbol-item? x) (do (set! special? false) (recur))
+              :else (perror "invalid symbol character " c)))))
   (-analyze-eof! [this]
     (let [s ^java.lang.String (settle! sb)]
       (when-not (if keyword?
@@ -615,14 +606,13 @@
   [config state]
   ITokenizerMachine
   (-analyze-batch! [this bm batch]
-    (if (.hasRemaining ^java.nio.CharBuffer batch)
-      (let [x (iint (.get ^java.nio.CharBuffer batch))]
-        (cond (i== x (iUNDERSCORE)) (->DiscardParser config false)
-              (i== x (iLBRACE)) (edn-set-container config state)
-              (java.lang.Character/isAlphabetic x)
-              (edn-symbol-literal config state x true)
-              :else (perror "unknown dispatch character" (char x))))
-      this))
+    (cond (not (.hasRemaining ^java.nio.CharBuffer batch)) this
+          :let [x (iint (.get ^java.nio.CharBuffer batch))]
+          (i== x (iUNDERSCORE)) (->DiscardParser config false)
+          (i== x (iLBRACE)) (edn-set-container config state)
+          (java.lang.Character/isAlphabetic x)
+          (edn-symbol-literal config state x true)
+          :else (perror "unknown dispatch character" (char x))))
   (-analyze-eof! [this]
     (eof-handler this config this "dispatch tokenizer machine")))
 

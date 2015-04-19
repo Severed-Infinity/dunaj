@@ -100,10 +100,10 @@
   {:added v1
    :see '[regex? regex matches dunaj.format/parse]}
   ([re :- (U String Regex), coll :- (Maybe IRed)]
-     (split re coll 0))
+   (split re coll 0))
   ([re :- (U String Regex), coll :- (Maybe IRed), limit :- Integer+]
-     (adapt
-      (.split (regex re) (provide-char-sequence coll) (or limit 0)))))
+   (adapt
+    (.split (regex re) (provide-char-sequence coll) (or limit 0)))))
 
 (defn quote :- String
   "Returns literal quoted string for use in regex pattern."

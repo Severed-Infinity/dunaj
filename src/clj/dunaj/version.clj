@@ -21,7 +21,7 @@
             [dunaj.type :refer [Maybe]]
             [dunaj.boolean :refer [Boolean+ or]]
             [dunaj.compare :refer [=]]
-            [dunaj.flow :refer [when-let when let]]
+            [dunaj.flow :refer [let]]
             [dunaj.poly :refer [defrecord]]
             [dunaj.coll :refer [IRed]]
             [dunaj.function :refer [defn]]

@@ -429,9 +429,9 @@
       (.clear batch)
       (loop [step step
              prev prev]
-        (if (.hasRemaining from)
-          (let [v (.get bm from)
-                x (iint v)]
+        (cond
+          (.hasRemaining from)
+          (let [v (.get bm from), x (iint v)]
             (cond (and (zero? step) (i== x (i27))) (recur 1 v)
                   (and (one? step) (i== x (iLBRACKET))) (recur 2 prev)
                   (and (== step 2) (i== x (iSMALL_M))) (recur 0 nil)
@@ -440,9 +440,9 @@
                                   (recur 0 nil))
                   (zero? step) (do (.put bm batch v) (recur 0 nil))
                   :else (recur step prev)))
-          (if (.hasRemaining (.flip batch))
-            (bs-advance (._step r ret batch) step prev batch)
-            (bs-advance ret step prev batch)))))))
+          (.hasRemaining (.flip batch))
+          (bs-advance (._step r ret batch) step prev batch)
+          :else (bs-advance ret step prev batch))))))
 
 (defxform batched-strip-color
   [machine-factory]
@@ -553,12 +553,11 @@
   into it."
   ([dest :- AnyBatch, bm :- BatchManager,
     state :- IReference, el :- Any]
-   (if (.hasRemaining dest)
-     (do (.put bm dest el) dest)
-     (let [abatch (alt-batch! bm state)]
-       (if (identical? dest abatch)
+   (cond (.hasRemaining dest) (do (.put bm dest el) dest)
+         :let [abatch (alt-batch! bm state)]
+         (identical? dest abatch)
          (recur (alt-batch-grow! bm state) bm state el)
-         (do (.clear abatch) (recur abatch bm state el))))))
+         :else (do (.clear abatch) (recur abatch bm state el))))
   ([dest :- AnyBatch, bm :- BatchManager,
     state :- IReference, el :- Any, n :- Integer+]
    (iloop [dest dest, i (iint n)]
@@ -574,15 +573,14 @@
   from `src` fits into it."
   [dest :- AnyBatch, bm :- BatchManager,
    state :- IReference, src :- AnyBatch]
-  (if (nil? src)
-    dest
-    (if-not (i< (.remaining dest) (.remaining src))
-      (do (.copy bm src dest) dest)
-      (let [size (.remaining src)
-            abatch (alt-batch! bm state size)]
-        (if (identical? dest abatch)
-          (recur (alt-batch-grow! bm state size) bm state src)
-          (do (.clear abatch) (recur abatch bm state src)))))))
+  (cond (nil? src) dest
+        (not (i< (.remaining dest) (.remaining src)))
+        (do (.copy bm src dest) dest)
+        :let [size (.remaining src)
+              abatch (alt-batch! bm state size)]
+        (identical? dest abatch)
+        (recur (alt-batch-grow! bm state size) bm state src)
+        :else (do (.clear abatch) (recur abatch bm state src))))
 
 (defn print-batch! :- AnyBatch
   "Returns batch with contents of cleared batch `src` copied into it.
@@ -607,25 +605,25 @@
   [dest :- AnyBatch, bm :- BatchManager,
    state :- IReference, src :- AnyBatch, escape-fn :- Function]
   (.clear src)
-  (let [lim (.limit src)
-        pos (.position src)]
+  (let [lim (.limit src), pos (.position src)]
     (iloop [dest dest, from (.position src), i (.position src)]
-      (if (i== lim i)
+      (cond
         ;; flush and finish
+        (i== lim i)
         (do (.position src from)
             (print-batch-unchanged! dest bm state src))
-        (if-let [nbatch (escape-fn (.get bm src i))]
-          ;; flush
-          (do (.position src from)
-              (.limit src i)
-              (let [ndest
-                    (-> dest
-                        (print-batch-unchanged! bm state src)
-                        (print-batch! bm state nbatch))]
-                (.limit src lim)
-                (recur ndest (iinc i) (iinc i))))
-          ;; next char
-          (recur dest from (iinc i)))))))
+        ;; flush
+        [nbatch (escape-fn (.get bm src i))]
+        (do (.position src from)
+            (.limit src i)
+            (let [ndest
+                  (-> dest
+                      (print-batch-unchanged! bm state src)
+                      (print-batch! bm state nbatch))]
+              (.limit src lim)
+              (recur ndest (iinc i) (iinc i))))
+        ;; next char
+        :else (recur dest from (iinc i))))))
 
 (defn print-finish! :- (Maybe AnyBatch)
   "Returns nil if `dest` is the same batch as `orig`,
@@ -643,14 +641,8 @@
    :see '[print-colored!]
    :category "Primary"}
   [batch bm state & [x :as body]]
-  (if (and (single? body) (not (vector? x)) (not (list? x)))
-    (cond (symbol? x)
-          `(print-single-batch! ~batch ~bm ~x)
-          (string? x)
-          `(print-single-batch-unchanged!
-            ~batch ~bm (string-to-batch! ~x))
-          :else
-          `(print-single-element! ~batch ~bm ~state ~x))
+  (cond
+    (not (and (single? body) (not (vector? x)) (not (list? x))))
     (let [emit-print
           (fn [x]
             (cond (and (symbol? x) (:unchanged (meta x)))
@@ -690,7 +682,11 @@
                   res
                   (recur (conj res (emit-print (first body)))
                          (next body))))]
-      `(-> ~batch ~@res (print-finish! ~batch)))))
+      `(-> ~batch ~@res (print-finish! ~batch)))
+    (symbol? x) `(print-single-batch! ~batch ~bm ~x)
+    (string? x) 
+    `(print-single-batch-unchanged! ~batch ~bm (string-to-batch! ~x))
+    :else `(print-single-element! ~batch ~bm ~state ~x)))
 
 (defmacro print-colored!
   "Returns batch with stuff added, depending on the args passed into
@@ -719,37 +715,33 @@
   (-init [this] (._init r))
   (-finish [this wrap]
     (let [af (fn af [ret tc batch :- (Maybe AnyBatch)
-                     other :- AnyBatch leftover after-done?]
+                    other :- AnyBatch leftover after-done?]
                (cond
-                (reduced? ret) ret
-                (postponed? ret)
-                (postponed
-                 @ret
-                 #(af (advance ret) (clone tc) (clone batch)
-                      (clone other) (clone leftover) after-done?)
-                 #(af (unsafe-advance! ret) tc batch
-                      other leftover after-done?))
-                :else
-                (let []
-                  (cond
-                   (nil? batch) ret ;; reduced flag from underneath
-                   (not (nil? leftover)) ;; flush
-                   (do (.flip batch)
-                       (if (.hasRemaining batch)
-                         (recur (._step r ret batch) tc (.clear other)
-                                batch leftover after-done?)
-                         (recur (._step r ret leftover) tc
-                                (.clear batch) other nil
-                                after-done?)))
-                   after-done?
-                   (do (.flip batch)
-                       (if (.hasRemaining batch)
-                         (._step r ret batch)
-                         ret))
-                   :else
-                   (recur ret tc batch other
-                          (-print-after! tc bm batch (->lst tc))
-                          true)))))
+                 (reduced? ret) ret
+                 (postponed? ret)
+                 (postponed
+                  @ret
+                  #(af (advance ret) (clone tc) (clone batch)
+                       (clone other) (clone leftover) after-done?)
+                  #(af (unsafe-advance! ret) tc batch
+                       other leftover after-done?))
+                 (nil? batch) ret ;; reduced flag from underneath
+                 (not (nil? leftover)) ;; flush
+                 (do (.flip batch)
+                     (if (.hasRemaining batch)
+                       (recur (._step r ret batch) tc (.clear other)
+                              batch leftover after-done?)
+                       (recur (._step r ret leftover) tc
+                              (.clear batch) other nil
+                              after-done?)))
+                 after-done?
+                 (do (.flip batch)
+                     (if (.hasRemaining batch)
+                       (._step r ret batch)
+                       ret))
+                 :else (recur ret tc batch other
+                              (-print-after! tc bm batch (->lst tc))
+                              true)))
           w (strip-reduced wrap)
           ret (.-ret ^dunaj.format.printer.PWrap w)
           tc (.-tc ^dunaj.format.printer.PWrap w)
@@ -812,19 +804,21 @@
                 (let [x (-dispatch-printer
                          machine-factory config state
                          (first s) bm batch machines)]
-                  (if (container-printer-machine? x)
-                    (if (and level-limit-pred
-                             (level-limit-pred machines))
-                      (recur ret :between state machines
-                             (next s) sh batch other
-                             (level-limit-print-fn batch bm state))
-                      (let [machines (conj machines x)]
-                        (recur ret :before state machines
-                               (seq (cap item-limit [item-limit-batch]
-                                         (-children x machines)))
-                               (conj sh (next s)) batch other nil)))
+                  (cond
+                    (not (container-printer-machine? x))
                     (recur ret :between state machines
-                           (next s) sh batch other x)))
+                           (next s) sh batch other x)
+                    (and level-limit-pred
+                         (level-limit-pred machines))
+                    (recur ret :between state machines
+                           (next s) sh batch other
+                           (level-limit-print-fn batch bm state))
+                    :else
+                    (let [machines (conj machines x)]
+                      (recur ret :before state machines
+                             (seq (cap item-limit [item-limit-batch]
+                                       (-children x machines)))
+                             (conj sh (next s)) batch other nil))))
                 (empty? sh) ;; done
                 (->PWrap ret state false tc batch other leftover)
                 :else ;; go up

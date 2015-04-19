@@ -185,23 +185,20 @@
             (.isBlocking ^java.nio.channels.SelectableChannel ch)))
           af (fn af [ret wait?]
                (cond
-                (reduced? ret) ret
-                (postponed? ret)
-                (unsafe-postponed
-                 @ret #(af (unsafe-advance! ret) false))
-                wait? (unsafe-postponed ret #(af ret false))
-                (.isOpen ch)
-                (let [x (fragile resource
-                                 (.read ch ^java.nio.ByteBuffer
-                                        (.clear batch)))]
-                  (cond
-                   (neg? x) ret
-                   (and non-blocking? (zero? x)) (recur ret true)
-                   (zero? x) (recur ret false)
-                   :else
-                   (recur
-                    (reducef ret (payload-fn (.flip batch))) false)))
-                :else ret))]
+                 (reduced? ret) ret
+                 (postponed? ret)
+                 (unsafe-postponed
+                  @ret #(af (unsafe-advance! ret) false))
+                 wait? (unsafe-postponed ret #(af ret false))
+                 (not (.isOpen ch)) ret
+                 :let [x (fragile resource
+                                  (.read ch ^java.nio.ByteBuffer
+                                         (.clear batch)))]
+                 (neg? x) ret
+                 (and non-blocking? (zero? x)) (recur ret true)
+                 (zero? x) (recur ret false)
+                 :else (recur (reducef ret (payload-fn (.flip batch)))
+                              false)))]
       (af init false))))
 
 (defn ^:private get-query-map :- {Keyword String}
@@ -392,8 +389,7 @@
   "Provides input data in `x` as one host batch."
   [x :- (U AnyBatch IRed), bm :- BatchManager, batch :- AnyBatch]
   ;; x is batch, batchable coll or just coll
-  (cond (class-instance? java.nio.ByteBuffer x)
-        x
+  (cond (class-instance? java.nio.ByteBuffer x) x
         (and (satisfies? IBatchedRed x)
              (item-types-match? (.itemType bm) (item-type x)))
         (let [rf (fn [^java.nio.Buffer to ^java.nio.Buffer from]

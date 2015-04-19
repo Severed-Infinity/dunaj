@@ -19,25 +19,25 @@
   Basic characteristics of a resource is its limited availability
   within a computer system. Additional informations are available in
   the <<resources.ad#,resource specification>>.
-  
+
   User acquires a resource with acquire! function. Resource
   is a stateful object and is released within a given scope.
   Resource can be in one of following states:
-  
+
   * OPEN (dunaj.state/open?)
   * FAILED (dunaj.error/error)
   * CANCELLED (dunaj.state/cancelled?)
   * CLOSED (not observable)
   * RELEASING (not observable)
-  
+
   State transitions:
-  
+
   * after acquiring: OPEN or FAILED
   * when working with resource: OPEN -> OPEN, OPEN -> FAILED
   * evaluation hits end of scope: OPEN -> RELEASING
   * after release is done: RELEASING -> CLOSED, RELEASING -> FAILED
   * cancelling the release process: RELEASING -> CANCELLED.
-  
+
   NOTE: Resources with composite bands implement classic collection
   protocols (IIndexed, ILookup, ICounted). Resources where
   individuals items can be sent/received implement ISourcePort
@@ -167,14 +167,14 @@
   "Releases a releasable `val`. Returns nil."
   [val :- IReleasable, opts :- {}]
   (let [t (:timeout opts)]
-    (if-not (and (integer? t) (pos? t))
-      (-release! val)
-      (let [c (thread (try (-release! val) :done
-                           (catch java.lang.Exception e e)))
-            tc (timeout t)
-            [v p] (alts!! [c tc])]
-        (if (identical? p tc)
+    (cond (not (and (integer? t) (pos? t))) (-release! val)
+          :let [c (thread (try (-release! val)
+                               :done
+                               (catch java.lang.Exception e e)))
+                tc (timeout t)
+                [v p] (alts!! [c tc])]
           ;; releasing has timed out
+          (identical? p tc)
           (condp identical? (:timeout-mode opts)
             :throw
             (release-throw
@@ -183,11 +183,12 @@
             :cancel
             (do (cancel! val)
                 (when-let [ex (and (fail-aware? val) (error val))]
-                  (release-throw "Scoped item has failed to cancel."
-                                 val opts ex)))
+                  (release-throw
+                   "Scoped item has failed to cancel."
+                   val opts ex)))
             nil)
           ;; releasing has finished or failed
-          (when-not (identical? :done v) (throw v)))))))
+          (not (identical? :done v)) (throw v))))
 
 (defn ^:private release-item! :- nil
   "Releases one scope item and returns nil. May throw."
@@ -234,13 +235,13 @@
     ex :- (Maybe java.lang.Throwable)]
    (let [exr (atom ex)
          scope (deref-scope! scope)]
-     (doseq [item (:items scope)]
-       (when (or (not (:mode item))
-                 (identical? :exit (:mode item))
-                 (identical? mode (:mode item)))
-         (try
-           (release-item! (:value item) (merge scope item) exr)
-           (catch java.lang.Exception e (alter! exr merge-ex! e)))))
+     (doseq [item (:items scope)
+             :when (or (not (:mode item))
+                       (identical? :exit (:mode item))
+                       (identical? mode (:mode item)))]
+       (try
+         (release-item! (:value item) (merge scope item) exr)
+         (catch java.lang.Exception e (alter! exr merge-ex! e))))
      (when-let [new-ex @exr] (throw new-ex))
      scope)))
 
@@ -402,12 +403,11 @@
    :category "Primary"
    :see '[dunaj.resource.helper/register-factory! acquire!]}
   [x :- Any, & {:as opts}]
-  (if (or (string? x) (uri? x))
-    (let [uri (uri x)]
-      (when-let [factory (*resource-providers*
-                          (.getScheme ^java.net.URI uri))]
-        (merge factory (assoc opts :uri x))))
-    (merge x opts)))
+  (cond
+    (not (or (string? x) (uri? x))) (merge x opts)
+    :let [uri (uri x)]
+    [factory (*resource-providers* (.getScheme ^java.net.URI uri))]
+    (merge factory (assoc opts :uri x))))
 
 (defn acquire! :- Any
   "Acquires object from a given `_factory_`, pushes it
@@ -695,7 +695,7 @@
 ;; should be selected.
 
 (defn slurp :- IRed
-  "Returns a utf-8 collection recipe of data read from resource 
+  "Returns a utf-8 collection recipe of data read from resource
   factory `_res_`, which was opened for immutable reading. May
   supply custom `_parser_` if encoding other than utf-8 is needed."
   {:added v1
@@ -858,19 +858,16 @@
        ;;(clojure.core/println "processed" k)
        (recur (assoc fin k nv) sys (first kh) (first vh) (first dh)
               (next kh) (next vh) (next dh)))
-     :else
-     (let [dep (first d), dep-key (key dep), dep-val (val dep)
+     :let [dep (first d), dep-key (key dep), dep-val (val dep)
            nd (next d), x (or dep-val dep-key)]
-       ;;(clojure.core/println "processing" k x fin kh sys dep-val)
-       (cond
-        (contains? fin x)
-        (recur fin sys k (assoc v dep-key (get fin x)) nd kh vh dh)
-        (some #(identical? x %) kh)
-        (throw (illegal-argument "circular dependency detected"))
-        (and (nil? sys) (nil? dep-val))
-        (recur fin sys k v nd kh vh dh)
-        (nil? sys)
-        (throw (illegal-argument
-                "no component found for a required dependency"))
-        :else (recur fin sys nil nil nil
-                     (cons k kh) (cons v vh) (cons d dh)))))))
+     (contains? fin x)
+     (recur fin sys k (assoc v dep-key (get fin x)) nd kh vh dh)
+     (some #(identical? x %) kh)
+     (throw (illegal-argument "circular dependency detected"))
+     (and (nil? sys) (nil? dep-val))
+     (recur fin sys k v nd kh vh dh)
+     (nil? sys)
+     (throw (illegal-argument
+             "no component found for a required dependency"))
+     :else (recur fin sys nil nil nil
+                  (cons k kh) (cons v vh) (cons d dh)))))

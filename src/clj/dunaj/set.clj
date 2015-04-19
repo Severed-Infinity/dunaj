@@ -34,7 +34,7 @@
   (:refer-clojure :exclude
    [reduce contains? satisfies? = disj deftype cat conj let get meta
     empty? hash when-not when defn declare or instance? not identical?
-    empty cond if-let apply and])
+    empty cond if-let apply and nil?])
   (:require
    [clojure.set :as cs]
    [clojure.bootstrap :refer [v1]]
@@ -43,7 +43,7 @@
    [dunaj.boolean :refer [Boolean+ not or and]]
    [dunaj.host :refer [class-instance?]]
    [dunaj.host.int :refer [Int iadd iint]]
-   [dunaj.compare :refer [IHash IEquiv identical? hash -hash =]]
+   [dunaj.compare :refer [IHash IEquiv identical? hash -hash = nil?]]
    [dunaj.flow :refer [let cond when-not if-let when]]
    [dunaj.feature :refer [IPersistentMeta IMeta meta assoc-meta]]
    [dunaj.poly :refer [instance? identical-type? satisfies? deftype]]
@@ -186,28 +186,23 @@
 
 (defn ^:private ccat :- #{}
   [x :- ComplementSet, other :- Any]
-  (cond
-   (class-instance? dunaj.set.ComplementSet other)
-   (let [r (cs/intersection
-            (.-excluded x)
-            (.-excluded ^dunaj.set.ComplementSet other))]
-     (if (empty? r)
-       (assoc-meta U (meta x))
-       (->ComplementSet r (meta x))))
-   (class-instance? dunaj.set.UniversalSet other)
-   (assoc-meta U (meta x))
-   (satisfies? IPersistentSet other)
-   (let [r (cs/difference (.-excluded x) other)]
-     (if (empty? r)
-       (assoc-meta U (meta x))
-       (->ComplementSet r (meta x))))
-   :else (throw (illegal-argument "Not of similar type."))))
+  (let [cf #(if (empty? %)
+              (assoc-meta U (meta x))
+              (->ComplementSet % (meta x)))]
+    (cond (class-instance? dunaj.set.ComplementSet other)
+          (cf (cs/intersection
+               (.-excluded x)
+               (.-excluded ^dunaj.set.ComplementSet other)))
+          (class-instance? dunaj.set.UniversalSet other)
+          (assoc-meta U (meta x))
+          (satisfies? IPersistentSet other)
+          (cf (cs/difference (.-excluded x) other))
+          (throw (illegal-argument "Not of similar type.")))))
 
 (defn ^:private cequiv :- Boolean
   [x :- ComplementSet, other :- Any]
   (if (identical-type? x other)
-    (= (.-excluded x)
-       (.-excluded ^dunaj.set.ComplementSet other))
+    (= (.-excluded x) (.-excluded ^dunaj.set.ComplementSet other))
     false))
 
 (defn ^:private cequals :- Boolean
@@ -272,12 +267,12 @@
          (complement? s2) (ccat s2 s1)
          :else (cs/union s1 s2)))
   ([s1 :- #{}, s2 :- #{} & sets :- #{}]
-   (let [s (cons s1 (cons s2 sets))]
-     (if-let [what (some #(cond (universal? %) :universal
-                                (complement? %) %
-                                :else false) s)]
-       (if (identical? what :universal) U (reduce cat what s))
-       (apply cs/union s)))))
+   (let [s (cons s1 (cons s2 sets))
+         cf #(cond (universal? %) :universal (complement? %) %)
+         what (some cf s)]
+     (cond (identical? what :universal) U
+           (nil? what) (apply cs/union s)
+           :else (reduce cat what s)))))
 
 (defn intersection :- #{}
   "Return a set that is the intersection of the input sets.

@@ -152,12 +152,12 @@
           [dunaj.coll.recipe :refer [concat filter keys map]]])
 
 (defn conflicts
-  ([sym] 
+  ([sym]
    (conflicts sym 'clojure.core))
   ([sym reference]
    (dunaj.lib/require! sym)
    (let [is (keys (dunaj.namespace/interns sym))
-         rs (map first 
+         rs (map first
              (filter #(not= "clojure.core" (namespace (second %)))
                      (dunaj.namespace/refers sym)))
          cps (set (keys (dunaj.namespace/publics reference)))]

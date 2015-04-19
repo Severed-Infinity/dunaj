@@ -22,8 +22,8 @@
    :additional-copyright true
    :categories ["Primary" "Ports" "Operations" "Mult" "Mix" "Pub"]}
   (:refer-clojure :exclude
-   [deftype conj! conj let meta fn when defn reify defprotocol
-    partial defmacro locking if-let apply assoc complement and])
+   [deftype conj! conj let meta fn when defn reify defprotocol assoc
+    partial defmacro locking if-let apply when-let complement and])
   (:require
    [clojure.core.async.impl.dispatch]
    [clojure.core.async.impl.protocols :as cap]
@@ -33,7 +33,7 @@
    [dunaj.boolean :refer [Boolean+ and]]
    [dunaj.math :refer [Integer+]]
    [dunaj.state :refer [IOpenAware -open? IReference]]
-   [dunaj.flow :refer [let when if-let]]
+   [dunaj.flow :refer [let when if-let when-let]]
    [dunaj.feature :refer [assoc-meta meta]]
    [dunaj.poly :refer [extend-protocol! reify deftype defprotocol]]
    [dunaj.coll :refer
@@ -112,12 +112,11 @@
    (take! port fn1 false))
   ([port :- ISourcePort, fn1 :- (Fn [Any (Maybe PortVal)]),
     always-dispatch? :- Boolean]
-   (let [ret (-take! port (fn-handler fn1))]
-     (when ret
-       (let [val @ret]
-         (if always-dispatch?
-           (execute *default-port-executor* #(fn1 val))
-           (fn1 val))))
+   (when-let [ret (-take! port (fn-handler fn1))
+              :let [val @ret]]
+     (if always-dispatch?
+       (execute *default-port-executor* #(fn1 val))
+       (fn1 val))
      nil)))
 
 (defn <!! :- (Maybe PortVal)
@@ -170,11 +169,11 @@
    (put! port val fn1 false))
   ([port :- ITargetPort, val :- PortVal, fn1 :- (Fn [Any Boolean]),
     always-dispatch? :- Boolean]
-   (if-let [ret (-put! port val (fn-handler fn1))]
-     (let [retb @ret]
-       (if always-dispatch?
-         (execute *default-port-executor* (fn1 retb))
-         (fn1 retb)))
+   (if-let [ret (-put! port val (fn-handler fn1))
+            :let [retb @ret]]
+     (if always-dispatch?
+       (execute *default-port-executor* (fn1 retb))
+       (fn1 retb))
      true)))
 
 (defn >!! :- Boolean

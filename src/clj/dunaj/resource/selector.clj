@@ -104,15 +104,15 @@
                  (unsafe-postponed
                   @ret #(af (unsafe-advance! ret) iter false))
                  wait? (unsafe-postponed ret #(af ret (sf) false))
-                (nil? iter) ret
-                (.hasNext iter)
-                (let [sk :- java.nio.channels.SelectionKey
-                      (fragile resource (.next iter))
-                      m (selector-key->map sk)]
-                  (fragile resource (.remove iter))
-                  (recur (reducef ret m) iter false))
-                (.isOpen sel) (recur ret iter true)
-                :else ret))]
+                 (nil? iter) ret
+                 (.hasNext iter)
+                 (let [sk :- java.nio.channels.SelectionKey
+                       (fragile resource (.next iter))
+                       m (selector-key->map sk)]
+                   (fragile resource (.remove iter))
+                   (recur (reducef ret m) iter false))
+                 (.isOpen sel) (recur ret iter true)
+                 :else ret))]
       (af init (sf) false)))
   ISeqable
   (-seq [this] (red-to-seq this))

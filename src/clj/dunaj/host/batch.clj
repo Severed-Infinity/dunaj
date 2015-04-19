@@ -115,8 +115,8 @@
         (class-instance? java.nio.ShortBuffer batch)
         (batch-manager java.lang.Short/TYPE)
         (nil? batch) (throw (java.lang.NullPointerException.))
-        :else (throw (java.lang.IllegalArgumentException.
-                      "Batch not recognized"))))
+        (throw (java.lang.IllegalArgumentException.
+                "Batch not recognized"))))
 
 (defn provide-batch-manager :- BatchManager
   "If batch manager `_bm_` is `nil`, finds and returns batch manager
@@ -327,14 +327,13 @@
                             #(af (unsafe-advance! ret) batch
                                  resized to-clear?))
                  to-clear? (recur ret batch (.clear resized) false)
-                 (.hasRemaining batch)
-                 (cond (i< (.remaining batch) (.remaining resized))
-                       (do (.copy bm batch resized) ret)
-                       (ipos? (.position resized))
-                       (recur (reducef ret (.flip resized))
-                              batch resized true)
-                       :else (reducef ret batch))
-                 :else ret))
+                 (not (.hasRemaining batch)) ret
+                 (i< (.remaining batch) (.remaining resized))
+                 (do (.copy bm batch resized) ret)
+                 (ipos? (.position resized))
+                 (recur (reducef ret (.flip resized))
+                        batch resized true)
+                 :else (reducef ret batch)))
           ret (reduce-batched* requested-type size-hint coll
                                #(af % %2 resized false) init)
           faf (cloned-advance-fn [ret, resized :- AnyBatch]

@@ -21,23 +21,23 @@
   when e.g. calling a function which expects a boolean argument.
   By definition, `nil` and `false` coerce to `false`, any other
   value coerces to `true`.
-  
+
   TIP: JVM host specific: Dunaj supports primitive booleans as
   function arguments and return values (subject to the number of
   arguments and combination of argument types).
-  
+
   [WARNING]
   --
   JVM host specific: `false` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#FALSE[`Boolean/FALSE`], so
   using other instances of http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html[`java.lang.Boolean`] may lead to surprising
   results. In such cases, you may want to use `boolean` function
   to coerce into correct boolean value.
-  
+
   [source,clojure,linesnum]
   ----
   (if (java.lang.Boolean. false) :is-true :is-false)
   ;;=> :is-true
-  
+
   (if (boolean (java.lang.Boolean. false)) :is-true :is-false)
   ;;=> :is-false
   ----
@@ -207,7 +207,7 @@
   "The logical nor operator. Returns the negation of `or`.
   Stops the evaluation of given expressions on first logical true
   value.
-  
+
   .Truth table for nor
   [format=\"csv\", options=\"header,autowidth\",cols=\"3*^\"]
   |===
@@ -227,7 +227,7 @@
   "Returns the last logical true value if odd number of inputs is
   logical true, otherwise returns a logical false value.
   `(xor)` returns `nil`, `(xor _x_)` returns `_x_`.
-  
+
   .Truth table for xor
   [format=\"csv\", options=\"header,autowidth\",cols=\"3*^\"]
   |===
@@ -260,7 +260,7 @@
   for more than 2 arguments, as logical biconditional is ambiguous
   in such cases. `(xnor)` returns `true`, `(xnor _x_)` is same as
   `(not _x_)`.
-  
+
   .Truth table for xnor
   [format=\"csv\", options=\"header,autowidth\",cols=\"3*^\"]
   |===
@@ -283,7 +283,7 @@
   "Returns the result of material implication. Note that implication
   is not supported for more than 2 arguments, as implication is
   not associative.
-  
+
   .Truth table for implication
   [format=\"csv\", options=\"header,autowidth\",cols=\"3*^\"]
   |===

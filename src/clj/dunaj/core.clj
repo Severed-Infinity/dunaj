@@ -323,9 +323,9 @@
   "Loads Dunaj. To be used in Dunaj lite, and in cases where
   given ns won't be AOT compiled."
   [& decls]
-  (let [gen-decl 
+  (let [gen-decl
         (fn [[kn & args]]
-          (apply ->lst (symbol "clojure.core" (name kn)) 
+          (apply ->lst (symbol "clojure.core" (name kn))
                  (map #(->lst `quote %) args)))
         gen-decls #(map gen-decl %)
         ff #(= :refer-dunaj (first %))

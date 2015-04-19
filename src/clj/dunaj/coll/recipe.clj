@@ -573,12 +573,11 @@
     (let [bf #(if (branch-fn %) (cons (seq (children-fn %)) %2) %2)
           af (advance-fn [ret others]
                (nil? others) ret
-               :else
-               (if-let [children (seq (first others))]
-                 (let [val (first children)
-                       nothers (cons (next children) (next others))]
-                   (recur (reducef ret val) (bf val nothers)))
-                 (recur ret (next others))))]
+               [children (seq (first others))
+                :let [val (first children)
+                      nothers (cons (next children) (next others))]]
+               (recur (reducef ret val) (bf val nothers))
+               :else (recur ret (next others)))]
       (af (reducef init root) (bf root nil)))))
 
 (deftype PostTraverse
@@ -590,16 +589,12 @@
     (let [bf #(pair % (when (branch-fn %) (seq (children-fn %))))
           af (advance-fn [ret others]
                (nil? others) ret
-               :else
-               (let [p (first others)
-                     node (key p)
-                     children (val p)]
-                 (if children
-                   (recur ret
-                          (cons (bf (first children))
-                                (cons (pair node (next children))
-                                      (next others))))
-                   (recur (reducef ret node) (next others)))))]
+               :let [p (first others), node (key p), children (val p)]
+               children (recur ret
+                               (cons (bf (first children))
+                                     (cons (pair node (next children))
+                                           (next others))))
+               :else (recur (reducef ret node) (next others)))]
       (af init (cons (bf root) nil)))))
 
 (deftype ITWrap [node :- Any, i :- Int, children :- Any])
@@ -616,25 +611,22 @@
                  % (if b? n (i0)) (when b? (seq (children-fn %)))))
           af (advance-fn [ret others]
                (nil? others) ret
-               :else
-               (let [p (first others)
+               :let [p (first others)
                      node (.-node ^dunaj.coll.recipe.ITWrap p)
                      i (.-i ^dunaj.coll.recipe.ITWrap p)
                      children
                      (.-children ^dunaj.coll.recipe.ITWrap p)]
-                 (cond
-                  (izero? i)
-                  (recur (reducef ret node)
-                         (cons (->ITWrap nothing (idec i) children)
-                               (next others)))
-                  children
-                  (recur ret
-                         (cons (bf (first children))
-                               (cons (->ITWrap
-                                      node (idec i) (next children))
-                                     (next others))))
-                  (nothing? node) (recur ret (next others))
-                  :else (recur (reducef ret node) (next others)))))]
+               (izero? i)
+               (recur (reducef ret node)
+                      (cons (->ITWrap nothing (idec i) children)
+                            (next others)))
+               children
+               (recur ret (cons (bf (first children))
+                                (cons (->ITWrap
+                                       node (idec i) (next children))
+                                      (next others))))
+               (nothing? node) (recur ret (next others))
+               :else (recur (reducef ret node) (next others)))]
       (af init (cons (bf root) nil)))))
 
 (declare mapcat)
@@ -2377,7 +2369,7 @@
       (._step r (.-ret ^dunaj.coll.recipe.ObjectWrap wrap)
               val val2 val3 val4 more)
       (let [af (advance-fn [ret]
-                             (._step r ret val val2 val3 val4 more))]
+                 (._step r ret val val2 val3 val4 more))]
         (af (apply rf wrap sep))))))
 
 (defxform interpose
@@ -2718,20 +2710,18 @@
                       (conj! items nothing)
                       items)]
           (cond
-           (or (nil? pad) (nil? items)) ret
-           (true? pad) (reduce* (settle! items) rf ret)
-           :else
-           (let [tn (if (i> n step)
-                      (iinc (irem (iadd (isub n step) idx) step))
-                      (iinc idx))
-                 npad (take tn pad)
-                 val (peek items)]
-             (if (nothing? val)
-               ret
-               (let [val (if (reduced? val)
-                           val
-                           (reduce* npad #(._step ir % %2) val))]
-                 (._step r ret (ef val)))))))
+            (or (nil? pad) (nil? items)) ret
+            (true? pad) (reduce* (settle! items) rf ret)
+            :let [tn (if (i> n step)
+                       (iinc (irem (iadd (isub n step) idx) step))
+                       (iinc idx))
+                  npad (take tn pad)
+                  val (peek items)]
+            (nothing? val) ret
+            :else (let [val (if (reduced? val)
+                              val
+                              (reduce* npad #(._step ir % %2) val))]
+                    (._step r ret (ef val)))))
         (reduced-advance (reduced? wrap))
         (finish-advance r)))
   (-wrap [this ret]
@@ -3121,16 +3111,15 @@
       (cond
        (empty? coll) (combinef)
        (i<= l (iint n)) (reduce-fn this reducef (combinef))
-       :else
-       (if-let [x (split-adjust #(f (nth coll %)) (idiv l (i2)) l)]
-         (let [c1 (->SectionablePartitionBy (section coll 0 x) f ir)
-               c2 (->SectionablePartitionBy (section coll x l) f ir)
-               fc (fn [child]
-                    #(-fold child reduce-fn pool n combinef reducef))]
-           (invoke pool #(let [f1 (fc c1)
-                               t2 (fork (fc c2))]
-                           (combinef (f1) (join t2)))))
-         (reduce-fn this reducef (combinef)))))))
+       [x (split-adjust #(f (nth coll %)) (idiv l (i2)) l)]
+       (let [c1 (->SectionablePartitionBy (section coll 0 x) f ir)
+             c2 (->SectionablePartitionBy (section coll x l) f ir)
+             fc (fn [child]
+                  #(-fold child reduce-fn pool n combinef reducef))]
+         (invoke pool #(let [f1 (fc c1)
+                             t2 (fork (fc c2))]
+                         (combinef (f1) (join t2)))))
+       :else (reduce-fn this reducef (combinef))))))
 
 (defn partition-by
   "Returns collection of partitions which are split each time `_f_`
@@ -3271,22 +3260,22 @@
    batch :- AnyBatch, begin :- Int, end :- Int]
   (let [begin (iint begin)
         end (iint end)]
-    (if-not (i< begin end)
-      part
-      (let [part :- MutableString (or part (edit empty-string))]
-        (if (.hasArray batch)
+    (cond (not (i< begin end)) part
+          :let [part :- MutableString (or part (edit empty-string))]
           ;; buffer backed by an array
+          (.hasArray batch)
           (.append part ^chars (.array batch)
                    (iadd begin (.arrayOffset batch))
                    (isub end begin))
           ;; no array backing
+          :else
           (let [l (isub end begin)
                 oldpos (.position batch)]
             (.position batch begin)
             (provide-capacity! am arr-ref l)
             (.copy bm batch @arr-ref (i0) l)
             (.position batch oldpos)
-            (.append part ^chars @arr-ref (i0) l)))))))
+            (.append part ^chars @arr-ref (i0) l)))))
 
 (deftype BatchedLinesReducing
   [r :- IReducing]
@@ -3328,24 +3317,19 @@
              (->BLWrap ret arr-ref fval
                        (append-part part lam arr-ref lbm batch
                                     last-index (.limit batch)))
+             :let [val (iint (.get lbm batch index))]
+             (not (newline? val))
+             (recur ret arr-ref part fval last-index (iinc index))
+             (and (i== (iCR) fval) (i== (iLF) val)
+                  (i== index last-index)
+                  (empty? part))
+             (recur ret arr-ref part (i0) (iinc index) (iinc index))
              :else
-             (let [val (iint (.get lbm batch index))]
-               (cond
-                (not (newline? val))
-                (recur
-                 ret arr-ref part fval last-index (iinc index))
-                (and (i== (iCR) fval) (i== (iLF) val)
-                     (i== index last-index)
-                     (empty? part))
-                (recur
-                 ret arr-ref part (i0) (iinc index) (iinc index))
-                :else
-                (let [fpart (append-part part lam arr-ref lbm
-                                         batch last-index index)
-                      fpart (or fpart (edit empty-string))]
-                  (recur
-                   (._step r ret (settle! fpart)) arr-ref nil val
-                   (iinc index) (iinc index)))))))]
+             (let [fpart (append-part part lam arr-ref lbm
+                                      batch last-index index)
+                   fpart (or fpart (edit empty-string))]
+               (recur (._step r ret (settle! fpart)) arr-ref nil val
+                      (iinc index) (iinc index)))))]
       (af ret arr-ref part fval
           (.position batch) (.position batch)))))
 

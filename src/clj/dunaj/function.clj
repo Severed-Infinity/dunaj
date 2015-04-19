@@ -21,21 +21,21 @@
   `<<dunaj.function.spi.ad#IInvocable,IInvocable>>` protocol and be
   invoked in a same way as function is, the `Function` type provides
   additional functionalities besides ability to be invoked:
-  
+
   * any Function can be used as a comparator for sorting
   * support for `IMeta`
   * only Functions can be passed into `IExecutor` and `ITaskExecutor`
-  
+
   IMPORTANT: Type signatures `AnyFn` and `Fn`, found in
   <<dunaj.type.api.ad#,dunaj.type>> namespace, represent any
   invocable object. Use `Function` type signature to require
   Functions created with `defn` or `fn`.
-  
+
   NOTE: When documentation uses the name 'function', an invocable
   object is meant. In those rare cases when only objects of type
   `Function` are required, the 'fn' or 'Function' (with capital F)
   is used.
-  
+
   NOTE: Documentation needs more work."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Transformations" "Memoization"]
@@ -489,18 +489,16 @@
   ([factory :- (U IMemoizationFactory
                   (I IConvolutionFactory ICollectionFactory)),
     f :- AnyFn]
-   (let [mf (cond
-              (satisfies? IMemoizationFactory factory)
-              (-memoize factory f)
-              (and (satisfies? IConvolutionFactory factory)
-                   (satisfies? ICollectionFactory factory))
-              (-memoize (assoc *default-memoization-factory*
-                               :cache-factory factory)
-                        f)
-              :else
-              (throw (java.lang.UnsupportedOperationException.
-                      (str "Factory must be either a memoization"
-                           " or convolution factory."))))]
+   (let [mf (cond (satisfies? IMemoizationFactory factory)
+                  (-memoize factory f)
+                  (and (satisfies? IConvolutionFactory factory)
+                       (satisfies? ICollectionFactory factory))
+                  (-memoize (assoc *default-memoization-factory*
+                                   :cache-factory factory)
+                            f)
+                  (throw (java.lang.UnsupportedOperationException.
+                          (str "Factory must be either a memoization"
+                               " or convolution factory."))))]
      (update-meta mf assoc ::original f)))
   ([memoization-factory f & {:as opts}]
    (memoize (conj memoization-factory opts) f)))
