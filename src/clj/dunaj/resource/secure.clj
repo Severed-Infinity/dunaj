@@ -99,20 +99,18 @@
   if it's capacity is at least `size`, otherwise copies contents
   from `batch`, if any, to the returned one."
   ([size :- Int, direct? :- Boolean]
-     (provide-byte-batch nil size direct?))
+   (provide-byte-batch nil size direct?))
   ([batch :- (Maybe (Batch java.lang.Byte)),
     size :- Int, direct? :- Boolean]
-     (let [size (round-size (iadd size batch-overhead))]
-       (if (or (nil? batch) (< (.capacity batch) size))
-         (let [b (if direct?
-                   (java.nio.ByteBuffer/allocateDirect size)
-                   (java.nio.ByteBuffer/allocate size))]
-           (trace "creating byte batch" size
-                  "from" (when batch (.capacity batch)))
-           (if (nil? batch)
-             b
-             (.put b ^java.nio.ByteBuffer (.flip batch))))
-         batch))))
+   (let [size (round-size (iadd size batch-overhead))]
+     (cond (not (or (nil? batch) (< (.capacity batch) size))) batch
+           :let [b (if direct?
+                     (java.nio.ByteBuffer/allocateDirect size)
+                     (java.nio.ByteBuffer/allocate size))
+                 #__ #_(trace "creating byte batch" size
+                              "from" (when batch (.capacity batch)))]
+           (nil? batch) b
+           :else (.put b ^java.nio.ByteBuffer (.flip batch))))))
 
 (defprotocol ^:private ITls
   (-tls-process! :- nil [this])

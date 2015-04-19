@@ -33,7 +33,7 @@
    [dunaj.boolean :refer [Boolean and]]
    [dunaj.math :refer [Integer]]
    [dunaj.state :refer [IOpenAware -open? IReference]]
-   [dunaj.flow :refer [let when if-let]]
+   [dunaj.flow :refer [let when if-let when-let]]
    [dunaj.feature :refer [assoc-meta meta]]
    [dunaj.poly :refer [extend-protocol! reify deftype defprotocol]]
    [dunaj.coll :refer

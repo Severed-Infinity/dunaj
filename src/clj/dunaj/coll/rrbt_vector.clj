@@ -87,25 +87,25 @@
   "Returns offset into array in rrbt `vec` for a given `i`.
   Use arrayFor to return the array itself."
   [vec :- clojure.core.rrb_vector.rrbt.Vector, i :- Int]
-  (if (or (ineg? i) (i>= i (.-cnt vec)))
-    (throw (index-out-of-bounds))
-    (let [am :- clojure.core.ArrayManager (.-am vec)
+  (cond
+    (or (ineg? i) (i>= i (.-cnt vec))) (throw (index-out-of-bounds))
+    :let [am :- clojure.core.ArrayManager (.-am vec)
           nm :- clojure.core.rrb_vector.nodes.NodeManager (.-nm vec)
           shift (.-shift vec)
           tail-off (isub (.-cnt vec) (.alength am (.-tail vec)))]
-      (if (i<= tail-off i)
-        (isub i tail-off)
-        (iloop [i i, node (.-root vec), shift shift]
-          (if (or (izero? shift) (.regular nm node))
-            (iand i (i31))
-            (let [arr :- AnyArray (.array nm node)
-                  rngs (ranges nm node)
-                  idx (iloop [j (iand (i>> i shift) (i31))]
-                        (if (i< i (aget rngs j)) j (recur (iinc j))))
-                  i (if (izero? idx)
-                      i
-                      (isub i (aget rngs (idec idx))))]
-              (recur i (aget arr idx) (isub shift (i5))))))))))
+    (i<= tail-off i) (isub i tail-off)
+    :else
+    (iloop [i i, node (.-root vec), shift shift]
+      (if (or (izero? shift) (.regular nm node))
+        (iand i (i31))
+        (let [arr :- AnyArray (.array nm node)
+              rngs (ranges nm node)
+              idx (iloop [j (iand (i>> i shift) (i31))]
+                         (if (i< i (aget rngs j)) j (recur (iinc j))))
+              i (if (izero? idx)
+                  i
+                  (isub i (aget rngs (idec idx))))]
+          (recur i (aget arr idx) (isub shift (i5))))))))
 
 (def+ ^:private rshift :- java.lang.reflect.Field
   (doto (.getDeclaredField
@@ -138,25 +138,25 @@
   "Returns offset into array in rrbt `vec` for a given `i`.
   Use arrayFor to return the array itself."
   [vec :- clojure.core.rrb_vector.rrbt.Transient, i :- Int]
-  (if (or (ineg? i) (i>= i (.count vec)))
-    (throw (index-out-of-bounds))
-    (let [am :- clojure.core.ArrayManager (.-am vec)
+  (cond
+    (or (ineg? i) (i>= i (.count vec))) (throw (index-out-of-bounds))
+    :let [am :- clojure.core.ArrayManager (.-am vec)
           nm :- clojure.core.rrb_vector.nodes.NodeManager (.-nm vec)
           shift (._shift vec)
           tail-off (isub (.count vec) (.alength am (._tail vec)))]
-      (if (i<= tail-off i)
-        (isub i tail-off)
-        (iloop [i i, node (._root vec), shift shift]
-          (if (or (izero? shift) (.regular nm node))
-            (iand i (i31))
-            (let [arr :- AnyArray (.array nm node)
-                  rngs (ranges nm node)
-                  idx (iloop [j (iand (i>> i shift) (i31))]
-                        (if (i< i (aget rngs j)) j (recur (iinc j))))
-                  i (if (izero? idx)
-                      i
-                      (isub i (aget rngs (idec idx))))]
-              (recur i (aget arr idx) (isub shift (i5))))))))))
+    (i<= tail-off i) (isub i tail-off)
+    :else
+    (iloop [i i, node (._root vec), shift shift]
+      (if (or (izero? shift) (.regular nm node))
+        (iand i (i31))
+        (let [arr :- AnyArray (.array nm node)
+              rngs (ranges nm node)
+              idx (iloop [j (iand (i>> i shift) (i31))]
+                         (if (i< i (aget rngs j)) j (recur (iinc j))))
+              i (if (izero? idx)
+                  i
+                  (isub i (aget rngs (idec idx))))]
+          (recur i (aget arr idx) (isub shift (i5))))))))
 
 (defn ^:private reduce-vector :- Any
   "Reduce section of Rrbt Vector."

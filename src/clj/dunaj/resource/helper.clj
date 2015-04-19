@@ -103,15 +103,13 @@
                 (unsafe-postponed
                  @ret #(af (unsafe-advance! ret) false))
                 wait? (unsafe-postponed ret #(af ret false))
-                (.isOpen rch)
-                (let [x (fragile resource (.read rch (.clear batch)))]
-                  (cond
-                    (neg? x) ret
-                    (or (not non-blocking?) (== batch-size x))
-                    (recur (reducef ret (.flip batch)) false)
-                    (zero? x) (recur ret true)
-                    :else (recur (reducef ret (.flip batch)) true)))
-                :else ret))]
+                (not (.isOpen rch)) ret
+                :let [x (fragile resource (.read rch (.clear batch)))]
+                (neg? x) ret
+                (or (not non-blocking?) (== batch-size x))
+                (recur (reducef ret (.flip batch)) false)
+                (zero? x) (recur ret true)
+                :else (recur (reducef ret (.flip batch)) true)))]
       (af init false))))
 
 
@@ -170,16 +168,16 @@
      (keyword->class :byte) batch-size
      (fn [ret :- Any, batch :- (Batch java.lang.Byte)]
        (let [af (fn af [ret]
-                  (if-not (.hasRemaining batch)
-                    ret
-                    (let [l (.remaining batch)
+                  (cond
+                    (not (.hasRemaining batch)) ret
+                    :let [l (.remaining batch)
                           x (iint
                              (fragile resource (.write wch batch)))
-                          nret (iadd (iint ret) x)]
-                      #_(clojure.core/println
-                         "written" l (dunaj.host/class coll))
-                      (if (and non-blocking? (not (i== l x)))
-                        (unsafe-postponed nret #(af nret))
-                        (recur nret)))))]
+                          nret (iadd (iint ret) x)
+                          #__ #_(clojure.core/println
+                                 "written" l (dunaj.host/class coll))]
+                    (and non-blocking? (not (i== l x)))
+                    (unsafe-postponed nret #(af nret))
+                    :else (recur nret)))]
          (af ret)))
      (i0) (dunaj.host.batch/malleable coll))))

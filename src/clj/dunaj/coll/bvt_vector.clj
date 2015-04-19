@@ -89,28 +89,27 @@
   "Reduce section of BVT Vector."
   [vec :- clojure.lang.PersistentVector,
    reducef :- AnyFn init :- Any, begin :- Int, end :- Int]
-  (if-not (i< begin end)
-    init
-    (if (i<= (.length vec) (i32))
-      (let [arr :- AnyArray (.-tail vec)
-            af (advance-fn [ret :- Any, i :- Int]
-                 (i< i end)
-                 (recur (reducef ret (aget arr i)) (iinc i))
-                 :else ret)]
-        (af init begin))
-      (let [end-chi (idiv (idec end) (i32))
-            end-i (iand (idec end) (i31))
-            af (advance-fn [ret :- Any, arr :- AnyArray,
-                            nchi :- Int, i :- Int]
-                 (or (i<= i end-i)
-                     (and (i< i (i32)) (i<= nchi end-chi)))
-                 (recur (reducef ret (aget arr i)) arr nchi (iinc i))
-                 (i< end-chi nchi) ret
-                 :else
-                 (recur ret (.arrayFor vec (i<< nchi (i5)))
-                        (iinc nchi) (i0)))]
-        (af init (.arrayFor vec begin)
-            (iinc (idiv begin (i32))) (iand begin (i31)))))))
+  (cond
+    (not (i< begin end)) init
+    (i<= (.length vec) (i32))
+    (let [arr :- AnyArray (.-tail vec)
+          af (advance-fn [ret :- Any, i :- Int]
+               (i< i end) (recur (reducef ret (aget arr i)) (iinc i))
+               :else ret)]
+      (af init begin))
+    :else
+    (let [end-chi (idiv (idec end) (i32))
+          end-i (iand (idec end) (i31))
+          af (advance-fn [ret :- Any, arr :- AnyArray,
+                          nchi :- Int, i :- Int]
+               (or (i<= i end-i)
+                   (and (i< i (i32)) (i<= nchi end-chi)))
+               (recur (reducef ret (aget arr i)) arr nchi (iinc i))
+               (i< end-chi nchi) ret
+               :else (recur ret (.arrayFor vec (i<< nchi (i5)))
+                            (iinc nchi) (i0)))]
+      (af init (.arrayFor vec begin)
+          (iinc (idiv begin (i32))) (iand begin (i31))))))
 
 (def+ ^:private mt :- java.lang.reflect.Field
   (doto (.getDeclaredField
@@ -137,56 +136,55 @@
   "Reduce section of a mutable BVT Vector."
   [vec :- clojure.lang.PersistentVector$TransientVector,
    reducef :- AnyFn init :- Any, begin :- Int, end :- Int]
-  (if-not (i< begin end)
-    init
-    (if (i<= (.count vec) (i32))
-      (let [arr :- AnyArray (.-tail vec)
-            af (advance-fn [ret :- Any, i :- Int]
-                 (i< i end)
-                 (recur (reducef ret (aget arr i)) (iinc i))
-                 :else ret)]
-        (af init begin))
-      (let [end-chi (idiv (idec end) (i32))
-            end-i (iand (idec end) (i31))
-            af (advance-fn [ret :- Any, arr :- AnyArray,
-                            nchi :- Int, i :- Int]
-                 (or (i<= i end-i)
-                     (and (i< i (i32)) (i<= nchi end-chi)))
-                 (recur (reducef ret (aget arr i)) arr nchi (iinc i))
-                 (i< end-chi nchi) ret
-                 :else
-                 (recur ret (.arrayFor vec (i<< nchi (i5)))
-                        (iinc nchi) (i0)))]
-        (af init (.arrayFor vec begin)
-            (iinc (idiv begin (i32))) (iand begin (i31)))))))
+  (cond
+    (not (i< begin end)) init
+    (i<= (.count vec) (i32))
+    (let [arr :- AnyArray (.-tail vec)
+          af (advance-fn [ret :- Any, i :- Int]
+               (i< i end) (recur (reducef ret (aget arr i)) (iinc i))
+               :else ret)]
+      (af init begin))
+    :else
+    (let [end-chi (idiv (idec end) (i32))
+          end-i (iand (idec end) (i31))
+          af (advance-fn [ret :- Any, arr :- AnyArray,
+                          nchi :- Int, i :- Int]
+               (or (i<= i end-i)
+                   (and (i< i (i32)) (i<= nchi end-chi)))
+               (recur (reducef ret (aget arr i)) arr nchi (iinc i))
+               (i< end-chi nchi) ret
+               :else (recur ret (.arrayFor vec (i<< nchi (i5)))
+                            (iinc nchi) (i0)))]
+      (af init (.arrayFor vec begin)
+          (iinc (idiv begin (i32))) (iand begin (i31))))))
 
 (defn ^:private reversed-reduce-vector :- Any
   "Reduce section of a reversed BVT Vector."
   [vec :- clojure.lang.PersistentVector,
    reducef :- AnyFn init :- Any, begin :- Int, end :- Int]
-  (if-not (i< begin end)
-    init
-    (if (i<= (.length vec) (i32))
-      (let [arr :- AnyArray (.-tail vec)
-            af (advance-fn [ret :- Any, i :- Int]
-                 (i>= i begin)
-                 (recur (reducef ret (aget arr i)) (idec i))
-                 :else ret)]
-        (af init (idec end)))
-      (let [begin-chi (idiv begin (i32))
-            begin-i (iand begin (i31))
-            nend (idec end)
-            af (advance-fn [ret :- Any, arr :- AnyArray,
-                              pchi :- Int, i :- Int]
-                 (or (i>= i begin-i)
-                     (and (inneg? i) (i>= pchi begin-chi)))
-                 (recur (reducef ret (aget arr i)) arr pchi (idec i))
-                 (i> begin-chi pchi) ret
-                 :else
-                 (recur ret (.arrayFor vec (i<< pchi (i5)))
-                        (idec pchi) (i31)))]
-        (af init (.arrayFor vec nend)
-            (idec (idiv nend (i32))) (iand nend (i31)))))))
+  (cond
+    (not (i< begin end)) init
+    (i<= (.length vec) (i32))
+    (let [arr :- AnyArray (.-tail vec)
+          af (advance-fn [ret :- Any, i :- Int]
+               (i>= i begin)
+               (recur (reducef ret (aget arr i)) (idec i))
+               :else ret)]
+      (af init (idec end)))
+    :else
+    (let [begin-chi (idiv begin (i32))
+          begin-i (iand begin (i31))
+          nend (idec end)
+          af (advance-fn [ret :- Any, arr :- AnyArray,
+                          pchi :- Int, i :- Int]
+               (or (i>= i begin-i)
+                   (and (inneg? i) (i>= pchi begin-chi)))
+               (recur (reducef ret (aget arr i)) arr pchi (idec i))
+               (i> begin-chi pchi) ret
+               :else (recur ret (.arrayFor vec (i<< pchi (i5)))
+                            (idec pchi) (i31)))]
+      (af init (.arrayFor vec nend)
+          (idec (idiv nend (i32))) (iand nend (i31))))))
 
 (def+ ^:private oam (array-manager java.lang.Object))
 

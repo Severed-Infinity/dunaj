@@ -364,12 +364,10 @@
                 (reduced? ret) ret
                 (postponed? ret)
                 (unsafe-postponed @ret #(af (unsafe-advance! ret)))
-                :else
-                (let [b :- (Batch java.lang.Character) (.clear batch)
+                :let [b :- (Batch java.lang.Character) (.clear batch)
                       x (fragile resource (.read reader b))]
-                  (if (neg? x)
-                    ret
-                    (recur (reducef ret (.flip batch)))))))]
+                (neg? x) ret
+                :else (recur (reducef ret (.flip batch)))))]
       (af init))))
 
 (defreleasable ^:private ReaderResource
@@ -427,23 +425,20 @@
   IBatchedRed
   (-reduce-batched [this requested-type size-hint reducef init]
     (let [st (select-item-type requested-type (keyword->class :char))
+          dr #(if (empty? %) % (pop %))
+          rf #(if-let [arr :- (Array java.lang.Character)
+                       (peek (trade! data-ref dr))]
+                (reducef % (java.nio.CharBuffer/wrap arr))
+                %)
           af (fn af [ret]
                (cond
                 (reduced? ret) ret
                 (postponed? ret)
                 (unsafe-postponed @ret #(af (unsafe-advance! ret)))
-                (empty? @data-ref)
-                (cond
-                 @done?-ref ret
-                 watcher-ch (do (<!! watcher-ch) (recur ret))
-                 :else (unsafe-postponed ret #(af ret)))
-                :else
-                (recur
-                 (if-let [arr :- (Array java.lang.Character)
-                          (peek (trade! data-ref
-                                        #(if (empty? %) % (pop %))))]
-                   (reducef ret (java.nio.CharBuffer/wrap arr))
-                   ret))))]
+                (not (empty? @data-ref)) (recur (rf ret))
+                @done?-ref ret
+                watcher-ch (do (<!! watcher-ch) (recur ret))
+                :else (unsafe-postponed ret #(af ret))))]
       (io! (af init)))))
 
 (defmacro gen-coll-writer
