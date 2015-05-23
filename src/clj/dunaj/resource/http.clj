@@ -293,6 +293,7 @@
                      c
                      (if (named? k) (name k) (->str k))
                      (if (named? v) (name v) (->str v)))))
+                nil
                 request-properties))
       (when request-method
         (.setRequestMethod

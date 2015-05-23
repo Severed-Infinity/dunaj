@@ -1,3 +1,13 @@
+2015/04/29 ::
+Blog post: 
+http://blog.wagjo.com/markov.html[Markov Text Generator]
++
+In this post I give a quick introduction on how Markov Chains are used
+to generate random sentences. Then I will walk through the
+implementation of a sentence generator in Dunaj and at the end
+I have prepared a small game, where you can guess the source
+novel for generated sentences.
+
 2015/04/12 ::
 Announcing Dunaj lite
 +

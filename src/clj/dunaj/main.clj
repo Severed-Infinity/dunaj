@@ -134,7 +134,7 @@
   [request-prompt :- Any, request-exit :- Any]
   (or ({:line-start request-prompt :stream-end request-exit}
        (skip-whitespace clojure.core/*in*))
-      (let [input (clojure.core/read)]
+      (let [input (clojure.core/read {:read-cond :allow} clojure.core/*in*)]
         (skip-if-eol clojure.core/*in*)
         input)))
 
