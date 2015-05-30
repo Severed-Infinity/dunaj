@@ -108,7 +108,7 @@ list of automatically referred vars.
 NOTE: API presets functionality is not available in Dunaj lite.
 
 NOTE: An additional preset called `<<bare.core.api.ad#,bare>>`
-is provided that does not refer to any var, special symbols or host
+is provided that does not refer to any var or host
 classes. Use this preset if complete control of what is referred in
 the namespace is needed.
 
@@ -139,15 +139,12 @@ the namespace is needed.
 
 [source,clojure,linesnum]
 --
-;; Bare API, no symbols refered, not even special symbols or host classes
+;; Bare API, no symbols refered, not even host classes
 (ns foo.bar
   (:api bare))
 
 (+ 1 2)
 ;; java.lang.RuntimeException: Unable to resolve symbol: + in this context
-
-(if true 1 2)
-;; java.lang.RuntimeException: Unable to resolve symbol: if in this context
 
 String
 ;; java.lang.RuntimeException: Unable to resolve symbol: String in this context

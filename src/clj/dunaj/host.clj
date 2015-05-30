@@ -47,7 +47,7 @@
    :see '[class-instance? dunaj.host/. dunaj.host/..]
    :highlight :host}
   [classname & args]
-  `(clojure.core/new ~@args))
+  `(clojure.core/new ~classname ~@args))
 
 #_(defmacro set!
   "Assigns evaluated `_expr_` to the field identified by

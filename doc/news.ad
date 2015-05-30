@@ -1,3 +1,30 @@
+2015/06/01 ::
+Dunaj v0.5.0 has been released. Dunaj lite has been updated too.
++
+* Built on Clojure 1.7.0 RC1
+* Various minor bugfixes
+* Changed semantics of qualified specials. The handling of special
+  symbols is now backwards compatible with Clojure.
+* Changed argument order in `dunaj.resource/format` and
+  `dunaj.resource/transform`
+* Reimplemented system dependency resolution in
+  `dunaj.resource/start!`
+* Supports `:let` modifier in `cond`, `when-let` and `if-let`
+* Supports `:when` and `:when-let` modifiers in `cond`
+* Added support for optional else clause in `cond` 
+* Supports vector as test in `cond`, treating it as an input to
+  `if-let`
+
+2015/04/29 ::
+Blog post: 
+http://blog.wagjo.com/markov.html[Markov Text Generator]
++
+In this post I give a quick introduction on how Markov Chains are used
+to generate random sentences. Then I will walk through the
+implementation of a sentence generator in Dunaj and at the end
+I have prepared a small game, where you can guess the source
+novel for generated sentences.
+
 2015/04/12 ::
 Announcing Dunaj lite
 +

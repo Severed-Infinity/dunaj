@@ -29,7 +29,8 @@
    [clojure.core.async.impl.protocols :as cap]
    [clojure.bootstrap :refer [v1 not-implemented]]
    [dunaj.type :refer
-    [Fn Any U I Va Maybe AnyFn Predicate Signature KeywordMap]]
+    [Fn Any U I Va Maybe AnyFn Predicate Signature KeywordMap
+     NotPrimitive]]
    [dunaj.boolean :refer [Boolean+ and]]
    [dunaj.math :refer [Integer+]]
    [dunaj.state :refer [IOpenAware -open? IReference]]
@@ -189,7 +190,8 @@
   [port :- ITargetPort, val :- PortVal]
   (not-implemented))
 
-(defn >! :- Boolean
+;; WARNING: cannot be annotated as boolean, analyzer would fail
+(defn >! :- (NotPrimitive Boolean)
   "Puts a non-nil `_val_` into target `_port_`.
   Will park if no buffer space is available.
   Must be called inside a `(go ...)` block.

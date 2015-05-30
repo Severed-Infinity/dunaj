@@ -133,7 +133,7 @@
   @#'dunaj.coll/red->seq*)
 
 (defn red-to-seq :- (Maybe ISeq)
-  "Returns nil or a non-empty seq from a given reducible coll."
+  "Returns `nil` or a non-empty seq from a given reducible coll."
   {:added v1
    :category "Reducers"}
   [coll :- []]

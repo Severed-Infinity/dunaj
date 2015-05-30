@@ -35,7 +35,7 @@
             [dunaj.host.number]
             [dunaj.compare :refer [=]]
             [dunaj.state]
-            [dunaj.flow :refer [let if-not]]
+            [dunaj.flow :refer [let if-not quote]]
             [dunaj.threading]
             [dunaj.feature :refer [alter-meta!]]
             [dunaj.poly]
@@ -344,7 +344,7 @@
   [& decls]
   (let [gen-decl 
         (fn [[kn & args]]
-          (apply ->lst (symbol "clojure.core" (name kn)) 
+          (apply ->lst (symbol "clojure.core" (name kn))
                  (map #(->lst `quote %) args)))
         gen-decls #(map gen-decl %)
         ff #(= :refer-dunaj (first %))

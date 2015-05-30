@@ -7,7 +7,7 @@
 (with-io-scope
   (let [r (http \"http://httpbin.org/post\")
         c (acquire! (assoc r :request-method :post))
-        fc (format utf-8 c)]
+        fc (format c utf-8)]
     (println! \"config\" (config c))
     (println! \"sent\" (write! fc \"key1=val1&key2=val2&key1=val3\"))
     (println! \"response\" (str (read! fc)))

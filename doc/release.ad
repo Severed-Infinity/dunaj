@@ -16,8 +16,6 @@ ITERNAL TODO:
 in that order:
 
 * clojure
-* tools.analyzer
-* tools.analyzer.jvm
 * core.async
 * core.rrb-vector
 

@@ -136,11 +136,12 @@ three built-in API presets:
 * `clojure` - Refers all vars from `clojure.core`, plus Clojure's
   special symbols and a default set of host classes. This preset is
   used by default when no preset is specified in the `ns` declaration.
-* `bare` - Does not refer any vars, not even special
-  symbols or host classes.
+* `bare` - Does not refer any vars or host classes. Refers special
+  symbols.
 * `dunaj` - Loads Dunaj and refers less than 600
   <<dunaj.core.api.ad#,most commonly used>> vars from Dunaj
-  (out of more than 1700). No vars from `clojure.core` are included.
+  (out of more than 1700). Refers special symbols too.
+  No vars from `clojure.core` are included.
 
 CAUTION: API Presets functionality is not available in Dunaj lite.
 Please consult http://lite.dunaj.org[Dunaj lite documentation] for
@@ -224,15 +225,12 @@ are used.
 
 [source,clojure,linesnum]
 --
-;; Bare API, no symbols refered, not even special symbols or host classes
+;; Bare API, no symbols refered, not even host classes
 (ns foo.bar
   (:api bare))
 
 (+ 1 2)
 ;; java.lang.RuntimeException: Unable to resolve symbol: + in this context
-
-(if true 1 2)
-;; java.lang.RuntimeException: Unable to resolve symbol: if in this context
 
 String
 ;; java.lang.RuntimeException: Unable to resolve symbol: String in this context

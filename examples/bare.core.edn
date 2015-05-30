@@ -1,8 +1,7 @@
 {nil
  "(ns foo.bar
      (:api bare)
-     (:require
-       [clojure.core :refer [* do println apply loop if zero? dec]])
+     (:require [clojure.core :refer [* println apply loop zero? dec]])
      (:import [java.lang String]))
 
    (* 1 2)

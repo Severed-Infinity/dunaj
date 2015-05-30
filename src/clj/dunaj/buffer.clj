@@ -353,7 +353,7 @@
 (defn promise-buffer :- IMutableCollection
   "Returns a new promise buffer."
   []
-  (->PromiseBuffer))
+  (->PromiseBuffer nil))
 
 (defn buffer :- IMutableCollection
   "Returns a fixed buffer of a size `_n_`. Optional `_type_` may be

@@ -85,7 +85,7 @@
    [dunaj.concurrent :refer [future]]
    [dunaj.concurrent.port :as dp :refer
     [ISourcePort chan <!! thread >!! timeout alts!!]]
-   [dunaj.string :refer [String+ string?]]
+   [dunaj.string :refer [String+ string? ->str]]
    [dunaj.time :refer [IDuration milliseconds]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.identifier :refer [Keyword]]
@@ -672,8 +672,7 @@
 
   WARNING: experimental, subject to change."
   {:added v1
-   :see '[request!]
-   :predicate 'requestable?}
+   :see '[request!]}
   (-request! :- Any
     "Returns a response to the `request`. Blocks."
     [this request :- Any]))
@@ -684,8 +683,10 @@
   WARNING: experimental, subject to change."
   {:added v1
    :see '[requestable?]}
-  [x :- IRequestable, request :- Any]
-  (-request! x request))
+  [x :- Any, request :- Any]
+  (if (satisfies? IRequestable x)
+    (-request! x request)
+    (do (write! x request) (read! x))))
 
 ;; TODO: efficient data transfer between two java nio channels
 ;; some protocol that exposes ability of a channel to receive
@@ -757,12 +758,12 @@
   {:added v1
    :category "Primary"
    :see '[exchange transform read! write! slurp spit!]}
-  ([formatter-factory :- (I IParserFactory IPrinterFactory),
-    resource :- (I IReadable IWritable)]
-   (format formatter-factory formatter-factory resource))
-  ([parser-factory :- IParserFactory,
-    printer-factory :- IPrinterFactory,
-    resource :- (I IReadable IWritable)]
+  ([resource :- (I IReadable IWritable),
+    formatter-factory :- (I IParserFactory IPrinterFactory)]
+   (format resource formatter-factory formatter-factory))
+  ([resource :- (I IReadable IWritable),
+    parser-factory :- IParserFactory,
+    printer-factory :- IPrinterFactory]
    (reify
      IReadable
      (-read! [this] (parse parser-factory (-read! resource)))
@@ -777,10 +778,10 @@
   {:added v1
    :category "Primary"
    :see '[format exchange read! write!]}
-  ([xform :- Any, resource :- (I IReadable IWritable)]
-   (transform xform xform resource))
-  ([read-xform :- Any, write-xform :- Any,
-    resource :- (I IReadable IWritable)]
+  ([resource :- (I IReadable IWritable), xform :- Any]
+   (transform resource xform xform))
+  ([resource :- (I IReadable IWritable),
+    read-xform :- Any, write-xform :- Any]
    (reify
      IReadable
      (-read! [this] (recipe read-xform (-read! resource)))
@@ -833,6 +834,56 @@
   [& {:as keyvals}]
   (map->System+ keyvals))
 
+(declare start!)
+
+(defn resolve-run
+  "Perform one run of dependency resolution.
+  Returns pair [done outstanding] with some system components
+  resolved. Dependency resolution is finished if returned set of
+  outstanding component keys empty,
+  otherwise this function should be called again.
+  Caller should assume circular dependency when returned done has not
+  changed and `outstanding` is not empty."
+  [done :- {}, system :- IRed]
+  (loop [done done, pending (seq system), k nil, v nil, d nil, o nil]
+    (cond
+      ;; no current component, no pending components
+      (and (nil? k) (nil? pending)) (pair done o)
+      ;; no current components, but some pending components
+      (nil? k)
+      (let [[nk nv] (first pending), np (next pending)]
+        ;; was first pending component present in the original done?
+        (if (contains? done nk)
+          (recur done np nil nil nil o)
+          (recur done np nk nv (seq (deps nv)) o)))
+      ;; current component has no unresolved dependencies
+      (nil? d) (recur (assoc done k (start! v)) pending nil nil nil o)
+      ;; pick current component's first dependency
+      :let [dep (first d), dep-key (key dep), dep-val (val dep)
+            nd (next d), x (or dep-val dep-key)]
+      ;; current dependency is already available for use
+      (contains? done x)
+      (recur done pending k (assoc v dep-key (get done x)) nd o)
+      ;; current dependency is not present in the system at all
+      (not (contains? system x))
+      (if (nil? dep-val) ;; optional dependency?
+        (recur done pending k v nd o)
+        (throw (illegal-argument
+                "no component found for a required dependency")))
+      ;; current component cannot be resolved in the current run
+      :else (recur done pending nil nil nil (conj o k)))))
+
+(defn resolve-system
+  [system]
+  (loop [done {}]
+    (let [[new-done outstanding] (resolve-run done system)]
+      (cond
+        (empty? outstanding) new-done
+        (identical? done new-done)
+        (throw (illegal-argument
+                (->str "circular dependency detected" outstanding)))
+        :else (recur new-done)))))
+
 (defn start! :- {}
   "Starts the `_system_` and returns map of started components.
   If the system object is also an acquirable factory, performs
@@ -841,33 +892,7 @@
    :category "System"
    :see '[acquire! deps assoc-deps system]}
   [system :- System+]
-  (loop [fin {}, sys (seq system),
-         k nil, v nil, d nil, kh nil, vh nil, dh nil]
-    (cond
-     (and (nil? k) (nil? sys))
-     (if (satisfies? IAcquirableFactory system)
-       (acquire! (merge system fin))
-       fin)
-     (nil? k) (let [cur (first sys), rsys (next sys),
-                    nk (key cur), nv (val cur), nd (seq (deps nv))]
-                (recur fin rsys nk nv nd kh vh dh))
-     (nil? d)
-     (let [nv (cond (system? v) (start! v)
-                    (satisfies? IAcquirableFactory v) (acquire! v)
-                    :else v)]
-       ;;(clojure.core/println "processed" k)
-       (recur (assoc fin k nv) sys (first kh) (first vh) (first dh)
-              (next kh) (next vh) (next dh)))
-     :let [dep (first d), dep-key (key dep), dep-val (val dep)
-           nd (next d), x (or dep-val dep-key)]
-     (contains? fin x)
-     (recur fin sys k (assoc v dep-key (get fin x)) nd kh vh dh)
-     (some #(identical? x %) kh)
-     (throw (illegal-argument "circular dependency detected"))
-     (and (nil? sys) (nil? dep-val))
-     (recur fin sys k v nd kh vh dh)
-     (nil? sys)
-     (throw (illegal-argument
-             "no component found for a required dependency"))
-     :else (recur fin sys nil nil nil
-                  (cons k kh) (cons v vh) (cons d dh)))))
+  (let [resolved (if (system? system) (resolve-system system) system)]
+    (if (satisfies? IAcquirableFactory system)
+      (acquire! (merge system resolved)) ;; retain factory type
+      resolved)))
