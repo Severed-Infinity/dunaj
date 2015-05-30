@@ -414,8 +414,9 @@ libraries or clients:
 
 System is a Dunaj's replacement for Stuart Sierra's
 https://github.com/stuartsierra/component[component library].
-Utilizing scopes and resources, Dunaj's system implementation focuses
-on managing dependencies and acquiring resources in correct order.
+Utilizing factories, scopes and resources, Dunaj's system
+implementation focuses on managing dependencies and acquiring
+resources in correct order.
 
 NOTE: It is Dunaj's conscious decision to simplify the role of
 a system and to only support fail-fast mechanism. In Dunaj,

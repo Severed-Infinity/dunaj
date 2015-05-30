@@ -17,8 +17,8 @@
   Idiomatic use is through the `:api` section of the
   `<<dunaj.lib.api.ad#ns,ns>>` macro.
 
-  Bare API does not refer to any var or host class, except special forms.
-  Is used internally for Dunaj namespaces."
+  Bare API does not refer to any var or host class,
+  except special forms. Is used internally for Dunaj namespaces."
   {:authors ["Jozef Wagner"]}
   (:api clojure :exclude [init-api]))
 
@@ -26,7 +26,6 @@
 ;;;; Public API
 
 (defn init-api
-  "Bare with specials API. Nothing is refered, not even unqualified
-  special forms."
+  "Bare with specials API. Nothing is refered, except special forms."
   [references & args]
   nil)

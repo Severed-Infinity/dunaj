@@ -21,6 +21,8 @@ be added into Dunaj too.
 
 === Improve or add new features
 
+* support for configuration management
+* base64 encoding
 * Support for JVM 7
 * Support more hosts (Javascript, .NET, ...)
 * Support other OSs besides Linux

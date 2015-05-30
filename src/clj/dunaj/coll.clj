@@ -1151,7 +1151,8 @@
 
 (extend-protocol ILookup
   java.lang.Object
-  (-get [this key not-found] not-found)
+  (-get [this key not-found]
+    (clojure.lang.RT/getOrig this key not-found))
   clojure.lang.IRecord
   (-contains? [this key] (clojure.core/contains? this key))
   (-get [this key not-found] (clojure.core/get this key not-found)))

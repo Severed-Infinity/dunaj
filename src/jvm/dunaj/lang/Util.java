@@ -49,7 +49,7 @@ public class Util{
     }
 
     static public boolean isFalse(boolean b){
-	return b == false;
+        return b == false;
     }
 
     static public boolean isFalse(Object b){
@@ -57,7 +57,7 @@ public class Util{
     }
 
     static public boolean isTrue(boolean b){
-	return b == true;
+        return b == true;
     }
 
     static public boolean isTrue(Object b){

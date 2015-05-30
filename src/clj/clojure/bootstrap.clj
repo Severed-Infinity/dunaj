@@ -32,7 +32,7 @@
 
 (def v1 "1.0")
 
-(def vc "0.4.0")
+(def vc "0.5.0")
 
 ;;; Helpers
 
@@ -415,9 +415,9 @@
                      aliased)
            m (assoc m :alias (cc/list `quote aliased))]
     `(clojure.core/let
-         [var# (var ~aliased)
+         [var# (clojure.core/var ~aliased)
           n# (with-meta '~name (merge (meta var#) ~m))]
-       (if (.hasRoot var#) (intern *ns* n# @var#) (intern *ns* n#)))))
+       (clojure.core/if (.hasRoot var#) (intern *ns* n# @var#) (intern *ns* n#)))))
 
 (cc/defmacro def+
   "Like clojure.core/def, but with support for type signatures and
@@ -445,7 +445,7 @@
                       (cc/list `quote (:tsig m)))
                m)
            name (with-meta name m)]
-    `(def ~name ~@args)))
+    `(clojure.core/def ~name ~@args)))
 
 (cc/defmacro defn
   "Like clojure.core/defn, but with support for type signatures."
@@ -529,7 +529,7 @@
                m)
            name (with-meta name nil)
            fdecl (if esig (decorate-methods fdecl esig) fdecl)]
-    `(clojure.core/let [v# (def ~name)]
+    `(clojure.core/let [v# (clojure.core/def ~name)]
        (clojure.core/when-not (.hasRoot v#)
          (defn ~name ~@fdecl)))))
 
@@ -590,13 +590,13 @@
                  forbidden? (:forbid-extensions (meta name))
                  soft? (not (:distinct (meta name)))]
           (cc/as->
-           (vec `(do)) ret
+           (vec `(clojure.core/do)) ret
            (conj ret
-                 `(~(if parasite?
+                 `(~(clojure.core/if parasite?
                       `clojure.core/defprotocol2
                       `clojure.core/defprotocol) ~name ~@stripped)
                  #_(`(clojure.core/alter-var-root
-                      (var ~name) assoc :on-interface
+                      (clojure.core/var ~name) assoc :on-interface
                       (eval (:on ~name)))))
            (cc/let [mn (eval (meta name))
                     predicate (:predicate mn)
@@ -789,7 +789,7 @@
                  ret)
            ret (conj ret name)]
     (if alias?
-      `(do
+      `(clojure.core/do
          (def+ ~name)
          (def+ ~(with-meta name m)
            {:on '~classname
@@ -797,17 +797,17 @@
             :clojure.core/type true
             :tsig ~(:tsig m)
             :alias? true
-            :var (var ~name)})
+            :var (clojure.core/var ~name)})
          (clojure.core/alter-var-root
           #'clojure.bootstrap/type-map assoc
-          (quote ~classname)
+          (clojure.core/quote ~classname)
           (java.lang.ref.WeakReference. ~name))
          ~@ret)
-      `(do
+      `(clojure.core/do
          (clojure.core/deftype2 ~(with-meta name m) ~@args)
          (clojure.core/alter-var-root
           #'clojure.bootstrap/type-map assoc
-          (quote ~classname)
+          (clojure.core/quote ~classname)
           (java.lang.ref.WeakReference. ~name))
          ~@ret))))
 
@@ -859,12 +859,12 @@
                      ~argvec
                      (clojure.core/instance? ~classname ~'o))])
            ret (conj ret name)]
-    `(do
+    `(clojure.core/do
        (clojure.core/defrecord2 ~(with-meta name m) ~@args)
        (clojure.core/alter-var-root
         #'clojure.bootstrap/type-map
         assoc
-        (quote ~classname)
+        (clojure.core/quote ~classname)
         (java.lang.ref.WeakReference. ~name))
        ~@ret)))
 
@@ -909,7 +909,7 @@
                m)
            name (with-meta name nil)
            fdecl (if esig (decorate-methods fdecl esig) fdecl)]
-    `(clojure.core/fn ~@(if noname? [] [name]) ~@fdecl)))
+    `(clojure.core/fn ~@(clojure.core/if noname? [] [name]) ~@fdecl)))
 
 (cc/defn ^:private decorate-bindings
   "Returns binding vector decorated with type hints taken from
@@ -985,7 +985,7 @@
        (not= :object (pt ~form))
        (str "form " '~form " does not yield a primitive")))
   ([form & more]
-     `(do
+     `(clojure.core/do
         (assert-primitive ~form)
         ~@(cc/map #(cc/list `assert-primitive %) more))))
 
@@ -1001,7 +1001,7 @@
        (clojure.core/str
         "form " '~form " does not yield a boolean primitive")))
   ([form & more]
-     `(do (assert-boolean ~form)
+     `(clojure.core/do (assert-boolean ~form)
           ~@(cc/map #(cc/list `assert-boolean %) more))))
 
 (cc/defmacro assert-int
@@ -1012,7 +1012,7 @@
          (and (= :int (pt r#))))
        (str "form " '~form " does not yield an int primitive")))
   ([form & more]
-     `(do (assert-int ~form)
+     `(clojure.core/do (assert-int ~form)
           ~@(cc/map #(cc/list `assert-int %) more))))
 
 ;;; dev helpers
@@ -1029,15 +1029,15 @@
   "Replaces `_dest_` var root with `_source_` value."
   ([dest]
    (cc/let [source (cc/symbol (cc/name dest))]
-     `(do (clojure.core/alter-var-root
-           (var ~dest)
-           (clojure.core/constantly ~source))
-          nil)))
+     `(clojure.core/do (clojure.core/alter-var-root
+                        (clojure.core/var ~dest)
+                        (clojure.core/constantly ~source))
+                       nil)))
   ([dest source]
-   `(do (clojure.core/alter-var-root
-         (var ~dest)
-         (clojure.core/constantly ~source))
-        nil)))
+   `(clojure.core/do (clojure.core/alter-var-root
+                      (clojure.core/var ~dest)
+                      (clojure.core/constantly ~source))
+                     nil)))
 
 (def cns (cc/the-ns 'clojure.core))
 
@@ -1062,7 +1062,7 @@
           (apply list (symbol "clojure.core" (name kn))
                  (map #(list `quote %) args)))
         gen-decls #(map gen-decl %)]
-    `(do
+    `(clojure.core/do
        (remove-mappings! cc/*ns*)
        ~@(gen-decls decls)
        #_(clojure.core/import

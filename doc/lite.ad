@@ -92,7 +92,6 @@ Following list of differences are relevant for users of Dunaj lite:
 
 * no qualified special symbols
 ** cannot shadow special symbols with custom macros
-** cannot unmap special symbols
 * default imported classes are left untouched
   (they are unmapped in Dunaj)
 ** A consequence of this is that it is now not possible to 

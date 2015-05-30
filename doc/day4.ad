@@ -11,14 +11,18 @@ Clojure defines a handful of special symbols like `if`, `loop`,
 and it is very hard to shadow them with custom implementation when
 needed, as special symbols override any referred vars
 (such need is justified in several libraries, e.g. core.typed or
-synthread). Dunaj makes all special symbols qualified and puts them
-in the `clojure.core` namespace, subject to standard refer rules.
-Dunaj's API does not contain any special symbols (`if`, `loop`
-and other special symbols are in Dunaj defined as macros).
+synthread). Dunaj adds qualified versions of all special symbols
+and puts them in the `clojure.core` namespace, subject to standard
+refer rules. Dunaj's API does not contain any special symbols (`if`,
+`loop` and other special symbols are in Dunaj defined as macros).
+The handling of unqualified special symbols in both reader and
+compiler is left almost untouched and behaves very similarly as in
+Clojure. Old version of Dunaj had more strict handling of qualified
+specials symbols in reader but this had caused backwards compatibility
+problems with e.g. `tools.analyzer` or `ztellman/potemkin`.
 
-CAUTION: This feature is not available in Dunaj lite, and all
-special symbols work as in Clojure. Note that for `def`, Dunaj lite
-provides a `def+` macro that accepts type signatures.
+CAUTION: Note that for special symbol `def`, Dunaj provides a `def+`
+macro that accepts type signatures.
 
 [source,clojure,linesnum]
 --
@@ -38,14 +42,7 @@ provides a `def+` macro that accepts type signatures.
 
 (dunaj.macro/macro? #'if)
 ;;=> true
-
-(macroexpand '(if test then else))
-;;=> (clojure.core/if test then else)
 --
-
-NOTE: Dunaj is implemented in a way that allows a default `clojure`
-API preset to keep supporting unqualified special symbols just like
-in Clojure.
 
 == Generalized API
 
