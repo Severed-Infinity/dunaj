@@ -35,7 +35,7 @@
             [dunaj.host.number]
             [dunaj.compare :refer [=]]
             [dunaj.state]
-            [dunaj.flow :refer [let if-not quote]]
+            [dunaj.flow :refer [let if-not]]
             [dunaj.threading]
             [dunaj.feature :refer [alter-meta!]]
             [dunaj.poly]
