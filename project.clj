@@ -1,4 +1,4 @@
-(defproject org.dunaj/dunaj "0.5.0"
+(defproject org.dunaj/dunaj "0.6.0-SNAPSHOT"
   :description "Dunaj - An alternative core API for Clojure."
   :url "http://www.dunaj.org"
   :dependencies [[org.dunaj/clojure "1.7.0-dunaj_RC1_3" :exclusions [org.clojure/clojure org.clojure/clojurescript]]

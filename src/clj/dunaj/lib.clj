@@ -109,10 +109,10 @@
      (and (homogeneous? x)
           (item-types-match? (keyword->class :byte) (item-type x)))
      (recur (parse utf-8 x) path name)
+     ;; acquirable factory
+     (satisfies? IAcquirableFactory x) (recur (acquire! x) path name)
      ;; reducible, assume chars
      (red? x) (recur (coll-reader x) path name)
-     ;; acquirable factory
-     (not (readable? x)) (recur (acquire! x) path name)
      ;; opened resource
      (and (empty? path) (empty? name))
      (load! (read! x) (:uri (config x)))
