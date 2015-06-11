@@ -380,6 +380,7 @@
   `acquire!` when all dependencies are resolved."
   {:added v1
    :category "Primary"
+   :predicate 'acquirable?
    :see '[acquire! resource]
    :forbids-extensions true}
   (-acquire! :- Any

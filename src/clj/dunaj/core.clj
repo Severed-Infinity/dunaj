@@ -303,7 +303,7 @@
            [release-scope! in-scope? scope-push! grab-scope with-scope
             with-io-scope resource acquire! read read! read-one!
             write! write-one! slurp spit! exchange! format transform
-            deps assoc-deps system start!])
+            deps assoc-deps system start! acquirable?])
     (refer dunaj.resource.helper [])
     (refer dunaj.resource.selector
            [selector select select-now register! deregister!])
