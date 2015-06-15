@@ -146,12 +146,13 @@
 
 (defn config :- KeywordMap
   "Returns configuration map for a given object, or `nil` if
-  no configuration is attached to the object."
+  no configuration is attached to the object. Falls back to
+  `(:config x)` if `_x_` does not satisfy `IConfig` protocol."
   {:added v1
    :see '[config-ref assoc-config]
    :category "Configuration"}
   [x :- Any]
-  (when (satisfies? IConfig x) (-config x)))
+  (if (satisfies? IConfig x) (-config x) (:config x)))
 
 (defprotocol IPersistentConfig
   "A feature protocol for objects with persistent configuration."

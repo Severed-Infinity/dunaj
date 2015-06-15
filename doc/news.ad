@@ -1,3 +1,8 @@
+2015/06/15 ::
+2 new blog posts:
+http://blog.wagjo.com/factory.html[Idiomatic Factory Pattern] and
+http://blog.wagjo.com/jwt.html[Handling JSON Web Tokens in Dunaj]
+
 2015/06/01 ::
 Dunaj v0.5.0 has been released. Dunaj lite has been updated too.
 +

@@ -38,7 +38,7 @@
    [dunaj.coll :refer
     [IReducing reduced IRed IHomogeneous reduced? item-type reducing
      IBatchedRed postponed postponed? advance unsafe-advance! reduce
-     ISeqable ICounted section sectionable? counted?]]
+     ISeqable ICounted section sectionable? counted? count]]
    [dunaj.concurrent.forkjoin :refer
     [IFoldable -fold fork join invoke fold]]
    [dunaj.function :refer [Function fn defn identity comp]]

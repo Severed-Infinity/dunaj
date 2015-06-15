@@ -230,7 +230,7 @@
     (refer dunaj.macro
            [defmacro gensym macroexpand macroexpand-1
             macroexpand-all])
-    (refer dunaj.uri [])
+    (refer dunaj.uri [Uri uri?])
     (refer dunaj.state.var
            [Var var? var def+ def defonce declare with-bindings])
     (refer dunaj.state.ref
@@ -303,7 +303,8 @@
            [release-scope! in-scope? scope-push! grab-scope with-scope
             with-io-scope resource acquire! read read! read-one!
             write! write-one! slurp spit! exchange! format transform
-            deps assoc-deps system start! acquirable?])
+            deps assoc-deps system start! acquirable?
+            IAcquirableFactory])
     (refer dunaj.resource.helper [])
     (refer dunaj.resource.selector
            [selector select select-now register! deregister!])
