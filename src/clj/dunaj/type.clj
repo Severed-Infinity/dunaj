@@ -217,6 +217,20 @@
   (->UnionSignature
    sigs (eval (type-hint (first (common-type-hint sigs))))))
 
+(defrecord RangeSignature
+  "A record type for type signatures that have a range constraint."
+  [sig :- Signature, from :- Any, to :- Any, on-class :- Signature]
+  IHintedSignature
+  (-type-hint [this] (type-hint sig)))
+
+(defn Range :- Signature
+  "Returns a type signature with given constraints"
+  {:added v1}
+  ([sig :- Signature, from :- Any]
+   (Range sig from nil))
+  ([sig :- Signature, from :- Any, to :- Any]
+   (->RangeSignature sig from to (eval (type-hint sig)))))
+
 (defrecord IntersectionSignature
   "A record type for type signatures that represent intersection of
   signatures `_sigs_`."

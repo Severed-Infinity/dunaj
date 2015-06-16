@@ -113,7 +113,8 @@
             [dunaj.env]
             [dunaj.dev]
             ;; [dunaj.main] ;; circular dependency
-            [dunaj.repl]))
+            [dunaj.repl]
+            [dunaj.type.validation]))
 
 
 ;;;; Implementation details
@@ -321,7 +322,8 @@
     (refer dunaj.dev
            [scratch warn-on-reflection! not-implemented assert
             time set-trace! trace set-color! pt])
-    (refer dunaj.repl [])))
+    (refer dunaj.repl [])
+    (refer dunaj.type.validation [with-validation])))
 
 (defmacro dunaj-ns
   "Loads Dunaj. To be used in Dunaj lite, and in cases where
