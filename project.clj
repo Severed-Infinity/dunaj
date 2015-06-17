@@ -1,7 +1,7 @@
 (defproject org.dunaj/dunaj "0.6.0-SNAPSHOT"
   :description "Dunaj - An alternative core API for Clojure."
   :url "http://www.dunaj.org"
-  :dependencies [[org.dunaj/clojure "1.7.0-dunaj_RC1_3" :exclusions [org.clojure/clojure org.clojure/clojurescript]]
+  :dependencies [[org.dunaj/clojure "1.7.0-dunaj_RC2" :exclusions [org.clojure/clojure org.clojure/clojurescript]]
                  [org.dunaj/core.async "0.1.0-dunaj_pre4" :exclusions [org.clojure/clojure org.clojure/clojurescript]]
                  [org.dunaj/core.rrb-vector "0.0.12-dunaj_pre4" :exclusions [org.clojure/clojure org.clojure/clojurescript]]
                  [lonocloud/synthread "1.4.0" :exclusions [org.clojure/clojure org.clojure/clojurescript]]]

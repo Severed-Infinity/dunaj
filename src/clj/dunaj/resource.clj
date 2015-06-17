@@ -838,7 +838,7 @@
   otherwise this function should be called again.
   Caller should assume circular dependency when returned done has not
   changed and `outstanding` is not empty."
-  [done :- {}, system :- IRed]
+  [done :- {}, system :- IRed, cfg :- {}]
   (loop [done done, pending (seq system), k nil, v nil, d nil, o nil]
     (cond
       ;; no current component, no pending components
@@ -851,7 +851,8 @@
           (recur done np nil nil nil o)
           (recur done np nk nv (seq (deps nv)) o)))
       ;; current component has no unresolved dependencies
-      (nil? d) (recur (assoc done k (start! v)) pending nil nil nil o)
+      (nil? d)
+      (recur (assoc done k (start! v cfg)) pending nil nil nil o)
       ;; pick current component's first dependency
       :let [dep (first d), dep-key (key dep), dep-val (val dep)
             nd (next d), x (or dep-val dep-key)]
@@ -868,9 +869,9 @@
       :else (recur done pending nil nil nil (conj o k)))))
 
 (defn resolve-system
-  [system]
+  [system cfg]
   (loop [done {}]
-    (let [[new-done outstanding] (resolve-run done system)]
+    (let [[new-done outstanding] (resolve-run done system cfg)]
       (cond
         (empty? outstanding) new-done
         (identical? done new-done)
@@ -885,8 +886,13 @@
   {:added v1
    :category "System"
    :see '[acquire! deps assoc-deps system]}
-  [system :- System]
-  (let [resolved (if (system? system) (resolve-system system) system)]
-    (if (satisfies? IAcquirableFactory system)
-      (acquire! (merge system resolved)) ;; retain factory type
-      resolved)))
+  ([system :- System] (start! system nil))
+  ([system :- System, cfg :- {}]
+   ;; TODO configure all components before resolving system
+   ;; TODO !!! but resolve this if not system, but do not resolve twite!
+   (let [resolved (if (system? system)
+                    (resolve-system system cfg)
+                    system)]
+     (if (satisfies? IAcquirableFactory system)
+       (acquire! (merge system resolved)) ;; retain factory type
+       resolved))))

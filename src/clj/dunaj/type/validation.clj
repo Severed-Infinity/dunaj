@@ -17,6 +17,7 @@
   {:authors ["Jozef Wagner"]}
   (:api bare-ws)
   (:require
+   [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [VariadicSignature Any]]
    [dunaj.boolean :refer [and or]]
    [dunaj.host :refer [class-instance? class?]]
@@ -156,6 +157,7 @@
 
 (defmacro with-validation
   "Validates and evals all given forms."
+  {:added v1}
   [opt-map & body]
   (let [body (if (map? opt-map) body (cons opt-map body))]
     `(do ~@(map validate-form body))))

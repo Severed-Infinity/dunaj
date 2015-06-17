@@ -193,6 +193,21 @@
   [x :- IMutableConfig]
   (-config-ref x))
 
+(defprotocol IConfigurable
+  "A feature protocol for configurable objects."
+  {:added v1
+   :see '[dunaj.resource/system dunaj.resource/start!]
+   :category "Configuration"}
+  (-configure :- []
+    "Returns collection of maps that specifies how fields should be
+    configured. Example: 
+    [{:key :field-name :path [:path :in :cfg] :type ValueType}]
+    When no type is specified, configuration framework should
+    use field's type signature for that.
+    Can return path instead, if all fields are on the same path
+    and default types should be used."
+    [this]))
+
 ;;; Convenience functions
 
 (defn update-meta :- IPersistentMeta
