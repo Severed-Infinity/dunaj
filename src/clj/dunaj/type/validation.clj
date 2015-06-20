@@ -17,7 +17,7 @@
   {:authors ["Jozef Wagner"]}
   (:api bare-ws)
   (:require
-   [clojure.bootstrap :refer [v1]]
+   [clojure.bootstrap :refer [v1 scratch]]
    [dunaj.type :refer [VariadicSignature Any]]
    [dunaj.boolean :refer [and or]]
    [dunaj.host :refer [class-instance? class?]]
@@ -38,8 +38,7 @@
    [dunaj.coll.tuple :refer [tuple]]
    [dunaj.coll.util :refer [some last every?]]
    [dunaj.string :refer [->str]]
-   [dunaj.error :refer [illegal-argument]]
-   [dunaj.dev :refer [scratch]]))
+   [dunaj.error :refer [illegal-argument]]))
 
 (defprotocol IRangeValidation
   (-validate-range [this from to]))

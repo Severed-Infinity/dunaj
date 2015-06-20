@@ -59,29 +59,30 @@
     [IAtomic cancel! alter! cas! reference? IOpenAware adjust! io!
      atomic? switch! IAdjustable IReference IMutable ensure-io
      ensure-open open?]]
-   [dunaj.compare :refer [identical? = nil?]]
+   [dunaj.compare :refer [identical? = nil? sentinel]]
    [dunaj.flow :refer
     [when let when-not when-let loop cond condp if-let if-not when]]
    [dunaj.threading :refer [->>]]
    [dunaj.buffer :refer [buffer]]
    [dunaj.poly :refer
-    [Record instance? reify satisfies? defprotocol deftype defrecord]]
-   [dunaj.feature :refer [IConfig]]
+    [Record instance? reify satisfies? defprotocol deftype defrecord
+     type]]
+   [dunaj.feature :refer [IConfig meta]]
    [dunaj.coll :refer
     [count contains? next first IRed IBatchedRed sequential? empty?
      -reduce-batched reduced? ICounted get reduce Postponed full? seq
      map? assoc update-in conj postponed? unsafe-advance! postponed
-     lookup? rest reduced update provide-collection]]
+     lookup? rest reduced update provide-collection get-in]]
    [dunaj.function :refer [apply defn invocable? fn partial]]
    [dunaj.host.batch :refer [select-item-type batch-manager]]
    [dunaj.concurrent.thread :refer [current-thread sleep]]
    [dunaj.concurrent :refer [future]]
    [dunaj.concurrent.port :as dp :refer
     [ISourcePort chan <!! thread >!! timeout alts!!]]
-   [dunaj.string :refer [String string? ->str]]
+   [dunaj.string :as ds :refer [String string? ->str]]
    [dunaj.time :refer [IDuration milliseconds]]
    [dunaj.macro :refer [defmacro]]
-   [dunaj.identifier :refer [Keyword]]
+   [dunaj.identifier :refer [Keyword keyword name]]
    [dunaj.state.weak :refer [weak]]
    [dunaj.state.basic :refer [atom]]
    [dunaj.state.var :refer [Var var? def+ declare alter-root!]]
@@ -89,11 +90,14 @@
                         unsupported-operation npe fail-aware? error]]
    [dunaj.uri :refer [Uri uri uri?]]
    [dunaj.coll.tuple :refer [tuple val key pair]]
-   [dunaj.coll.util :refer [into revlist doseq merge some recipe]]
+   [dunaj.coll.util :refer
+    [into revlist doseq merge some recipe butlast]]
+   [dunaj.coll.recipe :refer [map]]
    [dunaj.coll.cons-seq :refer [cons]]
-   [dunaj.coll.default]
+   [dunaj.coll.default :refer [->map zipmap vec]]
    [dunaj.format :refer [IParserFactory IPrinterFactory print parse]]
-   [dunaj.format.charset :refer [utf-8]]))
+   [dunaj.format.charset :refer [utf-8]]
+   [dunaj.type.validation :refer [validate-value]]))
 
 
 ;;;; Implementation details
@@ -367,7 +371,25 @@
   [& body]
   `(dunaj.state/io! (with-scope ~@body)))
 
-;;; Resource Factory
+;;; Resource Factories
+
+(defprotocol IConfigurable
+  "A feature protocol for objects that can be automatically
+  configured, either fully or partially, from external configuration
+  map."
+  {:added v1
+   :see '[system start!]
+   :category "Configuration"}
+  (-autoconf :- []
+    "Returns collection of maps that specifies how individual
+    fields should be configured. Example: 
+    `[{:key :field-name :path [:path :in :cfg] :type ValueType}]`
+    When no type is specified, configuration framework should use
+    field's type signature for that. Can return just path instead, if
+    all fields are on the same path and default types should be used.
+    Can return `:default` in which case the configuration framework
+    constructs path from type's namespace."
+    [this]))
 
 (defprotocol IAcquirableFactory
   "A factory protocol for objects that can be acquired.
@@ -828,7 +850,55 @@
   [& {:as keyvals}]
   (map->System keyvals))
 
-(declare start!)
+(declare start!*)
+
+(defn autoconf*
+  ([cfg autoconf]
+   (autoconf* cfg autoconf nil))
+  ([cfg autoconf cast-fn]
+   (let [bf (fn [m {:keys [:key :path :type] :as spec}]
+              (let [sen (sentinel)
+                    val (get-in cfg path sen)]
+                (cond
+                  (identical? sen val) m
+                  (or (not (contains? spec :type))
+                      (validate-value type val))
+                  (assoc m key val)
+                  cast-fn (cast-fn type val)
+                  (throw (illegal-argument "cannot cast value")))))]
+     (reduce bf {} autoconf))))
+
+(defn normalized-autoconf
+  ([x]
+   (normalized-autoconf x (-autoconf x)))
+  ([x autoconf]
+   (let [dpath (when-let [n (name (:on (type x)))]
+                 (->> n
+                      (ds/split #(= % \.))
+                      (map #(ds/replace % \_ \-))
+                      (map keyword)
+                      butlast
+                      vec))
+         autoconf (if (identical? :default autoconf) dpath autoconf)
+         fields (map keyword (:fields (type x)))
+         tsigs (:tsig (type x))
+         type-map (zipmap fields tsigs)
+         mf #(if (nil? type-map)
+               (->map :key % :path (conj autoconf %))
+               (->map :key % :path (conj autoconf %)
+                      :type (get type-map %)))
+         amf #(if (or (contains? % :type) (nil? type-map))
+                %
+                (assoc % :type (type-map (:key %))))]
+     (if (map? (first autoconf))
+       (map amf autoconf)
+       (map mf fields)))))
+
+(defn autoconf
+  [x cfg cast-fn]
+  (if (satisfies? IConfigurable x)
+    (merge x (autoconf* cfg (normalized-autoconf x) cast-fn))
+    x))
 
 (defn resolve-run
   "Perform one run of dependency resolution.
@@ -838,21 +908,23 @@
   otherwise this function should be called again.
   Caller should assume circular dependency when returned done has not
   changed and `outstanding` is not empty."
-  [done :- {}, system :- IRed, cfg :- {}]
+  [done :- {}, system :- IRed, cfg :- {}, cast-fn :- AnyFn]
   (loop [done done, pending (seq system), k nil, v nil, d nil, o nil]
     (cond
       ;; no current component, no pending components
       (and (nil? k) (nil? pending)) (pair done o)
       ;; no current components, but some pending components
       (nil? k)
-      (let [[nk nv] (first pending), np (next pending)]
+      (let [[nk nv] (first pending), np (next pending)
+            cnv (autoconf nv cfg cast-fn)]
         ;; was first pending component present in the original done?
         (if (contains? done nk)
           (recur done np nil nil nil o)
-          (recur done np nk nv (seq (deps nv)) o)))
+          (recur done np nk cnv (seq (deps cnv)) o)))
       ;; current component has no unresolved dependencies
       (nil? d)
-      (recur (assoc done k (start! v cfg)) pending nil nil nil o)
+      (recur (assoc done k (start!* v cfg cast-fn))
+             pending nil nil nil o)
       ;; pick current component's first dependency
       :let [dep (first d), dep-key (key dep), dep-val (val dep)
             nd (next d), x (or dep-val dep-key)]
@@ -869,9 +941,10 @@
       :else (recur done pending nil nil nil (conj o k)))))
 
 (defn resolve-system
-  [system cfg]
+  [system cfg cast-fn]
   (loop [done {}]
-    (let [[new-done outstanding] (resolve-run done system cfg)]
+    (let [[new-done outstanding]
+          (resolve-run done system cfg cast-fn)]
       (cond
         (empty? outstanding) new-done
         (identical? done new-done)
@@ -879,20 +952,27 @@
                 (->str "circular dependency detected" outstanding)))
         :else (recur new-done)))))
 
+(defn start!* :- {}
+  [system :- System, cfg :- {}, cast-fn :- AnyFn]
+  (let [resolved (if (system? system)
+                   (resolve-system system cfg cast-fn)
+                   system)]
+    (if (satisfies? IAcquirableFactory system)
+      (acquire! (merge system resolved)) ;; retain factory type
+      resolved)))
+
 (defn start! :- {}
   "Starts the `_system_` and returns map of started components.
   If the system object is also an acquirable factory, performs
-  `acquire!` and returns a resource object."
+  `acquire!` and returns a resource object.
+  Configures `_system_` and all its dependencies, if configurable,
+  with `_cfg_` and `_cast-fn_`."
   {:added v1
    :category "System"
    :see '[acquire! deps assoc-deps system]}
-  ([system :- System] (start! system nil))
+  ([system :- System]
+   (start! system nil))
   ([system :- System, cfg :- {}]
-   ;; TODO configure all components before resolving system
-   ;; TODO !!! but resolve this if not system, but do not resolve twite!
-   (let [resolved (if (system? system)
-                    (resolve-system system cfg)
-                    system)]
-     (if (satisfies? IAcquirableFactory system)
-       (acquire! (merge system resolved)) ;; retain factory type
-       resolved))))
+   (start! system cfg (:cast-fn (meta cfg))))
+  ([system :- System, cfg :- {}, cast-fn :- AnyFn]
+   (start!* (autoconf system cfg cast-fn) cfg cast-fn)))
