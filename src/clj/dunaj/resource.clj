@@ -864,7 +864,7 @@
                   (or (not (contains? spec :type))
                       (validate-value type val))
                   (assoc m key val)
-                  cast-fn (cast-fn type val)
+                  cast-fn (assoc m key (cast-fn type val))
                   (throw (illegal-argument "cannot cast value")))))]
      (reduce bf {} autoconf))))
 
