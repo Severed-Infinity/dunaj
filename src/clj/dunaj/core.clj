@@ -89,6 +89,7 @@
             [dunaj.format]
             [dunaj.format.charset]
             [dunaj.regex]
+            [dunaj.format.base64]
             [dunaj.format.helper]
             [dunaj.format.parser]
             [dunaj.format.printer]
@@ -293,6 +294,7 @@
     (refer dunaj.format.helper [])
     (refer dunaj.format.parser [])
     (refer dunaj.format.printer [])
+    (refer dunaj.format.base64 [base64 base64-safe])
     (refer dunaj.format.html [html])
     (refer dunaj.format.json [json])
     (refer dunaj.format.edn [edn])
