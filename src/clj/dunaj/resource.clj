@@ -47,13 +47,14 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Scope" "System"]}
   (:refer-clojure :exclude
-   [slurp format read seq reduce contains? satisfies? first atom =
-    rest cons pos? if-not sequential? doseq neg? reduced? deftype
-    when-let min conj let map? get into var? future fn empty? key
-    string? when-not when defn declare or some nil? update reify
-    update-in instance? val not identical? defprotocol print loop
-    merge integer? condp cond ex-info partial reduced defmacro odd?
-    next if-let io! max == count apply assoc defrecord and ->>])
+   [slurp format read seq reduce contains? butlast satisfies? first
+    atom = map rest cons pos? if-not sequential? doseq neg? reduced?
+    deftype when-let zipmap min conj let map? get into meta var?
+    future fn empty? key string? when-not vec when defn declare or
+    name some nil? update reify update-in instance? val not type
+    identical? defprotocol print loop merge integer? condp cond
+    ex-info partial reduced defmacro odd? keyword next if-let io! max
+    == count apply assoc defrecord and ->> get-in])
   (:require
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]
