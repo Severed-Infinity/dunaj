@@ -18,18 +18,22 @@
   * `:mode` - `Keyword`, `:basic`, `:safe`
   * `:padding` - `Boolean`, defaults to `true`"
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [reduce satisfies? map < comp reduced? deftype * let -> identity fn
+    when-not when defn or counted? nil? not identical? print / loop
+    merge condp cond ex-info reduced defmacro case max count defrecord
+    and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Maybe Va Fn Any AnyFn U I Signature]]
-   [dunaj.boolean :refer [Boolean or not and]]
+   [dunaj.boolean :refer [Boolean+ or not and]]
    [dunaj.host :refer
-    [Class Array AnyBatch BatchManager keyword->class Batch
+    [Class+ Array AnyBatch BatchManager keyword->class Batch
      class-instance?]]
    [dunaj.host.array :as dha]
    [dunaj.host.int :refer
     [Int iint iadd i0 imul i3 i4 ipos? imin idiv izero? i<= i2]]
-   [dunaj.math :refer [Integer max < * ceil /]]
+   [dunaj.math :refer [Integer+ max < * ceil /]]
    [dunaj.compare :refer [identical? nil?]]
    [dunaj.state :refer [clone]]
    [dunaj.flow :refer [let when cond when-not loop condp case]]
@@ -50,7 +54,7 @@
    [dunaj.feature :refer [IConfig]]
    [dunaj.host.batch :refer [batch-manager item-types-match? batch]]
    [dunaj.host.array :refer [array-manager]]
-   [dunaj.string :refer [String ->str]]
+   [dunaj.string :refer [String+ ->str]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.identifier :refer [Keyword]]
    [dunaj.state.var :refer [Var def+]]
@@ -104,7 +108,7 @@
   (if (identical? :encode code-mode) (i3) (i4)))
 
 (defn batch-size-hint
-  [block-length :- Integer]
+  [block-length :- Integer+]
   (imul (iint @default-formatter-batch-size) block-length))
 
 (deftype B64Wrap [ret :- Any, unread-batch :- (Maybe Base64Batch)])
@@ -112,8 +116,8 @@
 (deftype BatchedBase64CoderReducing
   [r :- IReducing,
    coder :- (U java.util.Base64$Encoder java.util.Base64$Decoder),
-   block-length :- Integer, code-mode :- Keyword,
-   batch-size :- Integer, fbm :- BatchManager, tbm :- BatchManager]
+   block-length :- Integer+, code-mode :- Keyword,
+   batch-size :- Integer+, fbm :- BatchManager, tbm :- BatchManager]
   IReducing
   (-init [this] (._init r))
   (-finish [this wrap]
@@ -180,7 +184,7 @@
 
 (defxform batched-base64-coder*
   [coder :- (U java.util.Base64$Encoder java.util.Base64$Decoder),
-   block-length :- Integer, code-mode :- Keyword]
+   block-length :- Integer+, code-mode :- Keyword]
   ([r] (let [from-type (keyword->class :byte)
              to-type (keyword->class :byte)
              batch-size (batch-size-hint block-length)
@@ -197,7 +201,7 @@
   "A type for base64 encoder and decoder."
   [coll :- (Maybe IRed),
    coder :- (U java.util.Base64$Encoder java.util.Base64$Decoder),
-   block-length :- Integer, code-mode :- Keyword, config :- {}]
+   block-length :- Integer+, code-mode :- Keyword, config :- {}]
   IRed
   (-reduce [this reducef init]
     (let [to-type (keyword->class :byte)
