@@ -872,8 +872,8 @@
   ([x]
    (normalized-autoconf x (-autoconf x)))
   ([x autoconf]
-   (let [dpath (when-let [n (name (:on (type x)))]
-                 (->> n
+   (let [dpath (when-let [sym (:on (type x))]
+                 (->> (name sym)
                       (ds/split #(= % \.))
                       (map #(ds/replace % \_ \-))
                       (map keyword)
@@ -889,9 +889,12 @@
                       :type (get type-map %)))
          amf #(if (or (contains? % :type) (nil? type-map))
                 %
-                (assoc % :type (type-map (:key %))))]
+                (assoc % :type (type-map (:key %))))
+         apf #(if (or (contains? % :path) (nil? dpath))
+                %
+                (assoc % :path (conj dpath (:key %))))]
      (if (map? (first autoconf))
-       (map amf autoconf)
+       (map apf (map amf autoconf))
        (map mf fields)))))
 
 (defn autoconf

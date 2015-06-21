@@ -21,13 +21,10 @@ be added into Dunaj too.
 
 === Improve or add new features
 
-* support for configuration management
-* base64 encoding
-* Support for JVM 7
+* Embrace reader conditionals
 * Support more hosts (Javascript, .NET, ...)
 * Support other OSs besides Linux
 * Check binary compatibility with Clojure
-* Reader conditionals for CLJ parser
 * Type signatures support for CLJ pretty printer
 * Helpful error messages
 * reflect changes in synthread

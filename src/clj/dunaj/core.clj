@@ -305,7 +305,7 @@
             with-io-scope resource acquire! read read! read-one!
             write! write-one! slurp spit! exchange! format transform
             deps assoc-deps system start! acquirable?
-            IAcquirableFactory])
+            IAcquirableFactory IConfigurable])
     (refer dunaj.resource.helper [])
     (refer dunaj.resource.selector
            [selector select select-now register! deregister!])

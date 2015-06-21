@@ -1,3 +1,19 @@
+2015/06/22 ::
+Dunaj v0.6.0 has been released. Dunaj lite has been updated too.
++
+* Built on top of Clojure 1.7.0 RC2
+* Various bugfixes
+* Added Base64 formatters, a wrapper for Java 8 Base64 codecs
+* Extensible run-time validator for function arguments and return
+  values, utilizing Dunaj's type signatures
+* Added support for autoconfiguration of systems. System
+  components will have their fields automatically set up
+  (including type casting and validation) from
+  a configuration map (obtained e.g. by
+  https://github.com/dunaj-project/crispin[Crispin]), based on
+  mappings specified through `IConfigururable` protocol.
+* Dropping plan to support Java 7
+
 2015/06/15 ::
 2 new blog posts:
 http://blog.wagjo.com/factory.html[Idiomatic Factory Pattern] and
