@@ -218,7 +218,7 @@
         to-batch to-batch
         :else (.allocate tbm (compute-capacity nil))))
 
-(deftype BatchedCharsedCoderReducing
+(deftype BatchedCharsetCoderReducing
   [r :- IReducing,
    charset :- java.nio.charset.Charset,
    replacement :- (Maybe String),
@@ -335,7 +335,7 @@
              batch-size (compute-capacity nil)
              fbm (batch-manager from-type)
              tbm (batch-manager to-type)]
-         (->BatchedCharsedCoderReducing
+         (->BatchedCharsetCoderReducing
           r charset replacement malformed-mode
           unmappable-mode code-mode batch-size fbm tbm)))
   :count false

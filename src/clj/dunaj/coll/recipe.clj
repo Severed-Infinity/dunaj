@@ -999,8 +999,10 @@
   [type :- Class, iterf :- AnyFn, x :- Any]
   IRed
   (-reduce [this reducef init]
-    (let [af (advance-fn [ret x] (recur (reducef ret x) (iterf x)))]
-      (af init x)))
+    (let [af (advance-fn [ret x]
+               (let [x (iterf x)]
+                 (recur (reducef ret x) x)))]
+      (af (reducef init x) x)))
   ISeqable
   (-seq [this] (red-to-seq this))
   IHomogeneous

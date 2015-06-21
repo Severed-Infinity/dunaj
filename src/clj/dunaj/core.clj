@@ -113,7 +113,8 @@
             [dunaj.env]
             [dunaj.dev]
             ;; [dunaj.main] ;; circular dependency
-            [dunaj.repl]))
+            [dunaj.repl]
+            [dunaj.type.validation]))
 
 
 ;;;; Implementation details
@@ -227,7 +228,7 @@
     (refer dunaj.macro
            [defmacro gensym macroexpand macroexpand-1
             macroexpand-all])
-    (refer dunaj.uri [])
+    (refer dunaj.uri [Uri uri?])
     (refer dunaj.state.var
            [Var var? def+ defonce declare with-bindings])
     (refer dunaj.state.ref
@@ -300,7 +301,8 @@
            [release-scope! in-scope? scope-push! grab-scope with-scope
             with-io-scope resource acquire! read read! read-one!
             write! write-one! slurp spit! exchange! format transform
-            deps assoc-deps system start!])
+            deps assoc-deps system start! acquirable?
+            IAcquirableFactory IConfigurable])
     (refer dunaj.resource.helper [])
     (refer dunaj.resource.selector
            [selector select select-now register! deregister!])
@@ -317,7 +319,8 @@
     (refer dunaj.dev
            [scratch warn-on-reflection! not-implemented assert
             time set-trace! trace set-color! pt])
-    (refer dunaj.repl [])))
+    (refer dunaj.repl [])
+    (refer dunaj.type.validation [with-validation])))
 
 (defmacro dunaj-ns
   "Loads Dunaj. To be used in Dunaj lite, and in cases where

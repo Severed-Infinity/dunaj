@@ -918,7 +918,8 @@
            r (if shared?
                r
                (map (fn [x :- ICharSequence] (.toString x)) r))
-           r (if keep-whitespace? r (remove f r))]))))
+           r (if keep-whitespace? r (remove f r))]
+       r))))
 
 (defn replace :- String
   "Like `clojure.string/replace`, but accepts more coll types."
