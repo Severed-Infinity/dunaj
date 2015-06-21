@@ -14,6 +14,10 @@ Dunaj v0.6.0 has been released. Dunaj lite has been updated too.
   mappings specified through `IConfigururable` protocol.
 * Dropping plan to support Java 7
 
+2015/06/20 ::
+New blog post:
+http://blog.wagjo.com/jwt.html[Handling JSON Web Tokens in Dunaj]
+
 2015/06/15 ::
 2 new blog posts:
 http://blog.wagjo.com/factory.html[Idiomatic Factory Pattern] and

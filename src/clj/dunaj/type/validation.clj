@@ -61,7 +61,8 @@
 
 (defn validate-value
   [t v]
-  (cond (class? t) (class-instance? t v)
+  (cond (class? t)
+        (class-instance? ^java.lang.Class t ^java.lang.Object v)
         (protocol? t) (satisfies? t v)
         (or (type? t) (record? t)) (instance? t v)
         (-validate t v)))
