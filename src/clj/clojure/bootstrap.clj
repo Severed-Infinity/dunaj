@@ -32,7 +32,7 @@
 
 (def v1 "1.0")
 
-(def vc "0.5.0")
+(def vc "0.6.0")
 
 ;;; Helpers
 
