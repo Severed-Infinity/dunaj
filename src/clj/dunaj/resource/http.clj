@@ -152,7 +152,8 @@
                 (unsafe-postponed @ret #(af (unsafe-advance! ret)))
                 (not (.isOpen rch)) ret
                 :let [x (fragile resource (.read rch (.clear batch)))]
-                (neg? x) (do (fragile resource (.close s)) ret)
+                ;; don't close as we may want to get status afterwards
+                (neg? x) ret #_(do (fragile resource (.close s)) ret)
                 (zero? x) (recur ret)
                 :else (recur (reducef ret (.flip batch)))))]
       (af init))))
