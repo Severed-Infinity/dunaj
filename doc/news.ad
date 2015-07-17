@@ -11,7 +11,7 @@ Dunaj v0.6.0 has been released. Dunaj lite has been updated too.
   (including type casting and validation) from
   a configuration map (obtained e.g. by
   https://github.com/dunaj-project/crispin[Crispin]), based on
-  mappings specified through `IConfigururable` protocol.
+  mappings specified through `IConfigurable` protocol.
 * Dropping plan to support Java 7
 
 2015/06/20 ::

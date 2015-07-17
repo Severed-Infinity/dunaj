@@ -1,10 +1,10 @@
-(defproject org.dunaj/dunaj-lite "0.6.0"
+(defproject org.dunaj/dunaj-lite "0.7.0-SNAPSHOT"
   :description "Dunaj lite - An alternative core API for Clojure."
   :url "http://lite.dunaj.org"
-  :dependencies [[org.clojure/clojure "1.7.0-RC2"]
+  :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.dunaj/core.async "0.1.0-lite_pre5"]
                  [org.clojure/core.rrb-vector "0.0.11"]]
-  :scm {:name "git" :url "https://github.com/dunaj-project/dunaj/tree/lite"}
+  :scm {:name "git" :url "https://github.com/dunaj-project/dunaj"}
   :signing {:gpg-key "6A72CBE2"}
   :deploy-repositories [["clojars" {:creds :gpg}]]
   :source-paths ["src/clj"]
