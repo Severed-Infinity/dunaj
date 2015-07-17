@@ -13,13 +13,11 @@
 (ns clojure.bridge
   "Bridging Dunaj with Clojure. Low level stuff, do not use."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
-  (:require [clojure.core :refer [defn when-let def]]
-            [dunaj.compare :refer [defsentinel]]
+  (:require [dunaj.compare :refer [defsentinel]]
             [dunaj.coll :refer [-reduce postponed]]
             [dunaj.coll.helper :refer [strip-reduced]]))
 
-(def ^:private red->seq* @#'dunaj.coll/red->seq*)
+(def red->seq* @#'dunaj.coll/red->seq*)
 
 (defn red-to-seq
   "Returns nil or a non-empty seq from a given reducible coll."

@@ -35,8 +35,6 @@
             [dunaj.state]
             [dunaj.flow :refer [let if-not quote]]
             [dunaj.threading]
-            [dunaj.threading.last]
-            [dunaj.threading.second]
             [dunaj.feature :refer [alter-meta!]]
             [dunaj.poly]
             [dunaj.coll :refer [second assoc empty? first]]
@@ -172,8 +170,6 @@
             while eval quote do delay force])
     (refer dunaj.threading
            [-> ->> as-> cond-> cond->> some-> some->>])
-    (refer dunaj.threading.last [])
-    (refer dunaj.threading.second [])
     (refer dunaj.feature
            [IMeta IConfig validator meta assoc-meta config update-meta
             alter-meta! reset-meta! alter-config! reset-config!])

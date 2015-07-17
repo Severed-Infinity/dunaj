@@ -17,10 +17,12 @@
   Idiomatic use is through the `:api` section of the
   `<<dunaj.lib.api.ad#ns,ns>>` macro.
 
+  NOTE: Not used in Dunaj Lite
+
   Bare API does not refer to any var or host class,
   except special forms. Is used internally for Dunaj namespaces."
   {:authors ["Jozef Wagner"]}
-  (:api clojure :exclude [init-api]))
+  #?(:dunaj (:api clojure :exclude [init-api])))
 
 
 ;;;; Public API

@@ -27,7 +27,6 @@ be added into Dunaj too.
 * Check binary compatibility with Clojure
 * Type signatures support for CLJ pretty printer
 * Helpful error messages
-* reflect changes in synthread
 * More API presets (e.g. for unchecked or host int math)
 * Add more data formatters (parsers/printers), including binary
   codecs. (e.g. XML, Transit, Fressian)
@@ -62,9 +61,7 @@ be added into Dunaj too.
   `<<dunaj.lib.api.ad#,dunaj.lib>>`,
   `<<dunaj.poly.api.ad#,dunaj.poly>>`,
   `<<dunaj.state.api.ad#,dunaj.state>>`,
-  `<<dunaj.var.api.ad#,dunaj.var>>`,
-  `<<dunaj.threading.last.api.ad#,dunaj.threading.last>>`,
-  `<<dunaj.threading.second.api.ad#,dunaj.threading.second>>`
+  `<<dunaj.var.api.ad#,dunaj.var>>`
 
 * Less serious, but still in need of documentation improvement:
   `<<dunaj.coll.util.api.ad#,dunaj.coll.util>>`,

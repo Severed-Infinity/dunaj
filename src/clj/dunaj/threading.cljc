@@ -19,14 +19,8 @@
   {:authors ["Jozef Wagner"]
    :categories
    ["Primary"
-    ["Second"
-     "More syntax threading macros are available in
-     <<dunaj.threading.second.api.ad#,dunaj.threading.second>>
-     namespace"]
-    ["Last"
-     "More syntax threading macros are available in
-     <<dunaj.threading.last.api.ad#,dunaj.threading.last>>
-     namespace."]]
+    ["Second"]
+    ["Last"]]
    :additional-copyright true}
   (:api bare-ws)
   (:require
@@ -42,7 +36,7 @@
   a list already. If there are more forms, inserts the first form as
   the second item in second form, etc."
   {:added v1
-   :see '[->> dunaj.threading.second/do]
+   :see '[->>]
    :category "Second"
    :indent 1
    :highlight :flow
@@ -55,7 +49,7 @@
   the last item in second form, etc."
   {:added v1
    :category "Last"
-   :see '[-> dunaj.threading.last/do]
+   :see '[->]
    :indent 1
    :highlight :flow
    :tsig Macro})
@@ -66,7 +60,6 @@
   for each successive form, returning the result of the last form."
   {:added v1
    :category "Primary"
-   :see '[dunaj.threading.second/let dunaj.threading.last/let]
    :indent 2
    :highlight :flow
    :tsig Macro})
@@ -80,7 +73,7 @@
   short circuit after the first true test expression."
   {:added v1
    :category "Second"
-   :see '[cond->> dunaj.threading.second/if]
+   :see '[cond->>]
    :indent 1
    :indent-group 2
    :highlight :flow
@@ -95,7 +88,7 @@
   short circuit after the first true test expression."
   {:added v1
    :category "Last"
-   :see '[cond-> dunaj.threading.last/if]
+   :see '[cond->]
    :indent 1
    :highlight :flow
    :indent-group 2
@@ -107,7 +100,7 @@
   next etc."
   {:added v1
    :category "Second"
-   :see '[some->> dunaj.threading.second/when]
+   :see '[some->>]
    :indent 1
    :highlight :flow
    :tsig Macro})
@@ -118,7 +111,7 @@
   through the next etc."
   {:added v1
    :category "Last"
-   :see '[some-> dunaj.threading.last/when]
+   :see '[some->]
    :indent 1
    :highlight :flow
    :tsig Macro})
