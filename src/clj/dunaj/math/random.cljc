@@ -213,7 +213,7 @@
   (-reduce [this reducef init]
     (reduce-with-batched*
      nil *default-rng-batch-size* this reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IThreadLocal
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
@@ -246,7 +246,7 @@
   (-reduce [this reducef init]
     (reduce-with-batched*
      nil *default-rng-batch-size* this reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
   IBatchedRed
@@ -294,7 +294,7 @@
                       (isub left (i1))
                       (i>>> val (i8))))]
       (af init 0 0)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICloneable
   (-clone [this] (->SplittableRng (.split sr)))
   IHomogeneous
@@ -333,7 +333,7 @@
   (-reduce [this reducef init]
     (reduce-with-batched*
      nil *default-rng-batch-size* this reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IConfig
   (-config [this]
     (merge config
@@ -466,7 +466,7 @@
   (-reduce [this reducef init]
     (reduce-with-batched* (keyword->class :long)
                           *default-rng-batch-size* this reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] nil)
   IBatchedRed
@@ -599,7 +599,7 @@
   (-reduce [this reducef init]
     (reduce-with-batched* (keyword->class :double)
                           *default-rng-batch-size* this reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] nil)
   IBatchedRed

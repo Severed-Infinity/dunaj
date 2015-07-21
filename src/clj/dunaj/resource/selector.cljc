@@ -114,7 +114,7 @@
                  (.isOpen sel) (recur ret iter true)
                  :else ret))]
       (af init (sf) false)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICloneable
   (-clone [this] (throw (unsupported-operation)))
   IThreadLocal

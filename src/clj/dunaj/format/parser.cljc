@@ -927,7 +927,7 @@
           (->TokenizerEngineReducing
            (reducing reducef init)
            machine-factory fbm config item-limit state))))))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IConfig
   (-config [this] (-parser-config machine-factory)))
 
@@ -979,7 +979,7 @@
             (reducing reducef init)
             machine-factory config item-limit level-limit state)
            machine-factory fbm config token-item-limit state))))))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IConfig
   (-config [this] (-parser-config machine-factory)))
 

@@ -45,7 +45,7 @@
 
 (deftype ^:private RegexParser
   [pattern :- java.util.regex.Pattern, coll :- ICharSequence]
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (let [m (.matcher pattern coll)

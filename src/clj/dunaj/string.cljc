@@ -857,7 +857,7 @@
                          (recur (reducef ret val)
                                 nfval (iinc i) i)))))]
           (af init (partitionf (aget arr offset)) offset offset)))))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (cond

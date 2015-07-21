@@ -31,7 +31,7 @@
   (:require
    [clojure.bootstrap :refer [defmacro deftype defalias defn def+ let
                               v1 primitive-type-hint defrecord]]
-   #?(:clj [clojure.dunaj-deftype :refer [satisfies?]])
+   #?@(:dunaj [] :clj [[clojure.dunaj-deftype :refer [satisfies?]]])
    [dunaj.type :refer
     [Macro Fn Any Maybe Signature TypeHint IHintedSignature]]
    [dunaj.boolean :refer [Boolean+]]))
@@ -157,7 +157,8 @@
       :predicate 'class?}
      java.lang.Class))
 
-#?(:clj
+#?(:dunaj nil
+   :clj
    (deftype Class+
      "A host class type.
 

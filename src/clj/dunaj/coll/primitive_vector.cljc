@@ -318,7 +318,8 @@
   (nth [this index] (.nth vec index))
   clojure.lang.Reversible
   (rseq [this] (seq (-reverse this)))
-  #?@(:clj [clojure.lang.Associative
+  #?@(:dunaj []
+      :clj [clojure.lang.Associative
             (containsKey [this key] (-contains? this key))])
 
   ;; JVM interop

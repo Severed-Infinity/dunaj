@@ -308,7 +308,7 @@
   IRed
   (-reduce [this reducef init]
     (reduce* coll reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IBatchedRed
   (-reduce-batched [this requested-type size-hint reducef init]
     (let [t (select-item-type requested-type (item-type coll))

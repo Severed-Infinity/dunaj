@@ -96,7 +96,7 @@
   "An abstract type protocol for task executors."
   {:added v1
    :see '[submit IExecutor execute IFuture]
-   #?@(:clj [:forbid-extensions true])
+   #?@(:dunaj [] :clj [:forbid-extensions true])
    :on-interface java.util.concurrent.ExecutorService}
   (-submit :- IFuture
     "Submits a given function `_f_` for execution and returns an

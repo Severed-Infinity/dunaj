@@ -354,7 +354,7 @@
           tbm (batch-manager to-type)
           size-hint @default-formatter-batch-size]
       (reduce-with-batched* to-type size-hint this reducef init)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (get-to-type code-mode))
   IBatchedRed

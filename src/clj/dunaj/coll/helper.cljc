@@ -472,7 +472,7 @@
        (-inner-coll [this] ~coll)
        IRed
        (-reduce [this# f# init#] (dunaj.coll/-reduce ~coll f# init#))
-       #?@(:clj [ISeqable (-seq [this#] (red-to-seq this#))])
+       #?@(:dunaj [] :clj [ISeqable (-seq [this#] (red-to-seq this#))])
        IFoldable
        (-fold [this# reduce-fn# pool# n# combinef# reducef#]
          (dunaj.concurrent.forkjoin/-fold
@@ -893,7 +893,7 @@
   IRed
   (-reduce [this reducef init]
     (transduce* coll reduce* xform reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (if foldable?

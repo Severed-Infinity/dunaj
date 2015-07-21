@@ -74,7 +74,7 @@
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
   IThreadLocal

@@ -115,7 +115,7 @@
   []
   IRed
   (-reduce [this reducef init] init)
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] 0)
   IBatchedRed
@@ -139,7 +139,7 @@
   [m :- (Maybe String+)]
   IRed
   (-reduce [this reducef init] (throw (ex-info m)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] 1)
   IBatchedRed
@@ -173,7 +173,7 @@
   IRed
   (-reduce [this reducef init]
     (reduce* colls #(reduce* %2 reducef %) init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] @count-ref)
   IHomogeneous
@@ -280,7 +280,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b]
@@ -300,7 +300,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b]
@@ -330,7 +330,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b c]
@@ -350,7 +350,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b c]
@@ -381,7 +381,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret ims]
@@ -401,7 +401,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret ims]
@@ -488,7 +488,7 @@
           ims (clojure.core/map
                (fn [x] (reduce #(postponed %2) nil x)) colls)]
       (af init nil ims)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this]
     (imul (iint (count colls))
@@ -510,7 +510,7 @@
           ims (clojure.core/map
                (fn [x] (reduce #(postponed %2) nil x)) colls)]
       (af init nil ims)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this]
     (imul (iint (count colls))
@@ -555,7 +555,7 @@
 
 (deftype PreTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn]
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (let [bf #(if (branch-fn %) (cons (seq (children-fn %)) %2) %2)
@@ -570,7 +570,7 @@
 
 (deftype PostTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn]
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (let [bf #(pair % (when (branch-fn %) (seq (children-fn %))))
@@ -589,7 +589,7 @@
 (deftype InTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn,
    n :- Int]
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (let [bf #(let [b? (branch-fn %)]
@@ -619,7 +619,7 @@
 
 (deftype LevelTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn]
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (let [bf #(when (branch-fn %) (children-fn %))
@@ -675,7 +675,7 @@
     (let [af (advance-fn [ret i]
                (recur (reducef ret i) (mu/add i step)))]
       (af init start)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -702,7 +702,7 @@
                (recur (reducef ret i) (mu/add i step) (mu/inc n))
                :else ret)]
       (af init start 0)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -743,7 +743,7 @@
                (recur (reducef ret i) (mu/add i step) (mu/inc n))
                :else ret)]
       (af init start 0)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -831,7 +831,7 @@
   IRed
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (recur (reducef ret val)))] (af init)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -851,7 +851,7 @@
                (zero? i) ret
                :else (recur (reducef ret val) (mu/dec i)))]
       (af init n)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -904,7 +904,7 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (recur (reduce* coll reducef ret)))]
       (af init)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (item-type coll))
   IUnpackedRed
@@ -935,7 +935,7 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (recur (reducef ret (repf))))]
       (af init)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -981,7 +981,7 @@
                (let [x (iterf x)]
                  (recur (reducef ret x) x)))]
       (af (reducef init x) x)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -1309,7 +1309,7 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (reduce* tail reducef ret))]
       (af (reduce* coll reducef init))))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] (mu/add (count coll) (count tail)))
   ISectionable
@@ -1399,7 +1399,7 @@
                         ([r k _ _ _] (reducef r k))
                         ([r k _ _ _ & _] (reducef r k)))
                       init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] (count coll))
   ISectionable
@@ -1445,7 +1445,7 @@
                         ([r _ v _ _] (reducef r v))
                         ([r _ v _ _ & _] (reducef r v)))
                       init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] (count coll))
   ISectionable
@@ -1716,7 +1716,7 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (reduce* coll reducef ret))]
       (af (reduce* head reducef init))))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] (mu/add (count coll) (count head)))
   ISectionable
@@ -1926,7 +1926,7 @@
   [coll :- IRed, n :- Int, rc :- IRed]
   IRed
   (-reduce [this reducef init] (-reduce rc reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IBatchedRed
   (-reduce-batched [this requested-type size-hint reducef init]
     (-reduce-batched rc requested-type size-hint reducef init))
@@ -2787,7 +2787,7 @@
                :else (let [val (take n (concat (section coll i) pad))]
                        (reducef ret (reduce-augmented r val))))]
       (af init (i0))))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this]
     (if (true? pad)
@@ -3064,7 +3064,7 @@
   IRed
   (-reduce [this reducef init]
     (transduce* coll reduce* (partition-by* f ir) reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (transfold* coll reduce-fn pool n (foldable-partition-by* f ir)
@@ -3075,7 +3075,7 @@
   IRed
   (-reduce [this reducef init]
     (reduce* (->PartitionBy coll f ir) reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (let [l (iint (count coll))]
@@ -3187,7 +3187,7 @@
   IRed
   (-reduce [this reducef init]
     (transduce* coll reduce* (lines*) reducef init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (transfold*
@@ -3314,7 +3314,7 @@
        (provide-batch-size *default-lines-batch-size*)
        % %2 %3)
      (->BatchedLinesReducing (reducing reducef init))))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (transfold*

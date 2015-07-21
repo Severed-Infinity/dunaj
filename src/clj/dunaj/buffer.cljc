@@ -107,7 +107,7 @@
                           (let [ni (iinc i)]
                             (if (i== ni al) (i0) ni))))))]
       (af init begin)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [[ISeqable (-seq [this] (red-to-seq this))]])
   ICounted
   (-count [this]
     (if (i> begin end)

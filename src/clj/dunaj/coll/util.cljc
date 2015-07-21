@@ -219,7 +219,7 @@
   [requested-type :- (U nil Class+ Type),
    size-hint :- (Maybe Integer+),
    coll :- IRed]
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (if (and (satisfies? IBatchedRed coll)
@@ -295,7 +295,7 @@
 
 (deftype Unpacked
   [coll :- IRed]
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (if (satisfies? IUnpackedRed coll)

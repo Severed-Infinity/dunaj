@@ -139,26 +139,17 @@
                 "Mutable" "Factory"]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  #?(:dunaj
-     (:api bare-ws)
-     :clj
-     (:refer-clojure :exclude
-      [seq reduce when-first contains? first seq? dissoc peek vector?
-       rest reverse disj nthrest sequential? reduced? disj! set? cat
-       conj! pop! reversible? conj transduce map? get empty? second
-       associative? pop dissoc! assoc! ffirst counted? assoc-in nnext
-       nth sorted? update update-in empty not-empty reduced next list?
-       count assoc nthnext coll? get-in satisfies? boolean if-not
-       deftype let -> fn when-not when > defn or zero? nil?
-       extend-protocol not identical? defprotocol loop cond defmacro
-       odd? if-let class == and]))
+  (:refer-clojure :exclude
+   [seq reduce when-first contains? first seq? dissoc peek vector?
+    rest reverse disj nthrest sequential? reduced? disj! set? cat
+    conj! pop! reversible? conj transduce map? get empty? second
+    associative? pop dissoc! assoc! ffirst counted? assoc-in nnext
+    nth sorted? update update-in empty not-empty reduced next list?
+    count assoc nthnext coll? get-in satisfies? boolean if-not
+    deftype let -> fn when-not when > defn or zero? nil?
+    extend-protocol not identical? defprotocol loop cond
+    defmacro odd? if-let class == and])
   (:require
-   #?(:dunaj
-      [clojure.core :refer
-       [extend-protocol satisfies? partition lazy-seq
-        assert str meta with-meta apply gensym cons]]
-      :clj
-      [clojure.dunaj-deftype :refer [satisfies? extend-protocol]])
    [clojure.core.protocols :refer [coll-reduce]]
    [clojure.bootstrap :refer
     [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec
@@ -172,7 +163,8 @@
    [dunaj.state :refer [IReference]]
    [dunaj.flow :refer [if-not cond let when-not when loop if-let]]
    [dunaj.threading :refer [->]]
-   [dunaj.poly :refer [Type deftype defprotocol identical-type?]]))
+   [dunaj.poly :refer [Type deftype defprotocol identical-type?
+                       satisfies? extend-protocol!]]))
 
 
 ;;;; Implementation details
@@ -855,7 +847,7 @@
          (let [~x xs#] ~@body)))))
 
 ;; extend IRed on ISeq for a fallback reduce
-(extend-protocol IRed
+(extend-protocol! IRed
   clojure.lang.IRecord
   (-reduce [this reducef init]
     (-reduce (seq this) reducef init))
@@ -879,7 +871,7 @@
    :predicate 'counted?
    :see '[count full-aware? empty-aware?]
    :on-interface clojure.lang.Counted
-   #?@(:clj [:forbid-extensions true])
+   #?@(:dunaj [] :clj [:forbid-extensions true])
    :category "Features"}
   (-count :- Integer+
     "Returns the size of `_this_`, in constant time."
@@ -1035,7 +1027,7 @@
   [coll :- []]
   (or (nil? coll) (-empty? coll)))
 
-(extend-protocol IEmptyAware
+(extend-protocol! IEmptyAware
   java.lang.Object
   (-empty? [this]
     (if (class-instance? clojure.lang.Counted this)
@@ -1078,7 +1070,7 @@
   [coll :- []]
   (when-not (nil? coll) (-empty coll)))
 
-(extend-protocol IEmptyable
+(extend-protocol! IEmptyable
   java.lang.Object
   (-empty [this] nil))
 
@@ -1170,7 +1162,7 @@
   ([coll :- Any, key :- Any, not-found :- Any]
    (if (nil? coll) not-found (-get coll key not-found))))
 
-(extend-protocol ILookup
+(extend-protocol! ILookup
   java.lang.Object
   (-get [this key not-found]
     (#?(:dunaj clojure.lang.RT/getOrig :clj clojure.lang.RT/get)
@@ -1494,8 +1486,8 @@
   ([coll :- IEditable]
    #?(:dunaj (-edit coll nil) :clj (-edit coll)))
   ([coll :- IEditable, capacity-hint :- (Maybe Integer+)]
-   #?(:clj (when capacity-hint (not-implemented)))
-   #?(:dunaj (-edit coll capacity-hint) :clj (-edit coll)))))
+   #?(:dunaj nil :clj (when capacity-hint (not-implemented)))
+   #?(:dunaj (-edit coll capacity-hint) :clj (-edit coll))))
 
 ;;; Mutable collections
 

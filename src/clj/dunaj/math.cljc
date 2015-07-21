@@ -72,7 +72,8 @@
       :category "Primary"}
      java.lang.Number))
 
-#?(:clj
+#?(:dunaj nil
+   :clj
    (def+ Number+ :- Signature
      "A type signature for numbers.
 
@@ -121,7 +122,8 @@
      (U java.lang.Integer java.lang.Long clojure.lang.BigInt
         java.math.BigInteger java.lang.Short java.lang.Byte)))
 
-#?(:clj
+#?(:dunaj nil
+   :clj
    (def+ Integer+ :- Signature
      "A type signature for integer numbers.
 
@@ -181,7 +183,8 @@
       :category "Primary"}
      (U java.lang.Double java.lang.Float)))
 
-#?(:clj
+#?(:dunaj nil
+   :clj
    (def+ Float+ :- Signature
      "A type signature for floating point numbers.
 

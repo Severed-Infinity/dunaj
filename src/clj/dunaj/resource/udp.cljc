@@ -115,7 +115,7 @@
   (-reduce [this reducef init]
     (-reduce-unpacked
      this #(reducef % (->UdpDatagram %2 %3 %4)) init))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   ICloneable
   (-clone [this] (throw (unsupported-operation)))
   IThreadLocal
@@ -169,7 +169,7 @@
     (ensure-thread-local thread)
     (set! thread new-thread)
     this)
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (ensure-io)

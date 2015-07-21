@@ -84,7 +84,7 @@
    ch :- ISourcePort, non-blocking? :- Boolean+]
   ICloneable
   (-clone [this] (throw (unsupported-operation)))
-  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
+  #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (ensure-io)

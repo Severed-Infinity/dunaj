@@ -23,12 +23,12 @@
   (:refer-clojure :exclude
    [while delay eval if-not when-let if-some let doto when-not when
     force dotimes letfn loop condp cond if-let case comment when-some
-    #?(:clj satisfies?) deftype defn nil? defprotocol defmacro == and
-    or not])
+    #?@(:dunaj [] :clj [satisfies?]) deftype defn nil? defprotocol
+    defmacro == and or not])
   (:require
    [clojure.bootstrap :refer
     [defalias defmacro defprotocol deftype defn v1 replace-var!]]
-   #?(:clj [clojure.dunaj-deftype :refer [satisfies?]])
+   #?@(:dunaj [] :clj [[clojure.dunaj-deftype :refer [satisfies?]]])
    [dunaj.boolean :refer [and or not]]
    [dunaj.type :refer [Macro Fn Va Any]]
    #?(:dunaj [dunaj.host :refer [set!]])

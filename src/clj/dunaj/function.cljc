@@ -43,10 +43,11 @@
   (:refer-clojure :exclude
    [fn? bound-fn juxt comp fnil identity fn trampoline defn memoize
     partial every-pred some-fn apply complement constantly defprotocol
-    #?(:clj satisfies?) conj let meta boolean cond if-let assoc and])
+    #?@(:dunaj [] :clj [satisfies?]) conj let meta boolean cond if-let
+    assoc and])
   (:require
    [clojure.bootstrap :as cb :refer [defalias defprotocol def+ v1]]
-   #?(:clj [clojure.dunaj-deftype :refer [satisfies?]])
+   #?@(:dunaj [] :clj [[clojure.dunaj-deftype :refer [satisfies?]]])
    [dunaj.type :refer [Fn Any AnyFn I U Va Predicate Signature Macro]]
    [dunaj.boolean :refer [Boolean+ and boolean]]
    [dunaj.flow :refer [cond let if-let]]
