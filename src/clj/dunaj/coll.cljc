@@ -139,19 +139,35 @@
                 "Mutable" "Factory"]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  #?(:dunaj
+     (:api bare-ws)
+     :clj
+     (:refer-clojure :exclude
+      [seq reduce when-first contains? first seq? dissoc peek vector?
+       rest reverse disj nthrest sequential? reduced? disj! set? cat
+       conj! pop! reversible? conj transduce map? get empty? second
+       associative? pop dissoc! assoc! ffirst counted? assoc-in nnext
+       nth sorted? update update-in empty not-empty reduced next list?
+       count assoc nthnext coll? get-in satisfies? boolean if-not
+       deftype let -> fn when-not when > defn or zero? nil?
+       extend-protocol not identical? defprotocol loop cond defmacro
+       odd? if-let class == and]))
   (:require
-   [clojure.core :refer [extend-protocol satisfies? partition lazy-seq
-                         assert str meta with-meta apply gensym cons]]
+   #?(:dunaj
+      [clojure.core :refer
+       [extend-protocol satisfies? partition lazy-seq
+        assert str meta with-meta apply gensym cons]]
+      :clj
+      [clojure.dunaj-deftype :refer [satisfies? extend-protocol]])
    [clojure.core.protocols :refer [coll-reduce]]
    [clojure.bootstrap :refer
     [defn replace-var! defalias def+ fn v1 defmacro strip-sigs-vec
      not-implemented]]
    [dunaj.type :refer [Fn Any Va Maybe AnyFn U Signature]]
-   [dunaj.boolean :refer [Boolean boolean and or not]]
-   [dunaj.host :refer [class class-instance? AnyBatch Class]]
+   [dunaj.boolean :refer [Boolean+ boolean and or not]]
+   [dunaj.host :refer [class class-instance? AnyBatch Class+]]
    [dunaj.host.int :refer [iinc i0 iint]]
-   [dunaj.math :refer [Integer > == zero? odd?]]
+   [dunaj.math :refer [Integer+ > == zero? odd?]]
    [dunaj.compare :refer [sentinel nil? identical? defsentinel]]
    [dunaj.state :refer [IReference]]
    [dunaj.flow :refer [if-not cond let when-not when loop if-let]]
@@ -321,8 +337,8 @@
     references and care must be taken to correctly handle
     postponed results returned from underlying collection,
     if the implementation has one."
-    [this item-type :- (U nil Class Type),
-     size-hint :- (Maybe Integer), reducef :- (Fn [Any Any AnyBatch]),
+    [this item-type :- (U nil Class+ Type),
+     size-hint :- (Maybe Integer+), reducef :- (Fn [Any Any AnyBatch]),
      init :- Any]))
 
 (defn ensure-batchable :- IBatchedRed
@@ -382,7 +398,7 @@
 (defn ^:private reduce-batched* :- Any
   ([coll :- [], reducef :- AnyFn, init :- Any]
    (if (nil? coll) init (-reduce-batched coll nil nil reducef init)))
-  ([item-type :- (U nil Class Type), size-hint :- (Maybe Integer),
+  ([item-type :- (U nil Class+ Type), size-hint :- (Maybe Integer+),
     coll :- [], reducef :- AnyFn, init :- Any]
    (if (nil? coll)
        init
@@ -591,7 +607,7 @@
                     #(reduced-advance (advance ret))
                     #(reduced-advance (unsafe-advance! ret)))
          :else (reduced ret)))
-  ([ret :- Any, was-reduced? :- Boolean]
+  ([ret :- Any, was-reduced? :- Boolean+]
    (cond (reduced? ret) ret
          (postponed? ret)
          (postponed
@@ -812,7 +828,7 @@
   when `_n_` is 0."
   {:added v1
    :see '[nthrest next nnext first seq]
-   :tsig (Fn [(Maybe ISeq) [] Integer])
+   :tsig (Fn [(Maybe ISeq) [] Integer+])
    :category "Seqs"})
 
 (defalias nthrest
@@ -820,7 +836,7 @@
   `_n_` is 0."
   {:added v1
    :see '[nthnext rest first seq]
-   :tsig (Fn [ISeq [] Integer])
+   :tsig (Fn [ISeq [] Integer+])
    :category "Seqs"})
 
 (defmacro when-first
@@ -863,13 +879,14 @@
    :predicate 'counted?
    :see '[count full-aware? empty-aware?]
    :on-interface clojure.lang.Counted
+   #?@(:clj [:forbid-extensions true])
    :category "Features"}
-  (-count :- Integer
+  (-count :- Integer+
     "Returns the size of `_this_`, in constant time."
     {:on 'count}
     [this]))
 
-(defn count :- Integer
+(defn count :- Integer+
   "Returns the size of a collection `_coll_`."
   {:added v1
    :see '[empty? full? counted? several? single?]
@@ -877,16 +894,20 @@
   [coll :- []]
   (cond (class-instance? clojure.lang.Counted coll)
         (.count ^clojure.lang.Counted coll)
-        (satisfies? ICounted coll) (-count coll)
+        #?@(:dunaj
+            [(satisfies? ICounted coll) (-count coll)]
+            :clj
+            [(class-instance? java.lang.CharSequence coll)
+             (.length ^java.lang.CharSequence coll)])
         ;; reduce is faster than c.c.count on seqs
         :else (reduce (fn [ret _] (iinc ret)) (i0) coll)))
 
 ;; c.c.count is patched to support ICounted extensions in c.l.RT
 ;; Support ICounted in old code, slower but supports protocol
 ;; extensions
-(replace-var! clojure.core/counted?)
+#?(:dunaj (replace-var! clojure.core/counted?))
 
-(defn several? :- Boolean
+(defn several? :- Boolean+
   "Returns `true` if `_coll_` contains more than one item, returns
   `false` otherwise."
   {:added v1
@@ -895,7 +916,7 @@
   [coll :- []]
   (> (count coll) 1))
 
-(defn single? :- Boolean
+(defn single? :- Boolean+
   "Returns `true` if `_coll_` contains exactly one item,
   returns `false` otherwise."
   {:added v1
@@ -904,7 +925,7 @@
   [coll :- []]
   (== (count coll) 1))
 
-(defn double? :- Boolean
+(defn double? :- Boolean+
   "Returns `true` if `_coll_` contains exactly two items,
   returns `false` otherwise."
   {:added v1
@@ -913,7 +934,7 @@
   [coll :- []]
   (== (count coll) 2))
 
-(defn triple? :- Boolean
+(defn triple? :- Boolean+
   "Returns `true` if `_coll_` contains exactly three items,
   returns `false` otherwise."
   {:added v1
@@ -922,7 +943,7 @@
   [coll :- []]
   (== (count coll) 3))
 
-(defn quad? :- Boolean
+(defn quad? :- Boolean+
   "Returns `true` if `_coll_` contains exactly four items,
   returns `false` otherwise."
   {:added v1
@@ -931,7 +952,7 @@
   [coll :- []]
   (== (count coll) 4))
 
-(defn quint? :- Boolean
+(defn quint? :- Boolean+
   "Returns `true` if `_coll_` contains exactly five items,
   returns `false` otherwise."
   {:added v1
@@ -948,11 +969,11 @@
    :see '[capped?]
    :category "Features"
    :predicate 'full-aware?}
-  (-full? :- Boolean
+  (-full? :- Boolean+
     "Returns `true` if `_this_` is full."
     [this]))
 
-(defn full? :- Boolean
+(defn full? :- Boolean+
   "Returns `true` if `_coll_` satisfies `IFullAware` protocol and is
   full, otherwise returns `false`. Full collections (usually)
   don't accept new items and they throw on `conj`."
@@ -968,11 +989,11 @@
    :see '[capacity brimming?]
    :category "Features"
    :predicate 'capped?}
-  (-capacity :- Integer
+  (-capacity :- Integer+
     "Returns capacity of a given `_this_`."
     [this]))
 
-(defn capacity :- Integer
+(defn capacity :- Integer+
   "Returns capacity of a given capped `_coll_`."
   {:added v1
    :see '[brimming? count capped? full?]
@@ -980,7 +1001,7 @@
   [coll :- ICapped]
   (-capacity coll))
 
-(defn brimming? :- Boolean
+(defn brimming? :- Boolean+
   "Returns `true` if `_coll_` is capped and the number of items in it
   equals to its capacity, otherwise returns `false`. Note that this
   is not equal to calling `full?`, as `full?` additionally
@@ -1001,11 +1022,11 @@
   "A value protocol for collections that can be empty."
   {:added v1
    :see '[empty?]}
-  (-empty? :- Boolean
+  (-empty? :- Boolean+
     "Returns `true` if `_this_` is `nil` or has no items."
     [this]))
 
-(defn empty? :- Boolean
+(defn empty? :- Boolean+
   "Returns `true` if `_coll_` is `nil` or has no items, returns
   `false` otherwise."
   {:added v1
@@ -1024,7 +1045,7 @@
 ;; Support IEmptyAware in old code
 (replace-var! clojure.core/empty?)
 
-(defn not-empty? :- Boolean
+(defn not-empty? :- Boolean+
   "Returns `true` if `_coll_` is not empty, returns `false`
   otherwise."
   {:added v1
@@ -1114,7 +1135,7 @@
    :see '[contains? get]
    :category "Features"
    :predicate 'lookup?}
-  (-contains? :- Boolean
+  (-contains? :- Boolean+
     "Returns `true` if `_this_` collection contains an entry with a
     given `_key_`."
     [this key :- Any])
@@ -1125,7 +1146,7 @@
     (e.g. in multimaps or bags)."
     [this key :- Any, not-found :- Any]))
 
-(defn contains? :- Boolean
+(defn contains? :- Boolean+
   "Returns `true` if `_coll_` contains entry with a given `_key_`.
   Returns `false` if `_coll_` is `nil`."
   {:added v1
@@ -1152,7 +1173,8 @@
 (extend-protocol ILookup
   java.lang.Object
   (-get [this key not-found]
-    (clojure.lang.RT/getOrig this key not-found))
+    (#?(:dunaj clojure.lang.RT/getOrig :clj clojure.lang.RT/get)
+       this key not-found))
   clojure.lang.IRecord
   (-contains? [this key] (clojure.core/contains? this key))
   (-get [this key not-found] (clojure.core/get this key not-found)))
@@ -1195,7 +1217,7 @@
     "Returns item at `_index_` position, or returns `_not-found_`
     if position is out of bounds."
     {:on 'nth}
-    [this index :- Integer not-found :- Any]))
+    [this index :- Integer+ not-found :- Any]))
 
 (defn nth :- Any
   "Returns item at `_index_` position, or returns `_not-found_`
@@ -1205,14 +1227,14 @@
   {:added v1
    :see '[get get-in contains? indexed?]
    :category "Features"}
-  ([coll :- [], index :- Integer]
+  ([coll :- [], index :- Integer+]
    (when-not (nil? coll)
      (let [nothing (sentinel)
            r (nth coll index nothing)]
        (if (identical? r nothing)
          (throw (java.lang.IndexOutOfBoundsException.))
          r))))
-  ([coll :- [], index :- Integer, not-found :- Any]
+  ([coll :- [], index :- Integer+, not-found :- Any]
    (if (nil? coll) not-found (-nth coll index not-found))))
 
 ;; c.c.nth is patched to support ILookup in c.l.RT
@@ -1315,14 +1337,14 @@
   (-key :- Any
     "Returns a key (from `_item_`) that is used to sort `_this_`."
     [this item :- Any])
-  (-ascending? :- Boolean
+  (-ascending? :- Boolean+
     "Returns `true` if `_this_` is sorted in ascending order with
     regards to the comparator used for sorting, otherwise returns
     `false`. Users should use `flip` function to change the order
     of sorting."
     [this]))
 
-(defn ascending? :- Boolean
+(defn ascending? :- Boolean+
   "Returns `true` if `_coll_` is sorted in ascending order, otherwise
    returns `false`. Throws if collection is not sorted."
   {:added v1
@@ -1378,7 +1400,7 @@
     of similar type and will share underlying data with `_this_` and
     thus will hold onto all original items. Operation is constant
     time though. Returned collection does not have to be persistent."
-    [this begin :- Integer, end :- Integer]))
+    [this begin :- Integer+, end :- Integer+]))
 
 (defprotocol ISortedSectionable
   "Value protocol for sorted sectionable collections."
@@ -1427,12 +1449,12 @@
    :see '[item-type]
    :category "Features"
    :predicate 'homogeneous?}
-  (-item-type :- (U nil Class Type)
+  (-item-type :- (U nil Class+ Type)
     "Returns type of items in `_this_` homogeneous collection. Returns
     `nil` if `_this_` can produce items of any requested type."
     [this]))
 
-(defn item-type :- (U nil Class Type)
+(defn item-type :- (U nil Class+ Type)
   "Returns type of items in `_coll_` homogeneous collection. Returns
   `nil` if `_coll_` can produce items of any requested type.
   Throws if `_coll_` is not homogeneous."
@@ -1458,7 +1480,7 @@
     This operation must be (amortized) constant time if `_this_`
     is a persistent collection."
     {:on 'asTransient}
-    [this capacity-hint :- (Maybe Integer)]))
+    #?(:dunaj [this capacity-hint :- (Maybe Integer+)] :clj [this])))
 
 ;; c.l.IEditableCollection is patched to support two arg version
 
@@ -1470,9 +1492,10 @@
    :see '[settle! editable?]
    :category "Features"}
   ([coll :- IEditable]
-   (-edit coll nil))
-  ([coll :- IEditable, capacity-hint :- (Maybe Integer)]
-   (-edit coll capacity-hint)))
+   #?(:dunaj (-edit coll nil) :clj (-edit coll)))
+  ([coll :- IEditable, capacity-hint :- (Maybe Integer+)]
+   #?(:clj (when capacity-hint (not-implemented)))
+   #?(:dunaj (-edit coll capacity-hint) :clj (-edit coll)))))
 
 ;;; Mutable collections
 
@@ -1749,7 +1772,7 @@
    :on-interface clojure.lang.Sequential
    :forbid-extensions true})
 
-(defn sequential? :- Boolean
+(defn sequential? :- Boolean+
   "Returns `true` if `_x_` is a sequential collection as defined by
   the `ISequential` protocol, or if `_x_` is a host sequential
   collection. Returns `false` otherwise."

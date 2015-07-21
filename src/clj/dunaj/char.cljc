@@ -25,11 +25,12 @@
   {:categories ["Primary" "Predicates" "Operations"]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [char? char unchecked-char deftype let defn or and])
   (:require
    [clojure.bootstrap :refer [defn defalias v1]]
    [dunaj.type :refer [Maybe Any AnyFn Fn U Predicate]]
-   [dunaj.boolean :refer [Boolean and or]]
+   [dunaj.boolean :refer [Boolean+ and or]]
    [dunaj.host.int :refer [iint i== i<= i32 iLF iCR]]
    [dunaj.math :refer [INumerical]]
    [dunaj.compare :refer [IComparable]]
@@ -77,7 +78,7 @@
         truncation."
    :see '[char dunaj.math/num]})
 
-(defn whitespace? :- Boolean
+(defn whitespace? :- Boolean+
   "Returns `true` if `_c_` is an ASCII whitespace or control
   character, `false` otherwise."
   {:added v1
@@ -86,7 +87,7 @@
   [c :- Char]
   (i<= (iint c) (i32)))
 
-(defn newline? :- Boolean
+(defn newline? :- Boolean+
   "Returns `true` if `_c_` is an ASCII newline character,
   `false` otherwise."
   {:added v1
@@ -95,7 +96,7 @@
   [c :- Char]
   (let [i (iint c)] (or (i== i (iLF)) (i== i (iCR)))))
 
-(defn lower-case? :- Boolean
+(defn lower-case? :- Boolean+
   "Returns `true` if `_c_` is in lower case, `false` otherwise."
   {:added v1
    :category "Predicates"
@@ -103,7 +104,7 @@
   [c :- Char]
   (java.lang.Character/isLowerCase c))
 
-(defn upper-case? :- Boolean
+(defn upper-case? :- Boolean+
   "Returns `true` if `_c_` is in upper case, `false` otherwise."
   {:added v1
    :category "Predicates"

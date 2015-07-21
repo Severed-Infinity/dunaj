@@ -31,7 +31,7 @@
   `nil` rather than `empty-list`."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude [first deftype])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.feature :refer [IMeta IPersistentMeta]]

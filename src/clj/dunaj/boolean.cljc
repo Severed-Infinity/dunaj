@@ -48,9 +48,9 @@
      "See also <<dunaj.bit.api.ad#Logic, bitwise logic operators>>."]]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [boolean or not true? false? and deftype let fn defn defmacro])
   (:require
-   [clojure.core :refer [seq first inc rest odd? cons]]
    [clojure.bootstrap :refer
     [defalias deftype defmacro v1 defn let fn]]
    [dunaj.type :refer [Fn Any Predicate Macro Va]]))
@@ -58,37 +58,55 @@
 
 ;;;; Public API
 
-(deftype Boolean
-  "A boolean type, which has two values, `true` and `false`.
+#?(:dunaj
+   (deftype Boolean
+     "A boolean type, which has two values, `true` and `false`.
 
-  [NOTE]
-  --
-  JVM host specific: `false` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#FALSE[`Boolean/FALSE`]
-  and `true` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#TRUE[`Boolean/TRUE`]
-  --
+     [NOTE]
+     --
+     JVM host specific: `false` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#FALSE[`Boolean/FALSE`]
+     and `true` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#TRUE[`Boolean/TRUE`]
+     --
 
-  WARNING: This type is not available in Dunaj lite,
-  please use `Boolean+` instead."
-  {:added v1
-   :predicate 'boolean?
-   :category "Primary"
-   :see '[boolean false? true? Boolean+]}
-  java.lang.Boolean)
+     WARNING: This type is not available in Dunaj lite,
+     please use `Boolean+` instead."
+     {:added v1
+      :predicate 'boolean?
+      :category "Primary"
+      :see '[boolean false? true? Boolean+]}
+     java.lang.Boolean))
 
-(deftype Boolean+
-  "A boolean type, which has two values, `true` and `false`.
+#?(:dunaj
+   (deftype Boolean+
+     "A boolean type, which has two values, `true` and `false`.
 
-  TIP: Identical to `Boolean` type, meant to be used in Dunaj lite.
+     TIP: Identical to `Boolean` type, meant to be used in Dunaj lite.
 
-  [NOTE]
-  --
-  JVM host specific: `false` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#FALSE[`Boolean/FALSE`]
-  and `true` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#TRUE[`Boolean/TRUE`]
-  --"
-  {:added v1
-   :category "Primary"
-   :see '[boolean false? true? Boolean]}
-  java.lang.Boolean)
+     [NOTE]
+     --
+     JVM host specific: `false` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#FALSE[`Boolean/FALSE`]
+     and `true` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#TRUE[`Boolean/TRUE`]
+     --"
+     {:added v1
+      :category "Primary"
+      :see '[boolean false? true? Boolean]}
+     java.lang.Boolean)
+   :clj
+   (deftype Boolean+
+     "A boolean type, which has two values, `true` and `false`.
+
+     TIP: Identical to `Boolean` type, meant to be used in Dunaj lite.
+
+     [NOTE]
+     --
+     JVM host specific: `false` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#FALSE[`Boolean/FALSE`]
+     and `true` is identical to http://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html#TRUE[`Boolean/TRUE`]
+     --"
+     {:added v1
+      :predicate 'boolean?
+      :category "Primary"
+      :see '[boolean false? true?]}
+     java.lang.Boolean))
 
 (defalias boolean
   "Returns `_x_` coerced to `Boolean` type, by returning `false` if
@@ -99,7 +117,7 @@
   {:added v1
    :tsig (Fn [Boolean Any])
    :category "Primary"
-   :see '[Boolean boolean? true? false?]})
+   :see '[Boolean+ boolean? true? false?]})
 
 ;;; Value predicates
 
@@ -127,7 +145,7 @@
 
 (defalias not
   {:added v1
-   :tsig (Fn [Boolean Any])
+   :tsig (Fn [Boolean+ Any])
    :category "Logic"
    :see '[dunaj.bit/not dunaj.host.int/inot]
    :doc "Returns `true` if `_x_` is logical false (`nil` or `false`),
@@ -272,7 +290,7 @@
   |==="
   {:added v1
    ;; TODO: inline for better primitive support
-   :tsig (Fn [Boolean] [Boolean Any] [Boolean Any Any])
+   :tsig (Fn [Boolean+] [Boolean+ Any] [Boolean+ Any Any])
    :category "Logic"
    :see '[nor or]}
   ([] true)
@@ -305,45 +323,47 @@
 (clojure.core/require
  '[clojure.bootstrap :refer [assert-boolean assert-primitive]])
 
-(assert-boolean
- (boolean? "foo")
- (boolean? true)
- (boolean? 3)
- (boolean "foo")
- (boolean 5)
- (boolean true)
- (boolean nil)
- (false? nil)
- (false? true)
- (true? nil)
- (true? false)
- (not nil)
- (not false)
- (not true)
- (not 'f)
- (not 5)
- (and)
- (and true false true)
- (or true false true)
- (nand 3 false false nil)
- (nor nil false nil))
+#?(:dunaj
+   (assert-boolean
+    (boolean? "foo")
+    (boolean? true)
+    (boolean? 3)
+    (boolean "foo")
+    (boolean 5)
+    (boolean true)
+    (boolean nil)
+    (false? nil)
+    (false? true)
+    (true? nil)
+    (true? false)
+    (not nil)
+    (not false)
+    (not true)
+    (not 'f)
+    (not 5)
+    (and)
+    (and true false true)
+    (or true false true)
+    (nand 3 false false nil)
+    (nor nil false nil)))
 
-(assert-primitive
- (boolean? "foo")
- (boolean? true)
- (boolean 5)
- (boolean true)
- (boolean nil)
- (false? nil)
- (false? true)
- (true? nil)
- (true? false)
- (not nil)
- (not false)
- (not true)
- (not 5)
- (and)
- ;; (and true false true) ;; issues with AOT
- ;; (or true false true) ;; issues with AOT
- (nand 3 false 'foo nil)
- (nor nil false 'foo nil))
+#?(:dunaj
+   (assert-primitive
+    (boolean? "foo")
+    (boolean? true)
+    (boolean 5)
+    (boolean true)
+    (boolean nil)
+    (false? nil)
+    (false? true)
+    (true? nil)
+    (true? false)
+    (not nil)
+    (not false)
+    (not true)
+    (not 5)
+    (and)
+    ;; (and true false true) ;; issues with AOT
+    ;; (or true false true) ;; issues with AOT
+    (nand 3 false 'foo nil)
+    (nor nil false 'foo nil)))

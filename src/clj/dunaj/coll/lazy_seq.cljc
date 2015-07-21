@@ -18,7 +18,7 @@
   "A Lazy seq type."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude [lazy-cat lazy-seq deftype])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Macro]]

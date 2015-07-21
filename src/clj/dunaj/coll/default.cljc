@@ -17,12 +17,13 @@
   collection types."
   {:categories ["Primary" "Empty collections" "Factories"]
    :authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [set zipmap vec sorted-set sorted-set-by cons defn assoc defrecord
+    sequence])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Maybe Fn I U]]
-   [dunaj.host :refer [Class]]
-   [dunaj.math :refer [Integer]]
+   [dunaj.host :refer [Class+]]
    [dunaj.poly :refer [Type defrecord]]
    [dunaj.coll :refer
     [ICollectionFactory ISorted IConvolutionFactory IRed
@@ -298,7 +299,7 @@
   {:added v1
    :category "Primary"
    :see '[->vec-of empty-vec-of vec-factory-of]}
-  [t :- (U nil Class Type Keyword), coll :- []]
+  [t :- (U nil Class+ Type Keyword), coll :- []]
   (-from-coll (vec-factory-of t) coll))
 
 (defn ->vec-of :- (I IHomogeneous IPersistentVector)
@@ -307,18 +308,18 @@
   {:added v1
    :category "Primary"
    :see '[vec-of empty-vec-of vec-factory-of]}
-  ([t :- (U nil Class Type Keyword)]
+  ([t :- (U nil Class+ Type Keyword)]
    (-from-items (vec-factory-of t)))
-  ([t :- (U nil Class Type Keyword), a :- Any]
+  ([t :- (U nil Class+ Type Keyword), a :- Any]
    (-from-items (vec-factory-of t) a))
-  ([t :- (U nil Class Type Keyword), a :- Any, b :- Any]
+  ([t :- (U nil Class+ Type Keyword), a :- Any, b :- Any]
    (-from-items (vec-factory-of t) a b))
-  ([t :- (U nil Class Type Keyword), a :- Any, b :- Any, c :- Any]
+  ([t :- (U nil Class+ Type Keyword), a :- Any, b :- Any, c :- Any]
    (-from-items (vec-factory-of t) a b c))
-  ([t :- (U nil Class Type Keyword), a :- Any, b :- Any, c :- Any,
+  ([t :- (U nil Class+ Type Keyword), a :- Any, b :- Any, c :- Any,
     d :- Any]
    (-from-items (vec-factory-of t) a b c d))
-  ([t :- (U nil Class Type Keyword), a :- Any, b :- Any, c :- Any,
+  ([t :- (U nil Class+ Type Keyword), a :- Any, b :- Any, c :- Any,
     d :- Any & more :- Any]
    (-from-items (vec-factory-of t) a b c d more)))
 

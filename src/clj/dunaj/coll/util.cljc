@@ -20,16 +20,24 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Iterations" "Reducers" "Maps" "Walk"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [sort-by every? butlast doall last sort dorun merge-with shuffle
+    doseq into group-by not-every? some select-keys merge for
+    frequencies sequence not-any? macroexpand seq reduce contains?
+    satisfies? first seq? vector? dec rest reverse comp if-not
+    deftype set? cat conj! reversible? conj transduce let map?
+    identity meta fn empty? key string? when-not when keyword? defn
+    pop or name nth nil? val not empty loop object-array cond reduced
+    defmacro keyword next if-let to-array == count apply assoc and
+    coll?])
   (:require
-   [clojure.core :refer [lazy-seq cons]]
    [clojure.bootstrap :refer [v1 not-implemented]]
    [clojure.set]
    [dunaj.type :refer [U Maybe Any AnyFn Fn Va Predicate Macro]]
-   [dunaj.boolean :refer [Boolean and or not]]
-   [dunaj.host :refer [Class class-instance?]]
+   [dunaj.boolean :refer [Boolean+ and or not]]
+   [dunaj.host :refer [Class+ class-instance?]]
    [dunaj.host.int :refer [Int iint iinc izero? ipos? idec iloop]]
-   [dunaj.math :refer [Integer == dec]]
+   [dunaj.math :refer [Integer+ == dec]]
    [dunaj.compare :refer [nil? natural-comparator defsentinel]]
    [dunaj.flow :refer [cond let when if-let when-not loop if-not]]
    [dunaj.feature :refer [assoc-meta meta]]
@@ -208,9 +216,10 @@
   clojure.core/reverse)
 
 (deftype Batched
-  [requested-type :- (U nil Class Type),
-   size-hint :- (Maybe Integer),
+  [requested-type :- (U nil Class+ Type),
+   size-hint :- (Maybe Integer+),
    coll :- IRed]
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (if (and (satisfies? IBatchedRed coll)
@@ -225,10 +234,10 @@
    :category "Reducers"}
   ([coll :- IRed]
    (batched nil nil coll))
-  ([requested-type :- (U nil Class Type), coll :- IRed]
+  ([requested-type :- (U nil Class+ Type), coll :- IRed]
    (batched requested-type nil coll))
-  ([requested-type :- (U nil Class Type),
-    size-hint :- (Maybe Integer),
+  ([requested-type :- (U nil Class+ Type),
+    size-hint :- (Maybe Integer+),
     coll :- IRed]
    (->Batched requested-type size-hint coll)))
 
@@ -250,11 +259,11 @@
    (reduce-batched nil nil reducef (reducef) coll))
   ([reducef :- AnyFn, init :- Any, coll :- IRed]
    (reduce-batched nil nil reducef init coll))
-  ([requested-type :- (U nil Class Type),
+  ([requested-type :- (U nil Class+ Type),
     reducef :- AnyFn, init :- Any, coll :- IRed]
    (reduce-batched requested-type nil reducef init coll))
-  ([requested-type :- (U nil Class Type),
-    size-hint :- (Maybe Integer),
+  ([requested-type :- (U nil Class+ Type),
+    size-hint :- (Maybe Integer+),
     reducef :- AnyFn, init :- Any, coll :- IRed]
    (strip-reduced
     (if (and (satisfies? IBatchedRed coll)
@@ -273,19 +282,20 @@
   ([combinef :- AnyFn, reducef :- AnyFn, coll :- IFoldable]
    (fold-batched* coll nil nil @default-fold-pool
                   @default-fold-size combinef reducef))
-  ([requested-type :- (U nil Class Type),
-    size-hint :- (Maybe Integer),
+  ([requested-type :- (U nil Class+ Type),
+    size-hint :- (Maybe Integer+),
     combinef :- AnyFn, reducef :- AnyFn, coll :- IFoldable]
    (fold-batched* coll requested-type size-hint @default-fold-pool
                   @default-fold-size combinef reducef))
-  ([requested-type :- (U nil Class Type),
-    size-hint :- (Maybe Integer), n :- Integer,
+  ([requested-type :- (U nil Class+ Type),
+    size-hint :- (Maybe Integer+), n :- Integer+,
     combinef :- AnyFn, reducef :- AnyFn, coll :- IFoldable]
    (fold-batched* coll requested-type size-hint @default-fold-pool
                   n combinef reducef)))
 
 (deftype Unpacked
   [coll :- IRed]
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (if (satisfies? IUnpackedRed coll)
@@ -327,11 +337,11 @@
   ([combinef :- AnyFn, reducef :- AnyFn, coll :- IFoldable]
    (fold-unpacked* coll @default-fold-pool @default-fold-size
                    combinef reducef))
-  ([n :- Integer,
+  ([n :- Integer+,
     combinef :- AnyFn, reducef :- AnyFn, coll :- IFoldable]
    (fold-unpacked* coll @default-fold-pool n combinef reducef)))
 
-(defn every? :- Boolean
+(defn every? :- Boolean+
   "Returns `true` if every item of `_coll_` satisfies `_pred_`,
   otherwise returns `false`."
   {:added v1
@@ -353,7 +363,7 @@
   "Returns `true` if no item from `_coll_` satisfies `_pred_`,
   otherwise returns `false`."
   {:added v1
-   :tsig (Fn [Boolean AnyFn []])
+   :tsig (Fn [Boolean+ AnyFn []])
    :arglists '([pred coll])
    :category "Primary"
    :see '[some every? not-every?]}
@@ -363,7 +373,7 @@
   "Returns `true` if at least one item from `_coll_` does not satisfy
   `_pred_`, otherwise returns `false`."
   {:added v1
-   :tsig (Fn [Boolean AnyFn []])
+   :tsig (Fn [Boolean+ AnyFn []])
    :arglists '([pred coll])
    :category "Primary"
    :see '[some not-any? every?]}
@@ -377,7 +387,7 @@
    :see '[doall doseq dored for]}
   ([coll :- []]
    (dorun nil coll))
-  ([n :- (Maybe Integer), coll :- []]
+  ([n :- (Maybe Integer+), coll :- []]
    (if n
      (reduce #(if (izero? %) (reduced %2) (idec %)) (iint n) coll)
      (reduce nop coll))
@@ -391,7 +401,7 @@
    :see '[dorun doseq dored for]}
   ([coll :- []]
    (doall nil coll))
-  ([n :- (Maybe Integer), coll :- []]
+  ([n :- (Maybe Integer+), coll :- []]
    (let [s (seq coll)]
      (if n
        (iloop [s s, n (iint n)]

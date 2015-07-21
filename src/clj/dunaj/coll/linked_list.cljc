@@ -32,7 +32,9 @@
   namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [reduce first reverse reduced? deftype conj! reversible? conj let
+    fn counted? reify cond next count defrecord])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [I]]
@@ -100,9 +102,9 @@
   collections."
   (reify
     IEditable
-    (-edit [this capacity-hint]
+    (-edit [this #?(:dunaj capacity-hint)]
       (->ReversedListBuilder
-       (edit empty-bvt-vector capacity-hint)))))
+       (edit empty-bvt-vector #?(:dunaj capacity-hint))))))
 
 ;;; Factory
 
@@ -114,7 +116,8 @@
     (cond (class-instance? clojure.lang.PersistentList coll) coll
           (reversible? coll) (reduce conj empty-list (reverse coll))
           :else (let [tv (if (counted? coll)
-                           (edit empty-bvt-vector (count coll))
+                           (edit empty-bvt-vector
+                                 #?(:dunaj (count coll)))
                            (edit empty-bvt-vector))
                       vec (settle! (reduce conj! tv coll))]
                   (reduce conj empty-list (reverse vec)))))

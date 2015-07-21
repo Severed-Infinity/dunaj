@@ -27,7 +27,9 @@
   rather than ones in this namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce first reverse reduced? deftype when-let reversible?
+    conj let doto fn defn nil? loop cond next count apply defrecord])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.host :refer [class-instance?]]
@@ -76,8 +78,13 @@
   IPersistentMeta
   IRed
   (-reduce [this reducef init]
-    (let [af (advance-fn [ret] (reduce* (.-r this) reducef ret))]
-      (af (reduce* (.-f this) reducef init))))
+    #?(:dunaj
+       (let [af (advance-fn [ret] (reduce* (.-r this) reducef ret))]
+         (af (reduce* (.-f this) reducef init)))
+       :clj
+       (let [af (advance-fn [ret]
+                            (reduce* (get-br this) reducef ret))]
+         (af (reduce* (get-bf this) reducef init)))))
   ISeqable
   ICounted
   IEmptyable
@@ -121,10 +128,13 @@
   ICollectionFactory
   (-from-coll [factory coll]
     ;; use coll as a rear seq
-    (let [s (if (class-instance? clojure.lang.Seqable coll)
-              coll
-              (seq coll))]
-      (clojure.lang.PersistentQueue/createFromColl nil s)))
+    #?(:dunaj
+       (let [s (if (class-instance? clojure.lang.Seqable coll)
+                 coll
+                 (seq coll))]
+         (clojure.lang.PersistentQueue/createFromColl nil s))
+       :clj
+       (invoke-qc nil (count coll) (seq coll))))
   (-from-items [factory] empty-batched-queue)
   (-from-items [factory a] (conj empty-batched-queue a))
   (-from-items [factory a b] (conj empty-batched-queue a b))

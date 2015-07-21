@@ -42,7 +42,10 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright
    "2012, 2015, Michał Marczyk, Rich Hickey and Clojure contributors"}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce first aget = dec < if-not neg? reduced? deftype conj!
+    conj let doto meta fn empty? hash when > defn or counted? zero?
+    nil? not >= loop integer? cond inc next == count and])
   (:require
    [clojure.core.rrb-vector]
    [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
@@ -142,11 +145,13 @@
     (or (ineg? i) (i>= i (.count vec))) (throw (index-out-of-bounds))
     :let [am :- clojure.core.ArrayManager (.-am vec)
           nm :- clojure.core.rrb_vector.nodes.NodeManager (.-nm vec)
-          shift (._shift vec)
-          tail-off (isub (.count vec) (.alength am (._tail vec)))]
+          shift #?(:dunaj (._shift vec) :clj (get-rshift vec))
+          tail #?(:dunaj (._tail vec) :clj (get-rtail vec))
+          tail-off (isub (.count vec) (.alength am tail))]
     (i<= tail-off i) (isub i tail-off)
     :else
-    (iloop [i i, node (._root vec), shift shift]
+    (iloop [i i, node #?(:dunaj (._root vec) :clj (get-rroot vec)),
+            shift shift]
       (if (or (izero? shift) (.regular nm node))
         (iand i (i31))
         (let [arr :- AnyArray (.array nm node)

@@ -42,12 +42,14 @@
   CAUTION: There are no synchronization guarantees for buffer types,
   use them with care!"
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [boolean < reduced? deftype pop! let fn empty? when-not when defn
+    declare or nil? not defprotocol cond ex-info count and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn U Maybe]]
-   [dunaj.boolean :refer [Boolean not or and boolean]]
-   [dunaj.host :refer [ArrayManager AnyArray Class provide-class]]
+   [dunaj.boolean :refer [Boolean+ not or and boolean]]
+   [dunaj.host :refer [ArrayManager AnyArray Class+ provide-class]]
    [dunaj.host.int :refer [Int iint iadd isub i>= ipos? i> i== i0
                            izero? iinc idec inpos? i< i2 imul]]
    [dunaj.math :refer [<]]
@@ -105,6 +107,7 @@
                           (let [ni (iinc i)]
                             (if (i== ni al) (i0) ni))))))]
       (af init begin)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this]
     (if (i> begin end)

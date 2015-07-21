@@ -31,13 +31,18 @@
   rather than ones in this namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce contains? first peek aget = boolean dec < delay neg?
+    reduced? deftype when-let <= if-some conj! conj let -> get doto
+    meta fn empty? hash quot when-not when second > defn mod declare
+    assoc! or counted? zero? nil? not identical? empty / >= loop
+    integer? cond reduced proxy inc if-let to-array == count apply
+    assoc defrecord constantly and])
   (:require
-   [clojure.core :refer [take-while]]
    [clojure.bootstrap :refer [v1 not-implemented]]
-   [clojure.bridge]
+   #?(:dunaj [clojure.bridge])
    [dunaj.type :refer [Any Fn I Va Maybe AnyFn]]
-   [dunaj.boolean :refer [Boolean boolean and or not]]
+   [dunaj.boolean :refer [Boolean+ boolean and or not]]
    [dunaj.host :refer
     [AnyArray ArrayManager class-instance? proxy]]
    [dunaj.host.int :refer
@@ -101,7 +106,7 @@
 
 (declare flipped-rbt-sorted-set rbt-sorted-set-section)
 
-(defn ^:private range-check :- Boolean
+(defn ^:private range-check :- Boolean+
   [comparator :- java.util.Comparator key ascending? begin end]
   (if ascending?
     (and (or (nil? begin) (npos? (.compare comparator begin key)))
@@ -113,7 +118,7 @@
 
 (deftype RbtSortedSetSection
   "Red black tree sorted set section type. Not persistent!"
-  [coll :- clojure.lang.PersistentTreeSet, ascending? :- Boolean,
+  [coll :- clojure.lang.PersistentTreeSet, ascending? :- Boolean+,
    begin :- Any, end :- Any, ^:volatile-mutable hash :- Int,
    ^:volatile-mutable hash-code :- Int,
    ^:volatile-mutable count :- Int]

@@ -26,11 +26,12 @@
   `<<dunaj.coll.spi.ad#IStacked,IStacked>>` seq."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [cons reduced? deftype let fn defn loop cond])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn]]
-   [dunaj.boolean :refer [Boolean]]
+   [dunaj.boolean :refer [Boolean+]]
    [dunaj.host :refer [class-instance?]]
    [dunaj.host.int :refer [Int iint isub i== i0 iinc]]
    [dunaj.flow :refer [loop let cond]]
@@ -47,7 +48,7 @@
 
 ;;;; Implementation details
 
-(defn ^:private cons? :- Boolean
+(defn ^:private cons? :- Boolean+
   [x :- Any]
   (class-instance? clojure.lang.Cons x))
 

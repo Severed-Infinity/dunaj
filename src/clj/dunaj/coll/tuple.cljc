@@ -50,11 +50,13 @@
   rear of the collection."
   {:categories ["Primary" "Pairs"]
    :authors ["Jozef Wagner" "Zachary Tellman"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [key val seq seq? aget = dec < delay neg? reduced? deftype when-let
+    <= conj! let -> meta fn empty? hash quot when > defn symbol mod
+    declare assoc! or counted? zero? nil? not identical? empty >= loop
+    integer? condp gensym cond partial defmacro inc next case list? ==
+    count apply assoc compare defrecord and symbol? ->> coll?])
   (:require
-   [clojure.core :refer
-    [map pr-str interpose re-find list vec doall range mapcat last
-     butlast into reduce first second]]
    [clojure.bootstrap :refer [v1]]
    [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
    [dunaj.type :refer [Any]]
@@ -292,10 +294,10 @@
             (-section ~to-vec begin## end##))
           ISequential
           IEditable
-          (-edit [this## capacity-hint##]
+          (-edit [this## #?(:dunaj capacity-hint##)]
             ;; TODO: more efficient transients
             (-> empty-bvt-vector
-                (edit capacity-hint##)
+                (edit #?(:dunaj capacity-hint##))
                 ~@(map (fn [x] `(conj! ~x)) fields)))
           IPersistentCollection
           (-conj [this## val##] ~conj-tuple)
@@ -347,8 +349,8 @@
           (nth [this## i##] ~(lookup `(iint i##)))
           clojure.lang.Reversible
           (rseq [this##] (seq (-reverse this##)))
-          clojure.lang.IEditableCollection
-          (asTransient [this##] (-edit this## nil))
+          #?@(:dunaj [clojure.lang.IEditableCollection
+                      (asTransient [this##] (-edit this## nil))])
           clojure.lang.Associative
           (containsKey [this## key##] (-contains? this## key##))
           clojure.lang.IPersistentVector

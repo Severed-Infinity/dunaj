@@ -33,7 +33,12 @@
   * Conversion to persistent set: `<<dunaj.coll.api.ad#conj,conj>>`
     and `<<dunaj.coll.api.ad#disj,disj>>`"
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce contains? first atom peek = rest if-not reduced?
+    deftype when-let conj! conj let get meta fn empty? hash key
+    when-not when second defn assoc! or reset! counted? nnext nil?
+    val not identical? empty loop cond ex-info reduced next if-let
+    count apply assoc constantly and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.boolean :refer [and or not]]

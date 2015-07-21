@@ -49,9 +49,11 @@
   rather than ones in this namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce first aget = dec < if-not neg? reduced? deftype conj!
+    conj let -> doto meta fn empty? hash when > defn or counted? nil?
+    not >= loop integer? cond inc next count defrecord and])
   (:require
-   [clojure.core :refer [subvec]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn Va U I Maybe]]
    [dunaj.boolean :refer [and or not]]
@@ -139,7 +141,7 @@
   (cond
     (not (i< begin end)) init
     (i<= (.count vec) (i32))
-    (let [arr :- AnyArray (.-tail vec)
+    (let [arr :- AnyArray #?(:dunaj (.-tail vec) :clj (get-mt vec))
           af (advance-fn [ret :- Any, i :- Int]
                (i< i end) (recur (reducef ret (aget arr i)) (iinc i))
                :else ret)]
@@ -153,9 +155,12 @@
                    (and (i< i (i32)) (i<= nchi end-chi)))
                (recur (reducef ret (aget arr i)) arr nchi (iinc i))
                (i< end-chi nchi) ret
-               :else (recur ret (.arrayFor vec (i<< nchi (i5)))
-                            (iinc nchi) (i0)))]
-      (af init (.arrayFor vec begin)
+               :else
+               (recur ret #?(:dunaj (.arrayFor vec (i<< nchi (i5)))
+                             :clj (invoke-maf vec (i<< nchi (i5))))
+                      (iinc nchi) (i0)))]
+      (af init #?(:dunaj (.arrayFor vec begin)
+                  :clj (invoke-maf vec begin))
           (iinc (idiv begin (i32))) (iand begin (i31))))))
 
 (defn ^:private reversed-reduce-vector :- Any
@@ -217,8 +222,10 @@
   (-reduce [this reducef init]
     (if (inpos? (.count this))
       init
-      (let [coll (adapt oam (.-array this) (.index this)
-                        (iadd (.index this) (.count this)))]
+      (let [coll #?(:dunaj (adapt oam (.-array this) (.index this)
+                                  (iadd (.index this) (.count this)))
+                    :clj (adapt oam (get-aca this) (get-aco this)
+                                (get-ace this)))]
         (reduce* coll reducef init))))
   clojure.lang.ArrayChunk
   (-reduce [this reducef init]

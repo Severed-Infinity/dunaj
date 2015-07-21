@@ -15,19 +15,30 @@
   recipes."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Generators" "Transducers"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [take-last take-nth iterate dedupe take map keep mapcat range
+    take-while repeatedly remove interleave cycle replace concat
+    reductions drop split-at vals drop-last distinct partition
+    partition-all partition-by flatten keys filter split-with
+    interpose drop-while repeat seq reduce every? while satisfies?
+    first fn? doall peek = < delay comp cons pos? if-not sequential?
+    neg? reduced? deftype <= if-some conj! min pop! conj let -> get
+    identity into long fn empty? hash quot key when-not when second >
+    defn declare or reset! counted? zero? some nth nil? val not
+    identical? true? / >= integer? cond ex-info reduced next if-let
+    max == count apply deref complement constantly and ->>])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Maybe Any AnyFn U I Va Predicate Fn]]
-   [dunaj.boolean :refer [Boolean and or not true?]]
-   [dunaj.host :refer [BatchManager ArrayManager AnyBatch Class
+   [dunaj.boolean :refer [Boolean+ and or not true?]]
+   [dunaj.host :refer [BatchManager ArrayManager AnyBatch Class+
                        class-instance? provide-class keyword->class]]
    [dunaj.host.int :refer
     [Int iadd iint iinc idec i0 isub i< izero? i== iloop i<= imin i1
      imul inpos? ipos? imax i-1 ineg? i2 i>= inneg? ineg i> irem
      imax0 idiv iLF iCR]]
    [dunaj.host.number :refer [long]]
-   [dunaj.math :refer [Number Integer == zero? min npos? one? quot
+   [dunaj.math :refer [Number Integer+ == zero? min npos? one? quot
                        neg? < > / <= max >= pos? integer?]]
    [dunaj.math.unchecked :as mu]
    [dunaj.compare :refer
@@ -65,7 +76,7 @@
     [decide-item-type item-types-match?
      provide-batch-size batch-manager select-item-type]]
    [dunaj.host.array :refer [array-manager]]
-   [dunaj.string :refer [String empty-string MutableString]]
+   [dunaj.string :refer [String+ empty-string MutableString]]
    [dunaj.identifier :refer [Keyword]]
    [dunaj.error :refer [ex-info illegal-argument]]
    [dunaj.state.var :refer [declare def+ replace-var!]]
@@ -104,6 +115,7 @@
   []
   IRed
   (-reduce [this reducef init] init)
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] 0)
   IBatchedRed
@@ -124,9 +136,10 @@
   (->EmptyRecipe))
 
 (deftype Throwing
-  [m :- (Maybe String)]
+  [m :- (Maybe String+)]
   IRed
   (-reduce [this reducef init] (throw (ex-info m)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] 1)
   IBatchedRed
@@ -149,7 +162,7 @@
   it is performed."
   {:added v1
    :see '[empty-recipe]}
-  [m :- (Maybe String)]
+  [m :- (Maybe String+)]
   (->Throwing m))
 
 (declare concat)
@@ -160,6 +173,7 @@
   IRed
   (-reduce [this reducef init]
     (reduce* colls #(reduce* %2 reducef %) init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] @count-ref)
   IHomogeneous
@@ -200,7 +214,7 @@
           rf #(reduce-batched* dt size-hint %2 reducef %)]
       (reduce* colls rf init))))
 
-(defn ^:private concat? :- Boolean
+(defn ^:private concat? :- Boolean+
   [coll :- Any]
   (and (class-instance? dunaj.coll.helper.IRedAdapter coll)
        (class-instance? dunaj.coll.recipe.Concat (-inner-coll coll))))
@@ -266,6 +280,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b]
@@ -285,6 +300,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b]
@@ -314,6 +330,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b c]
@@ -333,6 +350,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret a b c]
@@ -363,6 +381,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret ims]
@@ -382,6 +401,7 @@
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked this (unpacked-fn reducef) init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IUnpackedRed
   (-reduce-unpacked [this reducef init]
     (let [af (advance-fn [ret ims]
@@ -468,6 +488,7 @@
           ims (clojure.core/map
                (fn [x] (reduce #(postponed %2) nil x)) colls)]
       (af init nil ims)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this]
     (imul (iint (count colls))
@@ -489,6 +510,7 @@
           ims (clojure.core/map
                (fn [x] (reduce #(postponed %2) nil x)) colls)]
       (af init nil ims)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this]
     (imul (iint (count colls))
@@ -533,6 +555,7 @@
 
 (deftype PreTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn]
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (let [bf #(if (branch-fn %) (cons (seq (children-fn %)) %2) %2)
@@ -547,6 +570,7 @@
 
 (deftype PostTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn]
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (let [bf #(pair % (when (branch-fn %) (seq (children-fn %))))
@@ -565,6 +589,7 @@
 (deftype InTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn,
    n :- Int]
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (let [bf #(let [b? (branch-fn %)]
@@ -594,6 +619,7 @@
 
 (deftype LevelTraverse
   [root :- Any, branch-fn :- Predicate, children-fn :- AnyFn]
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (let [bf #(when (branch-fn %) (children-fn %))
@@ -624,11 +650,11 @@
    :category "Primary"}
   ([root :- Any]
    (traverse sequential? identity root))
-  ([mode :- (U nil Keyword Integer), root :- Any]
+  ([mode :- (U nil Keyword Integer+), root :- Any]
    (traverse mode sequential? identity root))
   ([branch-fn :- Predicate, children-fn :- AnyFn, root :- Any]
    (->PreTraverse root branch-fn children-fn))
-  ([mode :- (U nil Keyword Integer),
+  ([mode :- (U nil Keyword Integer+),
     branch-fn :- Predicate, children-fn :- AnyFn, root :- Any]
    (cond (identical? :post mode)
          (->PostTraverse root branch-fn children-fn)
@@ -643,12 +669,13 @@
 ;;; Generators
 
 (deftype Range
-  [type :- Class, start :- Number, step :- Number]
+  [type :- Class+, start :- Number, step :- Number]
   IRed
   (-reduce [this reducef init]
     (let [af (advance-fn [ret i]
                (recur (reducef ret i) (mu/add i step)))]
       (af init start)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -675,6 +702,7 @@
                (recur (reducef ret i) (mu/add i step) (mu/inc n))
                :else ret)]
       (af init start 0)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -706,7 +734,7 @@
   (-reverse [this] (-flip this)))
 
 (deftype FiniteBatchableRange
-  [type :- Class, start :- Number, end :- Number, step :- Number]
+  [type :- Class+, start :- Number, end :- Number, step :- Number]
   IRed
   (-reduce [this reducef init]
     (let [c (count this)
@@ -715,6 +743,7 @@
                (recur (reducef ret i) (mu/add i step) (mu/inc n))
                :else ret)]
       (af init start 0)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -789,7 +818,7 @@
          (nil? end) (adaptcbus (->Range nil start step))
          (== end start) empty-recipe
          :else (->FiniteRange start end step)))
-  ([type :- (U nil Class Type),
+  ([type :- (U nil Class+ Type),
     start :- Number, end :- (Maybe Number), step :- Number]
    (let [t (provide-class type)]
      (cond (zero? step) (repeat t start)
@@ -798,10 +827,11 @@
            :else (->FiniteBatchableRange t start end step)))))
 
 (deftype Repeat
-  [type :- Class, val :- Any]
+  [type :- Class+, val :- Any]
   IRed
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (recur (reducef ret val)))] (af init)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -814,13 +844,14 @@
       (af init))))
 
 (deftype FiniteRepeat
-  [type :- Class, n :- Integer, val :- Any]
+  [type :- Class+, n :- Integer+, val :- Any]
   IRed
   (-reduce [this reducef init]
     (let [af (advance-fn [ret i]
                (zero? i) ret
                :else (recur (reducef ret val) (mu/dec i)))]
       (af init n)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (fold-sectionable this reduce-fn pool n combinef reducef))
@@ -859,11 +890,11 @@
    :category "Generators"}
   ([val :- Any]
    (repeat nil val))
-  ([n :- (Maybe Integer), val :- Any]
+  ([n :- (Maybe Integer+), val :- Any]
    (if (nil? n)
      (adaptcbus (->Repeat nil val))
      (adaptCbuS (->FiniteRepeat nil n val))))
-  ([type :- (U nil Class Type), n :- (Maybe Integer), val :- Any]
+  ([type :- (U nil Class+ Type), n :- (Maybe Integer+), val :- Any]
    (let [t (provide-class type)]
      (if (nil? n) (->Repeat t val) (->FiniteRepeat t n val)))))
 
@@ -873,6 +904,7 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (recur (reduce* coll reducef ret)))]
       (af init)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (item-type coll))
   IUnpackedRed
@@ -903,6 +935,7 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (recur (reducef ret (repf))))]
       (af init)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -931,23 +964,24 @@
    :see '[repeat range cycle]
    :category "Generators"}
   ([f :- AnyFn] (repeatedly nil f))
-  ([n :- (Maybe Integer), f :- AnyFn]
+  ([n :- (Maybe Integer+), f :- AnyFn]
    (if-not (nil? n)
      (take n (repeatedly nil f))
      (adaptcbus (->Repeatedly nil f))))
-  ([type :- (U nil Class Type), n :- (Maybe Integer), f :- AnyFn]
+  ([type :- (U nil Class+ Type), n :- (Maybe Integer+), f :- AnyFn]
    (if-not (nil? n)
      (take n (repeatedly type nil f))
      (->Repeatedly (provide-class type) f))))
 
 (deftype Iterate
-  [type :- Class, iterf :- AnyFn, x :- Any]
+  [type :- Class+, iterf :- AnyFn, x :- Any]
   IRed
   (-reduce [this reducef init]
     (let [af (advance-fn [ret x]
                (let [x (iterf x)]
                  (recur (reducef ret x) x)))]
       (af (reducef init x) x)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] type)
   IBatchedRed
@@ -973,7 +1007,7 @@
    :category "Generators"}
   ([f :- AnyFn, x :- Any]
    (adaptcbus (->Iterate nil f x)))
-  ([type :- (U nil Class Type), f :- AnyFn, x :- Any]
+  ([type :- (U nil Class+ Type), f :- AnyFn, x :- Any]
    (->Iterate (provide-class type) f x)))
 
 ;;; Stateless Transducers
@@ -1275,6 +1309,7 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (reduce* tail reducef ret))]
       (af (reduce* coll reducef init))))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] (mu/add (count coll) (count tail)))
   ISectionable
@@ -1303,7 +1338,7 @@
                      t2 (fork (fc tail))]
                  (combinef (f1) (join t2)))))))
 
-(defn ^:private append? :- Boolean
+(defn ^:private append? :- Boolean+
   [coll :- []]
   (and (class-instance? dunaj.coll.helper.IRedAdapter coll)
        (class-instance? dunaj.coll.recipe.AppendColl
@@ -1364,6 +1399,7 @@
                         ([r k _ _ _] (reducef r k))
                         ([r k _ _ _ & _] (reducef r k)))
                       init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] (count coll))
   ISectionable
@@ -1409,6 +1445,7 @@
                         ([r _ v _ _] (reducef r v))
                         ([r _ v _ _ & _] (reducef r v)))
                       init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] (count coll))
   ISectionable
@@ -1679,6 +1716,7 @@
   (-reduce [this reducef init]
     (let [af (advance-fn [ret] (reduce* coll reducef ret))]
       (af (reduce* head reducef init))))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this] (mu/add (count coll) (count head)))
   ISectionable
@@ -1707,7 +1745,7 @@
                      t2 (fork (fc coll))]
                  (combinef (f1) (join t2)))))))
 
-(defn ^:private prepend? :- Boolean
+(defn ^:private prepend? :- Boolean+
   [coll :- []]
   (and (class-instance? dunaj.coll.helper.IRedAdapter coll)
        (class-instance? dunaj.coll.recipe.PrependColl
@@ -1888,6 +1926,7 @@
   [coll :- IRed, n :- Int, rc :- IRed]
   IRed
   (-reduce [this reducef init] (-reduce rc reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IBatchedRed
   (-reduce-batched [this requested-type size-hint reducef init]
     (-reduce-batched rc requested-type size-hint reducef init))
@@ -1935,13 +1974,13 @@
   (hashCode [this] (.hashCode ^java.lang.Object vals))
   (equals [this other] (equals-packed this other)))
 
-(defn ^:private equiv-packed :- Boolean
+(defn ^:private equiv-packed :- Boolean+
   [this :- Packed, other :- Any]
   (if (class-instance? dunaj.coll.recipe.Packed other)
     (= (.-vals this) (.-vals ^dunaj.coll.recipe.Packed other))
     false))
 
-(defn ^:private equals-packed :- Boolean
+(defn ^:private equals-packed :- Boolean+
   [this :- Packed, other :- Any]
   (if (class-instance? dunaj.coll.recipe.Packed other)
     (.equals (.-vals this) (.-vals ^dunaj.coll.recipe.Packed other))
@@ -2748,6 +2787,7 @@
                :else (let [val (take n (concat (section coll i) pad))]
                        (reducef ret (reduce-augmented r val))))]
       (af init (i0))))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this]
     (if (true? pad)
@@ -2777,12 +2817,12 @@
   {:added v1
    :see '[partition* partition-all partition-by lines]
    :transducer true
-   :tsig (Fn [Transducer Integer]
-             [IRed Integer []]
-             [IRed Integer Integer []]
-             [IRed Integer Integer (U nil true IRed) []]
-             [IRed Integer Integer AnyFn AnyFn []]
-             [IRed Integer Integer (U nil true IRed) AnyFn AnyFn []])
+   :tsig (Fn [Transducer Integer+]
+             [IRed Integer+ []]
+             [IRed Integer+ Integer+ []]
+             [IRed Integer+ Integer+ (U nil true IRed) []]
+             [IRed Integer+ Integer+ AnyFn AnyFn []]
+             [IRed Integer+ Integer+ (U nil true IRed) AnyFn AnyFn []])
    :category "Transducers"}
   ([n] (partition* n n nil (folding concat conj)))
   ([n coll] (partition n n coll))
@@ -2808,10 +2848,10 @@
   {:added v1
    :see '[partition* partition partition-by lines]
    :transducer true
-   :tsig (Fn [Transducer Integer]
-             [IRed Integer []]
-             [IRed Integer Integer []]
-             [IRed Integer Integer AnyFn AnyFn []])
+   :tsig (Fn [Transducer Integer+]
+             [IRed Integer+ []]
+             [IRed Integer+ Integer+ []]
+             [IRed Integer+ Integer+ AnyFn AnyFn []])
    :category "Transducers"}
   ([n]
    (partition* n n true (folding concat conj)))
@@ -3024,6 +3064,7 @@
   IRed
   (-reduce [this reducef init]
     (transduce* coll reduce* (partition-by* f ir) reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (transfold* coll reduce-fn pool n (foldable-partition-by* f ir)
@@ -3034,6 +3075,7 @@
   IRed
   (-reduce [this reducef init]
     (reduce* (->PartitionBy coll f ir) reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (let [l (iint (count coll))]
@@ -3071,7 +3113,7 @@
        (->SectionablePartitionBy coll f ir)
        (->PartitionBy coll f ir)))))
 
-(defn ^:private newline? :- Boolean
+(defn ^:private newline? :- Boolean+
   [i :- Int]
   (or (i== i (iLF)) (i== i (iCR))))
 
@@ -3145,6 +3187,7 @@
   IRed
   (-reduce [this reducef init]
     (transduce* coll reduce* (lines*) reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (transfold*
@@ -3271,6 +3314,7 @@
        (provide-batch-size *default-lines-batch-size*)
        % %2 %3)
      (->BatchedLinesReducing (reducing reducef init))))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (transfold*
@@ -3298,7 +3342,7 @@
   "Returns a vector of `[(take _n_ _coll_) (drop _n_ _coll_)]`."
   {:added v1
    :see '[split-with take drop]}
-  [n :- Integer, coll :- IRed]
+  [n :- Integer+, coll :- IRed]
   (pair (take n coll) (drop n coll)))
 
 (defn split-with :- []

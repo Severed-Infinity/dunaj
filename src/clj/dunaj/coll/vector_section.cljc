@@ -18,9 +18,12 @@
   public vars and there is *no need to require this namespace*
   directly."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce first = dec < delay reverse neg? deftype when-let <=
+    conj let get meta fn empty? hash quot when-not when > defn mod
+    declare or counted? zero? nth nil? not defprotocol empty >= loop
+    integer? cond inc next == count defrecord and])
   (:require
-   [clojure.core :refer [every? subvec]]
    [dunaj.type :refer [Any AnyFn Maybe]]
    [dunaj.boolean :refer [and or not]]
    [dunaj.host.int :refer

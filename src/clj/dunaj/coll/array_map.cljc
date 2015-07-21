@@ -36,11 +36,16 @@
   rather than ones in this namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce peek aget boolean dec < delay if-not neg? reduced?
+    deftype when-let <= if-some conj! conj let -> doto meta fn empty?
+    hash quot when-not when > defn mod declare assoc! or counted?
+    zero? nil? not identical? empty / >= loop integer? cond inc if-let
+    to-array == count apply assoc defrecord and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn U I Va Maybe AnyFn]]
-   [dunaj.boolean :refer [Boolean boolean and or not]]
+   [dunaj.boolean :refer [boolean and or not]]
    [dunaj.host :refer [AnyArray ArrayManager]]
    [dunaj.host.int :refer
     [Int iint iinc i< iadd i2 i0 imul isub idiv]]

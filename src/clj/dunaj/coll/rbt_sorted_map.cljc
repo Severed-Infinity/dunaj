@@ -31,13 +31,18 @@
   rather than ones in this namespace."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce contains? first peek aget = boolean dec < delay neg?
+    reduced? deftype when-let <= if-some conj! conj let -> get doto
+    meta fn empty? hash quot when-not when second > defn mod declare
+    assoc! or counted? zero? nil? not identical? empty / >= loop
+    integer? cond reduced proxy inc if-let to-array == count apply
+    assoc defrecord constantly and])
   (:require
-   [clojure.core :refer [take-while]]
    [clojure.bootstrap :refer [v1 not-implemented]]
-   [clojure.bridge]
+   #?(:dunaj [clojure.bridge])
    [dunaj.type :refer [Any Fn U I Va Maybe AnyFn]]
-   [dunaj.boolean :refer [Boolean boolean and or not]]
+   [dunaj.boolean :refer [Boolean+ boolean and or not]]
    [dunaj.host :refer
     [AnyArray ArrayManager class-instance? proxy]]
    [dunaj.host.int :refer
@@ -106,9 +111,9 @@
   [x :- clojure.lang.PersistentTreeMap$Node]
   (.invoke right-node-method x nil))
 
-(defn ^:private range-check :- Boolean
+(defn ^:private range-check :- Boolean+
   [comparator :- java.util.Comparator, key :- Any,
-   ascending? :- Boolean, begin :- Any, end :- Any]
+   ascending? :- Boolean+, begin :- Any, end :- Any]
   (if ascending?
     (and (or (nil? begin)
              (inpos? (.compare comparator begin key)))
@@ -121,7 +126,7 @@
 
 (defn reduce-rbt-section
   [tree :- clojure.lang.PersistentTreeMap$Node, reducef :- AnyFn,
-   init :- Any, ascending? :- Boolean,
+   init :- Any, ascending? :- Boolean+,
    comparator :- java.util.Comparator, begin :- Any, end :- Any]
   (let [endp :- Function
         (cond (nil? end) (constantly true)
@@ -246,7 +251,7 @@
 
 (deftype RbtSortedMapSection
   "Red blact tree sorted map section type. Not persistent!"
-  [coll :- clojure.lang.PersistentTreeMap, ascending? :- Boolean,
+  [coll :- clojure.lang.PersistentTreeMap, ascending? :- Boolean+,
    begin :- Any, end :- Any, ^:volatile-mutable hash :- Int,
    ^:volatile-mutable hash-code :- Int,
    ^:volatile-mutable count :- Int]

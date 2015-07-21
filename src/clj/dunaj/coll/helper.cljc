@@ -28,7 +28,11 @@
      characteristics of original collection. That way Dunaj can
      provide more features for processed collections apart from
      `IRed`."]]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [mapcat seq reduce satisfies? = boolean rest comp sequential? neg?
+    reduced? deftype when-let let identity fn when-not when > defn or
+    counted? zero? nil? not identical? defprotocol true? loop cond
+    reduced defmacro false? == apply compare and])
   (:require
    [clojure.core :refer
     [str gensym for keyword? list symbol map? conj count first
@@ -37,11 +41,11 @@
    [clojure.bootstrap :refer
     [defmacro v1 def+ not-implemented strip-sigs-vec get-sigs-vec]]
    [dunaj.type :refer [Any AnyFn Fn Maybe U]]
-   [dunaj.boolean :refer [Boolean and or not false? true? boolean]]
-   [dunaj.host :refer [Class provide-class class-instance?]]
+   [dunaj.boolean :refer [Boolean+ and or not false? true? boolean]]
+   [dunaj.host :refer [Class+ provide-class class-instance?]]
    [dunaj.host.int :refer [Int iinc iadd imul i0 i-1 i1 i31 iloop i2
                            imax idiv i== iint i<= izero? ione? i< i>]]
-   [dunaj.math :refer [Integer == neg? > zero?]]
+   [dunaj.math :refer [Integer+ == neg? > zero?]]
    [dunaj.compare :refer [nil? = identical? compare]]
    [dunaj.flow :refer [let cond when when-not loop when-let]]
    [dunaj.feature :refer [assoc-meta]]
@@ -72,10 +76,10 @@
   ([requested-type size-hint] (not-implemented))
   ([requested-type size-hint coll] (not-implemented)))
 
-(defn ^:private item-types-match? :- Boolean
+(defn ^:private item-types-match? :- Boolean+
   "Returns `true` if item types match, `false` otherwise."
-  [requested-type :- (U nil Class Type),
-   available-type :- (U nil Class Type)]
+  [requested-type :- (U nil Class+ Type),
+   available-type :- (U nil Class+ Type)]
   (or (nil? available-type)
       (nil? requested-type)
       (identical? requested-type available-type)
@@ -222,7 +226,7 @@
   order for performing actual reduction (put e.g. `reduce*` there)."
   {:added v1
    :arglists '([coll reduce-fn pool n combinef reducef])
-   :tsig (Fn [Any [] AnyFn ForkJoinPool Integer AnyFn AnyFn])
+   :tsig (Fn [Any [] AnyFn ForkJoinPool Integer+ AnyFn AnyFn])
    :see '[fold-augmented* fold-batched* fold-unpacked* transfold*
           reduce-augmented* reduce* reduce-batched* reduce-unpacked*]
    :category "Folds"}
@@ -238,7 +242,7 @@
   order for performing actual reduction (put e.g. `reduce*` there)."
   {:added v1
    :arglists '([coll reduce-fn pool n r])
-   :tsig (Fn [Any [] AnyFn ForkJoinPool Integer IReducing])
+   :tsig (Fn [Any [] AnyFn ForkJoinPool Integer+ IReducing])
    :see '[fold* fold-batched* fold-unpacked* transfold*
           reduce-augmented* reduce* reduce-batched* reduce-unpacked*]
    :category "Folds"}
@@ -256,9 +260,9 @@
    :see '[fold* fold-augmented* fold-unpacked* transfold*
           reduce-augmented* reduce* reduce-batched* reduce-unpacked*]
    :category "Folds"}
-  [coll :- [], requested-type :- (U nil Class Type),
-   size-hint :- (Maybe Integer), pool :- ForkJoinPool,
-   n :- Integer, combinef :- AnyFn, reducef :- AnyFn]
+  [coll :- [], requested-type :- (U nil Class+ Type),
+   size-hint :- (Maybe Integer+), pool :- ForkJoinPool,
+   n :- Integer+, combinef :- AnyFn, reducef :- AnyFn]
   (if (and (satisfies? IBatchedRed coll)
            (item-types-match? requested-type (item-type coll)))
     (fold* coll #(reduce-batched* requested-type size-hint % %2 %3)
@@ -279,7 +283,7 @@
           reduce-augmented* reduce* reduce-batched* reduce-unpacked*]
    :category "Folds"}
   [coll :- [], pool :- ForkJoinPool,
-   n :- Integer, combinef :- AnyFn, reducef :- AnyFn]
+   n :- Integer+, combinef :- AnyFn, reducef :- AnyFn]
   (if (satisfies? IUnpackedRed coll)
     (fold* coll reduce-unpacked* pool n combinef reducef)
     (fold* coll reduce* pool n combinef (unpacked-fn reducef))))
@@ -295,7 +299,7 @@
   {:added v1
    :arglists '([coll reduce-fn pool n xform reducef]
                [coll reduce-fn pool n xform combinef reducef])
-   :tsig (Fn [Any IRed AnyFn ForkJoinPool Integer AnyFn AnyFn])
+   :tsig (Fn [Any IRed AnyFn ForkJoinPool Integer+ AnyFn AnyFn])
    :category "Folds"}
   @#'dunaj.concurrent.forkjoin/transfold*)
 
@@ -405,7 +409,7 @@
   with `_was-reduced?_` flag."
   {:added v1
    :arglists '([ret] [ret was-reduced?])
-   :tsig (Fn [Any Any] [Any Any Boolean])
+   :tsig (Fn [Any Any] [Any Any Boolean+])
    :category "Reducers"
    :see '[advance-fn cloned-advance-fn finish-advance]}
   @#'dunaj.coll/reduced-advance)
@@ -468,6 +472,7 @@
        (-inner-coll [this] ~coll)
        IRed
        (-reduce [this# f# init#] (dunaj.coll/-reduce ~coll f# init#))
+       #?@(:clj [ISeqable (-seq [this#] (red-to-seq this#))])
        IFoldable
        (-fold [this# reduce-fn# pool# n# combinef# reducef#]
          (dunaj.concurrent.forkjoin/-fold
@@ -583,8 +588,8 @@
   {:added v1
    :category "Adapters"}
   [coll :- [], to :- [],
-   oc :- (Maybe Boolean), ob :- (Maybe Boolean),
-   ou :- (Maybe Boolean), os :- (Maybe Boolean)]
+   oc :- (Maybe Boolean+), ob :- (Maybe Boolean+),
+   ou :- (Maybe Boolean+), os :- (Maybe Boolean+)]
   (let [c? (if (nil? oc) (and (counted? coll) (counted? to)) oc)
         b? (if (nil? ob)
              (and
@@ -685,7 +690,7 @@
          (or (seq coll) clojure.lang.PersistentList/EMPTY)]
      (.listIterator s i))))
 
-(defn equiv-ordered :- Boolean
+(defn equiv-ordered :- Boolean+
   "Returns `true` if given sequential collections are equivalent,
   returns `false` otherwise. If `_any-immutable?_` is `true`, accepts
   any ordered collection, not just sequential ones."
@@ -694,7 +699,7 @@
    :see '[equals-ordered compare-ordered]}
   ([coll :- [], other :- []]
    (equiv-ordered coll other false))
-  ([coll :- [], other :- [], any-immutable? :- Boolean]
+  ([coll :- [], other :- [], any-immutable? :- Boolean+]
    (if (or (and (not any-immutable?) (not (sequential? other)))
            (and (counted? coll) (counted? other)
                 (not (== (count coll) (count other)))))
@@ -709,7 +714,7 @@
              (postponed? a2) false
              :else (clojure.lang.Util/equiv a1 a2))))))
 
-(defn equals-ordered :- Boolean
+(defn equals-ordered :- Boolean+
   "Returns `true` if given sequential collections are equivalent
   according to host equality criteria, otherwise returns
   `false`. If `_any-immutable?_` is `true`, accepts any ordered
@@ -719,7 +724,7 @@
    :see '[equiv-ordered ordered-hash-code compare-ordered]}
   ([coll :- [], other :- []]
    (equals-ordered coll other false))
-  ([coll :- [], other :- [], any-immutable? :- Boolean]
+  ([coll :- [], other :- [], any-immutable? :- Boolean+]
    (if (or (and (not any-immutable?) (not (sequential? other)))
            (and (counted? coll) (counted? other)
                 (not (== (count coll) (count other)))))
@@ -734,7 +739,7 @@
              (postponed? a2) false
              :else (clojure.lang.Util/equals a1 a2))))))
 
-(defn compare-ordered :- Integer
+(defn compare-ordered :- Integer+
   "Returns -1, 0 or 1 as a result of comparing two ordered collections
   with default comparator."
   {:added v1
@@ -761,15 +766,15 @@
 
 ;;; Section
 
-(defn prepare-ordered-section :- Integer
+(defn prepare-ordered-section :- Integer+
   "Returns `_new-end_` or `_length_`, if `_new-end_` is `nil`.
   Throws if arguments are out of bounds of the interval
   `[new-begin, new-begin + length)`."
   {:added v1
    :category "Primary"
    :see '[dunaj.coll/section]}
-  [new-begin :- Integer, new-end :- (Maybe Integer),
-   length :- Integer]
+  [new-begin :- Integer+, new-end :- (Maybe Integer+),
+   length :- Integer+]
   (let [new-end (or new-end length)]
     (when (or (neg? new-begin)
               (> new-begin new-end)
@@ -813,16 +818,16 @@
    :category "Folds"
    :see '[split-adjust fold-every]}
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn]
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn]
    (fold-sectionable
     coll reduce-fn pool n combinef reducef section))
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn,
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn,
     section-fn :- AnyFn]
    (fold-sectionable
     coll reduce-fn pool n combinef reducef section-fn count))
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn,
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn,
     section-fn :- AnyFn, count-fn :- AnyFn]
    (let [cnt (iint (count-fn coll))
          n (imax (i1) (iint n))]
@@ -856,15 +861,15 @@
    :category "Folds"
    :see '[split-adjust fold-every]}
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn]
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn]
    (fold-every coll reduce-fn pool n combinef reducef section))
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn,
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn,
     section-fn :- AnyFn]
    (fold-every
     coll reduce-fn pool n combinef reducef section-fn count))
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn,
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn,
     section-fn :- AnyFn, count-fn :- AnyFn]
    (let [dofn (fn dofn [coll]
                 (let [cnt (iint (count-fn coll))]
@@ -884,10 +889,11 @@
 (deftype Recipe
   "A type for collection recipe."
   [coll :- IRed, xform :- AnyFn,
-   count-fn :- AnyFn, section-fn :- AnyFn, foldable? :- Boolean]
+   count-fn :- AnyFn, section-fn :- AnyFn, foldable? :- Boolean+]
   IRed
   (-reduce [this reducef init]
     (transduce* coll reduce* xform reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (if foldable?

@@ -55,7 +55,11 @@
                  booleans, as there is no batch support for them."]]
    :additional-copyright
    "2012, 2015, Michał Marczyk, Rich Hickey and Clojure contributors"}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce first aget = dec < if-not neg? reduced? deftype conj!
+    conj let -> get meta fn empty? hash when-not when vector-of >
+    defn declare or counted? zero? nth nil? not identical? >= loop
+    integer? condp cond inc next class case == count defrecord and])
   (:require
    [clojure.core.rrb-vector :refer [vector-of]]
    [clojure.core.rrb-vector.rrbt :refer [as-rrbt]]
@@ -314,6 +318,8 @@
   (nth [this index] (.nth vec index))
   clojure.lang.Reversible
   (rseq [this] (seq (-reverse this)))
+  #?@(:clj [clojure.lang.Associative
+            (containsKey [this key] (-contains? this key))])
 
   ;; JVM interop
   java.lang.Object
@@ -395,7 +401,8 @@
     (.getComponentType (class (.array ^clojure.core.ArrayManager
                                       (.-am vec) 0))))
   IEditable
-  (-edit [this capacity-hint] (->MutablePrimitiveVector (-edit vec)))
+  (-edit [this #?(:dunaj capacity-hint)]
+    (->MutablePrimitiveVector (-edit vec)))
   ISequential
   IPersistentCollection
   (-conj [this x] (->PrimitiveVector (.cons vec x)))
@@ -427,8 +434,8 @@
   (nth [this index] (.nth vec index))
   clojure.lang.Reversible
   (rseq [this] (seq (-reverse this)))
-  clojure.lang.IEditableCollection
-  (asTransient [this] (edit this nil))
+  #?@(:dunaj [clojure.lang.IEditableCollection
+              (asTransient [this] (edit this nil))])
   clojure.lang.Associative
   (containsKey [this key] (-contains? this key))
 
