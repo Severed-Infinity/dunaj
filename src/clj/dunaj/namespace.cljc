@@ -21,23 +21,21 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Mappings"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [munge meta resolve seq seq? = rest conj let doto fn defn name nil?
+    reify not loop defmacro next and symbol?])
   (:require
-   [clojure.core :refer
-    [set map list into first second find-ns chunked-seq? chunk-first
-     chunk-next persistent! transient ns-name all-ns create-ns
-     remove-ns gensym ns-unmap ns-aliases the-ns]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn U Maybe Va I]]
-   [dunaj.boolean :refer [Boolean and not]]
-   [dunaj.host :refer [Class class-instance?]]
+   [dunaj.boolean :refer [Boolean+ and not]]
+   [dunaj.host :refer [Class+ class-instance?]]
    [dunaj.compare :refer [nil? =]]
    [dunaj.state :refer [IMutable IReference IAtomic ICloneable]]
    [dunaj.flow :refer [let loop doto]]
    [dunaj.poly :refer [reify]]
    [dunaj.coll :refer [ILookup conj seq seq? rest next]]
    [dunaj.function :refer [fn defn]]
-   [dunaj.string :refer [String ->str]]
+   [dunaj.string :refer [String+ ->str]]
    [dunaj.identifier :refer [Symbol symbol? name]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.state.var :refer [Var defalias def+]]))
@@ -97,10 +95,10 @@
   {:added v1
    :category "Primary"
    :see '[ns?]
-   :tsig (Fn [String Symbol])}
+   :tsig (Fn [String+ Symbol])}
   clojure.core/namespace-munge)
 
-(defn ns? :- Boolean
+(defn ns? :- Boolean+
   "Returns `true` if a namespace named by the `_symbol_` is present,
   otherwise returns `false`."
   {:added v1
@@ -157,8 +155,8 @@
   {:added v1
    :category "Mappings"
    :see '[mappings intern! refer! unmap!]
-   :tsig (Fn [(U Var Class) Symbol Symbol]
-             [(U Var Class) Symbol ILookup Symbol])}
+   :tsig (Fn [(U Var Class+) Symbol Symbol]
+             [(U Var Class+) Symbol ILookup Symbol])}
   clojure.core/ns-resolve)
 
 (defalias mappings
@@ -167,7 +165,7 @@
   {:added v1
    :category "Mappings"
    :see '[refers imports interns publics aliases intern!]
-   :tsig (Fn [{Symbol (U Var Class)} Symbol])}
+   :tsig (Fn [{Symbol (U Var Class+)} Symbol])}
   clojure.core/ns-map)
 
 (defalias refers
@@ -185,7 +183,7 @@
   {:added v1
    :category "Mappings"
    :see '[refers mappings interns publics aliases intern!]
-   :tsig (Fn [{Symbol Class} Symbol])}
+   :tsig (Fn [{Symbol Class+} Symbol])}
   clojure.core/ns-imports)
 
 (defalias interns
@@ -294,7 +292,7 @@
    :category "Mappings"
    :see '[unmap! intern! import! create! dunaj.env/current-ns]
    :tsig (Fn [nil Symbol Symbol (Va Any)])}
-  clojure.core/refer*)
+  #?(:dunaj clojure.core/refer* :clj clojure.dunaj-deftype/refer*))
 
 (defn unmap! :- nil
   "Removes the mappings for the `_symbol_` from the namespace named by

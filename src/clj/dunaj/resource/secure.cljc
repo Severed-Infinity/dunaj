@@ -16,15 +16,20 @@
   WARNING: Needs review from someone who knows TLS protocol and
   SSLEngine better than me."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce contains? every? aget = boolean < rest neg? reduced?
+    deftype when-let conj let identity fn empty? string? when-not
+    when second defn declare or zero? nth nil? reify not identical?
+    defprotocol true? loop merge condp cond defmacro proxy locking
+    false? io! max == assoc realized? defrecord and])
   (:require
    [clojure.core.async]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-   [dunaj.boolean :refer [Boolean and or not true? false? boolean]]
-   [dunaj.host :refer [Class Batch keyword->class proxy]]
+   [dunaj.boolean :refer [Boolean+ and or not true? false? boolean]]
+   [dunaj.host :refer [Batch keyword->class proxy]]
    [dunaj.host.int :refer [Int iint iadd i0 i1 imin i== ipos? i< i<<]]
-   [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
+   [dunaj.math :refer [Integer+ max neg? == < zero? nneg?]]
    [dunaj.compare :refer [nil? = identical?]]
    [dunaj.state :refer [IOpenAware ICancellable ICloneable
                         ensure-open io! open? realized?]]
@@ -39,11 +44,11 @@
    [dunaj.coll.helper :refer [reduce-with-batched* red-to-seq]]
    [dunaj.buffer :refer [dropping-buffer]]
    [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal current-thread
+    [Thread+ IThreadLocal IPassableThreadLocal current-thread
      ensure-thread-local]]
    [dunaj.concurrent.port :refer [chan <!! >!!]]
    [dunaj.concurrent :refer [IFuture ITaskExecutor submit locking]]
-   [dunaj.string :refer [String string? ->str]]
+   [dunaj.string :refer [String+ string? ->str]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.uri :refer [Uri uri? uri]]
    [dunaj.state.var :refer [def+ declare]]
@@ -98,10 +103,10 @@
   based on value of `direct?`. Returns `batch` if it is not nil and
   if it's capacity is at least `size`, otherwise copies contents
   from `batch`, if any, to the returned one."
-  ([size :- Int, direct? :- Boolean]
+  ([size :- Int, direct? :- Boolean+]
    (provide-byte-batch nil size direct?))
   ([batch :- (Maybe (Batch java.lang.Byte)),
-    size :- Int, direct? :- Boolean]
+    size :- Int, direct? :- Boolean+]
    (let [size (round-size (iadd size batch-overhead))]
      (cond (not (or (nil? batch) (< (.capacity batch) size))) batch
            :let [b (if direct?
@@ -114,7 +119,7 @@
 
 (defprotocol ^:private ITls
   (-tls-process! :- nil [this])
-  (-reduce-batched* :- Any [this size-hint :- (Maybe Integer),
+  (-reduce-batched* :- Any [this size-hint :- (Maybe Integer+),
                             reducef :- AnyFn, init :- Any])
   (-set-net-recv! :- nil [this val :- Any])
   (-set-app-recv! :- nil [this val :- Any])
@@ -125,6 +130,7 @@
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
   ICloneable
@@ -157,18 +163,18 @@
    (Maybe (Batch java.lang.Byte)),
    ^:unsynchronized-mutable app-recv :- ;; kept in write mode
    (Maybe (Batch java.lang.Byte)),
-   ^:volatile-mutable thread :- (Maybe Thread),
+   ^:volatile-mutable thread :- (Maybe Thread+),
    ^:unsynchronized-mutable other-app-recv
    :- (Maybe (Batch java.lang.Byte)),
    ^:unsynchronized-mutable other-net-send
-   :- (Maybe (Batch java.lang.Byte)), direct-buffers? :- Boolean,
-   ^:volatile-mutable opened? :- Boolean,
+   :- (Maybe (Batch java.lang.Byte)), direct-buffers? :- Boolean+,
+   ^:volatile-mutable opened? :- Boolean+,
    ^:unsynchronized-mutable input :- Any,
    ^:unsynchronized-mutable output :- Any,
    ^:unsynchronized-mutable pending :- (Maybe IFuture),
-   ^:unsynchronized-mutable retry? :- Boolean,
+   ^:unsynchronized-mutable retry? :- Boolean+,
    executor :- (Maybe ITaskExecutor), executor-fn :- (Maybe Function)
-   non-blocking? :- Boolean]
+   non-blocking? :- Boolean+]
   IConfig
   (-config [this] config)
   IOpenAware
@@ -613,7 +619,7 @@
   except for multiple concurrent reads (or writes)."
   {:added v1
    :see '[secure-factory]}
-  [x :- (U String Uri (I IOpenAware IReadable IWritable))
+  [x :- (U String+ Uri (I IOpenAware IReadable IWritable))
    & {:as opts}]
   (let [k (if (or (string? x) (uri? x)) :uri :transport)]
     (merge secure-factory (assoc opts k x))))

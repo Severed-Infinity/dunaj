@@ -16,18 +16,19 @@
   A data reader literal `#uri` is available for
   a convenient URI creation."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [resolve deftype defn name identical? condp])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [U]]
-   [dunaj.boolean :refer [Boolean]]
-   [dunaj.math :refer [Integer]]
+   [dunaj.boolean :refer [Boolean+]]
+   [dunaj.math :refer [Integer+]]
    [dunaj.compare :refer [IComparable identical?]]
    [dunaj.flow :refer [condp]]
    [dunaj.poly :refer [deftype]]
    [dunaj.coll :refer [ILookup]]
    [dunaj.function :refer [defn]]
-   [dunaj.string :refer [ICanonical String ->str]]
+   [dunaj.string :refer [ICanonical String+ ->str]]
    [dunaj.identifier :refer [name INamed]]))
 
 
@@ -70,21 +71,21 @@
   Returns `_val_` if it already is a URI object."
   {:added v1
    :see '[uri?]}
-  ([val :- (U String Uri)]
+  ([val :- (U String+ Uri)]
    (if (uri? val) val (java.net.URI/create val)))
-  ([scheme :- INamed, host :- String, port :- Integer]
+  ([scheme :- INamed, host :- String+, port :- Integer+]
    (java.net.URI. (name scheme) nil host port nil nil nil)))
 
 ;;; Predicates
 
-(defn absolute? :- Boolean
+(defn absolute? :- Boolean+
   "Returns true if `_uri_` has a scheme, otherwise returns false."
   {:added v1
    :see '[opaque?]}
   [uri :- Uri]
   (.isAbsolute uri))
 
-(defn opaque? :- Boolean
+(defn opaque? :- Boolean+
   "Returns true if `_uri_` is absolute and its scheme specific part
   does not begin with slash `/`."
   {:added v1
@@ -113,7 +114,7 @@
   Calls `uri` on `_val_`."
   {:added v1
    :see '[normalize relativize]}
-  [root :- Uri, val :- (U String Uri)]
+  [root :- Uri, val :- (U String+ Uri)]
   (.resolve root (uri val)))
 
 ;;; data reader

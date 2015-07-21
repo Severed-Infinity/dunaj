@@ -22,7 +22,8 @@
     ["Second"]
     ["Last"]]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [->> some-> cond-> some->> as-> -> cond->>] )
   (:require
    [clojure.bootstrap :refer [defalias v1]]
    [dunaj.type :refer [Macro]]))

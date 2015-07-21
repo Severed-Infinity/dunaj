@@ -20,15 +20,18 @@
    :additional-copyright
    "2008, 2015, Rich Hickey and Clojure contributors, Christophe Grand"
    :categories ["Primary" "Conditionals" "Iteration" "Evaluation"]}
-  (:api bare)
+  (:refer-clojure :exclude
+   [while delay eval if-not when-let if-some let doto when-not when
+    force dotimes letfn loop condp cond if-let case comment when-some
+    #?(:clj satisfies?) deftype defn nil? defprotocol defmacro == and
+    or not])
   (:require
-   [clojure.core :refer
-    [locking list list* var throw satisfies? fn* identical?]]
    [clojure.bootstrap :refer
     [defalias defmacro defprotocol deftype defn v1 replace-var!]]
+   #?(:clj [clojure.dunaj-deftype :refer [satisfies?]])
    [dunaj.boolean :refer [and or not]]
    [dunaj.type :refer [Macro Fn Va Any]]
-   [dunaj.host :refer [set!]]
+   #?(:dunaj [dunaj.host :refer [set!]])
    [dunaj.compare :refer [nil?]]
    [dunaj.state :refer [IReference IPending]]))
 
@@ -67,23 +70,24 @@
 
 ;;; Conditionals
 
-(defmacro if
-  "Evaluates `_test_`. If not the singular values `nil` or `false`,
-  evaluates and yields `_then_`, otherwise, evaluates and yields
-  `_else_`. If `_else_` is not supplied it defaults to `nil`.
-  All of the other conditionals in are based upon the same logic,
-  that is, `nil` and `false` constitute logical falsity,
-  and everything else constitutes logical truth, and those
-  meanings apply throughout. If tests for primitive boolean values,
-  not the boxed ones. If your host supports boxed booleans, do not
-  use them in `if`."
-  {:added v1
-   :indent 1
-   :see '[when cond if-let if-not if-some]
-   :category "Conditionals"
-   :highlight :flow}
-  [& args]
-  `(clojure.core/if ~@args))
+#?(:dunaj
+   (defmacro if
+    "Evaluates `_test_`. If not the singular values `nil` or `false`,
+    evaluates and yields `_then_`, otherwise, evaluates and yields
+    `_else_`. If `_else_` is not supplied it defaults to `nil`.
+    All of the other conditionals in are based upon the same logic,
+    that is, `nil` and `false` constitute logical falsity,
+    and everything else constitutes logical truth, and those
+    meanings apply throughout. If tests for primitive boolean values,
+    not the boxed ones. If your host supports boxed booleans, do not
+    use them in `if`."
+    {:added v1
+     :indent 1
+     :see '[when cond if-let if-not if-some]
+     :category "Conditionals"
+     :highlight :flow}
+    [& args]
+    `(clojure.core/if ~@args)))
 
 (defalias if-not
   "Evaluates `_test_`. If logical false, evaluates and returns
@@ -193,7 +197,7 @@
    :indent 1
    :let-bindings true}
   [bindings & body]
-  `(if-let ~bindings (clojure.core/do ~@body)))
+  `(if-let ~bindings (#?(:dunaj clojure.core/do :clj do) ~@body)))
 
 (defalias when-some
   "bindings => binding-form test
@@ -317,30 +321,31 @@
 
 ;;; Iteration
 
-(defmacro recur
-  "Evaluates the `_args_` in order, then, in parallel, rebinds the
-  bindings of the recursion point to the values of the `_args_`.
-  If the recursion point was a `fn` method, then it rebinds the
-  params. If the recursion point was a `loop`, then it rebinds the
-  loop bindings. Execution then jumps back to the recursion point.
-  The recur expression must match the arity of the recursion point
-  exactly. In particular, if the recursion point was the top of a
-  variadic fn method, there is no gathering of rest args - a single
-  seq (or null) should be passed. recur in other than a tail
-  position is an error.
+#?(:dunaj
+   (defmacro recur
+    "Evaluates the `_args_` in order, then, in parallel, rebinds the
+    bindings of the recursion point to the values of the `_args_`.
+    If the recursion point was a `fn` method, then it rebinds the
+    params. If the recursion point was a `loop`, then it rebinds the
+    loop bindings. Execution then jumps back to the recursion point.
+    The recur expression must match the arity of the recursion point
+    exactly. In particular, if the recursion point was the top of a
+    variadic fn method, there is no gathering of rest args - a single
+    seq (or null) should be passed. recur in other than a tail
+    position is an error.
 
-  NOTE: `recur` is the only non-stack-consuming looping construct
-  in Clojure. There is no tail-call optimization and the use of
-  self-calls for looping of unknown bounds is discouraged. `recur` is
-  functional and its use in tail-position is verified by the
-  compiler."
-  {:added v1
-   :see '[loop dunaj.function/fn dunaj.function/trampoline
-          dotimes while]
-   :category "Iteration"
-   :highlight :flow}
-  [& args]
-  `(clojure.core/recur ~@args))
+    NOTE: `recur` is the only non-stack-consuming looping construct
+    in Clojure. There is no tail-call optimization and the use of
+    self-calls for looping of unknown bounds is discouraged. `recur`
+    is functional and its use in tail-position is verified by the
+    compiler."
+    {:added v1
+     :see '[loop dunaj.function/fn dunaj.function/trampoline
+            dotimes while]
+     :category "Iteration"
+     :highlight :flow}
+    [& args]
+    `(clojure.core/recur ~@args)))
 
 (defmacro loop
   "Evaluates the `_body_` in a lexical context in which the symbols in
@@ -402,25 +407,27 @@
    :category "Evaluation"
    :tsig (Fn [Any Any])})
 
-(defmacro quote
-  "Returns the unevaluated `_form_`."
-  {:added v1
-   :see '[eval]
-   :category "Evaluation"
-   :highlight :flow}
-  [form]
-  `(clojure.core/quote ~form))
+#?(:dunaj
+   (defmacro quote
+    "Returns the unevaluated `_form_`."
+    {:added v1
+     :see '[eval]
+     :category "Evaluation"
+     :highlight :flow}
+    [form]
+    `(clojure.core/quote ~form)))
 
-(defmacro do
-  "Evaluates the `_exprs_` in order and returns the value of the
-  last. If no expressions are supplied, returns `nil`."
-  {:added v1
-   :see '[doto let]
-   :category "Primary"
-   :highlight :flow
-   :indent 0}
-  [& exprs]
-  `(clojure.core/do ~@exprs))
+#?(:dunaj
+   (defmacro do
+    "Evaluates the `_exprs_` in order and returns the value of the
+    last. If no expressions are supplied, returns `nil`."
+    {:added v1
+     :see '[doto let]
+     :category "Primary"
+     :highlight :flow
+     :indent 0}
+    [& exprs]
+    `(clojure.core/do ~@exprs)))
 
 ;;; Delayed evaluation
 
@@ -500,31 +507,31 @@
 ;;;; Testing
 
 (clojure.core/require
- '[clojure.core :refer [keyword]]
  '[clojure.bootstrap :refer
    [assert-boolean assert-primitive assert-int]]
  '[dunaj.host.int :refer [iint]]
  '[dunaj.math :refer [==]])
 
-(assert-boolean
- (let [] false)
- ;; (letfn [] false) ;; letfn inside let binding autoboxes, bug?
- (if nil false false)
- (if-not nil false false)
- (if-let [x 3] false false)
- (case true
-  false false
-  true true)
- (case 3
-   1 true
-   2 true
-   3 false)
- (case (keyword "foo")
-   1 false
-   2 false
-   :foo (== 1 2)
-   3 true)
- (do :foo true))
+#?(:dunaj
+   (assert-boolean
+    (let [] false)
+    ;; (letfn [] false) ;; letfn inside let binding autoboxes, bug?
+    (if nil false false)
+    (if-not nil false false)
+    (if-let [x 3] false false)
+    (case true
+      false false
+      true true)
+    (case 3
+      1 true
+      2 true
+      3 false)
+    (case (keyword "foo")
+      1 false
+      2 false
+      :foo (== 1 2)
+      3 true)
+    (do :foo true)))
 
 (loop [x 2] (assert-primitive x))
 

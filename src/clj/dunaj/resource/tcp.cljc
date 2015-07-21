@@ -13,15 +13,21 @@
 (ns dunaj.resource.tcp
   "TCP sockets."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce contains? every? satisfies? aget = map < rest keep
+    merge-with neg? reduced? deftype when-let conj let identity fn
+    empty? string? when-not vec when second defn concat symbol
+    declare or name byte-array zero? nth nil? not identical?
+    defprotocol true? loop merge defmacro keyword str false? io! max
+    == interpose assoc defrecord and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-   [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [Class BatchManager Batch AnyBatch]]
+   [dunaj.boolean :refer [Boolean+ and or not true? false?]]
+   [dunaj.host :refer [BatchManager Batch AnyBatch]]
    [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]
-   [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
+   [dunaj.math :refer [Integer+ max neg? == < zero? nneg?]]
    [dunaj.compare :refer [nil? = identical?]]
    [dunaj.state :refer [IOpenAware IReference IMutable io!]]
    [dunaj.flow :refer [let loop when-not when when-let]]
@@ -45,7 +51,7 @@
    [dunaj.coll.util :refer [every? merge merge-with unpacked batched]]
    [dunaj.host.array :refer [array aget byte-array adapt]]
    [dunaj.host.batch :refer [provide-batch-size]]
-   [dunaj.string :refer [String string? ->str str split]]
+   [dunaj.string :refer [String+ string? ->str str split]]
    [dunaj.error :refer
     [IFailAware IFailable IException illegal-argument illegal-state
      fragile io opened-fragile fail! unsupported-operation]]
@@ -64,30 +70,30 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-tcp-batch-size :- Integer
+(def+ ^:private default-tcp-batch-size :- Integer+
   "Default size for tcp batch."
   8192)
 
-(defn ^:private provide-tcp-batch-size :- Integer
+(defn ^:private provide-tcp-batch-size :- Integer+
   "Returns tcp batch size taking into account given batch size hint."
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (provide-batch-size (max (or size-hint 0) default-tcp-batch-size)))
 
-(defn ^:private get-query-map :- {Keyword String}
+(defn ^:private get-query-map :- {Keyword String+}
   "Returns map of parsed query params from a given uri `x`."
-  [x :- (U Uri String)]
+  [x :- (U Uri String+)]
   (let [x (uri x)
         s (.getQuery x)
         params (when-not (empty? s) (parse #"([^=&]+)(=([^&]*))?" s))]
     (reduce #(assoc % (keyword (second %2)) (or (nth %2 3) "true"))
             {} params)))
 
-(def+ ^:private boolean-map :- {String Boolean}
+(def+ ^:private boolean-map :- {String+ Boolean+}
   {"0" false "1" true "F" false "T" true "false" false "true" true})
 
 (defn ^:private tcp-server-uri->map :- KeywordMap
   "Returns server socket settings map based on a given uri `x`."
-  [x :- (U String Uri)]
+  [x :- (U String+ Uri)]
   (let [x (uri x)
         scheme (.getScheme ^java.net.URI x)
         qm (get-query-map x)
@@ -107,7 +113,7 @@
 
 (defn ^:private tcp-uri->map :- KeywordMap
   "Returns socket settings map based on a given uri `x`."
-  [x :- (U String Uri)]
+  [x :- (U String+ Uri)]
   (let [x (uri x)
         scheme (.getScheme ^java.net.URI x)
         qm (get-query-map x)
@@ -135,7 +141,7 @@
 
 (defn ^:private socket-address :- java.net.InetSocketAddress
   "Returns an instance of a socket address."
-  [address :- (Maybe String), port :- (Maybe Integer)]
+  [address :- (Maybe String+), port :- (Maybe Integer+)]
   (let [port (or port 0)
         address (when address
                   (java.net.InetAddress/getByName address))]
@@ -185,7 +191,7 @@
 
 (defreleasable ^:private TcpResource
   "Connected TCP resource type."
-  [ch :- java.nio.channels.SocketChannel, batch-size :- Integer,
+  [ch :- java.nio.channels.SocketChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)
@@ -214,8 +220,9 @@
 
 (defreleasable ^:private TcpServerResource
   "TCP Server resource type."
-  [ch :- java.nio.channels.ServerSocketChannel, batch-size :- Integer,
-   config :- {}, ^:volatile-mutable error :- (Maybe IException)]
+  [ch :- java.nio.channels.ServerSocketChannel,
+   batch-size :- Integer+, config :- {},
+   ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)
   IOpenAware
@@ -357,14 +364,14 @@
   given `_uri_` and `_opts_` set."
   {:added v1
    :see '[tcp-server-factory tcp accept!]}
-  [uri :- (U nil String Uri) & {:as opts}]
+  [uri :- (U nil String+ Uri) & {:as opts}]
   (merge tcp-server-factory (assoc opts :uri uri)))
 
 (defn tcp :- IAcquirableFactory
   "Returns TCP resource factory with given `_uri_` and `_opts_` set."
   {:added v1
    :see '[tcp-factory tcp-server]}
-  [uri :- (U nil String Uri) & {:as opts}]
+  [uri :- (U nil String+ Uri) & {:as opts}]
   (merge tcp-factory (assoc opts :uri uri)))
 
 (defn accept! :- nil

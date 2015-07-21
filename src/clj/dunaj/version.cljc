@@ -16,16 +16,16 @@
   Supports Clojure-like version scheme:
   `MAJOR.MINOR.INCREMENTAL-QUALIFIER-SNAPSHOT`"
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude [= when-let let when defn or defrecord])
   (:require [clojure.bootstrap :refer [v1]]
             [dunaj.type :refer [Maybe]]
-            [dunaj.boolean :refer [Boolean or]]
+            [dunaj.boolean :refer [or]]
             [dunaj.compare :refer [=]]
             [dunaj.flow :refer [let]]
             [dunaj.poly :refer [defrecord]]
             [dunaj.coll :refer [IRed]]
             [dunaj.function :refer [defn]]
-            [dunaj.string :refer [String ICanonical ->str]]
+            [dunaj.string :refer [String+ ICanonical ->str]]
             [dunaj.identifier :refer [Symbol]]
             [dunaj.state.var :refer [defalias]]
             [dunaj.uri :refer [Uri uri]]))
@@ -48,7 +48,7 @@
   "Returns version object for given canonical string `_s_`."
   {:added v1
    :see '[dunaj.string/canonical dunaj.env/current-version]}
-  [s :- String]
+  [s :- String+]
   (let [[_ major minor incremental qualifier snapshot]
         (clojure.core/re-matches
          #"(\d+)\.(\d+)\.(\d+)(?:-([a-zA-Z0-9_]+))?(?:-(SNAPSHOT))?"

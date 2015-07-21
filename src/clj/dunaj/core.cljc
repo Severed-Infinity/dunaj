@@ -17,10 +17,13 @@
   Idiomatic use is through the `:api` section of the
   `<<dunaj.lib.api.ad#ns,ns>>` macro."
   {:authors ["Jozef Wagner"]}
-  (:api bare)
+  (:refer-clojure :exclude
+   [refer set first = map if-not remove let fn empty? vec second defn
+    symbol name alter-meta! defmacro filter apply assoc])
   (:require [clojure.bootstrap :refer [v1]]
             [clojure.core.async]
-            [clojure.bridge]
+            #?(:dunaj [clojure.bridge]
+               :clj [clojure.dunaj-deftype])
             [dunaj.type]
             [dunaj.boolean]
             [dunaj.host]
@@ -33,7 +36,7 @@
             [dunaj.host.number]
             [dunaj.compare :refer [=]]
             [dunaj.state]
-            [dunaj.flow :refer [let if-not quote]]
+            [dunaj.flow :refer [let if-not]]
             [dunaj.threading]
             [dunaj.feature :refer [alter-meta!]]
             [dunaj.poly]
@@ -133,21 +136,24 @@
     (alter-meta! clojure.core/*ns* assoc :qualified-specials true)
     ;; Refer peculiar special symbols directly. This is needed only
     ;; for syntax quote to work correctly when handling those symbols.
-    (refer clojure.core [catch finally &])
+    #?(:dunaj (refer clojure.core [catch finally &]))
     ;; Refer common API
     (refer dunaj.type
            [Any AnyFn Fn Maybe Va Predicate KeywordMap U I Required
             Macro])
     (refer dunaj.boolean
-           [Boolean boolean? boolean false? true? not and or])
+           [#?(:dunaj Boolean)
+            Boolean+ boolean? boolean false? true? not and or])
     (refer dunaj.host
-           [set! . .. proxy proxy-super Class class class-instance?
+           [#?(:dunaj set!) . .. proxy proxy-super #?(:dunaj Class)
+            Class+ class class-instance?
             ensure-class-instance provide-class keyword->class
             BatchManager AnyBatch Batch ArrayManager AnyArray Array
             definterface bean->map])
     (refer dunaj.host.int [])
     (refer dunaj.math
-           [Number number? Integer integer? Float float? Decimal
+           [#?(:dunaj Number) #?(:dunaj Integer) #?(:dunaj Float)
+            Number+ number? Integer+ integer? Float+ float? Decimal
             decimal? Rational rational? numerical? num zero? one?
             pos? neg? npos? nneg? even? odd? < <= > >= ==
             trunc + - * / inc dec min max quot rem mod round floor
@@ -165,9 +171,10 @@
             adjustable? adjust! atomic? cas! switch! alter! trade!
             realized? open? cancelled? cancellable? cancel! clone])
     (refer dunaj.flow
-           [let letfn if if-not if-let if-some when when-not when-let
-            when-some cond condp case comment recur loop dotimes doto
-            while eval quote do delay force])
+           [let letfn if-not if-let if-some when when-not when-let
+            when-some cond condp case comment loop dotimes doto while
+            eval quote delay force #?(:dunaj if) #?(:dunaj recur)
+            #?(:dunaj do)])
     (refer dunaj.threading
            [-> ->> as-> cond-> cond->> some-> some->>])
     (refer dunaj.feature
@@ -210,8 +217,8 @@
     (refer dunaj.host.array [array-manager])
     (refer dunaj.char [Char char? char])
     (refer dunaj.string
-           [canonical? canonical ICharSequence char-sequence? String
-            string? str ->str blank?])
+           [canonical? canonical ICharSequence char-sequence? String+
+            string? str ->str blank? #?(:dunaj String)])
     (refer dunaj.time
            [IInstant instant? instant now IDuration duration?
             milliseconds nanoseconds])
@@ -220,17 +227,19 @@
             keyword? keyword])
     (refer dunaj.error
            [IException exception? error illegal-argument illegal-state
-            io index-out-of-bounds no-such-element npe
-            unsupported-operation ex-info ex-data try throw])
+            io index-out-of-bounds no-such-element npe ex-info
+            unsupported-operation ex-data  #?(:dunaj try)
+            #?(:dunaj throw)])
     (refer dunaj.concurrent.thread
-           [Thread thread-local? pass! current-thread
-            ensure-thread-local sleep])
+           [#?(:dunaj Thread) Thread+ thread-local? pass!
+            current-thread ensure-thread-local sleep])
     (refer dunaj.macro
            [defmacro gensym macroexpand macroexpand-1
             macroexpand-all])
     (refer dunaj.uri [Uri uri?])
     (refer dunaj.state.var
-           [Var var? var def+ def defonce declare with-bindings])
+           [Var var? #?(:dunaj var) #?(:dunaj def) def+ defonce
+            declare with-bindings])
     (refer dunaj.state.ref
            [IRef ref? ensure commute alter reset ref dosync])
     (refer dunaj.state.basic [Atom atom box local])
@@ -365,4 +374,5 @@
   {:added v1}
   []
   (clojure.core/require 'dunaj.user)
-  (clojure.core/in-ns-bare 'dunaj.user))
+  #?(:dunaj (clojure.core/in-ns-bare 'dunaj.user)
+     :clj (in-ns 'dunaj.user)))

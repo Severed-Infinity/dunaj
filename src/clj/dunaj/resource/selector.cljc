@@ -14,14 +14,17 @@
   "Selector resources."
   {:authors ["Jozef Wagner"]
    :categories ["Primary"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [reduce keep neg? reduced? deftype when-let conj let fn string?
+    when defn or reset! nil? reify not identical? defprotocol loop
+    merge condp cond max assoc defrecord and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-   [dunaj.boolean :refer [Boolean and or not]]
+   [dunaj.boolean :refer [Boolean+ and or not]]
    [dunaj.host :refer [keyword->class]]
    [dunaj.host.int :refer [Int iint iadd izero? iand ipos? ior i0]]
-   [dunaj.math :refer [Integer max neg?]]
+   [dunaj.math :refer [Integer+ max neg?]]
    [dunaj.bit :as bit]
    [dunaj.compare :refer [nil? identical?]]
    [dunaj.state :refer [IOpenAware IReference IMutable ICloneable
@@ -39,7 +42,7 @@
    [dunaj.host.batch :refer [select-item-type]]
    [dunaj.time :refer [IDuration milliseconds]]
    [dunaj.concurrent.thread :refer
-    [IThreadLocal IPassableThreadLocal Thread
+    [IThreadLocal IPassableThreadLocal Thread+
      current-thread ensure-thread-local]]
    [dunaj.string :refer [string?]]
    [dunaj.error :refer [IException IFailAware IFailable fail! error
@@ -84,7 +87,7 @@
   "Reads from the selector."
   [sel :- java.nio.channels.Selector,
    resource :- (I IFailable IOpenAware),
-   ^:volatile-mutable thread :- (Maybe Thread)]
+   ^:volatile-mutable thread :- (Maybe Thread+)]
   IRed
   (-reduce [this reducef init]
     (ensure-io)
@@ -94,7 +97,7 @@
                        (when (.isOpen sel)
                          (.iterator (.selectedKeys sel))))
           af (fn af [ret iter :- (Maybe java.util.Iterator),
-                     wait? :- Boolean]
+                     wait? :- Boolean+]
                (cond
                  (reduced? ret) ret
                  (postponed? ret)
@@ -111,6 +114,7 @@
                  (.isOpen sel) (recur ret iter true)
                  :else ret))]
       (af init (sf) false)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICloneable
   (-clone [this] (throw (unsupported-operation)))
   IThreadLocal
@@ -121,8 +125,8 @@
     this))
 
 (defprotocol ISelector
-  (-select :- Integer [this timeout-ms :- Integer])
-  (-select-now :- Integer [this]))
+  (-select :- Integer+ [this timeout-ms :- Integer+])
+  (-select-now :- Integer+ [this]))
 
 (defreleasable ^:private SelectorResource
   "Selector resource type."
@@ -248,7 +252,7 @@
   [& {:as opts}]
   (merge selector-factory opts))
 
-(defn select :- Integer
+(defn select :- Integer+
   "Returns number of ready resources among ones registered within
   `_selector_`. Blocks until some resources are ready or until
   `_timeout_` is reached."
@@ -258,10 +262,10 @@
   ([selector :- SelectorResource]
    (select selector nil))
   ([selector :- SelectorResource,
-    timeout :- (U nil Integer IDuration)]
+    timeout :- (U nil Integer+ IDuration)]
    (-select selector (milliseconds timeout))))
 
-(defn select-now :- Integer
+(defn select-now :- Integer+
   "Returns number of ready resources among ones registered within
   `_selector_`. Returns immediatelly."
   {:added v1

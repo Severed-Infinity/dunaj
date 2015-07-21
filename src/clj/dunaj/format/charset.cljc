@@ -22,15 +22,18 @@
   * `:unmappable-mode` - see `charset-formatter` for available
     options"
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [reduce satisfies? map < comp reduced? deftype let -> identity fn
+    when-not when defn or nil? not identical? print loop merge condp
+    cond ex-info reduced defmacro max defrecord and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Maybe Va Fn Any AnyFn U I]]
-   [dunaj.boolean :refer [Boolean or not and]]
+   [dunaj.boolean :refer [Boolean+ or not and]]
    [dunaj.host :refer
-    [Class Array AnyBatch BatchManager keyword->class]]
+    [Class+ Array AnyBatch BatchManager keyword->class]]
    [dunaj.host.int :refer [Int iint iadd i0]]
-   [dunaj.math :refer [Integer max <]]
+   [dunaj.math :refer [Integer+ max <]]
    [dunaj.compare :refer [identical? nil?]]
    [dunaj.state :refer [clone]]
    [dunaj.flow :refer [let when cond when-not loop condp]]
@@ -49,7 +52,7 @@
    [dunaj.feature :refer [IConfig]]
    [dunaj.host.batch :refer [batch-manager item-types-match? batch]]
    [dunaj.host.array :refer [array-manager]]
-   [dunaj.string :refer [String ->str]]
+   [dunaj.string :refer [String+ ->str]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.identifier :refer [Keyword]]
    [dunaj.state.var :refer [Var def+]]
@@ -80,12 +83,12 @@
     :ignore java.nio.charset.CodingErrorAction/IGNORE
     :report java.nio.charset.CodingErrorAction/REPORT))
 
-(defn ^:private get-from-type :- Class
+(defn ^:private get-from-type :- Class+
   "Returns item type for from coll for a given `code-mode`."
   [code-mode :- Keyword]
   (keyword->class (if (identical? :encode code-mode) :char :byte)))
 
-(defn ^:private get-to-type :- Class
+(defn ^:private get-to-type :- Class+
   "Returns item type for to coll for a given `code-mode`."
   [code-mode :- Keyword]
   (keyword->class (if (identical? :encode code-mode) :byte :char)))
@@ -93,7 +96,7 @@
 (defn ^:private get-decoder :- java.nio.charset.CharsetDecoder
   "Returns new decoder instance based on given input args."
   [charset :- java.nio.charset.Charset,
-   replacement :- (Maybe String), malformed-mode :- (Maybe Keyword),
+   replacement :- (Maybe String+), malformed-mode :- (Maybe Keyword),
    unmappable-mode :- (Maybe Keyword)]
   (let [malformed-mode (or malformed-mode *default-malformed-mode*)
         unmappable-mode (or unmappable-mode *default-unmappable-mode*)
@@ -108,7 +111,7 @@
 (defn ^:private get-encoder :- java.nio.charset.CharsetEncoder
   "Returns new encoder instance based on given input args."
   [charset :- java.nio.charset.Charset,
-   replacement :- (Maybe String), malformed-mode :- (Maybe Keyword),
+   replacement :- (Maybe String+), malformed-mode :- (Maybe Keyword),
    unmappable-mode :- (Maybe Keyword)]
   (let [malformed-mode (or malformed-mode *default-malformed-mode*)
         unmappable-mode (or unmappable-mode *default-unmappable-mode*)
@@ -134,7 +137,7 @@
         java.nio.charset.CharsetEncoder)
   "Returns encoder or decoder based on given input args."
   [code-mode :- Keyword, charset :- java.nio.charset.Charset,
-   replacement :- (Maybe String), malformed-mode :- (Maybe Keyword),
+   replacement :- (Maybe String+), malformed-mode :- (Maybe Keyword),
    unmappable-mode :- (Maybe Keyword)]
   ((if (identical? :encode code-mode) get-encoder get-decoder)
    charset replacement malformed-mode unmappable-mode))
@@ -155,22 +158,22 @@
     #(.encode ^java.nio.charset.CharsetEncoder coder %1 %2 %3)
     #(.decode ^java.nio.charset.CharsetDecoder coder %1 %2 %3)))
 
-(defn ^:private compute-capacity :- Integer
+(defn ^:private compute-capacity :- Integer+
   "Returns capacity based on requested capacity and default formatter
   batch sizes."
-  [requested-capacity :- (Maybe Integer)]
+  [requested-capacity :- (Maybe Integer+)]
   (max @default-formatter-batch-size (or requested-capacity 0)))
 
 (defn ^:private check-result :- nil
   "Returns nil and throws with `message` if `res` is not UNDERFLOW or
   OVERFLOW coder result."
-  [res :- Any, message :- String]
+  [res :- Any, message :- String+]
   (when-not
       (or (identical? res java.nio.charset.CoderResult/UNDERFLOW)
           (identical? res java.nio.charset.CoderResult/OVERFLOW))
     (throw (ex-info message {:result res}))))
 
-(defn ^:private overflow? :- Boolean
+(defn ^:private overflow? :- Boolean+
   "Returns true if res is OVERFLOW."
   [res :- Any]
   (identical? res java.nio.charset.CoderResult/OVERFLOW))
@@ -218,11 +221,11 @@
 (deftype BatchedCharsetCoderReducing
   [r :- IReducing,
    charset :- java.nio.charset.Charset,
-   replacement :- (Maybe String),
+   replacement :- (Maybe String+),
    malformed-mode :- (Maybe Keyword),
    unmappable-mode :- (Maybe Keyword)
    code-mode :- Keyword,
-   batch-size :- Integer,
+   batch-size :- Integer+,
    fbm :- BatchManager, tbm :- BatchManager]
   IReducing
   (-init [this] (._init r))
@@ -325,7 +328,7 @@
 
 (defxform batched-charset-coder*
   [charset :- java.nio.charset.Charset,
-   replacement :- (Maybe String), malformed-mode :- (Maybe Keyword),
+   replacement :- (Maybe String+), malformed-mode :- (Maybe Keyword),
    unmappable-mode :- (Maybe Keyword), code-mode :- Keyword]
   ([r] (let [from-type (get-from-type code-mode)
              to-type (get-to-type code-mode)
@@ -343,7 +346,7 @@
 (deftype BatchedCharsetCoder
   "A type for charset encoder and decoder."
   [coll :- (Maybe IRed), charset :- java.nio.charset.Charset,
-   replacement :- (Maybe String), malformed-mode :- (Maybe Keyword),
+   replacement :- (Maybe String+), malformed-mode :- (Maybe Keyword),
    unmappable-mode :- (Maybe Keyword), code-mode :- Keyword]
   IRed
   (-reduce [this reducef init]
@@ -351,6 +354,7 @@
           tbm (batch-manager to-type)
           size-hint @default-formatter-batch-size]
       (reduce-with-batched* to-type size-hint this reducef init)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (get-to-type code-mode))
   IBatchedRed
@@ -371,7 +375,7 @@
 
 (defrecord CharsetFormatterFactory
   [charset :- java.nio.charset.Charset,
-   replacement :- (Maybe String), malformed-mode :- (Maybe Keyword),
+   replacement :- (Maybe String+), malformed-mode :- (Maybe Keyword),
    unmappable-mode :- (Maybe Keyword)]
   IParserFactory
   (-parse [this]
@@ -421,7 +425,7 @@
   * `:unmappable-mode` -`:ignore`, `:replace` (default), `:report`."
   {:added v1
    :see '[utf-8 utf-16 default-charset]}
-  [charset :- String & {:as opts}]
+  [charset :- String+ & {:as opts}]
   (charset-formatter* (java.nio.charset.Charset/forName charset)
                       opts))
 

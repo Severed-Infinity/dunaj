@@ -13,12 +13,19 @@
 (ns dunaj.format.html
   "A very basic Hiccup like HTML printer."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce every? set first seq? dissoc peek last vector? map rest
+    keep reverse range cons sequential? deftype set? conj! remove conj
+    let map? get identity into meta var? fn empty? string? when-not
+    vec when second keyword? defn concat pop declare assoc! or name
+    counted? class? some nth update not defprotocol true? print loop
+    merge cond reduced str next false? case list? count apply
+    interpose assoc defrecord and symbol?])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
-   [dunaj.boolean :refer [Boolean and or not true? false?]]
-   [dunaj.host :refer [Class class? keyword->class]]
+   [dunaj.boolean :refer [and or not true? false?]]
+   [dunaj.host :refer [class? keyword->class]]
    [dunaj.flow :refer [when when-not cond let loop case]]
    [dunaj.feature :refer [IMeta IPersistentMeta meta meta-ref]]
    [dunaj.poly :refer

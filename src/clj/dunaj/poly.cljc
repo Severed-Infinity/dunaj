@@ -29,14 +29,16 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Multimethods"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [satisfies? isa? make-hierarchy deftype extends? defmethod reify
+    instance? record? type defprotocol descendants ancestors extenders
+    get-method defmulti parents defrecord boolean when-let let meta fn
+    defn or class? identical? class supers and])
   (:require
-   [clojure.core :refer
-    [methods prefers symbol get map? some cons remove ->>]]
    [clojure.bootstrap :refer [defalias def+ v1 type-map defn fn]]
    [dunaj.type :refer [Signature Required Fn Any U Va Macro]]
-   [dunaj.boolean :refer [Boolean boolean or and]]
-   [dunaj.host :refer [Class class class? class-instance? supers]]
+   [dunaj.boolean :refer [Boolean+ boolean or and]]
+   [dunaj.host :refer [Class+ class class? class-instance? supers]]
    [dunaj.compare :refer [identical?]]
    [dunaj.state :refer [ICloneable]]
    [dunaj.flow :refer [let when-let]]
@@ -52,7 +54,7 @@
    :category "Primary"}
   {(Required :clojure.core/protocol) true})
 
-(defn protocol? :- Boolean
+(defn protocol? :- Boolean+
   "Returns `true` if `_x_` is a protocol, otherwise returns `false`.
 
   WARNING: When using dunaj-lite, this function works
@@ -81,7 +83,9 @@
   {:added v1
    :see '[extend! deftype extends?]
    :category "Primary"
-   :tsig (Fn [Boolean Protocol Any])})
+   :tsig (Fn [Boolean+ Protocol Any])}
+  #?(:dunaj clojure.core/satisfies?
+     :clj clojure.dunaj-deftype/satisfies?))
 
 ;;; Types and records
 
@@ -92,7 +96,7 @@
    :category "Primary"}
   {(Required :clojure.core/type) true})
 
-(defn type? :- Boolean
+(defn type? :- Boolean+
   "Returns `true` if `_x_` is a type, otherwise returns `false`.
 
   WARNING: When using dunaj-lite, this function works
@@ -114,7 +118,7 @@
    :tsig Macro}
   clojure.bootstrap/deftype)
 
-(defn type-instance? :- Boolean
+(defn type-instance? :- Boolean+
   "Returns `true` if `_x_` is a type instance, otherwise returns
   `false`."
   {:added v1
@@ -131,7 +135,7 @@
    :category "Primary"}
   {(Required :clojure.core/record) true})
 
-(defn record? :- Boolean
+(defn record? :- Boolean+
   "Returns `true` if `_x_` is a record (a record type,
   not instance of a record), otherwise returns `false`.
 
@@ -155,7 +159,7 @@
    :tsig Macro}
   clojure.bootstrap/defrecord)
 
-(defn record-instance? :- Boolean
+(defn record-instance? :- Boolean+
   "Returns `true` if `_x_` is a record instance,
   otherwise returns `false`."
   {:added v1
@@ -165,7 +169,7 @@
   [x :- Any]
   (class-instance? clojure.lang.IRecord x))
 
-(defn instance? :- Boolean
+(defn instance? :- Boolean+
   "Returns `true` if `_x_` is an instance of `_type_`.
   Also accepts class instead of type."
   {:added v1
@@ -177,8 +181,8 @@
                          c# (if (clojure.core/class? c#)
                               c#
                               (:on-class c#))]
-        (clojure.lang.Util/isInstance ^java.lang.Class c# ~x)))}
-  [type :- (U Class Type), x :- Any]
+        (dunaj.lang.Util/isInstance ^java.lang.Class c# ~x)))}
+  [type :- (U Class+ Type), x :- Any]
   (let [c (if (class? type) type (:on-class type))]
     (class-instance? ^java.lang.Class c x)))
 
@@ -187,7 +191,7 @@
   {:added v1
    :see '[dunaj.host/ensure-class]
    :category "Primary"}
-  [type :- (U Class Type), x :- Any]
+  [type :- (U Class+ Type), x :- Any]
   (if (instance? type x)
     x
     (throw (java.lang.IllegalArgumentException.
@@ -253,7 +257,8 @@
   {:added v1
    :see '[deftype]
    :category "Primary"
-   :tsig Macro})
+   :tsig Macro}
+  #?(:dunaj clojure.core/reify :clj clojure.dunaj-deftype/reify))
 
 (defn type :- Any
   "Returns the `:type` metadata of `_x_`, or its type if none.
@@ -269,7 +274,7 @@
       (when-let [wr (get type-map (symbol (.getName (class x))))]
         (.get ^java.lang.ref.WeakReference wr))))
 
-(defn identical-type? :- Boolean
+(defn identical-type? :- Boolean+
   "Returns `true` if `x` and `y` are of identical type,
   otherwise returns `false`."
   {:added v1
@@ -280,7 +285,7 @@
 
 ;;; Extends
 
-(defn extends? :- Boolean
+(defn extends? :- Boolean+
   "Returns `true` if `type` extends `protocol`. Also accepts class
   instead of type.
 
@@ -289,9 +294,11 @@
   {:added v1
    :see '[extend! extend-type! extenders satisfies? extend!]
    :category "Primary"}
-  [protocol :- Protocol, type :- (U Class Type)]
+  [protocol :- Protocol, type :- (U Class+ Type)]
   (let [c (if (class? type) type (:on-class type))
-        ef #(clojure.core/extends? protocol %)
+        ef #(#?(:dunaj clojure.core/extends?
+                :clj clojure.dunaj-deftype/extends)
+               protocol %)
         rf #(identical? java.lang.Object %)]
     (->> (supers c) (remove rf) (cons c) (some ef) boolean)))
 
@@ -337,8 +344,8 @@
    :category "Primary"
    :indent 1
    :highlight :def
-   :tsig (Fn [nil (U Class Type) (Va Any)])}
-  clojure.core/extend)
+   :tsig (Fn [nil (U Class+ Type) (Va Any)])}
+  #?(:dunaj clojure.core/extend :clj clojure.dunaj-deftype/extend))
 
 (defalias extend-protocol!
   "Useful when you want to provide several implementations of the
@@ -374,7 +381,8 @@
    :indent 1
    :highlight :def
    :tsig Macro}
-  clojure.core/extend-protocol)
+  #?(:dunaj clojure.core/extend-protocol
+     :clj clojure.dunaj-deftype/extend-protocol))
 
 (defalias extend-type!
   "A macro that expands into an `extend!` call. Useful when you are
@@ -404,7 +412,8 @@
    :indent 1
    :highlight :def
    :tsig Macro}
-  clojure.core/extend-type)
+  #?(:dunaj clojure.core/extend-type
+     :clj clojure.dunaj-deftype/extend-type))
 
 (defalias extenders
   "Returns a collection of the types/classes explicitly extending
@@ -415,7 +424,9 @@
   {:added v1
    :see '[extend-protocol! extend-type! extend! satisfies? extends?]
    :category "Primary"
-   :tsig (Fn [[(U Type Class) Protocol]])})
+   :tsig (Fn [[(U Type Class+) Protocol]])}
+  #?(:dunaj clojure.core/extenders
+     :clj clojure.dunaj-deftype/extenders))
 
 ;;; Multimethods
 
@@ -518,7 +529,7 @@
   {:added v1
    :see '[derive! make-hierarchy parents]
    :category "Multimethods"
-   :tsig (Fn [Boolean Any Any] [Boolean Any Any Any])})
+   :tsig (Fn [Boolean+ Any Any] [Boolean+ Any Any Any])})
 
 (defalias parents
   "Returns the immediate parents of `_tag_`, either via host type

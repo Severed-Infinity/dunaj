@@ -49,13 +49,14 @@
   fails."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
-  (:require [clojure.core :refer [agent-error]]
-            [clojure.bootstrap :refer [v1]]
+  (:refer-clojure :exclude
+   [await agent await-for boolean deftype let when defn zero? rem
+    reify apply])
+  (:require [clojure.bootstrap :refer [v1]]
             [dunaj.type :refer [Fn Maybe U Any AnyFn Va]]
-            [dunaj.boolean :refer [Boolean boolean]]
+            [dunaj.boolean :refer [Boolean+ boolean]]
             [dunaj.host :refer [class-instance?]]
-            [dunaj.math :refer [Integer zero? rem]]
+            [dunaj.math :refer [Integer+ zero? rem]]
             [dunaj.state :refer [IReference IMutable]]
             [dunaj.flow :refer [let when]]
             [dunaj.feature :refer [IMeta IMutableMeta]]
@@ -259,14 +260,14 @@
    :tsig (Fn [nil (Va Agent)])
    :see '[await-for dunaj.concurrent.thread/join restart-agent!]})
 
-(defn await-for :- Boolean
+(defn await-for :- Boolean+
   "Blocks the current thread until all actions dispatched thus
   far (from this thread or agent) to the `_agents_` have occurred,
   or the `_timeout_` (duration) has elapsed. Returns `false` if
   returning due to `_timeout_`, `true` otherwise."
   {:added v1
    :see '[await dunaj.concurrent.thread/join restart-agent!]}
-  [timeout :- (U Integer IDuration) & agents :- Agent]
+  [timeout :- (U Integer+ IDuration) & agents :- Agent]
   (let [ms (milliseconds timeout)]
     (boolean (apply clojure.core/await-for ms agents))))
 
@@ -284,5 +285,5 @@
         transaction, which are still held until commit."
    :added v1
    :see '[current-agent send send-off send-via restart-agent!]
-   :tsig (Fn [Integer])}
+   :tsig (Fn [Integer+])}
   clojure.core/release-pending-sends)

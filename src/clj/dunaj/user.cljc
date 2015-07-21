@@ -12,5 +12,9 @@
 
 (ns dunaj.user
   "User namespace."
-  (:api dunaj)
-  (:require [dunaj.repl :refer :all]))
+  #?(:dunaj (:api dunaj)
+     :clj (:refer-clojure :only []))
+  #?(:dunaj (:require [dunaj.repl :refer :all])
+     :clj (:require [dunaj.core :refer [dunaj-api!]])))
+
+#?(:clj (dunaj-api!))

@@ -15,7 +15,11 @@
 
   WORK IN PROGRESS"
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq every? satisfies? first last = dec map < rest cons <= and
+    repeatedly let interleave map? meta fn empty? when-not vec when
+    second > defn - or class? some nth nil? instance? record? count
+    defprotocol >= loop gensym cond defmacro inc filter next list?])
   (:require
    [clojure.bootstrap :refer [v1 scratch]]
    [dunaj.type :refer [VariadicSignature Any]]

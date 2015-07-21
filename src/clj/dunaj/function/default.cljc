@@ -18,7 +18,9 @@
   public vars and there is *no need to require this namespace*
   directly."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [contains? atom map let get meta fn key nil? update val cond if-let
+    apply assoc defrecord])
   (:require
    [dunaj.type :refer [I Any Fn U Maybe Predicate]]
    [dunaj.compare :refer [nil?]]

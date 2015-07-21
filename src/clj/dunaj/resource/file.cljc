@@ -13,14 +13,17 @@
 (ns dunaj.resource.file
   "Host filesystem resources."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [keep neg? reduced? deftype let long fn string? when defn declare
+    or reset! nil? reify not defprotocol loop merge cond max assoc
+    resolve defrecord and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
    [dunaj.boolean :refer [and or not]]
    [dunaj.host :refer [AnyArray keyword->class class-instance?]]
    [dunaj.host.int :refer [iint iloop iadd i0]]
-   [dunaj.math :refer [Integer max neg?]]
+   [dunaj.math :refer [Integer+ max neg?]]
    [dunaj.host.number :refer [long]]
    [dunaj.compare :refer [nil?]]
    [dunaj.state :refer [IOpenAware IReference IMutable ICloneable
@@ -37,9 +40,9 @@
    [dunaj.host.array :refer [array]]
    [dunaj.host.batch :refer [select-item-type provide-batch-size]]
    [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal
+    [Thread+ IThreadLocal IPassableThreadLocal
      current-thread ensure-thread-local]]
-   [dunaj.string :refer [String string?]]
+   [dunaj.string :refer [String+ string?]]
    [dunaj.uri :refer [Uri uri uri? absolute? resolve]]
    [dunaj.state.var :refer [def+ declare]]
    [dunaj.error :refer [IException IFailAware IFailable
@@ -56,13 +59,13 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-file-batch-size :- Integer
+(def+ ^:private default-file-batch-size :- Integer+
   "Default size for file batch."
   8192)
 
-(defn ^:private provide-file-batch-size :- Integer
+(defn ^:private provide-file-batch-size :- Integer+
   "Returns file batch size taking into account given batch size hint."
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (provide-batch-size (max (or size-hint 0) default-file-batch-size)))
 
 (defn ^:private get-fs :- java.nio.file.FileSystem
@@ -75,8 +78,8 @@
 (defn ^:private to-path :- java.nio.file.Path
   "Returns NIO Path object based on given string or uri `x`.
   Relative paths are resolved in the current working directory."
-  [fs :- java.nio.file.FileSystem, x :- (U String Uri),
-   wd :- (U nil String Uri)]
+  [fs :- java.nio.file.FileSystem, x :- (U String+ Uri),
+   wd :- (U nil String+ Uri)]
   (let [x (uri x)
         wduri (uri (or wd "."))]
     (cond (absolute? x) (java.nio.file.Paths/get x)
@@ -116,8 +119,8 @@
 (defreleasable FileResourceImmutableReader
   "Reads always from the begining of the file. Passable thread local."
   [fch :- java.nio.channels.FileChannel,
-   batch-size :- (Maybe Integer),
-   ^:volatile-mutable thread :- (Maybe Thread),
+   batch-size :- (Maybe Integer+),
+   ^:volatile-mutable thread :- (Maybe Thread+),
    ^:volatile-mutable error :- (Maybe IException)]
   IAcquirableFactory
   (-acquire! [this] this)
@@ -138,6 +141,7 @@
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICounted
   (-count [this]
     (ensure-thread-local thread)
@@ -169,13 +173,13 @@
   (-truncate! :- nil
     "Truncates `_this_` file resource to a given `_size_`,
     returning `nil`."
-    [this size :- Integer]))
+    [this size :- Integer+]))
 
 (defreleasable ^:private FileResource
   "File resource type. Passable thread local."
   [fch :- java.nio.channels.FileChannel,
-   batch-size :- (Maybe Integer), config :- {},
-   ^:volatile-mutable thread :- (Maybe Thread),
+   batch-size :- (Maybe Integer+), config :- {},
+   ^:volatile-mutable thread :- (Maybe Thread+),
    ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)
@@ -288,13 +292,13 @@
   seekable and truncatable."
   {:added v1
    :see '[file-factory dunaj.resource/resource]}
-  [uri :- (U nil String Uri) & {:as opts}]
+  [uri :- (U nil String+ Uri) & {:as opts}]
   (merge file-factory (assoc opts :uri uri)))
 
 (defn truncate! :- nil
   "Truncates given resource `_res_` to `_size_`. Returns `nil`."
   {:added v1}
-  [res :- ITruncatable, size :- Integer]
+  [res :- ITruncatable, size :- Integer+]
   (-truncate! res size))
 
 (register-factory! nil file-factory)

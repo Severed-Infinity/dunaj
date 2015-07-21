@@ -30,14 +30,17 @@
      "See <<Primary,ordered section>> for slower
      but ordered version of functions for parallel computation."]]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [pvalues pmap pcalls peek dec < .. reduced? deftype when-let conj
+    let -> fn when defn concat pop or zero? loop cond reduced defmacro
+    + count apply deref])
   (:require
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]
    [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
    [dunaj.boolean :refer [or]]
    [dunaj.host :refer [..]]
-   [dunaj.math :refer [Integer < + zero? dec]]
+   [dunaj.math :refer [Integer+ < + zero? dec]]
    [dunaj.compare :refer [decode-nil encode-nil]]
    [dunaj.state :refer [deref]]
    [dunaj.flow :refer [cond let loop when when-let]]
@@ -75,7 +78,7 @@
         :else (->PMapWrap ret q)))
 
 (deftype PMapReducing
-  [r :- IReducing, pool :- ITaskExecutor, n :- Integer, f :- AnyFn]
+  [r :- IReducing, pool :- ITaskExecutor, n :- Integer+, f :- AnyFn]
   IReducing
   (-init [this] (._init r))
   (-finish [this wrap]
@@ -147,7 +150,7 @@
       (recur (<!! ich)))))
 
 (deftype UnorderedPMapReducing
-  [r :- IReducing, pool :- ITaskExecutor, n :- Integer, f :- AnyFn]
+  [r :- IReducing, pool :- ITaskExecutor, n :- Integer+, f :- AnyFn]
   IReducing
   (-init [this] (._init r))
   (-finish [this wrap]
@@ -254,7 +257,7 @@
   {:added v1
    :see '[pmap dunaj.concurrent.forkjoin/transfold]
    :category "Primary"}
-  [pool :- (Maybe ITaskExecutor), n :- (Maybe Integer), f :- AnyFn]
+  [pool :- (Maybe ITaskExecutor), n :- (Maybe Integer+), f :- AnyFn]
   ([r] (let [pool (or pool @default-future-executor)
              n (or n (+ 2 (.. java.lang.Runtime
                               getRuntime availableProcessors)))]
@@ -273,7 +276,7 @@
   {:added v1
    :see '[pmap-unordered dunaj.concurrent.forkjoin/transfold]
    :category "Unordered"}
-  [pool :- (Maybe ITaskExecutor), n :- (Maybe Integer), f :- AnyFn]
+  [pool :- (Maybe ITaskExecutor), n :- (Maybe Integer+), f :- AnyFn]
   ([r] (let [pool (or pool @default-future-executor)
              n (or n (+ 2 (.. java.lang.Runtime
                               getRuntime availableProcessors)))]
@@ -299,9 +302,9 @@
    (pmap* nil nil f))
   ([f :- AnyFn, coll :- []]
    (pmap* nil nil f coll))
-  ([n :- (Maybe Integer), f :- AnyFn, coll :- []]
+  ([n :- (Maybe Integer+), f :- AnyFn, coll :- []]
    (pmap* nil n f coll))
-  ([pool :- (Maybe ITaskExecutor), n :- (Maybe Integer), f :- AnyFn,
+  ([pool :- (Maybe ITaskExecutor), n :- (Maybe Integer+), f :- AnyFn,
     coll :- []]
    (pmap* pool n f coll)))
 
@@ -322,9 +325,9 @@
    (pmap-unordered* nil nil f))
   ([f :- AnyFn, coll :- []]
    (pmap-unordered* nil nil f coll))
-  ([n :- (Maybe Integer), f :- AnyFn, coll :- []]
+  ([n :- (Maybe Integer+), f :- AnyFn, coll :- []]
    (pmap-unordered* nil n f coll))
-  ([pool :- (Maybe ITaskExecutor), n :- (Maybe Integer), f :- AnyFn,
+  ([pool :- (Maybe ITaskExecutor), n :- (Maybe Integer+), f :- AnyFn,
     coll :- []]
    (pmap-unordered* pool n f coll)))
 

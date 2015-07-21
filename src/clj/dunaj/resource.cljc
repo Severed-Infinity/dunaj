@@ -46,15 +46,23 @@
   Resources can implement custom error handling."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Scope" "System"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [slurp format read seq reduce contains? butlast satisfies? first
+    atom = map rest cons pos? if-not sequential? doseq neg? reduced?
+    deftype when-let zipmap min conj let map? get into meta var?
+    future fn empty? key string? when-not vec when defn declare or
+    name some nil? update reify update-in instance? val not type
+    identical? defprotocol print loop merge integer? condp cond
+    ex-info partial reduced defmacro odd? keyword next if-let io! max
+    == count apply assoc defrecord and ->> get-in])
   (:require
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]
    [dunaj.type :refer [Fn AnyFn Any Maybe U I]]
-   [dunaj.boolean :refer [Boolean or and not]]
+   [dunaj.boolean :refer [Boolean+ or and not]]
    [dunaj.host :refer [keyword->class class-instance?]]
    [dunaj.host.int :refer [i0]]
-   [dunaj.math :refer [Integer integer? pos? odd? max neg? == min]]
+   [dunaj.math :refer [Integer+ integer? pos? odd? max neg? == min]]
    [dunaj.state :refer
     [IAtomic cancel! alter! cas! reference? IOpenAware adjust! io!
      atomic? switch! IAdjustable IReference IMutable ensure-io
@@ -79,7 +87,7 @@
    [dunaj.concurrent :refer [future]]
    [dunaj.concurrent.port :as dp :refer
     [ISourcePort chan <!! thread >!! timeout alts!!]]
-   [dunaj.string :as ds :refer [String string? ->str]]
+   [dunaj.string :as ds :refer [String+ string? ->str]]
    [dunaj.time :refer [IDuration milliseconds]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.identifier :refer [Keyword keyword name]]
@@ -201,7 +209,7 @@
           (invocable? val) (recur (val opts))
           :else (release-throw "unknown item in scope." val opts))))
 
-(defn in-scope? :- Boolean
+(defn in-scope? :- Boolean+
   "Returns `true` if there is a current scope present,
   `false` otherwise."
   {:added v1
@@ -482,7 +490,7 @@
   {:added v1
    :category "Primary"
    :see '[read! readable? slurp]}
-  [x :- (U String Uri IImmutableReadable)]
+  [x :- (U String+ Uri IImmutableReadable)]
   (-read (resource x)))
 
 (defprotocol IReadable
@@ -548,13 +556,13 @@
    :see '[write! write-one!]
    :predicate 'writable?
    :forbid-extensions true}
-  (-write! :- (U Integer Postponed)
+  (-write! :- (U Integer+ Postponed)
     "Writes `_coll_` into `_this_` and returns number of items
     written. Blocks or returns postponed object if in non-blocking
     mode. Throws if I/O error occurs."
     [this coll :- IRed]))
 
-(defn write! :- (U Integer Postponed)
+(defn write! :- (U Integer+ Postponed)
   "Writes `_coll_` into object `_x_` and returns number of items
   written. Takes an optional transducer `_xf_`.
 
@@ -571,7 +579,7 @@
   ([x :- Any, xform :- Any, coll :- IRed]
    (write! x (recipe xform coll))))
 
-(defn write-one! :- (U Integer Postponed)
+(defn write-one! :- (U Integer+ Postponed)
   "Writes `_val_` into object `_x_` and returns number of items
   written. Takes an optional transducer `_xf_`.
   Blocks or returns postponed object if in non-blocking mode.
@@ -645,14 +653,14 @@
   {:added v1
    :see '[size position]
    :predicate 'seekable?}
-  (-size :- Integer
+  (-size :- Integer+
     "Returns the current size of `_this_`."
     [this])
   (-position :- IMutable
     "Returns a mutable reference to the current position."
     [this]))
 
-(defn size :- Integer
+(defn size :- Integer+
   "Returns the current size of a seekable resource `_x_`,
   in resource specific units."
   {:added v1
@@ -723,7 +731,7 @@
   ([res :- IImmutableReadable, parser :- IParserFactory]
    (parse parser (read res))))
 
-(defn spit-with! :- Integer
+(defn spit-with! :- Integer+
   "Writes `_coll_` to the `_res_` using `_printer_` for printing,
   returning number of bytes written. Default mode is `:append`."
   {:added v1
@@ -738,7 +746,7 @@
                (assoc (resource res) :mode mode))]
      (write! res (print printer coll)))))
 
-(defn spit! :- Integer
+(defn spit! :- Integer+
   "Writes `_coll_` to the `_res_`, returning number of bytes written.
   Uses utf-8 printer. Default `_mode_` is `:append`."
   {:added v1
@@ -838,17 +846,17 @@
    :see '[start! acquire! system]
    :predicate 'system?})
 
-(defrecord System
+(defrecord System+
   []
   ISystem)
 
-(defn system :- System
+(defn system :- ISystem
   "Returns a system map."
   {:added v1
    :category "System"
    :see '[start! deps assoc-deps]}
   [& {:as keyvals}]
-  (map->System keyvals))
+  (map->System+ keyvals))
 
 (declare start!*)
 
@@ -956,7 +964,7 @@
         :else (recur new-done)))))
 
 (defn start!* :- {}
-  [system :- System, cfg :- {}, cast-fn :- AnyFn]
+  [system :- ISystem, cfg :- {}, cast-fn :- AnyFn]
   (let [resolved (if (system? system)
                    (resolve-system system cfg cast-fn)
                    system)]
@@ -973,9 +981,9 @@
   {:added v1
    :category "System"
    :see '[acquire! deps assoc-deps system]}
-  ([system :- System]
+  ([system :- ISystem]
    (start! system nil))
-  ([system :- System, cfg :- {}]
+  ([system :- ISystem, cfg :- {}]
    (start! system cfg (:cast-fn (meta cfg))))
-  ([system :- System, cfg :- {}, cast-fn :- AnyFn]
+  ([system :- ISystem, cfg :- {}, cast-fn :- AnyFn]
    (start!* (autoconf system cfg cast-fn) cfg cast-fn)))

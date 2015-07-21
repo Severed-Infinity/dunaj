@@ -21,11 +21,17 @@
 
   Printer supports naive pretty mode with ANSII color support."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce first = take dec map < rest keep char mapcat cons pos?
+    if-not sequential? neg? deftype conj! remove * min conj let ->
+    identity fn empty? string? when-not vec when second > defn symbol
+    - assoc! or name nth nil? not identical? defprotocol true? print /
+    >= partition loop cond inc + str false? max == count apply assoc
+    defrecord repeat and])
   (:require
    [clojure.bootstrap :refer [scratch v1]]
    [dunaj.type :refer [Fn Any AnyFn Maybe U I]]
-   [dunaj.boolean :refer [Boolean and or not true? false?]]
+   [dunaj.boolean :refer [Boolean+ and or not true? false?]]
    [dunaj.host :refer [Batch keyword->class class-instance?]]
    [dunaj.host.int :refer
     [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imax iadd
@@ -51,7 +57,7 @@
    [dunaj.identifier :refer [INamed name symbol]]
    [dunaj.char :refer [Char char]]
    [dunaj.string :refer
-    [String MutableString ->str empty-string str string?]]
+    [String+ MutableString ->str empty-string str string?]]
    [dunaj.state.var :refer [def+]]
    [dunaj.coll.default :refer [empty-vec empty-map vec]]
    [dunaj.coll.cons-seq :refer [cons]]
@@ -82,7 +88,7 @@
 
 ;;;; Parser
 
-(defn json-whitespace? :- Boolean
+(defn json-whitespace? :- Boolean+
   "Returns true if `x` represents a JSON whitespace Unicode code
   point, otherwise returns false."
   [x :- Int]
@@ -97,7 +103,7 @@
 
 ;;; number literal
 
-(defn json-number-element? :- Boolean
+(defn json-number-element? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid character of a JSON Number Literal, otherwise returns false."
   [x :- Int]
@@ -128,7 +134,7 @@
                         (.position batch pos)
                         (-analyze-eof! this))))))
   (-analyze-eof! [this]
-    (let [s :- String (settle! ts)]
+    (let [s :- String+ (settle! ts)]
       (cond (not decimal?) (let [bi (java.math.BigInteger. s)]
                              (if (>= (.bitLength bi) 64)
                                (clojure.lang.BigInt/fromBigInteger bi)
@@ -147,7 +153,7 @@
 
 ;;; string literal
 
-(defn ^:private invalid-json-string-element? :- Boolean
+(defn ^:private invalid-json-string-element? :- Boolean+
   "Returns true if `x` is a Unicode code point of an invalid character
   inside a string literal, otherwise returns false."
   [x :- Int]
@@ -294,7 +300,7 @@
 
 ;;; printing strings
 
-(def+ ^:private zeroes :- String "0000")
+(def+ ^:private zeroes :- String+ "0000")
 
 (defn ^:private to-escape
   "Returns batch containing escape sequence or nil, if no

@@ -19,11 +19,19 @@
 
   Printer supports naive pretty mode with ANSI color support."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce contains? satisfies? first = take dec map < rest keep
+    char mapcat cons pos? if-not sequential? neg? deftype when-let
+    take-while conj! remove * min conj let map? -> get identity fn
+    empty? string? when-not vec when second > defn symbol declare -
+    assoc! or reset! name zero? nth nil? not identical? defprotocol
+    true? print / >= loop integer? condp cond ex-info reduced inc +
+    keyword str if-let false? case to-array max == count apply assoc
+    defrecord constantly and number?])
   (:require
    [clojure.bootstrap :refer [scratch v1]]
    [dunaj.type :refer [AnyFn Any Fn Maybe U I]]
-   [dunaj.boolean :refer [Boolean and or not true? false?]]
+   [dunaj.boolean :refer [Boolean+ and or not true? false?]]
    [dunaj.host :refer [keyword->class class-instance?]]
    [dunaj.host.int :refer
     [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imax iadd
@@ -90,19 +98,19 @@
 
 ;;;; Parser
 
-(defn edn-whitespace? :- Boolean
+(defn edn-whitespace? :- Boolean+
   "Returns true if `x` represents an EDN whitespace character,
   otherwise returns false."
   [x :- Int]
   (or (java.lang.Character/isWhitespace x) (i== x (iCOMMA))))
 
-(defn edn-newline? :- Boolean
+(defn edn-newline? :- Boolean+
   "Returns true if `x` represents an EDN newline character,
   otherwise returns false."
   [x :- Int]
   (i== x (iLF)))
 
-(defn edn-delimiter? :- Boolean
+(defn edn-delimiter? :- Boolean+
   "Returns true if `x` represents an EDN delimiter character,
   otherwise returns false."
   [x :- Int]
@@ -259,13 +267,13 @@
 
 ;;; number literal
 
-(defn edn-number-start? :- Boolean
+(defn edn-number-start? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid character of an EDN Number Literal, otherwise returns false."
   [x :- Int]
   (or (idigit? x) (i== x (iMINUS)) (i== x (iPLUS))))
 
-(defn edn-number-item? :- Boolean
+(defn edn-number-item? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid character of an EDN Number Literal, otherwise returns false."
   [x :- Int]
@@ -429,7 +437,7 @@
 
 ;;; symbol literal
 
-(defn edn-symbol-start? :- Boolean
+(defn edn-symbol-start? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid starting character of an EDN Symbol Literal,
   otherwise returns false."
@@ -441,19 +449,19 @@
       (i== x (iEQ)) (i== x (iLT)) (i== x (iGT)) (i== x (iSLASH))
       (i== x (iCOLON))))
 
-(defn edn-symbol-digit? :- Boolean
+(defn edn-symbol-digit? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid digit, otherwise returns false."
   [x :- Int]
   (java.lang.Character/isDigit x))
 
-(defn edn-symbol-item? :- Boolean
+(defn edn-symbol-item? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid character of an EDN Symbol Literal, otherwise returns false."
   [x :- Int]
   (or (edn-symbol-start? x) (i== x (iHASH)) (edn-symbol-digit? x)))
 
-(defn edn-strict-symbol-start? :- Boolean
+(defn edn-strict-symbol-start? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid starting character of an EDN Symbol Literal,
   otherwise returns false."
@@ -464,14 +472,14 @@
       (i== x (iDOLLAR)) (i== x (iPERCENT)) (i== x (iAMP))
       (i== x (iEQ)) (i== x (iLT)) (i== x (iGT))))
 
-(defn edn-nondigit-symbol-item? :- Boolean
+(defn edn-nondigit-symbol-item? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid starting character of an EDN Symbol Literal,
   otherwise returns false."
   [x :- Int]
   (or (edn-strict-symbol-start? x) (i== x (iHASH)) (i== x (iCOLON))))
 
-(defn edn-strict-symbol-item? :- Boolean
+(defn edn-strict-symbol-item? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid starting character of an EDN Symbol Literal,
   otherwise returns false."
@@ -479,14 +487,14 @@
   (or (edn-nondigit-symbol-item? x)
       (java.lang.Character/isDigit x)))
 
-(defn edn-maybe-symbol-start? :- Boolean
+(defn edn-maybe-symbol-start? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid starting character of an EDN Symbol Literal,
   otherwise returns false."
   [x :- Int]
   (or (i== x (iMINUS)) (i== x (iPLUS)) (i== x (iDOT))))
 
-(defn ^:private valid-symbol? :- Boolean
+(defn ^:private valid-symbol? :- Boolean+
   "Returns true if string `s` is a valid EDN symbol, otherwise
   returns false."
   [s]
@@ -514,7 +522,7 @@
               6 (if (edn-strict-symbol-item? x) 6 fail))))]
     (not (== 4 (reduce cf 0 s)))))
 
-(defn ^:private valid-keyword? :- Boolean
+(defn ^:private valid-keyword? :- Boolean+
   "Returns true if string `s` is a valid EDN keyword, otherwise
   returns false."
   ([s] (valid-keyword? s true))

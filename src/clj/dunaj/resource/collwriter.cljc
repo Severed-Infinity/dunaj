@@ -17,9 +17,11 @@
   public vars and there is *no need to require this namespace*
   directly."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [and or not nil? = reset! let cond loop when reify defprotocol
+    deftype defrecord first seq next empty? conj fn defn defmacro])
   (:require [clojure.core.async]
-            [dunaj.boolean :refer [Boolean and or not]]
+            [dunaj.boolean :refer [and or not]]
             [dunaj.host :refer [keyword->class Array ArrayManager]]
             [dunaj.host.int :refer [iint iinc i0 i-1 i< iadd]]
             [dunaj.compare :refer [nil? =]]

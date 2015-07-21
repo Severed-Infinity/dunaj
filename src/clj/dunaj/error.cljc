@@ -14,20 +14,21 @@
   "Error handling, exceptions."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Exceptions"]}
-  (:api bare)
+  (:refer-clojure :exclude
+   [ex-data error-mode error-handler ex-info namespace comp let fn
+    when defn name defprotocol defmacro keyword class])
   (:require
-   [clojure.core :refer [extend-protocol map into do]]
    [clojure.stacktrace]
    [clojure.bootstrap :refer
     [defprotocol defn defalias defmacro v1 not-implemented]]
    [dunaj.type :refer [Fn Maybe KeywordMap]]
-   [dunaj.boolean :refer [Boolean]]
+   [dunaj.boolean :refer [Boolean+]]
    [dunaj.host :refer [bean->map class]]
    [dunaj.flow :refer [let when]]
    [dunaj.state :refer [IReference]]
    [dunaj.function :refer [fn comp]]
    [dunaj.host.array :refer [adapt]]
-   [dunaj.string :refer [hyphen-case String]]
+   [dunaj.string :refer [hyphen-case String+]]
    [dunaj.identifier :refer [INamed keyword namespace name]]))
 
 
@@ -54,55 +55,59 @@
 
 ;;; try-catch
 
-(defmacro try
-  "The `_exprs_` are evaluated and, if no exceptions occur, the
-  value of the last is returned. If an exception occurs and catch
-  clauses are provided, each is examined in turn and the first for
-  which the thrown exception is an instance of the named class is
-  considered a matching catch clause. If there is a matching
-  catch clause, its exprs are evaluated in a context in which
-  name is bound to the thrown exception, and the value of the
-  last is the return value of the function. If there is no matching
-  catch clause, the exception propagates out of the function.
-  Before returning, normally or abnormally, any finally exprs
-  will be evaluated for their side effects."
-  {:added v1
-   :category "Primary"
-   :see '[catch finally throw]
-   :indent 0
-   :highlight :flow}
-  [& exprs]
-  `(clojure.core/try ~@exprs))
+#?(:dunaj
+   (defmacro try
+    "The `_exprs_` are evaluated and, if no exceptions occur, the
+    value of the last is returned. If an exception occurs and catch
+    clauses are provided, each is examined in turn and the first for
+    which the thrown exception is an instance of the named class is
+    considered a matching catch clause. If there is a matching
+    catch clause, its exprs are evaluated in a context in which
+    name is bound to the thrown exception, and the value of the
+    last is the return value of the function. If there is no matching
+    catch clause, the exception propagates out of the function.
+    Before returning, normally or abnormally, any finally exprs
+    will be evaluated for their side effects."
+    {:added v1
+     :category "Primary"
+     :see '[catch finally throw]
+     :indent 0
+     :highlight :flow}
+    [& exprs]
+    `(clojure.core/try ~@exprs)))
 
-(defmacro catch
-  "A catch clause."
-  {:added v1
-   :category "Primary"
-   :see '[try finally throw]
-   :highlight :flow
-   :indent 2}
-  [ex-type ex & body]
-  (not-implemented "catch outside try block."))
+#?(:dunaj
+   (defmacro catch
+    "A catch clause."
+    {:added v1
+     :category "Primary"
+     :see '[try finally throw]
+     :highlight :flow
+     :indent 2}
+    [ex-type ex & body]
+    (not-implemented "catch outside try block.")))
 
-(defmacro finally
-  "A finally clause."
-  {:added v1
-   :category "Primary"
-   :see '[try catch throw]
-   :highlight :flow
-   :indent 0}
-  [& body]
-  (not-implemented "finally outside try block."))
+#?(:dunaj
+   (defmacro finally
+    "A finally clause."
+    {:added v1
+     :category "Primary"
+     :see '[try catch throw]
+     :highlight :flow
+     :indent 0}
+    [& body]
+    (not-implemented "finally outside try block.")))
 
-(defmacro throw
-  "The `_expr_` is evaluated and thrown, therefore it should yield an
-  instance of `IException`."
-  {:added v1
-   :category "Primary"
-   :see '[try catch finally]
-   :highlight :flow}
-  [expr]
-  `(clojure.core/throw ~expr))
+#?(:dunaj
+   (defmacro throw
+    "The `_expr_` is evaluated and thrown, therefore it should yield
+    an instance of `IException`."
+    {:added v1
+     :category "Primary"
+     :see '[try catch finally]
+     :highlight :flow}
+    [expr]
+    `(clojure.core/throw ~expr)))
 
 ;;; Custom error handling
 
@@ -180,7 +185,7 @@
    :see '[error fragile]}
   ([x :- IFailable, exception :- IException]
    (-fail! x exception))
-  ([x :- IFailable, exception :- IException, throw? :- Boolean]
+  ([x :- IFailable, exception :- IException, throw? :- Boolean+]
    (-fail! x exception)
    (when throw? (throw exception))))
 
@@ -223,7 +228,7 @@
   [ex :- IException]
   (.getCause ex))
 
-(defn message :- (Maybe String)
+(defn message :- (Maybe String+)
   "Returns message for given exception, or `nil` if exception does not
   contain a message."
   {:added v1

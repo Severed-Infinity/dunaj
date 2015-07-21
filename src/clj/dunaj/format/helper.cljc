@@ -13,7 +13,7 @@
 (ns dunaj.format.helper
   "Helper fns for formatter implementations."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude [let doto defn])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn]]
@@ -26,7 +26,7 @@
    [dunaj.host.array :refer [array-manager]]
    [dunaj.host.batch :refer [batch-on]]
    [dunaj.char :refer [Char]]
-   [dunaj.string :refer [String MutableString]]
+   [dunaj.string :refer [String+ MutableString]]
    [dunaj.state.var :refer [def+]]))
 
 
@@ -39,7 +39,7 @@
 
 (defn ^:private get-cha :- (Array Char)
   "Returns char array from a string."
-  [s :- String]
+  [s :- String+]
   (.get cha s))
 
 (def+ ^:private cam :- ArrayManager
@@ -71,9 +71,9 @@
   Implementation note: returned batch must have position 0 and limit
   set to buffers capacity."
   {:added v1}
-  ([s :- String]
+  ([s :- String+]
    (batch-on (get-cha s) (i0) (.length s)))
-  ([s :- String, bm :- BatchManager, batch :- AnyBatch]
+  ([s :- String+, bm :- BatchManager, batch :- AnyBatch]
    (let [l (.length s)
          arr (get-cha s)]
      (if (i< (.remaining batch) l)

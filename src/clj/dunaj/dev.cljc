@@ -18,7 +18,9 @@
   "Helpers for developers."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [time assert seq set first namespace map let not= vec when second
+    defn concat defmacro keys filter])
   (:require [clojure.bootstrap :refer [v1]]
             [dunaj.type :refer [Macro]]
             [dunaj.flow :refer [when]]

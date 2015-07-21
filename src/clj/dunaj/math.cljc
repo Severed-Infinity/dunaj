@@ -40,15 +40,16 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Comparison" "Operations" "Rounding"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [decimal? dec < pos? neg? num float? <= * min with-precision quot >
+    even? mod - zero? rem / >= integer? numerator rationalize odd? inc
+    + max == rational? number? denominator let fn defn or not
+    defprotocol loop defmacro])
   (:require
-   [clojure.core :as cc :refer
-    [. if ratio? assert apply hash-map cond -> = binding when-not
-     if-not recur seq first rest and declare nil? throw double long]]
    [clojure.bootstrap :refer [defalias defn def+ fn loop let v1
                               defprotocol not-implemented defmacro]]
    [dunaj.type :refer [Fn Maybe U Any Va Signature]]
-   [dunaj.boolean :refer [Boolean not or]]
+   [dunaj.boolean :refer [Boolean+ not or]]
    [dunaj.host :refer [class-instance?]]
    [dunaj.host.int :refer [iint]])
   (:import
@@ -59,29 +60,42 @@
 
 ;;;; Public API
 
-(def+ Number :- Signature
-  "A type signature for numbers.
+#?(:dunaj
+   (def+ Number :- Signature
+     "A type signature for numbers.
 
-  WARNING: This type signature is not available in Dunaj lite,
-  please use `Number+` instead."
-  {:added v1
-   :see '[number? Integer Float Decimal Rational INumerical num
-          Number+]
-   :category "Primary"}
-  java.lang.Number)
+     WARNING: This type signature is not available in Dunaj lite,
+     please use `Number+` instead."
+     {:added v1
+      :see '[number? Integer Float Decimal Rational INumerical num
+             Number+]
+      :category "Primary"}
+     java.lang.Number))
 
-(def+ Number+ :- Signature
-  "A type signature for numbers.
+#?(:clj
+   (def+ Number+ :- Signature
+     "A type signature for numbers.
 
-  TIP: Identical to `Number` type signature,
-  meant to be used in Dunaj lite."
-  {:added v1
-   :see '[number? Integer Float Decimal Rational INumerical num
-          Number]
-   :category "Primary"}
-  java.lang.Number)
+     TIP: Identical to `Number` type signature,
+     meant to be used in Dunaj lite."
+     {:added v1
+      :see '[number? Integer+ Float+ Decimal Rational INumerical num]
+      :category "Primary"}
+     java.lang.Number))
 
-(defn number? :- Boolean
+#?(:dunaj
+   (def+ Number+ :- Signature
+     "A type signature for numbers.
+
+     TIP: Identical to `Number` type signature,
+     meant to be used in Dunaj lite."
+     {:added v1
+      :see '[number? Integer Float Decimal Rational INumerical num
+             Number]
+      :category "Primary"}
+     java.lang.Number))
+
+(defn number? :- Boolean+
   "Returns `true` if `_x_` is a number, otherwise returns `false`."
   ;; TODO: inline for primitive support
   {:added v1
@@ -91,38 +105,56 @@
   [x :- Any]
   (class-instance? java.lang.Number x))
 
-(def+ Integer :- Signature
-  "A type signature for integer numbers.
+#?(:dunaj
+   (def+ Integer :- Signature
+     "A type signature for integer numbers.
 
-  IMPORTANT: This is not a host Integer type, but rather a type
-  signature for any integer type (e.g. JVM Integer, Byte, Short).
+     IMPORTANT: This is not a host Integer type, but rather a type
+     signature for any integer type (e.g. JVM Integer, Byte, Short).
 
-  WARNING: This type signature is not available in Dunaj lite,
-  please use `Integer+` instead."
-  {:added v1
-   :see '[integer? Number Float Decimal Rational dunaj.host.int/Int
-          dunaj.host.number/long Integer+]
-   :category "Primary"}
-  (U java.lang.Integer java.lang.Long clojure.lang.BigInt
-     java.math.BigInteger java.lang.Short java.lang.Byte))
+     WARNING: This type signature is not available in Dunaj lite,
+     please use `Integer+` instead."
+     {:added v1
+      :see '[integer? Number Float Decimal Rational dunaj.host.int/Int
+             dunaj.host.number/long Integer+]
+      :category "Primary"}
+     (U java.lang.Integer java.lang.Long clojure.lang.BigInt
+        java.math.BigInteger java.lang.Short java.lang.Byte)))
 
-(def+ Integer+ :- Signature
-  "A type signature for integer numbers.
+#?(:clj
+   (def+ Integer+ :- Signature
+     "A type signature for integer numbers.
 
-  TIP: Identical to `Integer` type signature,
-  meant to be used in Dunaj lite."
-  {:added v1
-   :see '[integer? Number Float Decimal Rational dunaj.host.int/Int
-          dunaj.host.number/long Integer]
-   :category "Primary"}
-  (U java.lang.Integer java.lang.Long clojure.lang.BigInt
-     java.math.BigInteger java.lang.Short java.lang.Byte))
+     IMPORTANT: This is not a host Integer type, but rather a type
+     signature for any integer type (e.g. JVM Integer, Byte, Short).
 
-(defn integer? :- Boolean
+     TIP: Identical to `Integer` type signature,
+     meant to be used in Dunaj lite."
+     {:added v1
+      :see '[integer? Number+ Float+ Decimal Rational
+             dunaj.host.int/Int dunaj.host.number/long]
+      :category "Primary"}
+     (U java.lang.Integer java.lang.Long clojure.lang.BigInt
+        java.math.BigInteger java.lang.Short java.lang.Byte)))
+
+#?(:dunaj
+   (def+ Integer+ :- Signature
+     "A type signature for integer numbers.
+
+     TIP: Identical to `Integer` type signature,
+     meant to be used in Dunaj lite."
+     {:added v1
+      :see '[integer? Number Float Decimal Rational dunaj.host.int/Int
+             dunaj.host.number/long Integer]
+      :category "Primary"}
+     (U java.lang.Integer java.lang.Long clojure.lang.BigInt
+        java.math.BigInteger java.lang.Short java.lang.Byte)))
+
+(defn integer? :- Boolean+
   "Returns `true` if `_x_` is an integer number,
   otherwise returns `false`."
   {:added v1
-   :see '[Integer number? float? decimal? rational?
+   :see '[Integer+ number? float? decimal? rational?
           dunaj.host.int/iint]
    :category "Primary"}
   ;; TODO: inline for primitive support
@@ -134,36 +166,53 @@
       (class-instance? java.math.BigInteger x)
       (class-instance? java.lang.Short x)))
 
-(def+ Float :- Signature
-  "A type signature for floating point numbers.
+#?(:dunaj
+   (def+ Float :- Signature
+     "A type signature for floating point numbers.
 
-  IMPORTANT: This is not a host Float type, but rather a type
-  signature for any floating point type (e.g. JVM Float, Double).
+     IMPORTANT: This is not a host Float type, but rather a type
+     signature for any floating point type (e.g. JVM Float, Double).
 
-  WARNING: This type signature is not available in Dunaj lite,
-  please use `Float+` instead."
-  {:added v1
-   :see '[integer? Number Integer Decimal Rational
-          dunaj.host.number/double Float+]
-   :category "Primary"}
-  (U java.lang.Double java.lang.Float))
+     WARNING: This type signature is not available in Dunaj lite,
+     please use `Float+` instead."
+     {:added v1
+      :see '[integer? Number Integer Decimal Rational
+             dunaj.host.number/double Float+]
+      :category "Primary"}
+     (U java.lang.Double java.lang.Float)))
 
-(def+ Float+ :- Signature
-  "A type signature for floating point numbers.
+#?(:clj
+   (def+ Float+ :- Signature
+     "A type signature for floating point numbers.
 
-  TIP: Identical to `Float` type signature,
-  meant to be used in Dunaj lite."
-  {:added v1
-   :see '[integer? Number Integer Float Decimal Rational
-          dunaj.host.number/double]
-   :category "Primary"}
-  (U java.lang.Double java.lang.Float))
+     IMPORTANT: This is not a host Float type, but rather a type
+     signature for any floating point type (e.g. JVM Float, Double).
 
-(defn float? :- Boolean
+     TIP: Identical to `Float` type signature,
+     meant to be used in Dunaj lite."
+     {:added v1
+      :see '[integer? Number+ Integer+ Decimal Rational
+             dunaj.host.number/double]
+      :category "Primary"}
+     (U java.lang.Double java.lang.Float)))
+
+#?(:dunaj
+   (def+ Float+ :- Signature
+     "A type signature for floating point numbers.
+
+     TIP: Identical to `Float` type signature,
+     meant to be used in Dunaj lite."
+     {:added v1
+      :see '[integer? Number Integer Float Decimal Rational
+             dunaj.host.number/double]
+      :category "Primary"}
+     (U java.lang.Double java.lang.Float)))
+
+(defn float? :- Boolean+
   "Returns `true` if `_x_` is a floating point number,
   otherwise returns `false`."
   {:added v1
-   :see '[Float number? integer? decimal? rational?]
+   :see '[Float+ number? integer? decimal? rational?]
    :category "Primary"}
   ;; TODO: inline for primitive support
   [x :- Any]
@@ -173,12 +222,12 @@
 (def+ Decimal :- Signature
   "A type signature for decimal numbers."
   {:added v1
-   :see '[decimal? Number Integer Float Rational
+   :see '[decimal? Number Integer+ Float+ Rational
           dunaj.host.number/bigdec]
    :category "Primary"}
   java.math.BigDecimal)
 
-(defn decimal? :- Boolean
+(defn decimal? :- Boolean+
   "Returns `true` if `_x_` is a decimal number,
   otherwise returns `false`."
   {:added v1
@@ -190,13 +239,13 @@
 (def+ Rational :- Signature
   "A type signature for rational numbers (not just Clojure ratios)."
   {:added v1
-   :see '[rational? Number Integer Float Decimal]
+   :see '[rational? Number Integer+ Float+ Decimal]
    :category "Primary"}
   (U java.lang.Integer java.lang.Long clojure.lang.BigInt
      java.math.BigInteger java.lang.Short java.lang.Byte
      java.math.BigDecimal clojure.lang.Ratio))
 
-(defn rational? :- Boolean
+(defn rational? :- Boolean+
   "Returns `true` if `_x_` is a rational number,
   otherwise returns `false`."
   {:added v1
@@ -248,9 +297,9 @@
    :added v1
    :see '[one? pos? neg? dunaj.host.int/izero?]
    :category "Comparison"
-   :tsig (Fn [Boolean Number])})
+   :tsig (Fn [Boolean+ Number])})
 
-(defn one? :- Boolean
+(defn one? :- Boolean+
   "Returns `true` if `_x_` is equal to 1, `false` otherwise."
   {:added v1
    :see '[zero? pos? neg? dunaj.host.int/ione?]
@@ -264,7 +313,7 @@
    :added v1
    :see '[npos? zero? one? neg? dunaj.host.int/ipos?]
    :category "Comparison"
-   :tsig (Fn [Boolean Number])})
+   :tsig (Fn [Boolean+ Number])})
 
 (defalias neg?
   {:doc "Returns `true` if `_x_` is less than zero,
@@ -272,9 +321,9 @@
    :added v1
    :see '[nneg? zero? pos? neg? dunaj.host.int/ineg?]
    :category "Comparison"
-   :tsig (Fn [Boolean Number])})
+   :tsig (Fn [Boolean+ Number])})
 
-(defn npos? :- Boolean
+(defn npos? :- Boolean+
   "Returns `true` if `_x_` is not positive, `false` otherwise."
   {:added v1
    :see '[pos? zero? neg? dunaj.host.int/inpos?]
@@ -282,7 +331,7 @@
   [x :- Number]
   (not (pos? x)))
 
-(defn nneg? :- Boolean
+(defn nneg? :- Boolean+
   "Returns `true` if `_x_` is not negative, `false` otherwise."
   {:added v1
    :see '[neg? zero? pos? dunaj.host.int/inneg?]
@@ -295,14 +344,14 @@
    :added v1
    :see '[odd? dunaj.host.int/ieven?]
    :category "Comparison"
-   :tsig (Fn [Boolean Integer])})
+   :tsig (Fn [Boolean+ Integer+])})
 
 (defalias odd?
   {:doc "Returns `true` if `_n_` is odd, otherwise returns `false`."
    :added v1
    :see '[odd? dunaj.host.int/iodd?]
    :category "Comparison"
-   :tsig (Fn [Boolean Integer])})
+   :tsig (Fn [Boolean+ Integer+])})
 
 (defalias <
   {:doc "Returns `true` if nums are in monotonically increasing order,
@@ -310,9 +359,9 @@
    :added v1
    :see '[<= == > dunaj.host.int/i<]
    :category "Comparison"
-   :tsig (Fn [Boolean Number]
-             [Boolean Number Number]
-             [Boolean Number Number (Va Number)])})
+   :tsig (Fn [Boolean+ Number]
+             [Boolean+ Number Number]
+             [Boolean+ Number Number (Va Number)])})
 
 (defalias <=
   {:doc "Returns `true` if nums are in monotonically non-decreasing
@@ -320,9 +369,9 @@
    :added v1
    :see '[< == >= dunaj.host.int/i<=]
    :category "Comparison"
-   :tsig (Fn [Boolean Number]
-             [Boolean Number Number]
-             [Boolean Number Number (Va Number)])})
+   :tsig (Fn [Boolean+ Number]
+             [Boolean+ Number Number]
+             [Boolean+ Number Number (Va Number)])})
 
 (defalias >
   {:doc "Returns `true` if nums are in monotonically decreasing
@@ -330,9 +379,9 @@
    :added v1
    :see '[< == >= dunaj.host.int/i>]
    :category "Comparison"
-   :tsig (Fn [Boolean Number]
-             [Boolean Number Number]
-             [Boolean Number Number (Va Number)])})
+   :tsig (Fn [Boolean+ Number]
+             [Boolean+ Number Number]
+             [Boolean+ Number Number (Va Number)])})
 
 (defalias >=
   {:doc "Returns `true` if nums are in monotonically non-increasing
@@ -340,9 +389,9 @@
    :added v1
    :see '[<= == > dunaj.host.int/i>=]
    :category "Comparison"
-   :tsig (Fn [Boolean Number]
-             [Boolean Number Number]
-             [Boolean Number Number (Va Number)])})
+   :tsig (Fn [Boolean+ Number]
+             [Boolean+ Number Number]
+             [Boolean+ Number Number (Va Number)])})
 
 (defalias ==
   {:doc "Returns `true` if nums all have the equivalent value
@@ -350,9 +399,9 @@
    :added v1
    :see '[< > dunaj.host.int/i==]
    :category "Comparison"
-   :tsig (Fn [Boolean Number]
-             [Boolean Number Number]
-             [Boolean Number Number (Va Number)])})
+   :tsig (Fn [Boolean+ Number]
+             [Boolean+ Number Number]
+             [Boolean+ Number Number (Va Number)])})
 
 ;;; Transformation
 
@@ -363,7 +412,7 @@
    :category "Primary"
    :tsig (Fn [Rational Number])})
 
-(defn numerator :- Integer
+(defn numerator :- Integer+
   "Returns the numerator part of a given rational number `_x_`."
   {:added v1
    :see '[rationalize denominator rational? trunc]
@@ -374,7 +423,7 @@
         :else (throw (java.lang.IllegalArgumentException.
                       "Not a rational number."))))
 
-(defn denominator :- Integer
+(defn denominator :- Integer+
   "Returns the denominator part of a given rational number `_x_`."
   {:added v1
    :see '[rationalize numerator rational? trunc]
@@ -387,7 +436,7 @@
 
 (declare quot)
 
-(defn trunc :- Integer
+(defn trunc :- Integer+
   "Returns an integer number created from given floating or decimal
   number `_x_` by truncating its decimal part. Returns unchanged if
   `_x_` is integer or rational."
@@ -575,7 +624,7 @@
     ;; TODO: use cond with dispatch on type?
     (Math/abs x)))
 
-(defn divisible? :- Boolean
+(defn divisible? :- Boolean+
   "Returns `true` if `_num_` is divisible by `_div_`,
   otherwise returns `false`."
   {:added v1
@@ -584,13 +633,13 @@
   [num :- Number div :- Number]
   (zero? (mod num div)))
 
-(defn gcd :- Integer
+(defn gcd :- Integer+
   "Returns the greatest common divisor of given integer numbers."
   {:added v1
    :see '[lcm divisible? indivisible?]
    :category "Operations"}
   ;; TODO: make it faster, mainly varargs version
-  ([x :- Integer, y :- Integer]
+  ([x :- Integer+, y :- Integer+]
      (let [to-big-integer #(cond (class-instance? BigInt %)
                                  (.toBigInteger ^BigInt %)
                                  (class-instance? BigInteger %) %
@@ -600,19 +649,19 @@
        (-> (.gcd bx by)
            (BigInt/fromBigInteger)
            (Numbers/reduceBigInt))))
-  ([x :- Integer, y :- Integer, & more :- Integer]
+  ([x :- Integer+, y :- Integer+, & more :- Integer+]
      (loop [g (gcd x y), xs more]
        (if (seq xs)
          (recur (gcd g (first xs)) (rest xs))
          g))))
 
-(defn lcm :- Integer
+(defn lcm :- Integer+
   "Returns the least common multiple of given integer numbers."
   ;; TODO: make it faster, mainly varargs version
   {:added v1
    :see '[gcd divisible? indivisible?]
    :category "Operations"}
-  ([x :- Integer, y :- Integer]
+  ([x :- Integer+, y :- Integer+]
      (let [to-big-integer #(cond (class-instance? BigInt %)
                                  (.toBigInteger ^BigInt %)
                                  (class-instance? BigInteger %) %
@@ -622,7 +671,7 @@
        (-> (.multiply (.divide (.abs bx) (.gcd bx by)) (.abs by))
            (BigInt/fromBigInteger)
            (Numbers/reduceBigInt))))
-  ([x :- Integer, y :- Integer, & more :- Integer]
+  ([x :- Integer+, y :- Integer+, & more :- Integer+]
      (loop [g (lcm x y), xs more]
        (if (seq xs)
          (recur (lcm g (first xs)) (rest xs))
@@ -646,7 +695,7 @@
   {:added v1
    :see '[round with-precision]
    :category "Rounding"}
-  {:precision Integer
+  {:precision Integer+
    :type (U :decimal :significant)
    :mode (U :ceiling :floor
             :half-up :half-down :half-even
@@ -662,7 +711,7 @@
 (defn ^:private set-scale :- BigDecimal
   "Returns bigdecimal number `x` rounded to `p` decimal digits,
   using `rm` RoundingMode configuration."
-  [x :- BigDecimal, p :- Integer, rm :- RoundingMode]
+  [x :- BigDecimal, p :- Integer+, rm :- RoundingMode]
   (.setScale x (iint p) rm))
 
 (defn ^:private round-bigdec :- BigDecimal
@@ -772,79 +821,79 @@
          (.pow bx y))
        (Math/pow x y))))
 
-(defn sqrt :- Float
+(defn sqrt :- Float+
   "Returns the square root of a floating point number `_x_`."
   {:added v1
    :see '[cbrt pow]
    :category "Operations"
    :inline (fn [x] `(. Math (sqrt ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/sqrt x))
 
-(defn cbrt :- Float
+(defn cbrt :- Float+
   "Returns the cube root of a floating point number `_x_`."
   {:added v1
    :see '[sqrt pow]
    :category "Operations"
    :inline (fn [x] `(. Math (cbrt ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/cbrt x))
 
-(defn exp :- Float
+(defn exp :- Float+
   "Returns `_e^x^_`, the `e` raised to the power of a floating point
   number `_x_`."
   {:added v1
    :see '[expm1 log]
    :category "Operations"
    :inline (fn [x] `(. Math (exp ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/exp x))
 
-(defn expm1 :- Float
+(defn expm1 :- Float+
   "Returns `(dec (exp _x_))`, which yields more precise result."
   {:added v1
    :see '[exp log1p]
    :category "Operations"
    :inline (fn [x] `(. Math (expm1 ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/expm1 x))
 
-(defn log :- Float
+(defn log :- Float+
   "Returns the natural logarithm of a floating point number `_x_`."
   {:added v1
    :see '[log1p log10 exp]
    :category "Operations"
    :inline (fn [x] `(. Math (log ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/log x))
 
-(defn log1p :- Float
+(defn log1p :- Float+
   "Returns `(inc (exp _x_))`, which yields more precise result."
   {:added v1
    :see '[log log10 expm1]
    :category "Operations"
    :inline (fn [x] `(. Math (log1p ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/log1p x))
 
-(defn log10 :- Float
+(defn log10 :- Float+
   "Returns the base 10 logarithm of a floating point number `_x_`."
   {:added v1
    :see '[log log1p]
    :category "Operations"
    :inline (fn [x] `(. Math (log10 ~x)))}
-  [x :- Float]
+  [x :- Float+]
   (Math/log10 x))
 
 ;;; Constants
 
-(def+ ^:const ^java.lang.Double pi :- Float
+(def+ ^:const ^java.lang.Double pi :- Float+
   "The `PI` constant as defined by the host."
   {:added v1
    :see '[e dunaj.math.angle/deg]}
   Math/PI)
 
-(def+ ^:const ^java.lang.Double e :- Float
+(def+ ^:const ^java.lang.Double e :- Float+
   "The `e` constant as defined by the host."
   {:added v1
    :see '[pi exp expm1 log log1p log10]}
@@ -856,25 +905,26 @@
 (clojure.core/require
  '[clojure.bootstrap :refer [assert-boolean assert-primitive]])
 
-(assert-boolean
- (number? 5)
- (integer? 5)
- (float? 5)
- (decimal? 5)
- (rational? 5)
- (zero? 5)
- (one? 5)
- (pos? 5)
- (neg? 5)
- (npos? 5)
- (nneg? 5)
- (even? 5)
- (odd? 5)
- (< 5 6)
- (<= 5 6)
- (== 5 6)
- (> 5 6)
- (>= 5 6))
+#?(:dunaj
+   (assert-boolean
+    (number? 5)
+    (integer? 5)
+    (float? 5)
+    (decimal? 5)
+    (rational? 5)
+    (zero? 5)
+    (one? 5)
+    (pos? 5)
+    (neg? 5)
+    (npos? 5)
+    (nneg? 5)
+    (even? 5)
+    (odd? 5)
+    (< 5 6)
+    (<= 5 6)
+    (== 5 6)
+    (> 5 6)
+    (>= 5 6)))
 
 (assert-primitive
  ;; (trunc 2)

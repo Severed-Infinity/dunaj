@@ -31,14 +31,16 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Operations"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [reduce contains? satisfies? = disj deftype cat conj let get meta
+    empty? hash when-not when defn declare or instance? not identical?
+    empty cond if-let apply and nil?])
   (:require
-   [clojure.core :refer [defmethod get-method cons some print-method]]
    [clojure.set :as cs]
    [clojure.bootstrap :refer [v1]]
    [clojure.pprint]
    [dunaj.type :refer [Any Fn I Maybe AnyFn Va KeywordMap Predicate]]
-   [dunaj.boolean :refer [Boolean not or and]]
+   [dunaj.boolean :refer [Boolean+ not or and]]
    [dunaj.host :refer [class-instance?]]
    [dunaj.host.int :refer [Int iadd iint]]
    [dunaj.compare :refer [IHash IEquiv identical? hash -hash = nil?]]
@@ -197,13 +199,13 @@
           (cf (cs/difference (.-excluded x) other))
           (throw (illegal-argument "Not of similar type.")))))
 
-(defn ^:private cequiv :- Boolean
+(defn ^:private cequiv :- Boolean+
   [x :- ComplementSet, other :- Any]
   (if (identical-type? x other)
     (= (.-excluded x) (.-excluded ^dunaj.set.ComplementSet other))
     false))
 
-(defn ^:private cequals :- Boolean
+(defn ^:private cequals :- Boolean+
   [x :- ComplementSet, other :- Any]
   (if (identical-type? x other)
     (clojure.lang.Util/equals
@@ -242,7 +244,7 @@
         (complement? set) (.-excluded ^dunaj.set.ComplementSet set)
         :else (->ComplementSet set nil)))
 
-(defn finite? :- Boolean
+(defn finite? :- Boolean+
   "Returns `true` is `_set_` is finite, `false` otherwise."
   {:added v1
    :see '[set-complement U]
@@ -385,7 +387,7 @@
   ([s1 :- #{}, s2 :- #{} & sets :- #{}]
    (reduce difference (difference s1 s2) sets)))
 
-(defn subset? :- Boolean
+(defn subset? :- Boolean+
   "Returns `true` if `_s1_` is a subset of `_s2_`, otherwise
   returns `false`."
   {:added v1
@@ -403,7 +405,7 @@
         (complement? s1) false
         :else (cs/subset? s1 s2)))
 
-(defn superset? :- Boolean
+(defn superset? :- Boolean+
   "Returns `true` if `_s1_` is a superset of `_s2_`, otherwise
   returns `false`."
   {:added v1

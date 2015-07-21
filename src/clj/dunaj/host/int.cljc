@@ -22,11 +22,10 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Comparison" "Operations"
                 "Bitwise" "Numbers" "ASCII"]}
-  (:api bare-ws)
-  (:require [clojure.core :refer [fn]]
-            [clojure.bootstrap :refer [deftype defmacro defn v1]]
+  (:refer-clojure :exclude [deftype defn defmacro])
+  (:require [clojure.bootstrap :refer [deftype defmacro defn v1]]
             [dunaj.type :refer [Any]]
-            [dunaj.boolean :refer [Boolean]]))
+            [dunaj.boolean :refer [Boolean++]]))
 
 
 ;;;; Public API
@@ -1418,7 +1417,7 @@
   [x :- Int, y :- Int]
   (dunaj.lang.Int/xor x y))
 
-(defn i< :- Boolean
+(defn i< :- Boolean+
   "Returns `true` if `_x_` is less than `_y_`, otherwise returns
   `false`."
   {:added v1
@@ -1428,7 +1427,7 @@
   [x :- Int, y :- Int]
   (dunaj.lang.Int/lt ~x ~y))
 
-(defn i<= :- Boolean
+(defn i<= :- Boolean+
   "Returns `true` if `_x_` is less than or equal to `_y_`,
   otherwise returns `false`."
   {:added v1
@@ -1438,7 +1437,7 @@
   [x :- Int, y :- Int]
   (dunaj.lang.Int/lte ~x ~y))
 
-(defn i> :- Boolean
+(defn i> :- Boolean+
   "Returns `true` if `_x_` is greater than `_y_`, otherwise returns
   `false`."
   {:added v1
@@ -1448,7 +1447,7 @@
   [x :- Int, y :- Int]
   (dunaj.lang.Int/gt ~x ~y))
 
-(defn i>= :- Boolean
+(defn i>= :- Boolean+
   "Returns `true` if `_x_` is greater than or equal to `_y_`,
   otherwise returns `false`."
   {:added v1
@@ -1458,7 +1457,7 @@
   [x :- Int, y :- Int]
   (dunaj.lang.Int/gte ~x ~y))
 
-(defn i== :- Boolean
+(defn i== :- Boolean+
   "Returns `true` if `_x_` is equal to `_y_`,
   otherwise returns `false`."
   {:added v1
@@ -1468,7 +1467,7 @@
   [x :- Int, y :- Int]
   (dunaj.lang.Int/eq ~x ~y))
 
-(defn izero? :- Boolean
+(defn izero? :- Boolean+
   "Returns `true` if `_x_` is 0, otherwise returns `false`."
   {:added v1
    :see '[dunaj.math/zero?]
@@ -1477,7 +1476,7 @@
   [x :- Int]
   (dunaj.lang.Int/zerop ~x))
 
-(defn ione? :- Boolean
+(defn ione? :- Boolean+
   "Returns `true` if `_x_` is 1, otherwise returns `false`."
   {:added v1
    :see '[dunaj.math/one?]
@@ -1486,7 +1485,7 @@
   [x :- Int]
   (dunaj.lang.Int/onep ~x))
 
-(defn ipos? :- Boolean
+(defn ipos? :- Boolean+
   "Returns `true` if `_x_` is greater than 0,
   otherwise returns `false`."
   {:added v1
@@ -1496,7 +1495,7 @@
   [x :- Int]
   (dunaj.lang.Int/pos ~x))
 
-(defn inpos? :- Boolean
+(defn inpos? :- Boolean+
   "Returns `true` if `_x_` is less than 1,
   otherwise returns `false`."
   {:added v1
@@ -1506,7 +1505,7 @@
   [x :- Int]
   (dunaj.lang.Int/npos ~x))
 
-(defn ineg? :- Boolean
+(defn ineg? :- Boolean+
   "Returns `true` if `_x_` is less than 0,
   otherwise returns `false`."
   {:added v1
@@ -1516,7 +1515,7 @@
   [x :- Int]
   (dunaj.lang.Int/neg ~x))
 
-(defn inneg? :- Boolean
+(defn inneg? :- Boolean+
   "Returns `true` if `_x_` is greater than -1,
   otherwise returns `false`."
   {:added v1
@@ -1526,7 +1525,7 @@
   [x :- Int]
   (dunaj.lang.Int/nneg ~x))
 
-(defn ieven? :- Boolean
+(defn ieven? :- Boolean+
   "Returns `true` if `_x_` is an even integer,
   otherwise returns `false`."
   {:added v1
@@ -1536,7 +1535,7 @@
   [x :- Int]
   (dunaj.lang.Int/even ~x))
 
-(defn iodd? :- Boolean
+(defn iodd? :- Boolean+
   "Returns `true` if `_x_` is an odd integer,
   otherwise returns `false`."
   {:added v1
@@ -1546,7 +1545,7 @@
   [x :- Int]
   (dunaj.lang.Int/odd ~x))
 
-(defn ismall-letter? :- Boolean
+(defn ismall-letter? :- Boolean+
   "Returns `true` of `_x_` is an unicode codepoint of a small latin
   letter [a-z], otherwise returns `false`."
   {:added v1
@@ -1556,7 +1555,7 @@
   [x :- Int]
   (dunaj.lang.Int/isSmallLetter ~x))
 
-(defn icapital-letter? :- Boolean
+(defn icapital-letter? :- Boolean+
   "Returns `true` of `_x_` is an unicode codepoint of a capital latin
   letter [A-Z], otherwise returns `false`."
   {:added v1
@@ -1566,7 +1565,7 @@
   [x :- Int]
   (dunaj.lang.Int/isCapitalLetter ~x))
 
-(defn idigit? :- Boolean
+(defn idigit? :- Boolean+
   "Returns `true` of `_x_` is an unicode codepoint of a decimal digit,
   otherwise returns `false`."
   {:added v1
@@ -1576,7 +1575,7 @@
   [x :- Int]
   (dunaj.lang.Int/isDigit ~x))
 
-(defn ioctal? :- Boolean
+(defn ioctal? :- Boolean+
   "Returns `true` of `_x_` is an unicode codepoint of an octal digit,
   otherwise returns `false`."
   {:added v1
@@ -1586,7 +1585,7 @@
   [x :- Int]
   (dunaj.lang.Int/isOctal ~x))
 
-(defn ihexa? :- Boolean
+(defn ihexa? :- Boolean+
   "Returns `true` of `_x_` is an unicode codepoint of
   a hexadecimal digit, otherwise returns `false`."
   {:added v1
@@ -1602,17 +1601,20 @@
 (clojure.core/require
  '[clojure.bootstrap :refer [assert-int assert-boolean]])
 
-(iloop [x (i10)]
-  (assert-int x)
-  (if (izero? x) nil (recur (idec x))))
+#?(:dunaj
+   (iloop [x (i10)]
+          (assert-int x)
+          (if (izero? x) nil (recur (idec x)))))
 
-(assert-int
- (i0)
- (imin (i0) (i1))
- (imin 1 2)
- (idigit->int (iint \3))
- (iSMALL_A))
+#?(:dunaj
+   (assert-int
+    (i0)
+    (imin (i0) (i1))
+    (imin 1 2)
+    (idigit->int (iint \3))
+    (iSMALL_A)))
 
-(assert-boolean
- (ipos? 4)
- (ihexa? (iint \A)))
+#?(:dunaj
+   (assert-boolean
+    (ipos? 4)
+    (ihexa? (iint \A))))

@@ -46,12 +46,17 @@
   bytes to the collection of integers, floats, etc."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Transducers"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [rand-nth floats booleans rand seq satisfies? first boolean < neg?
+    reduced? deftype <= let -> doto long double fn when > defn or
+    name byte-array zero? rem nth nil? not defprotocol / >= loop
+    merge cond reduced unchecked-byte next == count apply assoc
+    defrecord and])
   (:require
    [clojure.bootstrap :refer [assert-primitive v1 not-implemented]]
    [dunaj.type :refer [Any Fn Va I U Maybe Predicate]]
-   [dunaj.boolean :refer [Boolean and or not boolean]]
-   [dunaj.math :refer [Integer Float >= rem < neg? <= zero? > == /]]
+   [dunaj.boolean :refer [and or not boolean]]
+   [dunaj.math :refer [Integer+ Float+ >= rem < neg? <= zero? > == /]]
    [dunaj.math.unchecked :as mu]
    [dunaj.host :refer [Batch AnyBatch keyword->class]]
    [dunaj.host.int :refer
@@ -75,7 +80,7 @@
      reduce-with-batched* cloned-advance-fn red-to-seq]]
    [dunaj.function :refer [apply defn fn]]
    [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal current-thread ensure-thread-local]]
+    [Thread+ IThreadLocal current-thread ensure-thread-local]]
    [dunaj.host.array :refer [byte-array array-manager]]
    [dunaj.host.batch :refer [provide-batch-size batch-manager
                              select-item-type item-types-match?]]
@@ -94,7 +99,7 @@
   []
   (java.util.concurrent.ThreadLocalRandom/current))
 
-(def+ ^:dynamic ^:private *default-rng-batch-size* :- Integer
+(def+ ^:dynamic ^:private *default-rng-batch-size* :- Integer+
   32)
 
 (defn ^:private reduce-batched-rng
@@ -118,14 +123,14 @@
     (af init batch)))
 
 (deftype RWrap
-  [ret :- Any, pval :- Integer, left :- Int, other :- Any])
+  [ret :- Any, pval :- Integer+, left :- Int, other :- Any])
 
 (deftype BRWrap
-  [ret :- Any, pval :- Integer, left :- Int,
+  [ret :- Any, pval :- Integer+, left :- Int,
    obatch :- Any, other :- Any])
 
 (defn ^:private r-advance :- Any
-  [ret :- Any, pval :- Integer, left :- Int, other :- Any]
+  [ret :- Any, pval :- Integer+, left :- Int, other :- Any]
   (cond (reduced? ret) (reduced (->RWrap @ret pval left other))
         (postponed? ret)
         (postponed (->RWrap @ret pval left other)
@@ -158,7 +163,7 @@
   (doto (.getDeclaredField java.util.Random "DOUBLE_UNIT")
     (.setAccessible true)))
 
-(defn ^:private get-double-unit :- Float
+(defn ^:private get-double-unit :- Float+
   "Returns DOUBLE_UNIT value"
   []
   (.get double-unit nil))
@@ -203,11 +208,12 @@
 
 (deftype LocalRng
   "A type for thread local random number generator."
-  [tlr :- java.util.Random, thread :- Thread]
+  [tlr :- java.util.Random, thread :- Thread+]
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched*
      nil *default-rng-batch-size* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IThreadLocal
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
@@ -240,6 +246,7 @@
   (-reduce [this reducef init]
     (reduce-with-batched*
      nil *default-rng-batch-size* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
   IBatchedRed
@@ -287,6 +294,7 @@
                       (isub left (i1))
                       (i>>> val (i8))))]
       (af init 0 0)))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICloneable
   (-clone [this] (->SplittableRng (.split sr)))
   IHomogeneous
@@ -325,6 +333,7 @@
   (-reduce [this reducef init]
     (reduce-with-batched*
      nil *default-rng-batch-size* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IConfig
   (-config [this]
     (merge config
@@ -395,7 +404,7 @@
   ([] (rng thread-local-rng))
   ([factory :- IRngFactory]
    (-rng factory))
-  ([factory :- IRngFactory, seed :- Integer]
+  ([factory :- IRngFactory, seed :- Integer+]
    (-rng (assoc factory :seed seed)))
   ([factory :- IRngFactory, key :- Keyword, val :- Any
     & keyvals :- Any]
@@ -403,9 +412,9 @@
 
 ;;; Transformations
 
-(deftype IntegerReducing
+(deftype Integer+Reducing
   "An augmented reducing type for integers* transducer."
-  [r :- IReducing, begin :- (Maybe Integer), end :- (Maybe Integer)]
+  [r :- IReducing, begin :- (Maybe Integer+), end :- (Maybe Integer+)]
   IReducing
   (-init [this] (._init r))
   (-finish [this wrap]
@@ -441,22 +450,23 @@
   {:added v1
    :see '[integers rand-integer rng booleans]
    :category "Transducers"}
-  [begin :- (Maybe Integer), end :- (Maybe Integer)]
+  [begin :- (Maybe Integer+), end :- (Maybe Integer+)]
   ([r]
    (when (and begin end (>= begin end)) (throw (index-out-of-bounds)))
-   (->IntegerReducing r begin end))
+   (->Integer+Reducing r begin end))
   :count false
   :fold false
   :section false
   :unpack false)
 
-(deftype BatchableIntegers
+(deftype BatchableInteger+s
   "A type for batchable collection of random integers."
   [coll begin end]
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* (keyword->class :long)
                           *default-rng-batch-size* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] nil)
   IBatchedRed
@@ -525,17 +535,17 @@
    :category "Transducers"}
   ([] (integers* nil nil))
   ([coll :- []] (integers nil nil coll))
-  ([end :- (Maybe Integer), coll :- []] (integers nil end coll))
-  ([begin :- (Maybe Integer), end :- (Maybe Integer), coll :- []]
+  ([end :- (Maybe Integer+), coll :- []] (integers nil end coll))
+  ([begin :- (Maybe Integer+), end :- (Maybe Integer+), coll :- []]
    (if (and
         (satisfies? IBatchedRed coll)
         (item-types-match? (keyword->class :byte) (item-type coll)))
-     (->BatchableIntegers coll begin end)
+     (->BatchableInteger+s coll begin end)
      (integers* begin end coll))))
 
 (deftype FloatReducing
   "An augmented reducing type for floats* transducer."
-  [r :- IReducing, begin :- (Maybe Integer), end :- (Maybe Integer)]
+  [r :- IReducing, begin :- (Maybe Integer+), end :- (Maybe Integer+)]
   IReducing
   (-init [this] (._init r))
   (-finish [this wrap]
@@ -573,7 +583,7 @@
   {:added v1
    :see '[floats rand gaussian]
    :category "Transducers"}
-  [begin :- (Maybe Float), end :- (Maybe Float)]
+  [begin :- (Maybe Float+), end :- (Maybe Float+)]
   ([r]
    (when (and begin end (>= begin end)) (throw (index-out-of-bounds)))
    (->FloatReducing r begin end))
@@ -589,6 +599,7 @@
   (-reduce [this reducef init]
     (reduce-with-batched* (keyword->class :double)
                           *default-rng-batch-size* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] nil)
   IBatchedRed
@@ -659,8 +670,8 @@
    :category "Transducers"}
   ([] (floats*))
   ([coll :- []] (floats nil nil coll))
-  ([end :- (Maybe Float), coll :- []] (floats nil end coll))
-  ([begin :- (Maybe Float), end :- (Maybe Float), coll :- []]
+  ([end :- (Maybe Float+), coll :- []] (floats nil end coll))
+  ([begin :- (Maybe Float+), end :- (Maybe Float+), coll :- []]
    (if (and
         (satisfies? IBatchedRed coll)
         (item-types-match? (keyword->class :byte) (item-type coll)))
@@ -739,7 +750,7 @@
 
 ;;; Convenience functions
 
-(defn rand :- Float
+(defn rand :- Float+
   "Returns a random floating point number, with optional
   `_begin_` (inclusive) and `_end_` (exclusive) bounds. Default value
   for `_begin_` is 0.0 and default value for `_end_` is 1.0."
@@ -758,12 +769,12 @@
                     ~begin ~end)))}
   ([]
    (.nextDouble (tlrng)))
-  ([end :- Float]
+  ([end :- Float+]
    (.nextDouble (tlrng) end))
-  ([begin :- Float, end :- Float]
+  ([begin :- Float+, end :- Float+]
    (.nextDouble (tlrng) begin end)))
 
-(defn rand-integer :- Integer
+(defn rand-integer :- Integer+
   "Returns a random integer number, with optional
   `_begin_` (inclusive) and `_end_` (exclusive) bounds.
   One arg version sets `_begin_` to 0."
@@ -781,8 +792,8 @@
       `(.nextLong (java.util.concurrent.ThreadLocalRandom/current)
                   ~begin ~end)))}
   ([] (.nextLong (tlrng)))
-  ([end :- Integer] (.nextLong (tlrng) (long end)))
-  ([begin :- Integer, end :- Integer]
+  ([end :- Integer+] (.nextLong (tlrng) (long end)))
+  ([begin :- Integer+, end :- Integer+]
    (.nextLong (tlrng) (long begin) (long end))))
 
 (defn rand-nth :- Any
@@ -798,7 +809,7 @@
 
 (deftype SampleReducing
   "Reducing type for sample."
-  [prob :- Float, sample-rng :- [], r :- IReducing]
+  [prob :- Float+, sample-rng :- [], r :- IReducing]
   IReducing
   (-init [this] (._init r))
   (-finish [this wrap]
@@ -851,7 +862,7 @@
   {:added v1
    :see '[rand rand-integer rand-nth gaussian]
    :category "Transducers"}
-  [prob :- Float]
+  [prob :- Float+]
   ([r] (->SampleReducing prob (rng splittable-rng) r))
   :count false
   :section false)

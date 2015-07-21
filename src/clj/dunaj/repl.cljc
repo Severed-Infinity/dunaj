@@ -20,13 +20,18 @@
   {:authors ["Chris Houser" "Christophe Grand"
              "Stephen Gilardi" "Michel Salim" "Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [*2 *1 *e *3 sort-by seq first = take dec map ex-data char mapcat
+    sort with-bindings comp doseq when-let remove min transduce let
+    -> identity meta fn not= when defn concat symbol - or name
+    dotimes vals print proxy-super loop cond defmacro keys proxy and
+    filter + str if-let class count apply assoc drop-while resolve])  
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Maybe Fn Any Va U]]
    [dunaj.boolean :refer [and or]]
    [dunaj.host :refer [proxy proxy-super class-instance? class]]
-   [dunaj.math :refer [Integer dec + - min]]
+   [dunaj.math :refer [Integer+ dec + - min]]
    [dunaj.compare :refer [= not=]]
    [dunaj.flow :refer [when-let cond let when dotimes loop if-let]]
    [dunaj.feature :refer [IMeta meta assoc-meta]]
@@ -34,14 +39,13 @@
    [dunaj.coll :refer [assoc first transduce count seq]]
    [dunaj.function :refer [defn comp identity apply fn]]
    [dunaj.char :refer [whitespace? char]]
-   [dunaj.string :refer [String ->str str]]
+   [dunaj.string :refer [String+ ->str str]]
    [dunaj.identifier :refer [name Symbol symbol]]
    [dunaj.error :refer
     [IException exception? illegal-state ex-data]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.namespace :refer [resolve all publics]]
    [dunaj.state.var :refer [defalias def+ with-bindings]]
-   [dunaj.concurrent.thread :refer [Thread current-thread]]
    [dunaj.coll.util :refer [doseq sort-by recipe dored sort]]
    [dunaj.coll.recipe :refer
     [concat mapcat map vals lines drop-while keys filter take remove]]
@@ -118,7 +122,7 @@
   contains a match for `_re-string-or-pattern_`."
   {:added v1
    :see '[doc source apropos]}
-  [re-string-or-pattern :- (U String Regex)]
+  [re-string-or-pattern :- (U String+ Regex)]
     (let [re (regex re-string-or-pattern)
           ms (concat
               (mapcat
@@ -144,7 +148,7 @@
         (resolve (current-ns) name) `(#'print-doc (meta (var ~name)))
         :else nil))
 
-(defn source-fn :- (Maybe String)
+(defn source-fn :- (Maybe String+)
   "Returns a string of the source code for the given symbol `_x_`,
   if it can find it.  This requires that the symbol resolve to a
   Var defined in a namespace for which the .clj is in the classpath.
@@ -189,7 +193,7 @@
   the `_str-or-pattern_`."
   {:added v1
    :see '[source doc]}
-  [str-or-pattern :- (U String Regex)]
+  [str-or-pattern :- (U String+ Regex)]
   (let [matches?
         (if (regex? str-or-pattern)
           #(parse str-or-pattern (->str %))
@@ -216,12 +220,12 @@
   [nsname]
   `(doseq [v# (dir-fn '~nsname)] (println! v#)))
 
-(defn demunge :- String
+(defn demunge :- String+
   "Given a string representation of a fn class,
   as in a stack trace element, returns a readable version."
   {:added v1
    :see '[root-cause stack-element-str]}
-  [fn-name :- String]
+  [fn-name :- String+]
   (clojure.lang.Compiler/demunge fn-name))
 
 (defn root-cause :- IException
@@ -240,7 +244,7 @@
         (recur cause)
         cause))))
 
-(defn stack-element-str :- String
+(defn stack-element-str :- String+
   "Returns a (possibly unmunged) string representation of a
   StackTraceElement `_el_`."
   {:added v1
@@ -261,12 +265,12 @@
   {:added v1
    :see '[stack-element-str root-cause demunge]}
   ([] (pst 12))
-  ([e-or-depth :- (U Integer IException)]
+  ([e-or-depth :- (U Integer+ IException)]
      (if (exception? e-or-depth)
        (pst e-or-depth 12)
        (when-let [e *e]
          (pst (root-cause e) e-or-depth))))
-  ([e :- IException, depth :- Integer]
+  ([e :- IException, depth :- Integer+]
      (with-bindings [out @err]
        (println!
         (->str

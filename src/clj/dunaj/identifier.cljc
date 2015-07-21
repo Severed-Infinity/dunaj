@@ -18,12 +18,14 @@
   "Symbolic identifiers and related protocols."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [namespace keyword? symbol name keyword symbol? first = deftype
+    string? defn defprotocol cond str and])
   (:require
    [clojure.bootstrap :refer
     [defalias defprotocol defn deftype replace-var! v1 scratch]]
    [dunaj.type :refer [Maybe Fn U]]
-   [dunaj.boolean :refer [Boolean and]]
+   [dunaj.boolean :refer [Boolean+ and]]
    [dunaj.host.int :refer [i== iCOLON i0 i1 iint]]
    [dunaj.compare :refer [IHash IComparable =]]
    [dunaj.flow :refer [cond]]
@@ -31,14 +33,14 @@
    [dunaj.poly :refer [extend-protocol!]]
    [dunaj.coll :refer [first slice]]
    [dunaj.function :refer [IInvocable]]
-   [dunaj.string :refer [String ICanonical ReversedStringSection
+   [dunaj.string :refer [String+ ICanonical ReversedStringSection
                          StringSection str string?]]))
 
 
 ;;;; Implementation details
 
-(defn ^:private strip-colon :- String
-  [x :- String]
+(defn ^:private strip-colon :- String+
+  [x :- String+]
   (if (i== (iCOLON) (iint (.charAt x (i0)))) (.substring x (i1)) x))
 
 
@@ -51,12 +53,12 @@
    :predicate 'named?
    :on-interface clojure.lang.Named
    :distinct true}
-  (-name :- String
+  (-name :- String+
     "Returns the name string."
     {:on 'getName}
     [this]))
 
-(defn name :- String
+(defn name :- String+
   "Returns the name string of object `_x_`."
   {:added v1
    :see '[named? namespace]}
@@ -70,12 +72,12 @@
    :predicate 'namespaced?
    :on-interface clojure.lang.Named
    :distinct true}
-  (-namespace :- (Maybe String)
+  (-namespace :- (Maybe String+)
     "Returns the namespace string or `nil` if namespace is not set."
     {:on 'getNamespace}
     [this]))
 
-(defn namespace :- (Maybe String)
+(defn namespace :- (Maybe String+)
   "Returns the name string of object `_x_` or `nil`
   if namespace is not set."
   {:added v1
@@ -112,7 +114,7 @@
    (cond (string? x) (clojure.lang.Symbol/intern x)
          (symbol? x) x
          :else (clojure.lang.Symbol/intern (namespace x) (name x))))
-  ([ns :- (Maybe String), name :- String]
+  ([ns :- (Maybe String+), name :- String+]
    (clojure.lang.Symbol/intern ns name)))
 
 (defalias special?
@@ -120,7 +122,7 @@
   `false` otherwise."
   {:added v1
    :see '[symbol?]
-   :tsig (Fn [Boolean Symbol])}
+   :tsig (Fn [Boolean+ Symbol])}
   clojure.core/special-symbol?)
 
 ;;; Keyword
@@ -153,7 +155,7 @@
      (keyword? x) x
      (symbol? x) (clojure.lang.Keyword/intern ^clojure.lang.Symbol x)
      :else (clojure.lang.Keyword/intern (namespace x) (name x))))
-  ([ns :- (Maybe String), name :- String]
+  ([ns :- (Maybe String+), name :- String+]
    (clojure.lang.Keyword/intern ns name)))
 
 ;;;; Extend string types

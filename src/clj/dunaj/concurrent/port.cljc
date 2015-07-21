@@ -21,18 +21,18 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Ports" "Operations" "Mult" "Mix" "Pub"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [deftype conj! conj let meta fn when defn reify defprotocol assoc
+    partial defmacro locking if-let apply when-let complement and])
   (:require
-   [clojure.core :refer
-    [add-watch constantly assert atom remove-watch disj empty?]]
    [clojure.core.async.impl.dispatch]
    [clojure.core.async.impl.protocols :as cap]
    [clojure.bootstrap :refer [v1 not-implemented]]
    [dunaj.type :refer
     [Fn Any U I Va Maybe AnyFn Predicate Signature KeywordMap
      NotPrimitive]]
-   [dunaj.boolean :refer [Boolean and]]
-   [dunaj.math :refer [Integer]]
+   [dunaj.boolean :refer [Boolean+ and]]
+   [dunaj.math :refer [Integer+]]
    [dunaj.state :refer [IOpenAware -open? IReference]]
    [dunaj.flow :refer [let when if-let when-let]]
    [dunaj.feature :refer [assoc-meta meta]]
@@ -43,7 +43,6 @@
    [dunaj.function :refer [apply nop fn complement defn partial]]
    [dunaj.concurrent :refer [IExecutor locking execute]]
    [dunaj.buffer :refer [promise-buffer]]
-   [dunaj.string :refer [String]]
    [dunaj.time :refer [IDuration]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.error :refer [IException]]
@@ -87,7 +86,7 @@
   {:added v1}
   ([f :- AnyFn]
    (not-implemented))
-  ([f :- AnyFn, blockable? :- Boolean]
+  ([f :- AnyFn, blockable? :- Boolean+]
    (not-implemented)))
 
 (defprotocol ISourcePort
@@ -112,7 +111,7 @@
   ([port :- ISourcePort, fn1 :- (Fn [Any (Maybe PortVal)])]
    (take! port fn1 false))
   ([port :- ISourcePort, fn1 :- (Fn [Any (Maybe PortVal)]),
-    always-dispatch? :- Boolean]
+    always-dispatch? :- Boolean+]
    (when-let [ret (-take! port (fn-handler fn1))
               :let [val @ret]]
      (if always-dispatch?
@@ -166,10 +165,10 @@
    :category "Primary"}
   ([port :- ITargetPort, val :- PortVal]
    (if-let [ret (-put! port val (fn-handler nop))] @ret true))
-  ([port :- ITargetPort, val :- PortVal, fn1 :- (Fn [Any Boolean])]
+  ([port :- ITargetPort, val :- PortVal, fn1 :- (Fn [Any Boolean+])]
    (put! port val fn1 false))
-  ([port :- ITargetPort, val :- PortVal, fn1 :- (Fn [Any Boolean]),
-    always-dispatch? :- Boolean]
+  ([port :- ITargetPort, val :- PortVal, fn1 :- (Fn [Any Boolean+]),
+    always-dispatch? :- Boolean+]
    (if-let [ret (-put! port val (fn-handler fn1))
             :let [retb @ret]]
      (if always-dispatch?
@@ -177,7 +176,7 @@
        (fn1 retb))
      true)))
 
-(defn >!! :- Boolean
+(defn >!! :- Boolean+
   "Puts a non-nil `_val_` into target `_port_`.
   Will block if no buffer space is available.
   Returns `true` unless port is already closed.
@@ -191,7 +190,7 @@
   (not-implemented))
 
 ;; WARNING: cannot be annotated as boolean, analyzer would fail
-(defn >! :- (NotPrimitive Boolean)
+(defn >! :- (NotPrimitive Boolean+)
   "Puts a non-nil `_val_` into target `_port_`.
   Will park if no buffer space is available.
   Must be called inside a `(go ...)` block.
@@ -326,11 +325,11 @@
    :category "Ports"}
   ([]
    (chan nil))
-  ([buf-or-n :- (U Integer IMutableCollection)]
+  ([buf-or-n :- (U Integer+ IMutableCollection)]
    (chan buf-or-n nil))
-  ([buf-or-n :- (U Integer IMutableCollection), xform :- Any]
+  ([buf-or-n :- (U Integer+ IMutableCollection), xform :- Any]
    (chan buf-or-n xform nil))
-  ([buf-or-n :- (U Integer IMutableCollection), xform :- Any,
+  ([buf-or-n :- (U Integer+ IMutableCollection), xform :- Any,
     exception-handler :- (Fn [Any IException])]
    (not-implemented)))
 
@@ -339,7 +338,7 @@
   {:added v1
    :ses '[chan dunaj.state/open? take!]
    :category "Ports"}
-  [duration :- (U Integer IDuration)]
+  [duration :- (U Integer+ IDuration)]
   (not-implemented))
 
 (defn promise-chan :- (I ISourcePort ITargetPort ICloseablePort)
@@ -519,7 +518,7 @@
   ([mapf :- AnyFn, ports :- [ISourcePort]]
    (map! mapf ports nil))
   ([mapf :- AnyFn, ports :- [ISourcePort],
-    buf-or-n :- (U Integer IMutableCollection)]
+    buf-or-n :- (U Integer+ IMutableCollection)]
    (not-implemented)))
 
 (defn pipe! :- ISourcePort
@@ -531,7 +530,7 @@
    :see '[pipeline!]
    :category "Operations"}
   ([from :- ISourcePort, to :- ITargetPort] (pipe! from to false))
-  ([from :- ISourcePort, to :- ITargetPort, keep-open? :- Boolean]
+  ([from :- ISourcePort, to :- ITargetPort, keep-open? :- Boolean+]
    (not-implemented)))
 
 (defn pipeline! :- ISourcePort
@@ -552,14 +551,14 @@
   {:added v1
    :see '[pipe! pipeline-blocking! pipeline-async!]
    :category "Operations"}
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
     from :- ISourcePort]
    (pipeline! n to xform from false))
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
-    from :- ISourcePort, keep-open? :- Boolean]
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
+    from :- ISourcePort, keep-open? :- Boolean+]
    (pipeline! n to xform from keep-open? nil))
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
-    from :- ISourcePort, keep-open? :- Boolean, ex-handler :- AnyFn]
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
+    from :- ISourcePort, keep-open? :- Boolean+, ex-handler :- AnyFn]
    (not-implemented)))
 
 (defn pipeline-blocking! :- ISourcePort
@@ -567,14 +566,14 @@
   {:added v1
    :see '[pipe! pipeline! pipeline-async!]
    :category "Operations"}
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
     from :- ISourcePort]
    (pipeline-blocking! n to xform from false))
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
-    from :- ISourcePort, keep-open? :- Boolean]
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
+    from :- ISourcePort, keep-open? :- Boolean+]
    (pipeline-blocking! n to xform from keep-open? nil))
-  ([n :- Integer, to :- ITargetPort, xform :- Any,
-    from :- ISourcePort, keep-open? :- Boolean, ex-handler :- AnyFn]
+  ([n :- Integer+, to :- ITargetPort, xform :- Any,
+    from :- ISourcePort, keep-open? :- Boolean+, ex-handler :- AnyFn]
    (not-implemented)))
 
 (defn pipeline-async! :- ISourcePort
@@ -595,10 +594,10 @@
   {:added v1
    :see '[pipe! pipeline-blocking! pipeline!]
    :category "Operations"}
-  ([n :- Integer, to :- ITargetPort, af :- AnyFn, from :- ISourcePort]
+  ([n :- Integer+, to :- ITargetPort, af :- AnyFn, from :- ISourcePort]
    (pipeline-async! n to af from true))
-  ([n :- Integer, to :- ITargetPort, af :- AnyFn, from :- ISourcePort,
-    keep-open? :- Boolean]
+  ([n :- Integer+, to :- ITargetPort, af :- AnyFn, from :- ISourcePort,
+    keep-open? :- Boolean+]
    (not-implemented)))
 
 (defn split! :- [ISourcePort ISourcePort]
@@ -615,8 +614,8 @@
   ([pred :- Predicate, port :- ISourcePort]
    (split! pred port nil nil))
   ([pred :- Predicate, port :- ISourcePort,
-    t-buf-or-n :- (U Integer IMutableCollection),
-    f-buf-or-n :- (U Integer IMutableCollection)]
+    t-buf-or-n :- (U Integer+ IMutableCollection),
+    f-buf-or-n :- (U Integer+ IMutableCollection)]
    (not-implemented)))
 
 (defn reduce! :- ISourcePort
@@ -645,7 +644,7 @@
    :see '[to-chan into!]
    :category "Operations"}
   ([port :- ITargetPort, coll :- IRed] (onto-chan! port coll true))
-  ([port :- ITargetPort, coll :- IRed, keep-open? :- Boolean]
+  ([port :- ITargetPort, coll :- IRed, keep-open? :- Boolean+]
    (not-implemented)))
 
 (defn to-chan :- ISourcePort
@@ -667,7 +666,7 @@
    :category "Operations"}
   ([ports :- [ISourcePort]] (merge! ports nil))
   ([ports :- [ISourcePort],
-    buf-or-n :- (U Integer IMutableCollection)]
+    buf-or-n :- (U Integer+ IMutableCollection)]
    (not-implemented)))
 
 (defn into! :- ISourcePort
@@ -690,9 +689,9 @@
   {:added v1
    :see '[pipe!]
    :category "Operations"}
-  ([n :- Integer, port :- ISourcePort] (take-n! n port nil))
-  ([n :- Integer, port :- ISourcePort,
-    buf-or-n :- (U Integer IMutableCollection)]
+  ([n :- Integer+, port :- ISourcePort] (take-n! n port nil))
+  ([n :- Integer+, port :- ISourcePort,
+    buf-or-n :- (U Integer+ IMutableCollection)]
    (not-implemented)))
 
 ;;; Mults
@@ -707,7 +706,7 @@
     "Attaches `_port_` to `_this_` mult, using `_close?_` to determine
     whether `_port_` should be closed if `_this_` Mult's source
     is closed."
-    [this port :- ITargetPort, close? :- Boolean])
+    [this port :- ITargetPort, close? :- Boolean+])
   (-untap! :- nil
     "Detached `_port_` from `_this_` mult."
     [this port :- ITargetPort])
@@ -742,7 +741,7 @@
    :see '[mult? mult! untap! untap-all!]
    :category "Mult"}
   ([mult :- IMult, port :- ITargetPort] (tap! mult port false))
-  ([mult :- IMult, port :- ITargetPort, keep-open? :- Boolean]
+  ([mult :- IMult, port :- ITargetPort, keep-open? :- Boolean+]
    (not-implemented)))
 
 (defn untap! :- nil
@@ -904,7 +903,7 @@
     "Subscribes target `_port_` in `_this_` Pub under given `_topic_`.
     `_close?_` determines whether `_port_` will be closed when
     `_this_` Pub's source closes."
-    [this topic :- Any, port :- ITargetPort, close? :- Boolean])
+    [this topic :- Any, port :- ITargetPort, close? :- Boolean+])
   (-unsub! :- nil
     "Unsubscribes `_port_` from `_this_` Pub and from given
     `_topic_`."
@@ -942,7 +941,7 @@
   ([port :- ISourcePort, topic-fn :- (Fn [Any PortVal])]
    (pub! port topic-fn (constantly nil)))
   ([port :- ISourcePort, topic-fn :- (Fn [Any PortVal]),
-    buf-fn :- (Fn [(U Integer IMutableCollection) Any])]
+    buf-fn :- (Fn [(U Integer+ IMutableCollection) Any])]
    (not-implemented)))
 
 (defn sub! :- nil
@@ -956,7 +955,7 @@
   ([pub :- IPub, topic :- Any, port :- ITargetPort]
    (sub! pub topic port false))
   ([pub :- IPub, topic :- Any, port :- ITargetPort,
-    keep-open? :- Boolean]
+    keep-open? :- Boolean+]
    (not-implemented)))
 
 (defn unsub! :- nil

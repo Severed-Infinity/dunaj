@@ -20,7 +20,10 @@
   NOTE: Documentation needs more work."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [ns seq satisfies? first with-bindings deftype when-let let empty?
+    read when defn or reset! nil? not not-empty loop merge cond proxy
+    next io! and symbol?])
   (:require
    [clojure.bootstrap :refer [scratch v1]]
    [dunaj.type :refer [Any AnyFn U I Maybe Fn Macro]]
@@ -38,7 +41,7 @@
    [dunaj.function :refer [defn]]
    [dunaj.host.array :refer [aset-char!]]
    [dunaj.host.batch :refer [item-types-match?]]
-   [dunaj.string :refer [String last-index-of]]
+   [dunaj.string :refer [String+ last-index-of]]
    [dunaj.identifier :refer [symbol?]]
    [dunaj.state.basic :refer [local]]
    [dunaj.state.var :refer [defalias with-bindings]]
@@ -87,7 +90,7 @@
   ([x :- (U IRed java.io.Reader IAcquirableFactory IReadable)]
    (load! x nil nil))
   ([x :- (U IRed java.io.Reader IAcquirableFactory IReadable),
-    uri :- (U nil String Uri)]
+    uri :- (U nil String+ Uri)]
    (if (nil? uri)
      (load! x nil nil)
      (let [uri (dunaj.uri/uri uri)
@@ -96,7 +99,7 @@
                   (slice path (iinc i)))]
        (load! x path name))))
   ([x :- (U IRed java.io.Reader IAcquirableFactory IReadable),
-    path :- (Maybe String), name :- (Maybe String)]
+    path :- (Maybe String+), name :- (Maybe String+)]
    (cond
      ;; java Reader instance
      (class-instance? java.io.Reader x)

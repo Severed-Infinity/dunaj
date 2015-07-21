@@ -14,13 +14,20 @@
   "Fast printer engine with helper functions."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Colorer" "Indentation"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce while satisfies? first peek aget vector? boolean < rest
+    delay mapcat comp pos? if-not neg? reduced? deftype min conj let
+    -> identity meta fn empty? string? when-not when second > defn
+    concat symbol pop or reset! name zero? some nil? not type
+    identical? defprotocol partition loop merge integer? condp cond
+    reduced defmacro str next if-let list? max == count apply assoc
+    realized? and symbol? ->>])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn Maybe I U AnyFn KeywordMap]]
-   [dunaj.boolean :refer [Boolean or not and boolean]]
+   [dunaj.boolean :refer [Boolean+ or not and boolean]]
    [dunaj.host :refer
-    [Class AnyBatch BatchManager keyword->class class-instance?]]
+    [Class+ AnyBatch BatchManager keyword->class class-instance?]]
    [dunaj.host.int :refer
     [iint iinc i== i< isub izero? idec ineg? i> i< i<< iadd iloop i0
      i1 i2 i3 i4 i5 i8 ixFF ione? i-1 imul i27 idigit? ioctal? ihexa?
@@ -28,7 +35,7 @@
      iQUOTE iAPOS iBACKSLASH ipos? iLBRACKET iSMALL_M iSMALL_B
      iSMALL_F iSMALL_N iSMALL_R iSMALL_U iSMALL_T]]
    [dunaj.math :refer
-    [Integer max min < integer? == > neg? pos? zero? one?]]
+    [Integer+ max min < integer? == > neg? pos? zero? one?]]
    [dunaj.math.unchecked :as mu]
    [dunaj.compare :refer [identical? nil?]]
    [dunaj.state :refer [reset! realized? IReference clone]]
@@ -141,10 +148,10 @@
     * `:level-limit-print-fn` - fn taking batch, bm and state, and
       prints limit batch to `batch` or returns limit batch."
     [this])
-  (-printer-from-type :- (U nil Class Type)
+  (-printer-from-type :- (U nil Class+ Type)
     "Returns type of items which are to be printed."
     [this])
-  (-printer-to-type :- (U nil Class Type)
+  (-printer-to-type :- (U nil Class+ Type)
     "Returns type of printed values."
     [this])
   (-top-container :- IContainerPrinterMachine
@@ -170,11 +177,11 @@
   {:added v1
    :category "Indentation"
    :see '[base-indent next-indent]}
-  (-indent :- Integer
+  (-indent :- Integer+
     "Returns indent amount for `_this_` machine."
     [this]))
 
-(defn base-indent :- (Maybe Integer)
+(defn base-indent :- (Maybe Integer+)
   "Returns base indentation value based on the given `_config_`. Uses
   `:indent-size` key in `_config_` to obtain the indentation size."
   {:added v1
@@ -183,7 +190,7 @@
   [config :- {}]
   (:indent-offset config))
 
-(defn next-indent :- (Maybe Integer)
+(defn next-indent :- (Maybe Integer+)
   "Returns new indentation value based on the given `_config_` and
   parent `_machine_`. Uses `:indent-size` key in `_config_`
   to obtain the indentation size."
@@ -193,7 +200,7 @@
   [config :- {}, machine :- IIndentedMachine]
   (mu/add (-indent machine) (:indent-size config)))
 
-(defn prev-indent :- (Maybe Integer)
+(defn prev-indent :- (Maybe Integer+)
   "Returns previous indentation value based on the given `_config_`
   and current `_machine_`. Uses `:indent-size` key in `_config_`
   to obtain the indentation size."
@@ -203,7 +210,7 @@
   [config :- {}, machine :- IIndentedMachine]
   (mu/subtract (-indent machine) (:indent-size config)))
 
-(defn color? :- Boolean
+(defn color? :- Boolean+
   "Returns `true` if `_config_` map contains logical true `:color?`
   entry, `false` otherwise."
   [config :- {}]
@@ -394,7 +401,7 @@
 (defn ^:private provide-capacity :- AnyBatch
   "Returns new batch if `_batch_` is small,
   otherwise returns `_batch_`."
-  [bm :- BatchManager, batch :- AnyBatch, size-hint :- Integer]
+  [bm :- BatchManager, batch :- AnyBatch, size-hint :- Integer+]
   (if (or (nil? batch) (i< (.capacity batch) (iint size-hint)))
     (.allocate bm (provide-batch-size size-hint))
     batch))
@@ -455,13 +462,13 @@
   (throw (illegal-state ^java.lang.String
                         (apply ->str "printer engine error: " ms))))
 
-(defn ignore? :- Boolean
+(defn ignore? :- Boolean+
   "Returns `true` if `_config_` map contains `[:invalid-item :ignore]`
   entry, `false` otherwise."
   [config :- {}]
   (identical? :ignore (:invalid-item config)))
 
-(defn throw? :- Boolean
+(defn throw? :- Boolean+
   "Returns `true` if `_config_` map contains `[:invalid-item nil]`
   entry, `false` otherwise."
   [config :- {}]
@@ -487,7 +494,7 @@
   creating it if not present."
   ([bm :- BatchManager, state :- IReference]
    (alt-batch! bm state 0))
-  ([bm :- BatchManager, state :- IReference, initial-size :- Integer]
+  ([bm :- BatchManager, state :- IReference, initial-size :- Integer+]
    (if-let [abatch (:alt-batch @state)]
      abatch
      (let [size (provide-batch-size
@@ -501,7 +508,7 @@
   state reference. Returns `_batch_`."
   ([bm :- BatchManager, state :- IReference]
    (alt-batch-grow! bm state 0))
-  ([bm :- BatchManager, state :- IReference, new-size :- Integer]
+  ([bm :- BatchManager, state :- IReference, new-size :- Integer+]
    (let [abatch ^java.nio.Buffer (:alt-batch @state)
          l (imax (iadd (.position abatch) (iint new-size))
                  (i<< (.capacity abatch) 1))
@@ -552,7 +559,7 @@
          (recur (alt-batch-grow! bm state) bm state el)
          :else (do (.clear abatch) (recur abatch bm state el))))
   ([dest :- AnyBatch, bm :- BatchManager,
-    state :- IReference, el :- Any, n :- Integer]
+    state :- IReference, el :- Any, n :- Integer+]
    (iloop [dest dest, i (iint n)]
      (if (izero? i)
        dest
@@ -844,10 +851,11 @@
 
 (deftype PrinterEngine
   [machine-factory :- IPrinterMachineFactory, coll :- (Maybe IRed)
-   pretty? :- Boolean]
+   pretty? :- Boolean+]
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this]
     (-printer-to-type machine-factory))

@@ -23,24 +23,25 @@
   root binding unbound."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:refer-clojure :exclude
+   [thread-bound? find-var with-bindings bound? var? declare defonce
+    namespace deftype when-let when defn name defmacro])
   (:require
-   [clojure.core :refer [var-set constantly throw]]
    [clojure.bootstrap :as cb :refer [defmacro deftype defn v1]]
    [dunaj.type :refer [Fn Any Va AnyFn Maybe Macro]]
-   [dunaj.boolean :refer [Boolean]]
+   [dunaj.boolean :refer [Boolean+]]
    [dunaj.state :refer [IReference IMutable ICloneable]]
    [dunaj.flow :refer [when when-let]]
    [dunaj.feature :refer [IMeta]]
    [dunaj.function :refer [IInvocable]]
-   [dunaj.string :refer [String]]
+   [dunaj.string :refer [String+]]
    [dunaj.identifier :refer
     [Symbol INamed INamespaced name namespace]]))
 
 
 ;;;; Implementation details
 
-(defn ^:private mname :- (Maybe String)
+(defn ^:private mname :- (Maybe String+)
   [x :- Any]
   (when x (name x)))
 
@@ -79,7 +80,7 @@
   provided vars will succeed. Returns `true` if no vars are provided."
   {:added v1
    :see '[thread-bound alter-root! reset-root!]
-   :tsig (Fn [Boolean (Va Var)])})
+   :tsig (Fn [Boolean+ (Va Var)])})
 
 (cb/defalias thread-bound?
   "Returns `true` if all of the vars provided as arguments have
@@ -87,7 +88,7 @@
   will succeed. Returns `true` if no vars are provided."
   {:added v1
    :see '[bound? dunaj.state/reset!]
-   :tsig (Fn [Boolean (Va Var)])})
+   :tsig (Fn [Boolean+ (Va Var)])})
 
 (cb/defalias alter-root!
   "Atomically alters the root binding of var `_v_` by applying `_f_`
@@ -107,34 +108,35 @@
 
 ;;; Global vars definitions
 
-(cb/defalias def
-  "Defines a var and returns it. The var definition process creates
-  and interns or locates a global var with given `_name_` and a
-  namespace of the value of the current namespace.
+#?(:dunaj
+   (cb/defalias def
+     "Defines a var and returns it. The var definition process creates
+     and interns or locates a global var with given `_name_` and a
+     namespace of the value of the current namespace.
 
-  If initial value (last argument besides `_name_`) is supplied,
-  it is evaluated, and the root binding of the var is set to the
-  resulting value. If initial value is not supplied, the root
-  binding of the var is unaffected.
+     If initial value (last argument besides `_name_`) is supplied,
+     it is evaluated, and the root binding of the var is set to the
+     resulting value. If initial value is not supplied, the root
+     binding of the var is unaffected.
 
-  `def` always applies to the root binding, even if the var is
-  thread-bound at the point where def is called. `_name_` is an
-  unqualified `Symbol`. Metadata from `_name_` is used as a metadata
-  of the var. Rest of arguments (args) are parsed for docstring and
-  attribute map, which are merged with vars metadata.
+     `def` always applies to the root binding, even if the var is
+     thread-bound at the point where def is called. `_name_` is an
+     unqualified `Symbol`. Metadata from `_name_` is used as a
+     metadata of the var. Rest of arguments (args) are parsed for
+     docstring and attribute map, which are merged with vars metadata.
 
-  Throws an exception if `_name_` symbol is already in the namespace
-  and not mapped to an interned var.
+     Throws an exception if `_name_` symbol is already in the
+     namespace and not mapped to an interned var.
 
-  WARNING: Use `def+` instead of `def` in dunaj lite."
-  {:added v1
-   :indent :all
-   :highlight :def
-   :named true
-   :tsig Macro
-   :arglists '([name] [name def-arguments init])
-   :see '[defonce declare defalias def+]}
-  clojure.bootstrap/def+)
+     WARNING: Use `def+` instead of `def` in dunaj lite."
+     {:added v1
+      :indent :all
+      :highlight :def
+      :named true
+      :tsig Macro
+      :arglists '([name] [name def-arguments init])
+      :see '[defonce declare defalias def+]}
+     clojure.bootstrap/def+))
 
 (cb/defalias def+
   "Like def, but can be used in dunaj lite."
@@ -183,15 +185,16 @@
 
 ;;; Global vars manipulation
 
-(defmacro var
-  "The symbol must resolve to a global var, and the Var object itself
-  (not its value) is returned.
-  The reader macro #'x expands to (var x)."
-  {:added v1
-   :see '[find-var def]
-   :highlight :flow}
-  [symbol]
-  `(clojure.core/var ~symbol))
+#?(:dunaj
+   (defmacro var
+     "The symbol must resolve to a global var, and the Var object
+     itself (not its value) is returned.
+     The reader macro #'x expands to (var x)."
+     {:added v1
+      :see '[find-var def]
+      :highlight :flow}
+     [symbol]
+     `(clojure.core/var ~symbol)))
 
 (defalias find-var
   "Returns the global var named by the namespace-qualified symbol

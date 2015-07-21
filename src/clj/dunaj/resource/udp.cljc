@@ -13,17 +13,24 @@
 (ns dunaj.resource.udp
   "UDP sockets."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce contains? every? satisfies? take-nth atom aget =
+    boolean map < rest keep merge-with neg? reduced? deftype when-let
+    conj let identity fn empty? string? when-not vec when second defn
+    concat symbol declare or reset! name byte-array zero? nth nil?
+    reify not identical? defprotocol true? loop merge partition-by
+    condp cond defmacro keyword str if-let false? io! max == interpose
+    assoc defrecord and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
    [dunaj.boolean :refer
-    [Boolean and or not boolean boolean? true? false?]]
-   [dunaj.host :refer [Class BatchManager Batch AnyBatch
+    [Boolean+ and or not boolean boolean? true? false?]]
+   [dunaj.host :refer [BatchManager Batch AnyBatch
                        keyword->class class-instance?]]
    [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]
-   [dunaj.math :refer [Integer max neg? == < zero? nneg?]]
+   [dunaj.math :refer [Integer+ max neg? == < zero? nneg?]]
    [dunaj.compare :refer [nil? = identical?]]
    [dunaj.state :refer
     [IOpenAware IReference IMutable IAdjustable ICloneable
@@ -41,7 +48,7 @@
    [dunaj.function :refer [fn defn identity]]
    [dunaj.coll.helper :refer [red-to-seq]]
    [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal current-thread
+    [Thread+ IThreadLocal IPassableThreadLocal current-thread
      ensure-thread-local]]
    [dunaj.concurrent.port :refer
     [IMult -tap! -untap! -untap-all! chan put! <!! close!]]
@@ -59,7 +66,7 @@
     [array array-manager aget byte-array adapt]]
    [dunaj.host.batch :refer [provide-batch-size select-item-type
                              batch-manager item-types-match?]]
-   [dunaj.string :refer [String string? ->str str split]]
+   [dunaj.string :refer [String+ string? ->str str split]]
    [dunaj.error :refer [IFailAware IFailable IException io
                         illegal-argument illegal-state fragile
                         opened-fragile fail! unsupported-operation]]
@@ -76,14 +83,14 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-datagram-batch-size :- Integer
+(def+ ^:private default-datagram-batch-size :- Integer+
   "Default size for datagram batch."
   2048)
 
-(defn ^:private provide-datagram-batch-size :- Integer
+(defn ^:private provide-datagram-batch-size :- Integer+
   "Returns datagram batch size taking into account given
   batch size hint."
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (provide-batch-size
    (max (or size-hint 0) default-datagram-batch-size)))
 
@@ -94,7 +101,7 @@
   `_payload_`."
   {:added v1
    :see '[bare-udp]}
-  [address :- (Maybe String), port :- (Maybe Integer),
+  [address :- (Maybe String+), port :- (Maybe Integer+),
    payload :- (U AnyBatch IRed)]
   (->UdpDatagram address port payload))
 
@@ -102,12 +109,13 @@
   "Reads from an opened connectionless UDP socket.
   Passable thread local. Supports non blocking mode."
   [ch :- java.nio.channels.DatagramChannel,
-   resource :- (U IFailable IOpenAware), batch-size :- Integer,
-   ^:volatile-mutable thread :- (Maybe Thread), payload-fn :- AnyFn]
+   resource :- (U IFailable IOpenAware), batch-size :- Integer+,
+   ^:volatile-mutable thread :- (Maybe Thread+), payload-fn :- AnyFn]
   IRed
   (-reduce [this reducef init]
     (-reduce-unpacked
      this #(reducef % (->UdpDatagram %2 %3 %4)) init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICloneable
   (-clone [this] (throw (unsupported-operation)))
   IThreadLocal
@@ -151,8 +159,8 @@
   "Reads from an opened connected UDP socket.
   Passable thread local. Supports non blocking mode."
   [ch :- java.nio.channels.DatagramChannel,
-   resource :- (U IOpenAware IFailable), batch-size :- Integer,
-   ^:volatile-mutable thread :- (Maybe Thread), payload-fn :- AnyFn]
+   resource :- (U IOpenAware IFailable), batch-size :- Integer+,
+   ^:volatile-mutable thread :- (Maybe Thread+), payload-fn :- AnyFn]
   ICloneable
   (-clone [this] (throw (unsupported-operation)))
   IThreadLocal
@@ -161,6 +169,7 @@
     (ensure-thread-local thread)
     (set! thread new-thread)
     this)
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (ensure-io)
@@ -190,21 +199,21 @@
                               false)))]
       (af init false))))
 
-(defn ^:private get-query-map :- {Keyword String}
+(defn ^:private get-query-map :- {Keyword String+}
   "Returns map of parsed query params from a given uri `x`."
-  [x :- (U Uri String)]
+  [x :- (U Uri String+)]
   (let [x (uri x)
         s (.getQuery x)
         params (when-not (empty? s) (parse #"([^=&]+)(=([^&]*))?" s))]
     (reduce #(assoc % (keyword (second %2)) (or (nth %2 3) "true"))
             {} params)))
 
-(def+ ^:private boolean-map :- {String Boolean}
+(def+ ^:private boolean-map :- {String+ Boolean+}
   {"0" false "1" true "F" false "T" true "false" false "true" true})
 
 (defn ^:private uri->map* :- KeywordMap
   "Common config uri for UDP resources."
-  [qm :- {Keyword String}]
+  [qm :- {Keyword String+}]
   (let [toi #(when-let [x (qm %)]
                (java.lang.Integer/valueOf ^java.lang.String x))]
     {:protocol-family (when-let [x (:pf qm)] (keyword x))
@@ -222,7 +231,7 @@
 
 (defn ^:private bare-uri->map :- KeywordMap
   "Returns settings map based on a given uri `x`."
-  [x :- (U String Uri)]
+  [x :- (U String+ Uri)]
   (let [x (uri x)
         scheme (.getScheme ^java.net.URI x)
         qm (get-query-map x)
@@ -241,7 +250,7 @@
 
 (defn ^:private uri->map :- KeywordMap
   "Returns settings map based on a given uri `x`."
-  [x :- (U String Uri)]
+  [x :- (U String+ Uri)]
   (let [x (uri x)
         scheme (.getScheme ^java.net.URI x)
         qm (get-query-map x)
@@ -264,7 +273,7 @@
 
 (defn ^:private multicast-uri->map :- KeywordMap
   "Returns settings map based on a given multicast uri `x`."
-  [x :- (U String Uri)]
+  [x :- (U String+ Uri)]
   (let [x (uri x)
         scheme (.getScheme ^java.net.URI x)
         qm (get-query-map x)
@@ -295,7 +304,7 @@
 
 (defn ^:private socket-address :- java.net.InetSocketAddress
   "Returns instance of socket address."
-  [address :- (Maybe String), port :- (Maybe Integer)]
+  [address :- (Maybe String+), port :- (Maybe Integer+)]
   (let [port (or port 0)
         address (when address
                   (java.net.InetAddress/getByName address))]
@@ -392,7 +401,7 @@
 
 (defreleasable ^:private BareUdpResource
   "Connectionless UDP resource type."
-  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer,
+  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException),
    payload-fn :- AnyFn]
   IConfig
@@ -430,7 +439,7 @@
 
 (defreleasable ^:private UdpResource
   "Connected UDP resource type."
-  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer,
+  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException),
    payload-fn :- AnyFn]
   IConfig
@@ -464,12 +473,12 @@
       (reduce af (i0) coll))))
 
 (defprotocol ^:private IMulticast
-  (-block! :- nil [this address :- String])
-  (-unblock! :- nil [this address :- String]))
+  (-block! :- nil [this address :- String+])
+  (-unblock! :- nil [this address :- String+]))
 
 (defreleasable ^:private MulticastResource
   "Multicast UDP resource type."
-  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer,
+  [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException),
    payload-fn :- AnyFn,
    membership-key :- java.nio.channels.MembershipKey,
@@ -768,14 +777,14 @@
   given `_uri_` and `_opts_` set."
   {:added v1
    :see '[bare-udp-factory udp multicast]}
-  [uri :- (U nil String Uri) & {:as opts}]
+  [uri :- (U nil String+ Uri) & {:as opts}]
   (merge bare-udp-factory (assoc opts :uri uri)))
 
 (defn udp :- IAcquirableFactory
   "Returns UDP resource factory with given `_uri_` and `_opts_` set."
   {:added v1
    :see '[udp-factory bare-udp multicast]}
-  [uri :- (U nil String Uri) & {:as opts}]
+  [uri :- (U nil String+ Uri) & {:as opts}]
   (merge udp-factory (assoc opts :uri uri)))
 
 (defn multicast :- IAcquirableFactory
@@ -783,7 +792,7 @@
   with given `_uri_` and `_opts_` set."
   {:added v1
    :see '[multicast-factory bare-udp udp block!]}
-  [uri :- (U nil String Uri) & {:as opts}]
+  [uri :- (U nil String+ Uri) & {:as opts}]
   (merge multicast-factory (assoc opts :uri uri)))
 
 (defn block! :- nil
@@ -791,7 +800,7 @@
   not be source specific."
   {:added v1
    :see '[unblock! multicast]}
-  [multicast :- IMulticast, address :- String]
+  [multicast :- IMulticast, address :- String+]
   (-block! multicast address))
 
 (defn unblock! :- nil
@@ -799,7 +808,7 @@
   Throws if `_address_` is not blocked."
   {:added v1
    :see '[block! multicast]}
-  [multicast :- IMulticast, address :- String]
+  [multicast :- IMulticast, address :- String+]
   (-unblock! multicast address))
 
 (register-factory! "bare-udp" bare-udp-factory)

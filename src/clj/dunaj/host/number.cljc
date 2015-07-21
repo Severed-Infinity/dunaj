@@ -18,10 +18,13 @@
   "Coercions to host number types."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [unchecked-long unchecked-float biginteger long double short
+    unchecked-double int unchecked-int bigint float unchecked-byte
+    unchecked-short bigdec byte])
   (:require [clojure.bootstrap :refer [defalias v1]]
             [dunaj.type :refer [Fn Any]]
-            [dunaj.math :refer [Number]]))
+            [dunaj.math :refer [Number+]]))
 
 
 ;;;; Public API
@@ -29,7 +32,7 @@
 (defalias number
   {:added v1
    :see '[dunaj.math/num]
-   :tsig (Fn [Number Any])}
+   :tsig (Fn [Number+ Any])}
   clojure.core/num)
 
 (defalias bigdec
@@ -39,74 +42,74 @@
 
 (defalias bigint
   {:added v1
-   :see '[biginteger long dunaj.math/Integer]
+   :see '[biginteger long dunaj.math/Integer+]
    :tsig (Fn [clojure.lang.BigInt Any])})
 
 (defalias biginteger
   {:added v1
-   :see '[bigint long dunaj.math/Integer]
+   :see '[bigint long dunaj.math/Integer+]
    :tsig (Fn [java.math.BigInteger Any])})
 
 (defalias byte
   {:added v1
-   :see '[unchecked-byte dunaj.math/Integer]
+   :see '[unchecked-byte dunaj.math/Integer+]
    :tsig (Fn [java.lang.Byte Any])})
 
 (defalias unchecked-byte
   {:added v1
-   :see '[byte dunaj.math/Integer]
+   :see '[byte dunaj.math/Integer+]
    :tsig (Fn [java.lang.Byte Any])})
 
 (defalias double
   {:added v1
-   :see '[unchecked-double dunaj.math/Float]
+   :see '[unchecked-double dunaj.math/Float+]
    :tsig (Fn [java.lang.Double Any])})
 
 (defalias unchecked-double
   {:added v1
-   :see '[double dunaj.math/Float]
+   :see '[double dunaj.math/Float+]
    :tsig (Fn [java.lang.Double Any])})
 
 (defalias float
   {:added v1
-   :see '[unchecked-float dunaj.math/Float]
+   :see '[unchecked-float dunaj.math/Float+]
    :tsig (Fn [java.lang.Float Any])})
 
 (defalias unchecked-float
   {:added v1
-   :see '[float dunaj.math/Float]
+   :see '[float dunaj.math/Float+]
    :tsig (Fn [java.lang.Float Any])})
 
 (defalias int
   {:added v1
-   :see '[unchecked-int dunaj.math/Integer dunaj.host.int/Int
+   :see '[unchecked-int dunaj.math/Integer+ dunaj.host.int/Int
           dunaj.host.int/iint]
    :tsig (Fn [java.lang.Integer Any])})
 
 (defalias unchecked-int
   {:added v1
-   :see '[int dunaj.math/Integer dunaj.host.int/Int
+   :see '[int dunaj.math/Integer+ dunaj.host.int/Int
           dunaj.host.int/iint]
    :tsig (Fn [java.lang.Integer Any])})
 
 (defalias long
   {:added v1
-   :see '[unchecked-long dunaj.math/Integer]
+   :see '[unchecked-long dunaj.math/Integer+]
    :tsig (Fn [java.lang.Long Any])})
 
 (defalias unchecked-long
   {:added v1
-   :see '[long dunaj.math/Integer]
+   :see '[long dunaj.math/Integer+]
    :tsig (Fn [java.lang.Long Any])})
 
 (defalias short
   {:added v1
-   :see '[unchecked-short dunaj.math/Integer]
+   :see '[unchecked-short dunaj.math/Integer+]
    :tsig (Fn [java.lang.Short Any])})
 
 (defalias unchecked-short
   {:added v1
-   :see '[short dunaj.math/Integer]
+   :see '[short dunaj.math/Integer+]
    :tsig (Fn [java.lang.Short Any])})
 
 

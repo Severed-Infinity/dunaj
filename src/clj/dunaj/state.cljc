@@ -19,16 +19,16 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Mutation" "Auxiliary"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [reset! io! deref realized? boolean deftype let fn defn
+    extend-protocol identical? defprotocol loop defmacro odd?])
   (:require
-   [clojure.core :refer
-    [apply count when when-not reduce partition extend-protocol]]
    [clojure.bootstrap :refer
     [defmacro defprotocol deftype defn def+ v1
      replace-var! milliseconds loop let fn]]
    [dunaj.type :refer [Any Fn Va]]
-   [dunaj.boolean :refer [Boolean boolean]]
-   [dunaj.math :refer [Integer odd?]]
+   [dunaj.boolean :refer [Boolean+ boolean]]
+   [dunaj.math :refer [Integer+ odd?]]
    [dunaj.compare :refer [identical?]]))
 
 
@@ -97,7 +97,7 @@
     is reached. Blocks until value is produced or until timeout is
     reached."
     {:on 'deref}
-    [this timeout-ms :- Integer, timeout-val :- Any]))
+    [this timeout-ms :- Integer+, timeout-val :- Any]))
 
 (defn deref :- Any
   "Returns the current state of `_ref_`. Concrete semantics differ
@@ -175,13 +175,13 @@
    :see '[mutable? cas!]
    :category "Mutation"
    :predicate 'atomic?}
-  (-cas! :- Boolean
+  (-cas! :- Boolean+
     "Sets the value to `_newval_` if and only if the current value
     is identical to `_oldval_`. Returns `true` if set happened,
     otherwse returns `false`."
     [this oldval :- Any, newval :- Any]))
 
-(defn cas! :- Boolean
+(defn cas! :- Boolean+
   "Atomically sets the value of the reference `_ref_` to `_newval_` if
   and only if the current value is identical to `_oldval_`.
   Returns `true` if set happened, otherwse returns `false`."
@@ -278,12 +278,12 @@
    :category "Auxiliary"
    :predicate 'pending?
    :on-interface clojure.lang.IPending}
-  (-realized? :- Boolean
+  (-realized? :- Boolean+
     "Returns `true` when object's value has already been realized."
     {:on 'isRealized}
     [this]))
 
-(defn realized? :- Boolean
+(defn realized? :- Boolean+
   "Returns `true` if the referenced value of `_x_` has been produced,
   otherwise returns `false`."
   {:added v1
@@ -304,11 +304,11 @@
    :see '[open? ensure-open]
    :category "Auxiliary"
    :predicate 'open-aware?}
-  (-open? :- Boolean
+  (-open? :- Boolean+
     "Returns `true` if `_this_` is open, otherwise returns `false`."
     [this]))
 
-(defn open? :- Boolean
+(defn open? :- Boolean+
   "Returns `true` if `_x_` is open, otherwise returns `false`.
   Open is taken in broader sense; if `_x_` is not open, it won't
   perform most operations and is not 'operational'."
@@ -333,12 +333,12 @@
    :see '[cancelled? cancellable? cancel!]
    :category "Auxiliary"
    :predicate 'cancelled-aware?}
-  (-cancelled? :- Boolean
+  (-cancelled? :- Boolean+
     "Returns `true` if `_this_` is already cancelled, otherwise
     returns `false`."
     [this]))
 
-(defn cancelled? :- Boolean
+(defn cancelled? :- Boolean+
   "Returns `true` if `_x_` is already cancelled, otherwise returns
   `false`."
   {:added v1
@@ -353,12 +353,12 @@
    :see '[cancelled-aware? cancelled? cancel!]
    :category "Auxiliary"
    :predicate 'cancellable?}
-  (-cancel! :- Boolean
+  (-cancel! :- Boolean+
     "Attempts to cancel `_this_`, returning `true` if cancellation
     was successfull, otherwise returns `false`. Must not block."
     [this]))
 
-(defn cancel! :- Boolean
+(defn cancel! :- Boolean+
   "Attempts to cancel the object `_x_`, returning `true` if
   cancellation was successfull, otherwise returns `false`.
   Does not block."
@@ -395,7 +395,8 @@
 
 (clojure.core/require '[clojure.bootstrap :refer [assert-boolean]])
 
-(assert-boolean
- (reference? 3)
- (blocking-reference? 'f)
- (pending? nil))
+#?(:dunaj
+   (assert-boolean
+    (reference? 3)
+    (blocking-reference? 'f)
+    (pending? nil)))

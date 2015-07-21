@@ -18,13 +18,14 @@
   "Macros. &nbsp; icon:magic[]"
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [defmacro gensym macroexpand-1 macroexpand defn])
   (:require
    [clojure.bootstrap :refer [defalias v1 not-implemented]]
    [dunaj.type :refer [Fn Any Macro]]
-   [dunaj.boolean :refer [Boolean]]
+   [dunaj.boolean :refer [Boolean+]]
    [dunaj.function :refer [defn]]
-   [dunaj.string :refer [String]]
+   [dunaj.string :refer [String+]]
    [dunaj.identifier :refer [Symbol]]))
 
 
@@ -44,7 +45,7 @@
    :tsig Macro}
   clojure.bootstrap/defmacro)
 
-(defn macro? :- Boolean
+(defn macro? :- Boolean+
   "Returns `true` if var `_v_` holds a macro,
   otherwise returns `false`."
   {:added v1
@@ -58,7 +59,7 @@
   number. If prefix is not supplied, the prefix is `G__`."
   {:added v1
    :see '[defmacro]
-   :tsig (Fn [Symbol] [Symbol String])})
+   :tsig (Fn [Symbol] [Symbol String+])})
 
 (defalias macroexpand
   "Repeatedly calls `macroexpand-1` on `_form_` until it no longer

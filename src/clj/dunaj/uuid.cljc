@@ -20,12 +20,12 @@
   A data reader literal `#uuid` is available for
   a convenient UUID creation."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+    [num deftype biginteger let -> defn byte-array cond])
   (:require
-   [clojure.core :refer [assoc]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [U Fn Any]]
-   [dunaj.math :refer [INumerical num Integer]]
+   [dunaj.math :refer [INumerical num Integer+]]
    [dunaj.compare :refer [IComparable]]
    [dunaj.host.number :refer [biginteger]]
    [dunaj.flow :refer [let cond]]
@@ -63,13 +63,13 @@
   from one integer or from two at most 64 bits wide integers."
   {:added v1
    :see '[uuid? random from-bytes]}
-  ([val :- (U Uuid ICharSequence Integer)]
+  ([val :- (U Uuid ICharSequence Integer+)]
    (cond
      (uuid? val) val
      (char-sequence? val) (java.util.UUID/fromString (->str val))
      :else (let [b (biginteger val)]
              (uuid (.longValue (.shiftRight b 64)) (.longValue b)))))
-  ([high :- Integer, low :- Integer]
+  ([high :- Integer+, low :- Integer+]
    (java.util.UUID. high low)))
 
 ;;; Reader literal

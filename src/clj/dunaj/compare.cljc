@@ -31,15 +31,16 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Comparison" "Hashing"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [= some? hash not= nil? identical? distinct? compare fn defn
+    defonce defprotocol defmacro defrecord])
   (:require
-   [clojure.core :refer [when-not let]]
    [clojure.bootstrap :refer
     [defprotocol defalias defn defonce v1 def+ defrecord fn defmacro]]
    [dunaj.type :refer [Predicate Fn Any Va Unknown R]]
-   [dunaj.boolean :refer [Boolean]]
+   [dunaj.boolean :refer [Boolean+]]
    [dunaj.host.int :refer [Int iint iadd imul i31 i0 i1]]
-   [dunaj.math :refer [Integer]]))
+   [dunaj.math :refer [Integer+]]))
 
 
 ;;;; Public API
@@ -48,7 +49,7 @@
   {:doc "Returns `true` if both arguments are the same object
         (have the same identity), otherwise returns `false`."
    :added v1
-   :tsig (Fn [Boolean Any Any])
+   :tsig (Fn [Boolean+ Any Any])
    :category "Primary"
    :see '[= distinct? dunaj.math/== dunaj.poly/identical-type?]})
 
@@ -74,7 +75,7 @@
   (let [pname (clojure.core/symbol
                (clojure.core/str (clojure.core/name sname) \?))]
     `(do (def+ ~sname {:private true} (sentinel))
-         (defn ~pname :- Boolean {:private true} [x#]
+         (defn ~pname :- Boolean+ {:private true} [x#]
            (identical? ~sname x#)))))
 
 ;;; nil
@@ -132,7 +133,7 @@
    :on-interface java.lang.Comparable
    :see '[compare natural-comparator]
    :forbid-extensions true}
-  (-compare-to :- Integer
+  (-compare-to :- Integer+
     "Returns a negative integer, zero, or a positive integer if
     `_this_` is less than, equal to, or greater than the `_other_`.
     When implementing `-compare-to`, mind not to mix ordered and
@@ -146,10 +147,10 @@
         `_other_`."
    :added v1
    :see '[IComparable comparable? natural-comparator]
-   :tsig (Fn [Integer IComparable Any])
+   :tsig (Fn [Integer+ IComparable Any])
    :category "Comparison"})
 
-(def+ natural-comparator :- (Fn [Integer Any Any])
+(def+ natural-comparator :- (Fn [Integer+ Any Any])
   "A comparator which uses object's natural ordering
   (implemented with `IComparable`) for comparison."
   {:added v1
@@ -296,7 +297,7 @@
    :category "Primary"
    :on-interface clojure.lang.IPersistentCollection
    :forbid-extensions true}
-  (-equiv :- Boolean
+  (-equiv :- Boolean+
     "Returns `true` if `_this_` is equal to `_other_`, otherwise
     returns `false`. Note that two objects that are equivalent with
     `-equiv` must also return same value for `-hash`.
@@ -316,8 +317,8 @@
    :see '[not= identical? dunaj.math/== hash IEquiv]
    :category "Primary"
    :tsig (Fn [true Any]
-             [Boolean Any Any]
-             [Boolean Any Any (Va Any)])})
+             [Boolean+ Any Any]
+             [Boolean+ Any Any (Va Any)])})
 
 (defalias not=
   {:doc "Returns `true` if `_x_` does not equal `_y_`, otherwise
@@ -326,8 +327,8 @@
    :see '[= identical? hash dunaj.boolean/not dunaj.math/== IEquiv]
    :category "Primary"
    :tsig (Fn [false Any]
-             [Boolean Any Any]
-             [Boolean Any Any (Va Any)])})
+             [Boolean+ Any Any]
+             [Boolean+ Any Any (Va Any)])})
 
 (defalias distinct?
   {:doc "Returns `true` if no two of given arguments are `=`."
@@ -335,8 +336,8 @@
    :see '[= not= dunaj.coll.recipe/distinct dunaj.coll.recipe/dedupe]
    :category "Primary"
    :tsig (Fn [true Any]
-             [Boolean Any Any]
-             [Boolean Any Any (Va Any)])})
+             [Boolean+ Any Any]
+             [Boolean+ Any Any (Va Any)])})
 
 
 ;;;; Testing
@@ -344,20 +345,22 @@
 (clojure.core/require
  '[clojure.bootstrap :refer [assert-primitive assert-boolean]])
 
-(assert-boolean
- (nil? nil)
- (nil? 'd)
- (identical? 'f 'f)
- (identical? 3 5)
- ;; (identical? 3 'd)
- (comparable? :x)
- (= 1 1)
- (= :x 'x)
- (not= :x 'x)
- (distinct? 1 2))
+#?(:dunaj
+   (assert-boolean
+    (nil? nil)
+    (nil? 'd)
+    (identical? 'f 'f)
+    (identical? 3 5)
+    ;; (identical? 3 'd)
+    (comparable? :x)
+    (= 1 1)
+    (= :x 'x)
+    (not= :x 'x)
+    (distinct? 1 2)))
 
-(assert-primitive
- (hash 3)
- (hash [:foo])
- (compare 1 2)
- (compare :x :y))
+#?(:dunaj
+   (assert-primitive
+    (hash 3)
+    (hash [:foo])
+    (compare 1 2)
+    (compare :x :y)))

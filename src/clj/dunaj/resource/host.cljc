@@ -13,17 +13,22 @@
 (ns dunaj.resource.host
   "Classpath and stream backed host resources."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce first atom peek = boolean neg? reduced? deftype
+    when-let conj let fn empty? string? when-not when defn pop
+    declare or reset! nil? reify not defprotocol loop merge cond
+    reduced defmacro proxy next if-let io! max assoc char-array
+    resolve defrecord and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
-   [dunaj.boolean :refer [Boolean and or not boolean]]
+   [dunaj.boolean :refer [Boolean+ and or not boolean]]
    [dunaj.host :refer [Batch AnyArray ArrayManager Array
                        keyword->class class-instance? proxy]]
    [dunaj.host.int :refer [iint iinc i0 i-1 i< iadd]]
    [dunaj.host.array :refer [char-array]]
-   [dunaj.math :refer [Integer max neg?]]
+   [dunaj.math :refer [Integer+ max neg?]]
    [dunaj.compare :refer [nil? =]]
    [dunaj.state :refer
     [IOpenAware ICloneable io!
@@ -41,10 +46,10 @@
    [dunaj.host.array :refer [aset-char! array-manager]]
    [dunaj.host.batch :refer [select-item-type provide-batch-size]]
    [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal
+    [Thread+ IThreadLocal IPassableThreadLocal
      current-thread ensure-thread-local]]
    [dunaj.concurrent.port :refer [<!! chan close! tap!]]
-   [dunaj.string :refer [String string?]]
+   [dunaj.string :refer [String+ string?]]
    [dunaj.uri :refer [Uri uri uri? absolute? resolve]]
    [dunaj.state.var :refer [def+ declare]]
    [dunaj.state.basic :refer [local atom]]
@@ -67,21 +72,22 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-host-batch-size :- Integer
+(def+ ^:private default-host-batch-size :- Integer+
   "Default size for host batch."
   8192)
 
-(defn ^:private provide-host-batch-size :- Integer
+(defn ^:private provide-host-batch-size :- Integer+
   "Returns host batch size taking into account given batch
   size hint."
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (provide-batch-size (max (or size-hint 0) default-host-batch-size)))
 
 (defn ^:private classpath-channel
   :- java.nio.channels.ReadableByteChannel
   "Returns NIO ReadableByteChannel based on given `class-loader`
   and `x`."
-  [class-loader :- (Maybe java.lang.ClassLoader), x :- (U String Uri)]
+  [class-loader :- (Maybe java.lang.ClassLoader),
+   x :- (U String+ Uri)]
   (let [x (uri x)
         strip-slash #(if (= \/ (first %)) (slice % 1) %)
         p (strip-slash (.getSchemeSpecificPart x))]
@@ -95,7 +101,8 @@
 
 (defn ^:private classpath-uri :- Uri
   "Returns URI based on given `class-loader` and `x`."
-  [class-loader :- (Maybe java.lang.ClassLoader), x :- (U String Uri)]
+  [class-loader :- (Maybe java.lang.ClassLoader),
+   x :- (U String+ Uri)]
   (let [strip-slash #(if (= \/ (first %)) (slice % 1) %)
         x (strip-slash (.getSchemeSpecificPart (uri x)))]
     (when-let [url (if (nil? class-loader)
@@ -108,11 +115,11 @@
 (defreleasable ClasspathResourceImmutableReader
   "Reads always from the begining of the classpath resource.
   Passable thread local."
-  [class-loader :- (Maybe java.lang.ClassLoader), x :- (U String Uri),
-   batch-size :- (Maybe Integer),
+  [class-loader :- (Maybe java.lang.ClassLoader),
+   x :- (U String+ Uri), batch-size :- (Maybe Integer+),
    ^:volatile-mutable rch
    :- (Maybe java.nio.channels.ReadableByteChannel),
-   ^:volatile-mutable thread :- (Maybe Thread),
+   ^:volatile-mutable thread :- (Maybe Thread+),
    ^:volatile-mutable error :- (Maybe IException)]
   IAcquirableFactory
   (-acquire! [this] this)
@@ -133,6 +140,7 @@
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
   IBatchedRed
@@ -157,8 +165,8 @@
   "Classpath resource type. Passable thread local."
   [^:volatile-mutable rch
    :- (Maybe java.nio.channels.ReadableByteChannel),
-   batch-size :- (Maybe Integer), config :- {},
-   ^:volatile-mutable thread :- (Maybe Thread),
+   batch-size :- (Maybe Integer+), config :- {},
+   ^:volatile-mutable thread :- (Maybe Thread+),
    ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)
@@ -205,9 +213,9 @@
 (defreleasable ^:private OStreamResource
   "OutputStream backed resource type. Passable thread local."
   [wch :- (Maybe java.nio.channels.WritableByteChannel),
-   stream :- java.io.OutputStream, batch-size :- (Maybe Integer),
-   config :- {}, keep-open? :- Boolean,
-   ^:volatile-mutable thread :- (Maybe Thread),
+   stream :- java.io.OutputStream, batch-size :- (Maybe Integer+),
+   config :- {}, keep-open? :- Boolean+,
+   ^:volatile-mutable thread :- (Maybe Thread+),
    ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)
@@ -234,8 +242,8 @@
 
 (defrecord OStreamResourceFactory
   "Factory type for OutputStream backed resources."
-  [stream :- java.io.OutputStream, batch-size :- (Maybe Integer),
-   keep-open? :- Boolean]
+  [stream :- java.io.OutputStream, batch-size :- (Maybe Integer+),
+   keep-open? :- Boolean+]
   IAcquirableFactory
   (-acquire! [this]
     (let [batch-size (provide-host-batch-size batch-size)
@@ -247,8 +255,8 @@
 (defreleasable ^:private IStreamResource
   "InputStream backed resource type. Passable thread local."
   [rch :- (Maybe java.nio.channels.ReadableByteChannel),
-   batch-size :- (Maybe Integer), config :- {}, keep-open? :- Boolean,
-   ^:volatile-mutable thread :- (Maybe Thread),
+   batch-size :- (Maybe Integer+), config :- {}, keep-open? :- Boolean+,
+   ^:volatile-mutable thread :- (Maybe Thread+),
    ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)
@@ -272,8 +280,8 @@
 
 (defrecord IStreamResourceFactory
   "Factory type for InputStream backed resources."
-  [stream :- java.io.InputStream, batch-size :- (Maybe Integer),
-   keep-open? :- Boolean]
+  [stream :- java.io.InputStream, batch-size :- (Maybe Integer+),
+   keep-open? :- Boolean+]
   IAcquirableFactory
   (-acquire! [this]
     (let [batch-size (provide-host-batch-size batch-size)
@@ -284,10 +292,10 @@
 
 (defreleasable ^:private WriterResource
   "Writer backed resource type. Passable thread local."
-  [writer :- java.io.Writer, batch-size :- (Maybe Integer),
-   config :- {}, keep-open? :- Boolean,
-   ^:volatile-mutable thread :- (Maybe Thread),
-   ^:volatile-mutable opened? :- Boolean,
+  [writer :- java.io.Writer, batch-size :- (Maybe Integer+),
+   config :- {}, keep-open? :- Boolean+,
+   ^:volatile-mutable thread :- (Maybe Thread+),
+   ^:volatile-mutable opened? :- Boolean+,
    ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)
@@ -321,8 +329,8 @@
 
 (defrecord WriterResourceFactory
   "Factory type for Writer backed resources."
-  [writer :- java.io.Writer, batch-size :- (Maybe Integer),
-   keep-open? :- Boolean]
+  [writer :- java.io.Writer, batch-size :- (Maybe Integer+),
+   keep-open? :- Boolean+]
   IAcquirableFactory
   (-acquire! [this]
     (let [batch-size (provide-host-batch-size batch-size)]
@@ -333,12 +341,13 @@
 (deftype ReaderResourceReader
   "Reads from the reader resource. Passable thread local."
   [reader :- java.io.Reader,
-   batch-size :- (Maybe Integer),
+   batch-size :- (Maybe Integer+),
    resource :- (I IFailable IOpenAware),
-   ^:volatile-mutable thread :- (Maybe Thread)]
+   ^:volatile-mutable thread :- (Maybe Thread+)]
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (keyword->class :char))
   ICloneable
@@ -372,10 +381,10 @@
 
 (defreleasable ^:private ReaderResource
   "Reader backed resource type. Passable thread local."
-  [reader :- java.io.Reader, batch-size :- (Maybe Integer),
-   config :- {}, keep-open? :- Boolean,
-   ^:volatile-mutable thread :- (Maybe Thread),
-   ^:volatile-mutable opened? :- Boolean,
+  [reader :- java.io.Reader, batch-size :- (Maybe Integer+),
+   config :- {}, keep-open? :- Boolean+,
+   ^:volatile-mutable thread :- (Maybe Thread+),
+   ^:volatile-mutable opened? :- Boolean+,
    ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)
@@ -402,8 +411,8 @@
 
 (defrecord ReaderResourceFactory
   "Factory type for Reader backed resources."
-  [reader :- java.io.Reader, batch-size :- (Maybe Integer),
-   keep-open? :- Boolean]
+  [reader :- java.io.Reader, batch-size :- (Maybe Integer+),
+   keep-open? :- Boolean+]
   IAcquirableFactory
   (-acquire! [this]
     (let [batch-size (provide-host-batch-size batch-size)]
@@ -418,6 +427,7 @@
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   ICloneable
   (-clone [this] (throw (unsupported-operation)))
   IHomogeneous
@@ -472,7 +482,7 @@
   with given `_uri_` and `_opts_` set."
   {:added v1
    :see '[classpath-factory]}
-  [uri :- (U nil String Uri) & {:as opts}]
+  [uri :- (U nil String+ Uri) & {:as opts}]
   (merge classpath-factory (assoc opts :uri uri)))
 
 (def+ output-stream-factory :- IAcquirableFactory
@@ -573,7 +583,7 @@
   {:added v1
    :see '[coll-reader]}
   ([] (coll-writer false))
-  ([non-blocking? :- Boolean]
+  ([non-blocking? :- Boolean+]
      (let [done?-ref (atom false)
            data-ref (atom empty-que)
            watcher-ch (when-not non-blocking?

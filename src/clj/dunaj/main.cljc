@@ -14,7 +14,11 @@
 
 (ns dunaj.main
   "Top level main function for REPL and scripts."
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [and or class = identical? loop let cond when-not eval when
+    when-let -> meta count assoc first conj seq empty? aget defn fn
+    apply identity char canonical str resolve name symbol defmacro
+    declare doseq some print int zero? not= doto with-bindings])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [AnyFn Maybe Any]]
@@ -31,7 +35,7 @@
    [dunaj.host.array :refer [aget]]
    [dunaj.function :refer [defn fn apply identity]]
    [dunaj.char :refer [Char whitespace? char]]
-   [dunaj.string :refer [String ->str canonical str]]
+   [dunaj.string :refer [String+ ->str canonical str]]
    [dunaj.error :refer [IException]]
    [dunaj.namespace :refer [resolve]]
    [dunaj.identifier :refer [Keyword name symbol]]
@@ -284,7 +288,7 @@
 (defn ^:private load-script
   "Loads Clojure source from a file or resource given its path. Paths
   beginning with @ or @/ are considered relative to classpath."
-  [path :-  String]
+  [path :-  String+]
   (if (.startsWith path "@")
     (clojure.lang.RT/loadResourceScript
      (.substring path (if (.startsWith path "@/") 2 1)))
@@ -361,7 +365,7 @@
 
 (defn ^:private main-dispatch :- AnyFn
   "Returns the handler associated with a main option."
-  [opt :- (Maybe String)]
+  [opt :- (Maybe String+)]
   (or
    ({"-r"     repl-opt
      "--repl" repl-opt

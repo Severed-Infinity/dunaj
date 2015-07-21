@@ -18,9 +18,8 @@
   "Atom, Box, Local and other basic reference types."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude [atom deftype defn declare])
   (:require
-   [clojure.core :refer [reset! compare-and-set!]]
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn Va Maybe]]
    [dunaj.state :refer [IReference IAtomic IMutable ICloneable]]
@@ -29,7 +28,7 @@
    [dunaj.function :refer [defn]]
    [dunaj.concurrent.thread :refer
     [IThreadLocal IPassableThreadLocal
-     Thread current-thread ensure-thread-local]]
+     Thread+ current-thread ensure-thread-local]]
    [dunaj.state.var :refer [replace-var! defalias declare]]))
 
 
@@ -128,7 +127,7 @@
 (deftype Local
   "Thread local mutable reference type."
   [^:volatile-mutable val :- Any,
-   ^:volatile-mutable thread :- Thread]
+   ^:volatile-mutable thread :- Thread+]
   IMutable
   (-reset! [this newval]
     (ensure-thread-local thread)
@@ -158,5 +157,5 @@
           dunaj.concurrent.thread/pass!]}
   ([val :- Any]
    (local val (current-thread)))
-  ([val :- Any, thread :- (Maybe Thread)]
+  ([val :- Any, thread :- (Maybe Thread+)]
    (->Local val thread)))

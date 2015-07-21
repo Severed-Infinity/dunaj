@@ -19,17 +19,19 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Console"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [*err* meta in-ns with-meta *out* *in* when-let format let -> key
+    when defn declare reify defonce print defmacro str apply assoc])
   (:require
    [clojure.bootstrap :refer [scratch v1]]
    [dunaj.type :refer [Maybe I U AnyFn Fn Any Macro]]
-   [dunaj.boolean :refer [Boolean]]
+   [dunaj.boolean :refer [Boolean+]]
    [dunaj.flow :refer [when-let let when]]
    [dunaj.threading :refer [->]]
    [dunaj.poly :refer [reify]]
    [dunaj.coll :refer [IRed assoc]]
    [dunaj.function :refer [defn apply]]
-   [dunaj.string :refer [str String]]
+   [dunaj.string :refer [str String+]]
    [dunaj.identifier :refer [Symbol]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.state.var :refer [Var defalias def+ defonce declare]]
@@ -76,10 +78,10 @@
 (def+ ^:private ^:dynamic *in* :- IWritable
   (key in-w-scope))
 
-(def+ ^:private ^:dynamic *color* :- Boolean
+(def+ ^:private ^:dynamic *color* :- Boolean+
   false)
 
-(def+ ^:private ^:dynamic *meta* :- Boolean
+(def+ ^:private ^:dynamic *meta* :- Boolean+
   false)
 
 (def+ ^:private ^:dynamic *default-printer* :- IPrinterFactory
@@ -123,7 +125,7 @@
    :highlight :flow}
   clojure.core/in-ns)
 
-(defn compiling? :- Boolean
+(defn compiling? :- Boolean+
   "Returns `true` if compiling files, `false` otherwise."
   {:added v1
    :category "Primary"
@@ -207,7 +209,7 @@
   []
   (dunaj.resource/flush! *out*))
 
-(def+ host-newline :- String
+(def+ host-newline :- String+
   "A host newline string."
   {:added v1
    :category "Console"

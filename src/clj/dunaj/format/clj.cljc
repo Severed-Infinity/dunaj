@@ -13,11 +13,21 @@
 (ns dunaj.format.clj
   "CLJ formatter."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce every? set satisfies? take-nth first seq? dissoc last
+    namespace = vector? dec map < rest char? keep char mapcat reverse
+    range eval cons pos? if-not sequential? neg? deftype when-let
+    set? conj! remove * min conj let map? -> get identity meta var?
+    fn empty? string? when-not vec when second > keyword? defn concat
+    symbol declare - assoc! or reset! name counted? zero? class? some
+    nth nil? not identical? defprotocol true? print >= partition loop
+    merge integer? condp gensym cond reduced defmacro inc filter +
+    keyword str if-let false? case list? max == count apply assoc
+    defrecord constantly and number? symbol?])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any Fn AnyFn Maybe U I]]
-   [dunaj.boolean :refer [Boolean and or not true? false?]]
+   [dunaj.boolean :refer [Boolean+ and or not true? false?]]
    [dunaj.host :refer [class? keyword->class class-instance?]]
    [dunaj.host.int :refer
     [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imax iadd
@@ -119,7 +129,7 @@
 ;;   - strict symbol start
 ;;   - maybe symbol start
 
-(defn clj-delimiter? :- Boolean
+(defn clj-delimiter? :- Boolean+
   "Returns true if `x` represents a CLJ delimiter character,
   otherwise returns false."
   [x :- Int]
@@ -374,13 +384,13 @@
 
 ;;; number literal
 
-(defn clj-number-start? :- Boolean
+(defn clj-number-start? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid character of a CLJ Number Literal, otherwise returns false."
   [x :- Int]
   (or (idigit? x) (i== x (iMINUS)) (i== x (iPLUS))))
 
-(defn clj-number-item? :- Boolean
+(defn clj-number-item? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid character of a CLJ Number Literal, otherwise returns false."
   [x :- Int]
@@ -509,28 +519,28 @@
 
 ;;; symbol literal
 
-(defn clj-symbol-item? :- Boolean
+(defn clj-symbol-item? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid character of a CLJ Symbol Literal, otherwise returns false."
   [x :- Int]
   (or (edn-symbol-start? x) (edn-symbol-digit? x)
       (i== x (iHASH)) (i== x (iAPOS))))
 
-(defn clj-nondigit-symbol-item? :- Boolean
+(defn clj-nondigit-symbol-item? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid starting character of a CLJ Symbol Literal,
   otherwise returns false."
   [x :- Int]
   (or (edn-strict-symbol-start? x) (i== x (iHASH)) (i== x (iAPOS))))
 
-(defn clj-strict-symbol-item? :- Boolean
+(defn clj-strict-symbol-item? :- Boolean+
   "Returns true if `x` represents a Unicode code point which is a
   valid starting character of a CLJ Symbol Literal,
   otherwise returns false."
   [x :- Int]
   (or (clj-nondigit-symbol-item? x) (java.lang.Character/isDigit x)))
 
-(defn ^:private valid-symbol? :- Boolean
+(defn ^:private valid-symbol? :- Boolean+
   "Returns true if string `s` is a valid CLJ symbol, otherwise
   returns false."
   [s]
@@ -567,7 +577,7 @@
         res (reduce cf 0 s)]
     (not (or (== 4 res) (== 66 res) (== 22 res)))))
 
-(defn ^:private valid-keyword? :- Boolean
+(defn ^:private valid-keyword? :- Boolean+
   "Returns true if string `s` is a valid CLJ keyword, otherwise
   returns false."
   ([s] (valid-keyword? s true))

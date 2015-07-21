@@ -18,14 +18,15 @@
   "Regular expressions."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [reduced? deftype let fn defn or nth loop cond str count and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Fn Any U Maybe]]
    [dunaj.boolean :refer [and or]]
    [dunaj.host :refer [class-instance?]]
    [dunaj.host.int :refer [Int iint iadd i0 isub izero? i==]]
-   [dunaj.math :refer [Integer]]
+   [dunaj.math :refer [Integer+]]
    [dunaj.flow :refer [let loop cond]]
    [dunaj.poly :refer [deftype]]
    [dunaj.coll :refer [IRed reduced? postponed postponed? ISeqable
@@ -34,7 +35,7 @@
    [dunaj.host.array :refer [adapt]]
    [dunaj.function :refer [fn defn]]
    [dunaj.string :refer
-    [ICanonical ICharSequence String str provide-char-sequence]]
+    [ICanonical ICharSequence String+ str provide-char-sequence]]
    [dunaj.error :refer [unsupported-operation]]
    [dunaj.state.var :refer [defalias]]
    [dunaj.format :refer [IParserFactory]]))
@@ -44,6 +45,7 @@
 
 (deftype ^:private RegexParser
   [pattern :- java.util.regex.Pattern, coll :- ICharSequence]
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed
   (-reduce [this reducef init]
     (let [m (.matcher pattern coll)
@@ -81,7 +83,7 @@
   "Returns an instance of host compiled regular expression pattern."
   {:added v1
    :see '[regex? matches split dunaj.format/parse]
-   :tsig (Fn [Regex (U Regex String)])}
+   :tsig (Fn [Regex (U Regex String+)])}
   clojure.core/re-pattern)
 
 (defalias matches
@@ -96,23 +98,23 @@
   "Returns collection of splitted `_coll_` according to regex `_re_`."
   {:added v1
    :see '[regex? regex matches dunaj.format/parse]}
-  ([re :- (U String Regex), coll :- (Maybe IRed)]
+  ([re :- (U String+ Regex), coll :- (Maybe IRed)]
    (split re coll 0))
-  ([re :- (U String Regex), coll :- (Maybe IRed), limit :- Integer]
+  ([re :- (U String+ Regex), coll :- (Maybe IRed), limit :- Integer+]
    (adapt
     (.split (regex re) (provide-char-sequence coll) (or limit 0)))))
 
-(defn quote :- String
+(defn quote :- String+
   "Returns literal quoted string for use in regex pattern."
   {:added v1
    :see '[quote-replacement regex]}
-  [s :- String]
+  [s :- String+]
   (java.util.regex.Pattern/quote s))
 
-(defn quote-replacement :- String
+(defn quote-replacement :- String+
   "Returns literal quoted string for use in regex based replacements,
   e.g. in `dunaj.string/replace`."
   {:added v1
    :see '[quote regex dunaj.string/replace]}
-  [s :- String]
+  [s :- String+]
   (java.util.regex.Matcher/quoteReplacement s))

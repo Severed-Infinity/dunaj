@@ -26,21 +26,26 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Operations"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [map remove string? replace partition-by str seq reduce satisfies?
+    = dec < delay char? char neg? reduced? deftype <= conj! let get
+    doto long fn empty? hash not= when-not when > defn - or reset!
+    counted? nth nil? identical? defprotocol >= loop integer?
+    object-array cond reduced defmacro next if-let == count assoc
+    char-array defrecord and])
   (:require
-   [clojure.core :refer [aget ->> -> declare set! first second atom]]
    [clojure.bootstrap :refer [def+ defn defrecord defalias defmacro
                               v1 not-implemented]]
-   [clojure.bridge]
+   #?(:dunaj [clojure.bridge])
    [dunaj.type :refer [Maybe Any AnyFn Fn U Predicate]]
-   [dunaj.boolean :refer [Boolean and or]]
+   [dunaj.boolean :refer [Boolean+ and or]]
    [dunaj.host :refer [keyword->class class-instance? Array Batch]]
    [dunaj.host.int :refer
     [i0 iadd i< iint isub i== Int iMINUS idec iinc inneg? iloop
      imul i31 iSPACE iHT iLF iCR i<= i32 ineg izero? i2 idiv i-1]]
    [dunaj.host.number :refer [long]]
    [dunaj.math :refer
-    [INumerical Integer - integer? nneg? < == >= > <= neg? add dec]]
+    [INumerical Integer+ - integer? nneg? < == >= > <= neg? add dec]]
    [dunaj.compare :refer [IComparable IHash IEquiv IHashBasis not=
                           hash-from-basis hash = nil? identical?]]
    [dunaj.state :refer [IReference reset! ICloneable]]
@@ -414,11 +419,17 @@
           (let [v (aget arr i)]
             (recur (iinc i) (iadd (iint v) (imul (i31) ret))))))))))
 
-(deftype String
-  "A type for strings.
+(deftype #?(:dunaj String String+)
+  #?(:dunaj
+     "A type for strings.
 
-  WARNING: This type is not available in Dunaj lite,
-  please use `String+` instead."
+     WARNING: This type is not available in Dunaj lite,
+     please use `String+` instead."
+     :clj
+     "A type for strings.
+
+     TIP: Identical to `String` type, meant to be used in
+     Dunaj lite.")
   {:added v1
    :category "Primary"
    :see '[ICharSequence ->str str empty-string]
@@ -440,8 +451,7 @@
           bm (batch-manager type)]
       (reducef
        init (batch-on bm (get-cha this) (i0) (.length this)))))
-  ICounted
-  (-count [this] (.length this))
+  #?@(:dunaj [ICounted (-count [this] (.length this))])
   IEmptyAware
   (-empty? [this] (.isEmpty this))
   IEmptyable
@@ -477,10 +487,11 @@
   IHomogeneous
   (-item-type [this] java.lang.Character/TYPE)
   IEditable
-  (-edit [this capacity-hint]
+  (-edit [this #?(:dunaj capacity-hint)]
     (let [sb (java.lang.StringBuilder. this)]
-      (when (and capacity-hint (> capacity-hint (.capacity sb)))
-        (.ensureCapacity sb capacity-hint))
+      #?(:dunaj
+         (when (and capacity-hint (> capacity-hint (.capacity sb)))
+           (.ensureCapacity sb capacity-hint)))
       sb))
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
@@ -489,14 +500,15 @@
   ;; Abstract types
   ICharSequence)
 
-(deftype String+
-  "A type for strings.
+#?(:dunaj
+   (deftype String+
+     "A type for strings.
 
-  TIP: Identical to `String` type, meant to be used in Dunaj lite."
-  {:added v1
-   :category "Primary"
-   :see '[ICharSequence ->str str empty-string String]}
-  java.lang.String)
+     TIP: Identical to `String` type, meant to be used in Dunaj lite."
+     {:added v1
+      :category "Primary"
+      :see '[ICharSequence ->str str empty-string String]}
+     java.lang.String))
 
 (def+ empty-string :- String
   "An empty string."
@@ -526,8 +538,7 @@
           bm (batch-manager type)]
       (reducef
        init (batch-on bm (get-sbcha this) (i0) (.length this)))))
-  ICounted
-  (-count [this] (.length this))
+  #?@(:dunaj [ICounted (-count [this] (.length this))])
   ICapped
   (-capacity [this] (.capacity this))
   IPeekable
@@ -625,7 +636,7 @@
                (item-types-match? (keyword->class :char)
                                   (item-type coll)))
           (let [t (if (counted? coll)
-                    (edit empty-string (count coll))
+                    (edit empty-string #?(:dunaj (count coll)))
                     (edit empty-string))
                 state (atom {})
                 rf (fn [ret val] (cat-batch! ret val state))]
@@ -634,7 +645,7 @@
               (reduce-batched*
                (keyword->class :char) nil coll rf t))))
           :else (let [t (if (counted? coll)
-                          (edit empty-string (count coll))
+                          (edit empty-string #?(:dunaj (count coll)))
                           (edit empty-string))]
                   (settle! (reduce #(conj! % (sn %2)) t coll)))))
   (-from-items [factory] empty-string)
@@ -727,7 +738,7 @@
    :tsig {Char String}}
   clojure.core/char-name-string)
 
-(defn blank? :- Boolean
+(defn blank? :- Boolean+
   "Returns `true` if `_s_` is empty or contains only whitespace
   characters, otherwise returns `false`. Optional whitespace
   function predicate `_wf_` can be provided."
@@ -757,7 +768,7 @@
           r (reduce hyphen-fn nil string)]
       (if r (settle! r) empty-string))))
 
-(deftype CamelWrap [ret :- Any, camelize :- Boolean])
+(deftype CamelWrap [ret :- Any, camelize :- Boolean+])
 
 (defn camel-case :- String
   "Returns a camel case version of a given hyphen cased `_string_`."
@@ -782,7 +793,7 @@
         (settle! (.-ret ^dunaj.string.CamelWrap r))
         empty-string))))
 
-(defn index-of :- (Maybe Integer)
+(defn index-of :- (Maybe Integer+)
   "Returns first found index of `_x_` inside `_coll_`,
   or returns `nil` if `_coll_` does not contain `_x_`.
   `_x_` may be a character or a collection."
@@ -803,7 +814,7 @@
               (reduce rf (i0) coll)))]
       (when (nneg? res) res))))
 
-(defn last-index-of :- (Maybe Integer)
+(defn last-index-of :- (Maybe Integer+)
   "Returns last found index of `_x_` inside `_coll_`,
   or returns `nil` if `_coll_` does not contain `_x_`.
   `_x_` may be a character or a collection."
@@ -846,6 +857,7 @@
                          (recur (reducef ret val)
                                 nfval (iinc i) i)))))]
           (af init (partitionf (aget arr offset)) offset offset)))))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IFoldable
   (-fold [this reduce-fn pool n combinef reducef]
     (cond
@@ -906,10 +918,10 @@
   ([whitespace-fn :- Predicate, string :- String]
    (split whitespace-fn false string))
   ([whitespace-fn :- Predicate,
-    keep-whitespace? :- Boolean, string :- String]
+    keep-whitespace? :- Boolean+, string :- String]
    (split whitespace-fn keep-whitespace? false string))
-  ([whitespace-fn :- Predicate,
-    keep-whitespace? :- Boolean, shared? :- Boolean, string :- String]
+  ([whitespace-fn :- Predicate, keep-whitespace? :- Boolean+,
+    shared? :- Boolean+, string :- String]
    (let [f (fn [x :- ICharSequence] (whitespace-fn (.charAt x (i0))))]
      (let [r (partition-by whitespace-fn string)
            r (if shared?
@@ -1011,9 +1023,9 @@
   {:added v1
    :see '[hexa]
    :category "Operations"}
-  ([x :- Integer]
+  ([x :- Integer+]
    (binary x 8))
-  ([x :- Integer, n :- Integer]
+  ([x :- Integer+, n :- Integer+]
    (when-not (<= 1 n 64)
      (throw (java.lang.IllegalArgumentException.
              "n is out of bounds.")))
@@ -1029,9 +1041,9 @@
   {:added v1
    :see '[binary]
    :category "Operations"}
-  ([x :- Integer]
+  ([x :- Integer+]
    (hexa x 4))
-  ([x :- Integer, n :- Integer]
+  ([x :- Integer+, n :- Integer+]
    (when-not (<= 1 n 16)
      (throw (java.lang.IllegalArgumentException.
              "n is out of bounds.")))

@@ -22,13 +22,15 @@
    ["Primary"
     ["Folds" "Additional helper functions for folds can be found at
              <<dunaj.coll.helper.api.ad#Folds,dunaj.coll.helper>>."]]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [satisfies? if-not deftype let fn when defn or nil? not identical?
+    defprotocol true? cond apply and ->>])
   (:require [clojure.core.reducers :refer [coll-fold]]
             [clojure.bootstrap :refer [def+ v1 replace-var!]]
             [dunaj.type :refer [Fn Any AnyFn U Maybe]]
-            [dunaj.boolean :refer [and or not Boolean true?]]
+            [dunaj.boolean :refer [and or not Boolean+ true?]]
             [dunaj.host :refer [class-instance?]]
-            [dunaj.math :refer [Integer]]
+            [dunaj.math :refer [Integer+]]
             [dunaj.compare :refer [nil? identical?]]
             [dunaj.flow :refer [let cond if-not when]]
             [dunaj.threading :refer [->>]]
@@ -42,7 +44,7 @@
 
 ;;;; Implementation details
 
-(def+ ^:dynamic ^:private *default-fold-size* :- Integer
+(def+ ^:dynamic ^:private *default-fold-size* :- Integer+
   512)
 
 (def+ ^:dynamic ^:private *default-fold-pool*
@@ -84,7 +86,7 @@
   IExecutor
   ITaskExecutor)
 
-(defn inside-forkjoin? :- Boolean
+(defn inside-forkjoin? :- Boolean+
   "Returns `true` if the current thread is executing as a
   `ForkJoinPool` computation, otherwise returns `false`."
   {:added v1
@@ -161,7 +163,7 @@
     partial results with `_combinef_`), with `_reduce-fn_` specifying
     the reduction function (e.g. `reduce*`). Uses forkjoin `_pool_`
     for the execution of tasks."
-    [this reduce-fn :- AnyFn, pool :- ForkJoinPool, n :- Integer,
+    [this reduce-fn :- AnyFn, pool :- ForkJoinPool, n :- Integer+,
      combinef :- AnyFn, reducef :- AnyFn]))
 
 (def+ default-fold-size :- clojure.lang.Var
@@ -212,7 +214,7 @@
 (defn ^:private fold* :- Any
   "Like fold, but with customizable `_pool_` and `_reduce-fn_`."
   ([coll :- [], reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, combinef :- AnyFn, reducef :- AnyFn]
+    n :- Integer+, combinef :- AnyFn, reducef :- AnyFn]
    (let [reduce-fn (or reduce-fn reduce*)]
      (cond (satisfies? IFoldable coll)
            (-fold coll reduce-fn (or pool *default-fold-pool*)
@@ -229,7 +231,7 @@
   order, and with the augmented reducing function `_r_`.
   Does not return reduced nor postponed object."
   [coll :- [], reduce-fn :- AnyFn, pool :- ForkJoinPool,
-   n :- Integer, r :- IReducing]
+   n :- Integer+, r :- IReducing]
   (let [reducef (reducing-function r)
         combinef (fn
                    ([] (._wrap r (._init r)))
@@ -239,11 +241,11 @@
 
 (defn ^:private transfold* :- Any
   ([coll :- IRed, reduce-fn, :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, xform :- AnyFn, reducef :- AnyFn]
+    n :- Integer+, xform :- AnyFn, reducef :- AnyFn]
    (fold-augmented*
     coll reduce-fn pool n (xform (folding reducef))))
   ([coll :- IRed, reduce-fn :- AnyFn, pool :- ForkJoinPool,
-    n :- Integer, xform :- AnyFn, combinef :- AnyFn, reducef :- AnyFn]
+    n :- Integer+, xform :- AnyFn, combinef :- AnyFn, reducef :- AnyFn]
    (fold-augmented*
     coll reduce-fn pool n (xform (folding combinef reducef)))))
 
@@ -270,7 +272,7 @@
    (fold reducef reducef coll))
   ([combinef :- AnyFn, reducef :- AnyFn, coll :- []]
    (fold *default-fold-size* combinef reducef coll))
-  ([n :- Integer, combinef :- AnyFn, reducef :- AnyFn, coll :- []]
+  ([n :- Integer+, combinef :- AnyFn, reducef :- AnyFn, coll :- []]
    (fold* coll nil nil n combinef reducef)))
 
 (defn fold-augmented :- Any
@@ -285,7 +287,7 @@
    :category "Folds"}
   ([r :- IReducing, coll :- []]
    (fold-augmented *default-fold-size* r coll))
-  ([n :- Integer, r :- IReducing, coll :- []]
+  ([n :- Integer+, r :- IReducing, coll :- []]
    (fold-augmented* coll nil nil n r)))
 
 (defn transfold :- Any

@@ -30,22 +30,21 @@
     unchecked operations with fastest performance."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
-  (:require [clojure.core :refer [let assert]]
-            [clojure.bootstrap :refer [defalias defn v1]]
+  (:refer-clojure :exclude [+ inc - * dec defn])
+  (:require [clojure.bootstrap :refer [defalias defn v1]]
             [dunaj.type :refer [Fn Va]]
-            [dunaj.math :refer [Number]]))
+            [dunaj.math :refer [Number+]]))
 
 
 ;;;; Public API
 
-(defn add :- Number
+(defn add :- Number+
   "Returns the sum of `_x_` and `_y_`. Supports arbitrary precision."
   {:added v1
    :see '[+ dunaj.math/add dunaj.math.unchecked/add
           dunaj.host.int/iadd]}
-  [x :- Number, y :- Number]
-  (. clojure.lang.Numbers (addP x y)))
+  [x :- Number+, y :- Number+]
+  (. clojure.lang.Number+s (addP x y)))
 
 (defalias +
   {:doc "Returns the sum of nums. `(+)` returns 0.
@@ -53,27 +52,27 @@
    :added v1
    :see '[add inc dunaj.math/+ dunaj.math.unchecked/+
           dunaj.host.int/iadd]
-   :tsig (Fn [Number]
-             [Number Number]
-             [Number Number Number]
-             [Number Number Number (Va Number)])}
+   :tsig (Fn [Number+]
+             [Number+ Number+]
+             [Number+ Number+ Number+]
+             [Number+ Number+ Number+ (Va Number+)])}
   clojure.core/+')
 
-(defn negate :- Number
+(defn negate :- Number+
   "Returns the negation of `_x_`. Supports arbitrary precision."
   {:added v1
    :see '[subtract - dunaj.math/negate dunaj.math.unchecked/negate
           dunaj.host.int/ineg]}
-  [x :- Number]
+  [x :- Number+]
   (. clojure.lang.Numbers (minusP x)))
 
-(defn subtract :- Number
+(defn subtract :- Number+
   "Returns the result of subtraction of `_y_` from `_x_`.
   Supports arbitrary precision."
   {:added v1
    :see '[negate - dec dunaj.math/subtract
           dunaj.math.unchecked/subtract dunaj.host.int/isub]}
-  [x :- Number, y :- Number]
+  [x :- Number+, y :- Number+]
   (. clojure.lang.Numbers (minusP x y)))
 
 (defalias -
@@ -83,19 +82,19 @@
    :added v1
    :see '[negate subtract dec dunaj.math/- dunaj.math.unchecked/-
           dunaj.host.int/isub]
-   :tsig (Fn [Number Number]
-             [Number Number Number]
-             [Number Number Number (Va Number)])}
+   :tsig (Fn [Number+ Number+]
+             [Number+ Number+ Number+]
+             [Number+ Number+ Number+ (Va Number+)])}
   clojure.core/-')
 
-(defn multiply :- Number
+(defn multiply :- Number+
   "Returns the result of multiplication of `_x_` and `_y_`.
   Supports arbitrary precision."
   {:added v1
    :see '[* dunaj.math/multiply dunaj.math.unchecked/multiply
           dunaj.host.int/imul]}
-  [x :- Number, y :- Number]
-  (. clojure.lang.Numbers (multiplyP x y)))
+  [x :- Number+, y :- Number+]
+  (. clojure.lang.Number+s (multiplyP x y)))
 
 (defalias *
   {:doc "Returns the product of nums. `(*)` returns 1.
@@ -103,10 +102,10 @@
    :added v1
    :see '[multiply dunaj.math/* dunaj.math.unchecked/*
           dunaj.host.int/imul]
-   :tsig (Fn [Number]
-             [Number Number]
-             [Number Number Number]
-             [Number Number Number (Va Number)])}
+   :tsig (Fn [Number+]
+             [Number+ Number+]
+             [Number+ Number+ Number+]
+             [Number+ Number+ Number+ (Va Number+)])}
   clojure.core/*')
 
 (defalias inc
@@ -115,7 +114,7 @@
    :added v1
    :see '[add + dunaj.math/inc dunaj.math.unchecked/inc
           dunaj.host.int/iinc]
-   :tsig (Fn [Number Number])}
+   :tsig (Fn [Number+ Number+])}
   clojure.core/inc')
 
 (defalias dec
@@ -124,5 +123,5 @@
    :added v1
    :see '[subtract - dunaj.math/dec dunaj.math.unchecked/dec
           dunaj.host.int/idec]
-   :tsig (Fn [Number Number])}
+   :tsig (Fn [Number+ Number+])}
   clojure.core/dec')

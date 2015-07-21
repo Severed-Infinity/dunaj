@@ -14,10 +14,12 @@
   "Feature protocols for metadata, configuration and validation."
   {:authors ["Jozef Wagner"]
    :categories ["Metadata" "Configuration"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [meta reset-meta! alter-meta! #?(:clj satisfies?) deftype let when
+    defn reset! #?(:clj extend-type) identical? defprotocol])
   (:require
-   [clojure.core :refer [atom extend-type apply satisfies?]]
    [clojure.bootstrap :refer [deftype defn defprotocol defalias v1]]
+   #?(:clj [clojure.dunaj-deftype :refer [extend-type satisfies?]])
    [dunaj.type :refer [Any KeywordMap I Fn AnyFn]]
    [dunaj.compare :refer [identical?]]
    [dunaj.state :refer

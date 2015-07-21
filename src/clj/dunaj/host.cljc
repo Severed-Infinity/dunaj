@@ -25,75 +25,78 @@
   NOTE: Documentation needs more work."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare)
+  (:refer-clojure :exclude
+   [gen-class bases .. gen-interface definterface class? proxy-super
+    proxy class supers deftype let defn defmacro defrecord])
   (:require
-   [clojure.core :refer
-    [do case if reify gensym symbol str = with-meta not nil? when or
-     if-let cond]]
    [clojure.bootstrap :refer [defmacro deftype defalias defn def+ let
                               v1 primitive-type-hint defrecord]]
+   #?(:clj [clojure.dunaj-deftype :refer [satisfies?]])
    [dunaj.type :refer
     [Macro Fn Any Maybe Signature TypeHint IHintedSignature]]
-   [dunaj.boolean :refer [Boolean]]))
+   [dunaj.boolean :refer [Boolean+]]))
 
 
 ;;;; Public API
 
-(defmacro new
-  "Returns a new object constructed by calling constructor of the
-  class named by `_classname_`, passing `_args_` evaluated from
-  left to right into the constructor."
-  {:added v1
-   :see '[class-instance? dunaj.host/. dunaj.host/..]
-   :highlight :host}
-  [classname & args]
-  `(clojure.core/new ~classname ~@args))
+#?(:dunaj
+   (defmacro new
+    "Returns a new object constructed by calling constructor of the
+    class named by `_classname_`, passing `_args_` evaluated from
+    left to right into the constructor."
+    {:added v1
+     :see '[class-instance? dunaj.host/. dunaj.host/..]
+     :highlight :host}
+    [classname & args]
+    `(clojure.core/new ~classname ~@args)))
 
-(defmacro set!
-  "Assigns evaluated `_expr_` to the field identified by
-  `_field-access-form_`. Returns `nil`.
+#?(:dunaj
+   (defmacro set!
+    "Assigns evaluated `_expr_` to the field identified by
+    `_field-access-form_`. Returns `nil`.
 
-  NOTE: Returning `nil` is a change from Clojure, as `set!` special
-  form autoboxes returned value and it is preferred for mutating fns
-  to return `nil` anyway."
-  {:added v1
-   :highlight :host}
-  [field-access-form expr]
-  `(do (clojure.core/set! ~field-access-form ~expr) nil))
+    NOTE: Returning `nil` is a change from Clojure, as `set!` special
+    form autoboxes returned value and it is preferred for mutating fns
+    to return `nil` anyway."
+    {:added v1
+     :highlight :host}
+    [field-access-form expr]
+    `(do (clojure.core/set! ~field-access-form ~expr) nil)))
 
-(defmacro .
-  "The '.' macro is the basis for access to host.
-  It can be considered a member-access operator, and/or read
-  as 'in the scope of'.
+#?(:dunaj
+   (defmacro .
+    "The '.' macro is the basis for access to host.
+    It can be considered a member-access operator, and/or read
+    as 'in the scope of'.
 
-  If the first operand is a symbol that resolves to a class name,
-  the access is considered to be to a static member of the named
-  class. Note that nested classes are named
-  `EnclosingClass$NestedClass`, if supported by host. Otherwise it
-  is presumed to be an instance member and the first argument is
-  evaluated to produce the target object.
+    If the first operand is a symbol that resolves to a class name,
+    the access is considered to be to a static member of the named
+    class. Note that nested classes are named
+    `EnclosingClass$NestedClass`, if supported by host. Otherwise it
+    is presumed to be an instance member and the first argument is
+    evaluated to produce the target object.
 
-  If the second operand is a symbol and no args are supplied it
-  is taken to be a field access - the name of the field is the
-  name of the symbol, and the value of the expression is the
-  value of the field, unless there is no argument public method
-  of the same name, in which case it resolves to a call to the
-  method.
+    If the second operand is a symbol and no args are supplied it
+    is taken to be a field access - the name of the field is the
+    name of the symbol, and the value of the expression is the
+    value of the field, unless there is no argument public method
+    of the same name, in which case it resolves to a call to the
+    method.
 
-  If the second operand is a list, or args are supplied, it is
-  taken to be a method call. The first item of the list must
-  be a simple symbol, and the name of the method is the name of
-  the symbol. The args, if any, are evaluated from left to right,
-  and passed to the matching method, which is called, and its value
-  returned. If the method has a void return type, the value of the
-  expression will be nil. Note that placing the method name in a
-  list with any args is optional in the canonic form, but can be
-  useful to gather args in macros built upon the form."
-  {:added v1
-   :see '[dunaj.host/..]
-   :highlight :host}
-  [& args]
-  `(clojure.core/. ~@args))
+    If the second operand is a list, or args are supplied, it is
+    taken to be a method call. The first item of the list must
+    be a simple symbol, and the name of the method is the name of
+    the symbol. The args, if any, are evaluated from left to right,
+    and passed to the matching method, which is called, and its value
+    returned. If the method has a void return type, the value of the
+    expression will be nil. Note that placing the method name in a
+    list with any args is optional in the canonic form, but can be
+    useful to gather args in macros built upon the form."
+    {:added v1
+     :see '[dunaj.host/..]
+     :highlight :host}
+    [& args]
+    `(clojure.core/. ~@args)))
 
 (defalias ..
   "Expands into a member access `(.)` of the first member on the
@@ -143,23 +146,35 @@
 
 ;;; Class
 
-(deftype Class
-  "A host class type.
+#?(:dunaj
+   (deftype Class
+     "A host class type.
 
-  WARNING: This type is not available in Dunaj lite,
-  please use `Class+` instead."
-  {:added v1
-   :see '[class class-instance? Class+]
-   :predicate 'class?}
-  java.lang.Class)
+     WARNING: This type is not available in Dunaj lite,
+     please use `Class+` instead."
+     {:added v1
+      :see '[class class-instance? Class+]
+      :predicate 'class?}
+     java.lang.Class))
 
-(deftype Class+
-  "A host class type.
+#?(:clj
+   (deftype Class+
+     "A host class type.
 
-  TIP: Identical to `Class` type, meant to be used in Dunaj lite."
-  {:added v1
-   :see '[class class-instance? Class]}
-  java.lang.Class)
+     TIP: Identical to `Class` type, meant to be used in Dunaj lite."
+     {:added v1
+      :see '[class class-instance?]
+      :predicate 'class?}
+     java.lang.Class))
+
+#?(:dunaj
+   (deftype Class+
+     "A host class type.
+
+     TIP: Identical to `Class` type, meant to be used in Dunaj lite."
+     {:added v1
+      :see '[class class-instance? Class]}
+     java.lang.Class))
 
 (defalias class
   "Returns the Class of `_x_`."
@@ -173,7 +188,7 @@
   otherwise returns `true`."
   {:added v1
    :see '[class ensure-class-instance? dunaj.poly/instance?]
-   :tsig (Fn [Boolean Class Any])
+   :tsig (Fn [Boolean+ Class Any])
    :highlight :host}
   clojure.core/instance?)
 
@@ -397,7 +412,8 @@
    :highlight :def
    :indent :all
    :named true}
-  clojure.core/definterface2)
+  #?(:dunaj clojure.core/definterface2
+     :clj clojure.dunaj-deftype/definterface2))
 
 ;;; Misc
 

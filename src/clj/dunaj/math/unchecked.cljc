@@ -28,11 +28,10 @@
     unchecked operations with fastest performance."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
-  (:require [clojure.core :refer [reduce let]]
-            [clojure.bootstrap :refer [defalias defn v1]]
+  (:refer-clojure :exclude [+ inc - * dec defn])
+  (:require [clojure.bootstrap :refer [defalias defn v1]]
             [dunaj.type :refer [Fn Va]]
-            [dunaj.math :refer [Number]]))
+            [dunaj.math :refer [Number+]]))
 
 
 ;;;; Public API
@@ -43,7 +42,7 @@
    :added v1
    :see '[+ dunaj.math/add dunaj.math.precise/add
           dunaj.host.int/iadd]
-   :tsig (Fn [Number Number Number])}
+   :tsig (Fn [Number+ Number+ Number+])}
   clojure.core/unchecked-add)
 
 (defn +
@@ -69,7 +68,7 @@
    :added v1
    :see '[subtract - dunaj.math/negate dunaj.math.precise/negate
           dunaj.host.int/ineg]
-   :tsig (Fn [Number Number])}
+   :tsig (Fn [Number+ Number+])}
   clojure.core/unchecked-negate)
 
 (defalias subtract
@@ -78,7 +77,7 @@
    :added v1
    :see '[negate - dec dunaj.math/subtract
           dunaj.math.precise/subtract dunaj.host.int/isub]
-   :tsig (Fn [Number Number Number])}
+   :tsig (Fn [Number+ Number+ Number+])}
   clojure.core/unchecked-subtract)
 
 (defn - :- java.lang.Long
@@ -102,7 +101,7 @@
    :added v1
    :see '[* dunaj.math/multiply dunaj.math.precise/multiply
           dunaj.host.int/imul]
-   :tsig (Fn [Number Number Number])}
+   :tsig (Fn [Number+ Number+ Number+])}
   clojure.core/unchecked-multiply)
 
 (defn *
@@ -129,7 +128,7 @@
    :added v1
    :see '[add + dunaj.math/inc dunaj.math.precise/inc
           dunaj.host.int/iinc]
-   :tsig (Fn [Number Number])}
+   :tsig (Fn [Number+ Number+])}
   clojure.core/unchecked-inc)
 
 (defalias dec
@@ -137,7 +136,7 @@
    :added v1
    :see '[subtract - dunaj.math/dec dunaj.math.precise/dec
           dunaj.host.int/idec]
-   :tsig (Fn [Number Number])}
+   :tsig (Fn [Number+ Number+])}
   clojure.core/unchecked-dec)
 
 

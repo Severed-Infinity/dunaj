@@ -17,12 +17,15 @@
   for creating daemon threads, which are threads on which JVM doesn't
   wait when exiting."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [contains? first dissoc rest deftype when-let let map? doto long fn
+    empty? not= string? when-not when int defn zero? rem nil? not
+    identical? defprotocol cond defmacro assoc and])
   (:require
    [clojure.bootstrap :refer [defmacro def+ v1]]
    [dunaj.type :refer [Any KeywordMap Maybe U AnyFn]]
-   [dunaj.boolean :refer [Boolean and not xor]]
-   [dunaj.math :refer [Integer zero? rem]]
+   [dunaj.boolean :refer [Boolean+ and not xor]]
+   [dunaj.math :refer [Integer+ zero? rem]]
    [dunaj.host.number :refer [int long]]
    [dunaj.compare :refer [not= identical? nil?]]
    [dunaj.state :refer
@@ -33,7 +36,7 @@
    [dunaj.coll :refer
     [empty? several? first rest contains? dissoc map? assoc]]
    [dunaj.function :refer [fn defn]]
-   [dunaj.string :refer [string? String]]
+   [dunaj.string :refer [string? String+]]
    [dunaj.time :as dt :refer [IDuration milliseconds nanoseconds]]
    [dunaj.identifier :refer [Keyword]]
    [dunaj.error :refer [illegal-argument]]))
@@ -62,19 +65,19 @@
 
 ;;;; Public API
 
-(def+ ^:const max-priority :- Integer
+(def+ ^:const max-priority :- Integer+
   "A thread maximum priority constant."
   {:added v1
    :see '[min-priority default-priority thread Thread]}
   java.lang.Thread/MAX_PRIORITY)
 
-(def+ ^:const min-priority :- Integer
+(def+ ^:const min-priority :- Integer+
   "A thread minimum priority constant."
   {:added v1
    :see '[max-priority default-priority thread Thread]}
   java.lang.Thread/MIN_PRIORITY)
 
-(def+ ^:const default-priority :- Integer
+(def+ ^:const default-priority :- Integer+
   "A thread default priority constant."
   {:added v1
    :see '[min-priority max-priority thread Thread]}
@@ -214,7 +217,7 @@
   [thread :- Thread]
   (.interrupt thread))
 
-(defn interrupted? :- Boolean
+(defn interrupted? :- Boolean+
   "Returns `true` if current thread was interrupted, otherwise returns
   `false`. Thread can be interrupted e.g. by cancelling a future.
 
@@ -233,7 +236,7 @@
   [thread :- Thread]
   (state->keyword (.getState thread)))
 
-(defn join :- Boolean
+(defn join :- Boolean+
   "Waits for a `_thread_` to die. Optional `_timeout_` can be
   specified. Returns `false` if returning due to `_timeout_`,
   `true` otherwise. Throws if interrupted."
@@ -241,7 +244,7 @@
    :see '[thread sleep daemon interrupt!]}
   ([thread :- Thread]
    (join thread 0))
-  ([thread :- Thread, timeout :- (U IDuration Integer)]
+  ([thread :- Thread, timeout :- (U IDuration Integer+)]
    (let [ms (long (milliseconds timeout))
          ns (int (rem (nanoseconds timeout) 1000000))]
      (if (and (zero? ms) (zero? ns))
@@ -254,7 +257,7 @@
   Throws if interrupted."
   {:added v1
    :see '[interrupt! join thread daemon]}
-  [duration :- (U IDuration Integer)]
+  [duration :- (U IDuration Integer+)]
   (let [ms (long (milliseconds duration))
         ns (int (rem (nanoseconds duration) 1000000))]
     (java.lang.Thread/sleep ms ns)))
@@ -266,7 +269,7 @@
   {:added v1
    :see '[thread daemon-call dunaj.concurrent.port/thread-call]}
   ([f :- AnyFn] (thread-call f nil))
-  ([f :- AnyFn, name-or-opts :- (U String KeywordMap)]
+  ([f :- AnyFn, name-or-opts :- (U String+ KeywordMap)]
    ;; this is faster than dunaj.function/bounded
    (let [opts (if (string? name-or-opts)
                 {:name name-or-opts} name-or-opts)
@@ -300,7 +303,7 @@
   {:added v1
    :see '[daemon thread-call]}
   ([f :- AnyFn] (thread-call f {:daemon true}))
-  ([f :- AnyFn, name-or-opts :- (U String KeywordMap)]
+  ([f :- AnyFn, name-or-opts :- (U String+ KeywordMap)]
    (let [opts (if (string? name-or-opts)
                 {:name name-or-opts :daemon true}
                 (assoc name-or-opts :daemon true))]

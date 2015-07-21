@@ -13,14 +13,17 @@
 (ns dunaj.resource.helper
   "Resource helpers."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [reduce contains? first if-not neg? reduced? deftype conj let get
+    fn string? when defn or reset! zero? reify not loop merge cond
+    partial defmacro if-let max == assoc and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Maybe U I Fn]]
    [dunaj.boolean :refer [and or not]]
    [dunaj.host :refer [Batch keyword->class class-instance?]]
    [dunaj.host.int :refer [i== i0 iint iloop iadd]]
-   [dunaj.math :refer [Integer max neg? == zero?]]
+   [dunaj.math :refer [Integer+ max neg? == zero?]]
    [dunaj.state :refer [IOpenAware IReference IMutable ICloneable
                         ensure-io reset! ensure-open open?]]
    [dunaj.flow :refer [let loop cond when if-not if-let]]
@@ -34,9 +37,9 @@
     [reduce-with-batched* reduce* red-to-seq]]
    [dunaj.host.batch :refer [provide-batch-size select-item-type]]
    [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal
+    [Thread+ IThreadLocal IPassableThreadLocal
      current-thread ensure-thread-local]]
-   [dunaj.string :refer [String string?]]
+   [dunaj.string :refer [String+ string?]]
    [dunaj.macro :refer [defmacro]]
    [dunaj.error :refer [IFailAware IFailable fail! error fragile
                         opened-fragile unsupported-operation]]
@@ -65,12 +68,13 @@
 (deftype ReadableResourceRecipe
   "Reads from the readable resource. Passable thread local."
   [rch :- java.nio.channels.ReadableByteChannel,
-   batch-size :- (Maybe Integer),
+   batch-size :- (Maybe Integer+),
    resource :- (I IFailable IOpenAware),
-   ^:volatile-mutable thread :- (Maybe Thread)]
+   ^:volatile-mutable thread :- (Maybe Thread+)]
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
   IThreadLocal
@@ -134,7 +138,7 @@
   "Registers new resource factory under `_scheme_` and returns `nil`."
   {:added v1
    :see '[dunaj.resource/resource]}
-  [scheme :- String, resource-factory :- IAcquirableFactory]
+  [scheme :- String+, resource-factory :- IAcquirableFactory]
   (alter-root! #'*resource-providers* assoc scheme resource-factory))
 
 (defn readable-resource-recipe :- IRed
@@ -144,19 +148,19 @@
   {:added v1}
   [resource :- (I IFailable IOpenAware),
    rch :- java.nio.channels.ReadableByteChannel,
-   batch-size :- (Maybe Integer),
-   thread :- (Maybe Thread)]
+   batch-size :- (Maybe Integer+),
+   thread :- (Maybe Thread+)]
   (->ReadableResourceRecipe rch batch-size resource thread))
 
-(defn basic-write! :- (U Integer Postponed)
+(defn basic-write! :- (U Integer+ Postponed)
   "Performs a write to a given writable byte channel `_wch_`,
   returning number of bytes written or postponed object if
   channel is it non blocking mode. Thread local."
   {:added v1}
   [resource :- (I IFailable IOpenAware),
    wch :- java.nio.channels.WritableByteChannel,
-   batch-size :- (Maybe Integer),
-   thread :- (Maybe Thread), coll :- (Maybe IRed)]
+   batch-size :- (Maybe Integer+),
+   thread :- (Maybe Thread+), coll :- (Maybe IRed)]
   (let [non-blocking?
         (and
          (class-instance? java.nio.channels.SelectableChannel wch)

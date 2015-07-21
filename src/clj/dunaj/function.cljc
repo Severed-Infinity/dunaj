@@ -40,12 +40,15 @@
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Transformations" "Memoization"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [fn? bound-fn juxt comp fnil identity fn trampoline defn memoize
+    partial every-pred some-fn apply complement constantly defprotocol
+    #?(:clj satisfies?) conj let meta boolean cond if-let assoc and])
   (:require
-   [clojure.core :refer [satisfies? str]]
    [clojure.bootstrap :as cb :refer [defalias defprotocol def+ v1]]
+   #?(:clj [clojure.dunaj-deftype :refer [satisfies?]])
    [dunaj.type :refer [Fn Any AnyFn I U Va Predicate Signature Macro]]
-   [dunaj.boolean :refer [Boolean and boolean]]
+   [dunaj.boolean :refer [Boolean+ and boolean]]
    [dunaj.flow :refer [cond let if-let]]
    [dunaj.coll :refer
     [ICollectionFactory IConvolutionFactory assoc conj]]
@@ -500,7 +503,7 @@
   ([memoization-factory f & {:as opts}]
    (memoize (conj memoization-factory opts) f)))
 
-(defn memoized? :- Boolean
+(defn memoized? :- Boolean+
   "Returns `true` if `_f_` is memoized, otherwise returns `false`."
   {:added v1
    :see '[memoize unmemoize]

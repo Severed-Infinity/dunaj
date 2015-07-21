@@ -16,14 +16,17 @@
 
   Pipes are used to support selectors in custom resources."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [keep neg? reduced? deftype when-let let fn string? when defn or
+    reset! nil? reify not defprotocol loop merge cond max assoc
+    defrecord and])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
    [dunaj.boolean :refer [and or not]]
    [dunaj.host :refer [keyword->class]]
    [dunaj.host.int :refer [iint iloop iadd]]
-   [dunaj.math :refer [Integer max neg?]]
+   [dunaj.math :refer [Integer+ max neg?]]
    [dunaj.compare :refer [nil?]]
    [dunaj.state :refer [IOpenAware IReference IMutable
                         ensure-io reset! ensure-open open?]]
@@ -38,7 +41,7 @@
    [dunaj.host.array :refer [array]]
    [dunaj.host.batch :refer [select-item-type]]
    [dunaj.concurrent.thread :refer
-    [Thread current-thread ensure-thread-local]]
+    [current-thread ensure-thread-local]]
    [dunaj.string :refer [string?]]
    [dunaj.error :refer [IException IFailAware IFailable
                         fail! error fragile opened-fragile]]
@@ -58,19 +61,20 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-pipe-batch-size :- Integer
+(def+ ^:private default-pipe-batch-size :- Integer+
   "Default size for pipe batch."
   8192)
 
-(defn ^:private provide-pipe-batch-size :- Integer
+(defn ^:private provide-pipe-batch-size :- Integer+
   "Returns pipe batch size taking into account given batch size hint."
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (max (or size-hint 0) default-pipe-batch-size))
 
 (defreleasable ^:private SourceResource
   "Source pipe resource type."
-  [ch :- java.nio.channels.ReadableByteChannel, batch-size :- Integer,
-   config :- {}, ^:volatile-mutable error :- (Maybe IException)]
+  [ch :- java.nio.channels.ReadableByteChannel,
+   batch-size :- Integer+, config :- {},
+   ^:volatile-mutable error :- (Maybe IException)]
   IConfig
   (-config [this] config)
   IOpenAware
@@ -92,8 +96,9 @@
 
 (defreleasable ^:private SinkResource
   "Sink pipe resource type."
-  [ch :- java.nio.channels.WritableByteChannel, batch-size :- Integer,
-   config :- {}, ^:volatile-mutable, error :- (Maybe IException)]
+  [ch :- java.nio.channels.WritableByteChannel,
+   batch-size :- Integer+, config :- {}, ^:volatile-mutable,
+   error :- (Maybe IException)]
   IConfig
   (-config [this] config)
   IOpenAware

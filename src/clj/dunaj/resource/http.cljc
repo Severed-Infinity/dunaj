@@ -14,18 +14,25 @@
   "Resource for fetching data through http with very basic
   functionalities."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce contains? every? satisfies? take-nth first aget =
+    boolean map < rest keep merge-with doseq neg? reduced? deftype
+    when-let conj let identity long fn empty? string? when-not vec
+    when second defn concat symbol declare or reset! name counted? and
+    byte-array zero? nth nil? reify not identical? defprotocol true?
+    loop merge integer? partition-by condp cond defmacro keyword str
+    if-let false? io! max == count apply interpose assoc defrecord])
   (:require
    [clojure.bootstrap :refer [v1]]
    [clojure.core.async]
    [dunaj.type :refer [Any AnyFn Fn Maybe U I KeywordMap]]
    [dunaj.boolean :refer
-    [Boolean and or not boolean boolean? true? false?]]
-   [dunaj.host :refer [Class BatchManager Batch AnyBatch
+    [Boolean+ and or not boolean boolean? true? false?]]
+   [dunaj.host :refer [BatchManager Batch AnyBatch
                        keyword->class class-instance?]]
    [dunaj.host.int :refer [iint iloop iadd ixFF i0 iinc i1]]
    [dunaj.host.number :refer [long]]
-   [dunaj.math :refer [Integer integer? max neg? == < zero? nneg?]]
+   [dunaj.math :refer [Integer+ integer? max neg? == < zero? nneg?]]
    [dunaj.compare :refer [nil? = identical?]]
    [dunaj.state :refer
     [IOpenAware IReference IMutable IAdjustable ICloneable
@@ -45,7 +52,7 @@
    [dunaj.coll.helper :refer
     [reduce-with-batched* reduce* red-to-seq]]
    [dunaj.concurrent.thread :refer
-    [Thread IThreadLocal IPassableThreadLocal
+    [Thread+ IThreadLocal IPassableThreadLocal
      current-thread ensure-thread-local]]
    [dunaj.concurrent.port :refer
     [IMult -tap! -untap! -untap-all! chan put! <!! close!]]
@@ -64,7 +71,7 @@
    [dunaj.host.batch :refer
     [provide-batch-size select-item-type batch-manager
      item-types-match?]]
-   [dunaj.string :refer [String string? ->str str]]
+   [dunaj.string :refer [String+ string? ->str str]]
    [dunaj.error :refer
     [IFailAware IFailable IException illegal-argument illegal-state
      fragile io opened-fragile fail! unsupported-operation]]
@@ -84,18 +91,18 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-http-batch-size :- Integer
+(def+ ^:private default-http-batch-size :- Integer+
   "Default size for http batch."
   8192)
 
-(defn ^:private provide-http-batch-size :- Integer
+(defn ^:private provide-http-batch-size :- Integer+
   "Returns http batch size taking into account given batch size hint."
-  [size-hint :- (Maybe Integer)]
+  [size-hint :- (Maybe Integer+)]
   (provide-batch-size (max (or size-hint 0) default-http-batch-size)))
 
 (defn ^:private socket-address :- java.net.InetSocketAddress
   "Returns an instance of a socket address."
-  [address :- (Maybe String), port :- (Maybe Integer)]
+  [address :- (Maybe String+), port :- (Maybe Integer+)]
   (let [port (or port 0)
         address (when address
                   (java.net.InetAddress/getByName address))]
@@ -111,6 +118,7 @@
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
   IBatchedRed
@@ -121,12 +129,13 @@
 (deftype HttpReader
   "Reads from the http resource. Passable thread local."
   [c :- java.net.URLConnection,
-   batch-size :- (Maybe Integer),
+   batch-size :- (Maybe Integer+),
    resource :- (I IFailable IOpenAware),
-   ^:volatile-mutable thread :- (Maybe Thread)]
+   ^:volatile-mutable thread :- (Maybe Thread+)]
   IRed
   (-reduce [this reducef init]
     (reduce-with-batched* this reducef init))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IHomogeneous
   (-item-type [this] (keyword->class :byte))
   ICloneable
@@ -160,11 +169,11 @@
 
 (defreleasable ^:private HttpResource
   "Connected HTTP resource type."
-  [c :- java.net.URLConnection, batch-size :- Integer,
-   config :- {}, ^:volatile-mutable thread :- (Maybe Thread),
+  [c :- java.net.URLConnection, batch-size :- Integer+,
+   config :- {}, ^:volatile-mutable thread :- (Maybe Thread+),
    ^:volatile-mutable error :- (Maybe IException)
-   ^:volatile-mutable open? :- Boolean,
-   ^:volatile-mutable realized? :- Boolean
+   ^:volatile-mutable open? :- Boolean+,
+   ^:volatile-mutable realized? :- Boolean+
    ^:volatile-mutable status :- {}]
   IConfig
   (-config [this] config)
@@ -347,7 +356,7 @@
   settings set in the factory."
   {:added v1
    :see '[https http-factory]}
-  [uri :- (U nil String Uri) & {:as opts}]
+  [uri :- (U nil String+ Uri) & {:as opts}]
   (merge http-factory (assoc opts :uri uri)))
 
 (defn https :- (I IImmutableReadable IAcquirableFactory)
@@ -356,7 +365,7 @@
   related settings set in the factory."
   {:added v1
    :see '[http http-factory]}
-  [uri :- (U nil String Uri) & {:as opts}]
+  [uri :- (U nil String+ Uri) & {:as opts}]
   (merge http-factory (assoc opts :uri uri :secure? true)))
 
 (register-factory! "http" http-factory)

@@ -18,7 +18,9 @@
   ones, but they allow the referenced object to be cleared only
   when memory is running low."
   {:authors ["Jozef Wagner"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [atom deftype let doto fn not= when defn declare nil? defonce not
+    loop if-let and])
   (:require
    [clojure.core.async]
    [clojure.bootstrap :refer [v1]]

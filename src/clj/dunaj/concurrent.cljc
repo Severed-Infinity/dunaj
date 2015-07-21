@@ -18,7 +18,9 @@
   "General concurrency facilities, futures, promises."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [future-call future promise future? locking first rest let map?
+    long fn empty? when defn nil? defprotocol defmacro apply and])
   (:require
    [clojure.bootstrap :refer [defmacro defalias def+ v1]]
    [dunaj.type :refer [Fn Any I Macro]]
@@ -94,6 +96,7 @@
   "An abstract type protocol for task executors."
   {:added v1
    :see '[submit IExecutor execute IFuture]
+   #?@(:clj [:forbid-extensions true])
    :on-interface java.util.concurrent.ExecutorService}
   (-submit :- IFuture
     "Submits a given function `_f_` for execution and returns an

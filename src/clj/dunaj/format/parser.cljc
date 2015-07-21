@@ -15,19 +15,25 @@
   machines."
   {:authors ["Jozef Wagner"]
    :categories ["Primary" "Lazy"]}
-  (:api bare-ws)
+  (:refer-clojure :exclude
+   [seq reduce satisfies? first peek aget boolean map < rest char comp
+    cons pos? if-not neg? reduced? deftype take-while conj! conj
+    lazy-seq let -> identity fn empty? when-not when second defn
+    symbol pop or reset! name nil? not identical? defprotocol
+    partition loop gensym cond ex-info reduced defmacro str next
+    if-let count apply complement defrecord and ->>])
   (:require
    [clojure.bootstrap :refer [v1]]
    [dunaj.type :refer [Fn Maybe Any U I AnyFn Predicate]]
-   [dunaj.boolean :refer [Boolean boolean or not and]]
-   [dunaj.host :refer [Class AnyBatch BatchManager keyword->class]]
+   [dunaj.boolean :refer [Boolean+ boolean or not and]]
+   [dunaj.host :refer [Class+ AnyBatch BatchManager keyword->class]]
    [dunaj.host.int :refer
     [Int iint iinc i== i< isub izero? idec ineg? i> i< i<< imin iadd
      iloop i0 i1 i2 i3 i4 i5 i8 ixFF ione? i-1 imul idigit? ioctal?
      ihexa? ihexa->int idigit->int iHT iCR iLF iCOLON iSPACE iCOMMA
      i<= iQUOTE iAPOS iBACKSLASH ipos? iSMALL_B iSMALL_F iSMALL_N
      iSMALL_R iSMALL_U iSMALL_T]]
-   [dunaj.math :refer [Integer neg? pos? <]]
+   [dunaj.math :refer [Integer+ neg? pos? <]]
    [dunaj.threading :refer [->> ->]]
    [dunaj.compare :refer [identical? nil? defsentinel]]
    [dunaj.state :refer [reset! IReference clone]]
@@ -48,7 +54,7 @@
    [dunaj.host.batch :refer
     [batch-manager select-item-type item-types-match? batch]]
    [dunaj.char :refer [char]]
-   [dunaj.string :refer [String ->str str empty-string camel-case]]
+   [dunaj.string :refer [String+ ->str str empty-string camel-case]]
    [dunaj.identifier :refer [INamed name symbol]]
    [dunaj.macro :refer [defmacro gensym]]
    [dunaj.error :refer [ex-info illegal-state]]
@@ -169,10 +175,10 @@
     * `:initial-state` - specifies an initial state of a parser
       machine. Can be `nil` or a map."
     [this])
-  (-parser-from-type :- (U nil Class Type)
+  (-parser-from-type :- (U nil Class+ Type)
     "Returns type of items which are to be parsed."
     [this])
-  (-parser-to-type :- (U nil Class Type)
+  (-parser-to-type :- (U nil Class+ Type)
     "Returns type of parsed values."
     [this])
   (-dispatch-tokenizer :- Any
@@ -215,7 +221,7 @@
   {:added v1
    :see '[eof-handler]
    :category "Primary"}
-  [& ms :- String]
+  [& ms :- String+]
   (throw (illegal-state ^java.lang.String
                         (apply ->str "parser engine error: " ms))))
 
@@ -242,13 +248,13 @@
   [token :- Any, batch :- AnyBatch]
   (->LeftoverPair token batch))
 
-(defn keep? :- Boolean
+(defn keep? :- Boolean+
   "Returns `true` if `_config_` map contains
   `[:incomplete-mode :keep]` entry, `false` otherwise."
   [config :- {}]
   (identical? :keep (:incomplete-mode config)))
 
-(defn ignore? :- Boolean
+(defn ignore? :- Boolean+
   "Returns `true` if `_config_` map contains
   `[:incomplete-mode :ignore]` entry, `false` otherwise."
   [config :- {}]
@@ -263,7 +269,7 @@
   {:added v1
    :see '[perror]
    :category "Primary"}
-  [machine :- Any, config :- {}, val :- Any, m :- String]
+  [machine :- Any, config :- {}, val :- Any, m :- String+]
   (cond (keep? config) val
         (ignore? config) machine
         :else (perror m " has reached eof.")))
@@ -472,7 +478,7 @@
    :see '[literal-tokenizer]
    :category "Primary"}
   [invalid-pred :- Predicate, escape-fn :- AnyFn,
-   octal-support? :- Boolean]
+   octal-support? :- Boolean+]
   (fn [config :- {}, state :- IReference, item :- Any]
     (->StringLiteral config (edit empty-string) false nil nil
                      invalid-pred escape-fn octal-support? state)))
@@ -593,7 +599,7 @@
   Throws if `_level-limit_` has been reached."
   {:added v1
    :category "Lazy"}
-  [parents :- IPersistentList, level-limit :- Integer, coll :- IRed]
+  [parents :- IPersistentList, level-limit :- Integer+, coll :- IRed]
   (when (and (pos? level-limit) (< level-limit (count parents)))
     (perror "container level count reached " (count parents)))
   (lazy-seq
@@ -617,7 +623,7 @@
    :see '[take-one drop-until-token]
    :category "Lazy"}
   [parents :- IPersistentList, pred :- AnyFn,
-   item-limit :- Integer, level-limit :- Integer, coll :- IRed]
+   item-limit :- Integer+, level-limit :- Integer+, coll :- IRed]
   (->> coll
        (lazy-parser parents level-limit)
        (take-while (complement pred))
@@ -631,7 +637,7 @@
   {:added v1
    :see '[drop-one take-until-token process-one]
    :category "Lazy"}
-  [parents :- IPersistentList, level-limit :- Integer, coll :- IRed]
+  [parents :- IPersistentList, level-limit :- Integer+, coll :- IRed]
   (when (and (pos? level-limit) (< level-limit (count parents)))
     (perror "container level count reached " (count parents)))
   (let [s (seq coll),
@@ -651,7 +657,7 @@
    :see '[drop-one take-until-token]
    :category "Lazy"}
   [parents :- IPersistentList, pred :- AnyFn,
-   item-limit :- Integer, level-limit :- Integer, coll :- IRed]
+   item-limit :- Integer+, level-limit :- Integer+, coll :- IRed]
   (when (and (pos? level-limit) (< level-limit (count parents)))
     (perror "container level count reached " (count parents)))
   (lazy-seq
@@ -677,7 +683,7 @@
   {:added v1
    :see '[drop-until-token take-one process-one]
    :category "Lazy"}
-  [parents :- IPersistentList, level-limit :- Integer, coll :- IRed]
+  [parents :- IPersistentList, level-limit :- Integer+, coll :- IRed]
   (when (and (pos? level-limit) (< level-limit (count parents)))
     (perror "container level count reached " (count parents)))
   (let [s (seq coll)
@@ -921,6 +927,7 @@
           (->TokenizerEngineReducing
            (reducing reducef init)
            machine-factory fbm config item-limit state))))))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IConfig
   (-config [this] (-parser-config machine-factory)))
 
@@ -972,6 +979,7 @@
             (reducing reducef init)
             machine-factory config item-limit level-limit state)
            machine-factory fbm config token-item-limit state))))))
+  #?@(:clj [ISeqable (-seq [this] (red-to-seq this))])
   IConfig
   (-config [this] (-parser-config machine-factory)))
 
