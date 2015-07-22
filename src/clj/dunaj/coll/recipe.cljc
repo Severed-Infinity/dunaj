@@ -38,7 +38,7 @@
      imul inpos? ipos? imax i-1 ineg? i2 i>= inneg? ineg i> irem
      imax0 idiv iLF iCR]]
    [dunaj.host.number :refer [long]]
-   [dunaj.math :refer [Number Integer+ == zero? min npos? one? quot
+   [dunaj.math :refer [Number+ Integer+ == zero? min npos? one? quot
                        neg? < > / <= max >= pos? integer?]]
    [dunaj.math.unchecked :as mu]
    [dunaj.compare :refer
@@ -669,7 +669,7 @@
 ;;; Generators
 
 (deftype Range
-  [type :- Class+, start :- Number, step :- Number]
+  [type :- Class+, start :- Number+, step :- Number+]
   IRed
   (-reduce [this reducef init]
     (let [af (advance-fn [ret i]
@@ -693,7 +693,7 @@
       (af init start))))
 
 (deftype FiniteRange
-  [start :- Number, end :- Number, step :- Number]
+  [start :- Number+, end :- Number+, step :- Number+]
   IRed
   (-reduce [this reducef init]
     (let [c (count this)
@@ -734,7 +734,7 @@
   (-reverse [this] (-flip this)))
 
 (deftype FiniteBatchableRange
-  [type :- Class+, start :- Number, end :- Number, step :- Number]
+  [type :- Class+, start :- Number+, end :- Number+, step :- Number+]
   IRed
   (-reduce [this reducef init]
     (let [c (count this)
@@ -811,15 +811,15 @@
    :see '[repeat cycle]
    :category "Generators"}
   ([] (range 0 nil 1))
-  ([end :- (Maybe Number)] (range 0 end 1))
-  ([start :- Number, end :- (Maybe Number)] (range start end 1))
-  ([start :- Number, end :- (Maybe Number), step :- Number]
+  ([end :- (Maybe Number+)] (range 0 end 1))
+  ([start :- Number+, end :- (Maybe Number+)] (range start end 1))
+  ([start :- Number+, end :- (Maybe Number+), step :- Number+]
    (cond (zero? step) (repeat start)
          (nil? end) (adaptcbus (->Range nil start step))
          (== end start) empty-recipe
          :else (->FiniteRange start end step)))
   ([type :- (U nil Class+ Type),
-    start :- Number, end :- (Maybe Number), step :- Number]
+    start :- Number+, end :- (Maybe Number+), step :- Number+]
    (let [t (provide-class type)]
      (cond (zero? step) (repeat t start)
            (nil? end) (->Range t start step)

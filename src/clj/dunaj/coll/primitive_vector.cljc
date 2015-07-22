@@ -68,7 +68,7 @@
    [dunaj.type :refer [Any AnyFn Fn Va U I Maybe]]
    [dunaj.boolean :refer [and or not]]
    [dunaj.host :refer
-    [Class AnyArray class-instance? class provide-class]]
+    [Class+ AnyArray class-instance? class provide-class]]
    [dunaj.host.int :refer
     [Int i< iinc i0 i<< i5 iint i<= i>= i> i31 i32 idiv imul idec
      iand inneg? ineg? isub iloop izero? i>> imin iadd imax i==]]
@@ -534,7 +534,7 @@
           dunaj.coll.tuple/empty-tuple
           dunaj.coll.default/empty-vec dunaj.coll.util/into
           dunaj.coll/conj dunaj.coll/edit]}
-  [t :- (U nil Class Type)]
+  [t :- (U nil Class+ Type)]
   (->PrimitiveVector (vector-of (class->keyword (provide-class t)))))
 
 (def+ empty-int-vec :- PrimitiveVector
@@ -639,7 +639,7 @@
 
 (defrecord PrimitiveVectorFactory
   "A factory record for primitive vectors."
-  [t :- (U nil Class Type)]
+  [t :- (U nil Class+ Type)]
   ICollectionFactory
   (-from-coll [factory coll]
     (settle!
@@ -682,7 +682,7 @@
           dunaj.coll.default/vec-of
           dunaj.coll/collection
           dunaj.coll/->collection]}
-  [t :- (U nil Class Type)]
+  [t :- (U nil Class+ Type)]
   (->PrimitiveVectorFactory t))
 
 (def+ int-vec-factory :- ICollectionFactory

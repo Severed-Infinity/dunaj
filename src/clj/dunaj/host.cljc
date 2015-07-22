@@ -29,7 +29,7 @@
   (:refer-clojure :exclude
    [gen-class bases .. gen-interface definterface class? proxy-super
     proxy class supers deftype let defn defmacro defrecord
-    #?@(:dunaj [new set! .])])
+    #?@(:dunaj [new set! .] :clj [satisfies?])])
   (:require
    [clojure.bootstrap :refer [defmacro deftype defalias defn def+ let
                               v1 primitive-type-hint defrecord]]

@@ -297,7 +297,7 @@
   [protocol :- Protocol, type :- (U Class+ Type)]
   (let [c (if (class? type) type (:on-class type))
         ef #(#?(:dunaj clojure.core/extends?
-                :clj clojure.dunaj-deftype/extends)
+                :clj clojure.dunaj-deftype/extends?)
                protocol %)
         rf #(identical? java.lang.Object %)]
     (->> (supers c) (remove rf) (cons c) (some ef) boolean)))

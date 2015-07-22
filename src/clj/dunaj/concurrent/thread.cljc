@@ -110,42 +110,69 @@
           (throw (illegal-argument "Key must be :name or :priority")))
     this))
 
-(deftype Thread
-  "A type for thread.
+#?(:dunaj
+   (deftype Thread
+     "A type for thread.
 
-  Thread priority and name can be controlled with mutable and
-  ajustable configuration, which is attached to the thread object.
+     Thread priority and name can be controlled with mutable and
+     ajustable configuration, which is attached to the thread object.
 
-  WARNING: This type is not available in Dunaj lite,
-  please use `Thread+` instead."
-  {:added v1
-   :see '[thread current-thread daemon dunaj.concurrent.port/thread
-          dunaj.concurrent/future dunaj.feature/config-ref Thread+
-          dunaj.concurrent.agent/agent dunaj.state/adjust!]
-   :predicate 'thread?}
-  java.lang.Thread
-  IConfig
-  (-config [this]
-    {:name (.getName this)
-     :priority (.getPriority this)
-     :daemon (.isDaemon this)})
-  IMutableConfig
-  (-config-ref [this] (->ThreadConfigRef this))
-  IOpenAware
-  (-open? [this] (.isAlive this)))
+     WARNING: This type is not available in Dunaj lite,
+     please use `Thread+` instead."
+     {:added v1
+      :see '[thread current-thread daemon dunaj.concurrent.port/thread
+             dunaj.concurrent/future dunaj.feature/config-ref Thread+
+             dunaj.concurrent.agent/agent dunaj.state/adjust!]
+      :predicate 'thread?}
+     java.lang.Thread
+     IConfig
+     (-config [this]
+       {:name (.getName this)
+        :priority (.getPriority this)
+        :daemon (.isDaemon this)})
+     IMutableConfig
+     (-config-ref [this] (->ThreadConfigRef this))
+     IOpenAware
+     (-open? [this] (.isAlive this))))
 
-(deftype Thread+
-  "A type for thread.
+#?(:dunaj :nil
+   :clj 
+   (deftype Thread+
+     "A type for thread.
 
-  TIP: Identical to `Thread` type, meant to be used in Dunaj lite.
+     Thread priority and name can be controlled with mutable and
+     ajustable configuration, which is attached to the thread object.
 
-  Thread priority and name can be controlled with mutable and
-  ajustable configuration, which is attached to the thread object."
-  {:added v1
-   :see '[thread current-thread daemon dunaj.concurrent.port/thread
-          dunaj.concurrent/future dunaj.feature/config-ref Thread
-          dunaj.concurrent.agent/agent dunaj.state/adjust!]}
-  java.lang.Thread)
+     TIP: Identical to `Thread` type, meant to be used in Dunaj lite."
+     {:added v1
+      :see '[thread current-thread daemon dunaj.concurrent.port/thread
+             dunaj.concurrent/future dunaj.feature/config-ref
+             dunaj.concurrent.agent/agent dunaj.state/adjust!]
+      :predicate 'thread?}
+     java.lang.Thread
+     IConfig
+     (-config [this]
+       {:name (.getName this)
+        :priority (.getPriority this)
+        :daemon (.isDaemon this)})
+     IMutableConfig
+     (-config-ref [this] (->ThreadConfigRef this))
+     IOpenAware
+     (-open? [this] (.isAlive this))))
+
+#?(:dunaj
+   (deftype Thread+
+     "A type for thread.
+
+     TIP: Identical to `Thread` type, meant to be used in Dunaj lite.
+
+     Thread priority and name can be controlled with mutable and
+     ajustable configuration, which is attached to the thread object."
+     {:added v1
+      :see '[thread current-thread daemon dunaj.concurrent.port/thread
+             dunaj.concurrent/future dunaj.feature/config-ref Thread
+             dunaj.concurrent.agent/agent dunaj.state/adjust!]}
+     java.lang.Thread))
 
 (defprotocol IThreadLocal
   "A marker protocol for thread local objects. A thread local object

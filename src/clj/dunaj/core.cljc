@@ -146,8 +146,8 @@
            [#?(:dunaj Boolean)
             Boolean+ boolean? boolean false? true? not and or])
     (refer dunaj.host
-           [#?(:dunaj set!) . .. proxy proxy-super #?(:dunaj Class)
-            Class+ class class-instance?
+           [#?(:dunaj set!) #?(:dunaj .) .. proxy proxy-super
+            #?(:dunaj Class) Class+ class class-instance?
             ensure-class-instance provide-class keyword->class
             BatchManager AnyBatch Batch ArrayManager AnyArray Array
             definterface bean->map])
@@ -174,8 +174,8 @@
     (refer dunaj.flow
            [let letfn if-not if-let if-some when when-not when-let
             when-some cond condp case comment loop dotimes doto while
-            eval quote delay force #?(:dunaj if) #?(:dunaj recur)
-            #?(:dunaj do)])
+            eval #?(:dunaj quote) delay force #?(:dunaj if)
+            #?(:dunaj recur) #?(:dunaj do)])
     (refer dunaj.threading
            [-> ->> as-> cond-> cond->> some-> some->>])
     (refer dunaj.feature

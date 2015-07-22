@@ -222,14 +222,16 @@
   (-reduce [this reducef init]
     (if (inpos? (.count this))
       init
-      (let [coll #?(:dunaj (adapt oam (.-array this) (.index this)
-                                  (iadd (.index this) (.count this)))
-                    :clj (adapt oam (get-aca this) (get-aco this)
-                                (get-ace this)))]
+      (let [coll (adapt oam (.-array this) (.index this)
+                        (iadd (.index this) (.count this)))]
         (reduce* coll reducef init))))
   clojure.lang.ArrayChunk
   (-reduce [this reducef init]
-    (let [coll (adapt oam (.-array this) (.-off this) (.-end this))]
+    (let [coll 
+          #?(:dunaj (adapt oam (.-array this) (.-off this)
+                           (.-end this))
+             :clj (adapt oam (get-aca this) (get-aco this)
+                         (get-ace this)))]
       (reduce* coll reducef init)))
   clojure.lang.PersistentVector$ChunkedSeq
   (-reduce [this reducef init]

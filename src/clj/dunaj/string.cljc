@@ -420,7 +420,7 @@
           (let [v (aget arr i)]
             (recur (iinc i) (iadd (iint v) (imul (i31) ret))))))))))
 
-(deftype #?(:dunaj String String+)
+(deftype #?(:dunaj String :clj String+)
   #?(:dunaj
      "A type for strings.
 
