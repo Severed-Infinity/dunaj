@@ -17,4 +17,4 @@
   #?(:dunaj (:require [dunaj.repl :refer :all])
      :clj (:require [dunaj.core :refer [dunaj-api!]])))
 
-#?(:dunaj nil :clj (dunaj-api!))
+#?(:dunaj :nil :clj (dunaj-api!))

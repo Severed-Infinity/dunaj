@@ -15,7 +15,7 @@
   {:authors ["Jozef Wagner"]
    :categories ["Metadata" "Configuration"]}
   (:refer-clojure :exclude
-   [meta reset-meta! alter-meta! #?@(:dunaj [] :clj [satisfies?)]
+   [meta reset-meta! alter-meta! #?@(:dunaj [] :clj [satisfies?])
     deftype let when defn reset! #?@(:dunaj [] :clj [extend-type])
     identical? defprotocol])
   (:require

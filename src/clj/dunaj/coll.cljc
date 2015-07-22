@@ -1486,7 +1486,7 @@
   ([coll :- IEditable]
    #?(:dunaj (-edit coll nil) :clj (-edit coll)))
   ([coll :- IEditable, capacity-hint :- (Maybe Integer+)]
-   #?(:dunaj nil :clj (when capacity-hint (not-implemented)))
+   #?(:dunaj :nil :clj (when capacity-hint (not-implemented)))
    #?(:dunaj (-edit coll capacity-hint) :clj (-edit coll))))
 
 ;;; Mutable collections

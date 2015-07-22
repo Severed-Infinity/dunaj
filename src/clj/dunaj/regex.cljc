@@ -104,7 +104,7 @@
    (adapt
     (.split (regex re) (provide-char-sequence coll) (or limit 0)))))
 
-(defn quote :- String+
+(defn quote+ :- String+
   "Returns literal quoted string for use in regex pattern."
   {:added v1
    :see '[quote-replacement regex]}
@@ -115,6 +115,6 @@
   "Returns literal quoted string for use in regex based replacements,
   e.g. in `dunaj.string/replace`."
   {:added v1
-   :see '[quote regex dunaj.string/replace]}
+   :see '[quote+ regex dunaj.string/replace]}
   [s :- String+]
   (java.util.regex.Matcher/quoteReplacement s))

@@ -48,13 +48,13 @@
      "See also <<dunaj.bit.api.ad#Logic, bitwise logic operators>>."]]
    :authors ["Jozef Wagner"]
    :additional-copyright true}
+  #?(:dunaj (:api bare))
   (:refer-clojure :exclude
    [boolean or not true? false? and deftype let fn defn defmacro])
   (:require
    [clojure.bootstrap :refer
     [defalias deftype defmacro v1 defn let fn]]
    [dunaj.type :refer [Fn Any Predicate Macro Va]]))
-
 
 ;;;; Public API
 

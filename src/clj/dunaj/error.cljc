@@ -16,7 +16,8 @@
    :categories ["Primary" "Exceptions"]}
   (:refer-clojure :exclude
    [ex-data error-mode error-handler ex-info namespace comp let fn
-    when defn name defprotocol defmacro keyword class])
+    when defn name defprotocol defmacro keyword class
+    #?@(:dunaj [try catch finally throw])])
   (:require
    [clojure.stacktrace]
    [clojure.bootstrap :refer

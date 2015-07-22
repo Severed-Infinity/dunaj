@@ -26,6 +26,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Operations"]}
+  #?(:dunaj (:api bare))
   (:refer-clojure :exclude
    [map remove string? replace partition-by str seq reduce satisfies?
     = dec < delay char? char neg? reduced? deftype <= conj! let get

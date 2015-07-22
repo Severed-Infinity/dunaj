@@ -25,7 +25,7 @@
   (:refer-clojure :exclude [deftype defn defmacro])
   (:require [clojure.bootstrap :refer [deftype defmacro defn v1]]
             [dunaj.type :refer [Any]]
-            [dunaj.boolean :refer [Boolean++]]))
+            [dunaj.boolean :refer [Boolean+]]))
 
 
 ;;;; Public API

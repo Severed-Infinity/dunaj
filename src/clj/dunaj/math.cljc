@@ -40,6 +40,7 @@
   {:authors ["Jozef Wagner"]
    :additional-copyright true
    :categories ["Primary" "Comparison" "Operations" "Rounding"]}
+  #?(:dunaj (:api bare))
   (:refer-clojure :exclude
    [decimal? dec < pos? neg? num float? <= * min with-precision quot >
     even? mod - zero? rem / >= integer? numerator rationalize odd? inc
@@ -72,7 +73,7 @@
       :category "Primary"}
      java.lang.Number))
 
-#?(:dunaj nil
+#?(:dunaj :nil
    :clj
    (def+ Number+ :- Signature
      "A type signature for numbers.
@@ -122,7 +123,7 @@
      (U java.lang.Integer java.lang.Long clojure.lang.BigInt
         java.math.BigInteger java.lang.Short java.lang.Byte)))
 
-#?(:dunaj nil
+#?(:dunaj :nil
    :clj
    (def+ Integer+ :- Signature
      "A type signature for integer numbers.
@@ -183,7 +184,7 @@
       :category "Primary"}
      (U java.lang.Double java.lang.Float)))
 
-#?(:dunaj nil
+#?(:dunaj :nil
    :clj
    (def+ Float+ :- Signature
      "A type signature for floating point numbers.
@@ -308,7 +309,7 @@
    :see '[zero? pos? neg? dunaj.host.int/ione?]
    :category "Comparison"}
   [x :- Number]
-  (cc/== x 1))
+  (clojure.core/== x 1))
 
 (defalias pos?
   {:doc "Returns `true` if `_x_` is greater than zero,

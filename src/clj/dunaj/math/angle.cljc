@@ -18,7 +18,7 @@
    :categories ["Primary" "Hyperbolic"]}
   (:refer-clojure :exclude [defn fn])
   (:require [clojure.bootstrap :refer [defn v1 fn]]
-            [dunaj.math :refer [Float++]])
+            [dunaj.math :refer [Float+]])
   (:import [java.lang Math]))
 
 

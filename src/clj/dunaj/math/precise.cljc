@@ -44,7 +44,7 @@
    :see '[+ dunaj.math/add dunaj.math.unchecked/add
           dunaj.host.int/iadd]}
   [x :- Number+, y :- Number+]
-  (. clojure.lang.Number+s (addP x y)))
+  (. clojure.lang.Numbers (addP x y)))
 
 (defalias +
   {:doc "Returns the sum of nums. `(+)` returns 0.
@@ -94,7 +94,7 @@
    :see '[* dunaj.math/multiply dunaj.math.unchecked/multiply
           dunaj.host.int/imul]}
   [x :- Number+, y :- Number+]
-  (. clojure.lang.Number+s (multiplyP x y)))
+  (. clojure.lang.Numbers (multiplyP x y)))
 
 (defalias *
   {:doc "Returns the product of nums. `(*)` returns 1.

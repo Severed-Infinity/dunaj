@@ -17,6 +17,7 @@
   for creating daemon threads, which are threads on which JVM doesn't
   wait when exiting."
   {:authors ["Jozef Wagner"]}
+  #?(:dunaj (:api bare))
   (:refer-clojure :exclude
    [contains? first dissoc rest deftype when-let let map? doto long fn
     empty? not= string? when-not when int defn zero? rem nil? not

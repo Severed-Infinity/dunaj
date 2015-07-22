@@ -25,9 +25,11 @@
   NOTE: Documentation needs more work."
   {:authors ["Jozef Wagner"]
    :additional-copyright true}
+  #?(:dunaj (:api bare))
   (:refer-clojure :exclude
    [gen-class bases .. gen-interface definterface class? proxy-super
-    proxy class supers deftype let defn defmacro defrecord])
+    proxy class supers deftype let defn defmacro defrecord
+    #?@(:dunaj [new set! .])])
   (:require
    [clojure.bootstrap :refer [defmacro deftype defalias defn def+ let
                               v1 primitive-type-hint defrecord]]
@@ -157,7 +159,7 @@
       :predicate 'class?}
      java.lang.Class))
 
-#?(:dunaj nil
+#?(:dunaj :nil
    :clj
    (deftype Class+
      "A host class type.

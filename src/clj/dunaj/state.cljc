@@ -21,11 +21,13 @@
    :categories ["Primary" "Mutation" "Auxiliary"]}
   (:refer-clojure :exclude
    [reset! io! deref realized? boolean deftype let fn defn
-    extend-protocol identical? defprotocol loop defmacro odd?])
+    #?@(:dunaj [] :clj [extend-protocol]) identical? defprotocol
+    loop defmacro odd?])
   (:require
    [clojure.bootstrap :refer
     [defmacro defprotocol deftype defn def+ v1
      replace-var! milliseconds loop let fn]]
+   #?@(:dunaj [] :clj [[clojure.dunaj-deftype :refer [extend-protocol]]])
    [dunaj.type :refer [Any Fn Va]]
    [dunaj.boolean :refer [Boolean+ boolean]]
    [dunaj.math :refer [Integer+ odd?]]

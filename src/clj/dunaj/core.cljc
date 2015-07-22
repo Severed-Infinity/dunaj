@@ -19,7 +19,8 @@
   {:authors ["Jozef Wagner"]}
   (:refer-clojure :exclude
    [refer set first = map if-not remove let fn empty? vec second defn
-    symbol name alter-meta! defmacro filter apply assoc])
+    symbol name alter-meta! defmacro filter apply assoc
+    #?@(:dunaj [init-api dunaj!])])
   (:require [clojure.bootstrap :refer [v1]]
             [clojure.core.async]
             #?(:dunaj [clojure.bridge]

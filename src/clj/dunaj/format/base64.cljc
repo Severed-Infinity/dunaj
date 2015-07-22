@@ -1,4 +1,4 @@
- (C) 2013, 2015, Jozef Wagner. All rights reserved.
+;; (C) 2013, 2015, Jozef Wagner. All rights reserved.
 ;;
 ;; The use and distribution terms for this software are covered by the
 ;; Eclipse Public License 1.0
