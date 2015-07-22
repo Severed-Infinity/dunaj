@@ -43,7 +43,7 @@
 
 ;;;; Implementation details
 
-(defn ^:private ^:static reduce1
+(defn ^:static reduce1
   ([f coll]
      (let [s (seq coll)]
        (if s
@@ -59,7 +59,7 @@
            (recur f (f val (first s)) (next s)))
          val))))
 
-(defn ^:private ^:static into1
+(defn ^:static into1
   "Returns a new coll consisting of to-coll with all of the items of
   from-coll conjoined."
   [to from]
@@ -67,22 +67,22 @@
     (persistent! (reduce1 clojure.core/conj! (transient to) from))
     (reduce1 conj to from)))
 
-(def+ ^:private ar :- java.lang.reflect.Field
+(def+ ar :- java.lang.reflect.Field
   "Makes internal aliases ref public."
   (doto (.getDeclaredField clojure.lang.Namespace "aliases")
     (.setAccessible true)))
 
-(defn ^:private get-ar :- java.util.concurrent.atomic.AtomicReference
+(defn get-ar :- java.util.concurrent.atomic.AtomicReference
   "Returns char array from a string."
   [sym]
   (.get ar (the-ns sym)))
 
-(defn ^:private ns->sym
+(defn ns->sym
   [m]
   (let [tf (fn [[k v]] [k (ns-name v)])]
     (into {} (map tf m))))
 
-(defn ^:private sym->ns
+(defn sym->ns
   [m]
   (let [tf (fn [[k v]] [k (the-ns v)])]
     (into {} (map tf m))))

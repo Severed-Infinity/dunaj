@@ -42,18 +42,18 @@
 
 ;;;; Implementation details
 
-(defn ^:private print-formatted :- String+
+(defn print-formatted :- String+
   [val :- Any, digits :- Integer+]
   (let [s (->str "000000000" val)]
     (slice s (subtract (count s) digits))))
 
-(def+ ^:private construct-calendar :- AnyFn
+(def+ construct-calendar :- AnyFn
   @#'clojure.instant/construct-calendar)
 
-(def+ ^:private thread-local-utc-date-format :- AnyFn
+(def+ thread-local-utc-date-format :- AnyFn
   @#'clojure.instant/thread-local-utc-date-format)
 
-(def+ ^:private thread-local-utc-timestamp-format :- AnyFn
+(def+ thread-local-utc-timestamp-format :- AnyFn
   @#'clojure.instant/thread-local-utc-timestamp-format)
 
 
@@ -79,7 +79,7 @@
     [this years months days hours minutes seconds nanoseconds
      offset-sign offset-hours offset-minutes]))
 
-(defn ^:private wrap-instant-factory :- AnyFn
+(defn wrap-instant-factory :- AnyFn
   "Returns a function which can be passed to clojure.instant
   constructors."
   [factory :- IInstantFactory]
@@ -88,7 +88,7 @@
     (-instant factory years months days hours minutes seconds
               nanoseconds offset-sign offset-hours offset-minutes)))
 
-(defn ^:private instant*
+(defn instant*
   "Returns a new instant based on `val` with the help of `factory`."
   [factory :- IInstantFactory, val :- Any]
   (let [val (cond
@@ -282,7 +282,7 @@
 
 ;;; Constructor
 
-(def+ ^:dynamic ^:private *default-instant-factory* :- IInstantFactory
+(def+ ^:dynamic *default-instant-factory* :- IInstantFactory
   basic-instant-factory)
 
 (def+ default-instant-factory :- clojure.lang.Var ;; JVM Host

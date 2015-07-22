@@ -57,11 +57,11 @@
 
 ;;;; Implemnetation details
 
-(defn ^:private namespace-doc :- IMeta
+(defn namespace-doc :- IMeta
   [nspace :- clojure.lang.Namespace]
   (assoc (meta nspace) :name (clojure.core/ns-name nspace)))
 
-(defn ^:private print-doc :- nil
+(defn print-doc :- nil
   [m :- IMeta]
   (println! "-------------------------")
   (println! (->str (when-let [ns (:ns m)]

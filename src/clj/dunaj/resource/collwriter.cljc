@@ -66,7 +66,7 @@
 
 (defn -flush [this])
 
-(def+ ^:private cam :- ArrayManager
+(def+ cam :- ArrayManager
   (array-manager (keyword->class :char)))
 
 (defn -write-char<>-int-int [this carr off len]

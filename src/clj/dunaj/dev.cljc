@@ -32,7 +32,7 @@
 
 ;;;; Implementation details
 
-(def+ ^:private trace false)
+(def+ trace false)
 
 
 ;;;; Public API

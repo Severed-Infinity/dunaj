@@ -76,12 +76,12 @@
 
 ;;;; Implementation details
 
-(defn ^:private realize-set! :- nil
+(defn realize-set! :- nil
   [this :- IRed]
   (reduce* this nop nil)
   nil)
 
-(defn ^:private get-coll :- #{}
+(defn get-coll :- #{}
   "Returns set from the given `data-ref` reference."
   [data-ref :- IReference]
   (key @data-ref))

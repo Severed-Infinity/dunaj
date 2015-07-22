@@ -49,7 +49,7 @@
 
 ;;;; Implementation details
 
-(defn ^:private ensure-one :- Any
+(defn ensure-one :- Any
   "Returns first item of `_coll_`,
   throws if coll contains more items."
   [coll :- IRed]
@@ -61,7 +61,7 @@
               "Collection must contain only one item.")))
     val))
 
-(def+ ^:dynamic ^:private *default-formatter-batch-size* :- Integer+
+(def+ ^:dynamic *default-formatter-batch-size* :- Integer+
   "Default batch size for formatters."
   32)
 

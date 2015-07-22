@@ -70,16 +70,16 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-tcp-batch-size :- Integer+
+(def+ default-tcp-batch-size :- Integer+
   "Default size for tcp batch."
   8192)
 
-(defn ^:private provide-tcp-batch-size :- Integer+
+(defn provide-tcp-batch-size :- Integer+
   "Returns tcp batch size taking into account given batch size hint."
   [size-hint :- (Maybe Integer+)]
   (provide-batch-size (max (or size-hint 0) default-tcp-batch-size)))
 
-(defn ^:private get-query-map :- {Keyword String+}
+(defn get-query-map :- {Keyword String+}
   "Returns map of parsed query params from a given uri `x`."
   [x :- (U Uri String+)]
   (let [x (uri x)
@@ -88,10 +88,10 @@
     (reduce #(assoc % (keyword (second %2)) (or (nth %2 3) "true"))
             {} params)))
 
-(def+ ^:private boolean-map :- {String+ Boolean+}
+(def+ boolean-map :- {String+ Boolean+}
   {"0" false "1" true "F" false "T" true "false" false "true" true})
 
-(defn ^:private tcp-server-uri->map :- KeywordMap
+(defn tcp-server-uri->map :- KeywordMap
   "Returns server socket settings map based on a given uri `x`."
   [x :- (U String+ Uri)]
   (let [x (uri x)
@@ -111,7 +111,7 @@
      :in-buffer-size (toi :ibs)
      :reuse? (boolean-map (:reuse qm))}))
 
-(defn ^:private tcp-uri->map :- KeywordMap
+(defn tcp-uri->map :- KeywordMap
   "Returns socket settings map based on a given uri `x`."
   [x :- (U String+ Uri)]
   (let [x (uri x)
@@ -139,7 +139,7 @@
      :no-delay? (boolean-map (:nd qm))
      :reuse? (boolean-map (:reuse qm))}))
 
-(defn ^:private socket-address :- java.net.InetSocketAddress
+(defn socket-address :- java.net.InetSocketAddress
   "Returns an instance of a socket address."
   [address :- (Maybe String+), port :- (Maybe Integer+)]
   (let [port (or port 0)
@@ -148,7 +148,7 @@
     (java.net.InetSocketAddress.
      ^java.net.InetAddress address (iint port))))
 
-(defn ^:private map->tcp-server-uri :- Uri
+(defn map->tcp-server-uri :- Uri
   "Returns canonical TCP server uri based on given `map`."
   [map :- KeywordMap]
   (let [{:keys [local-address local-port reuse? batch-size
@@ -163,7 +163,7 @@
     (java.net.URI. "tcp" nil local-address (or local-port -1)
                    nil (when-not (empty? params) params) nil)))
 
-(defn ^:private map->tcp-uri :- Uri
+(defn map->tcp-uri :- Uri
   "Returns canonical TCP uri based on given `map`."
   [map :- KeywordMap]
   (let [{:keys [local-address local-port remote-address remote-port
@@ -189,7 +189,7 @@
      remote-address remote-port nil
      (when-not (empty? params) params) nil)))
 
-(defreleasable ^:private TcpResource
+(defreleasable TcpResource
   "Connected TCP resource type."
   [ch :- java.nio.channels.SocketChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException)]
@@ -215,10 +215,10 @@
   (-write! [this coll]
     (basic-write! this ch batch-size (current-thread) coll)))
 
-(defprotocol ^:private IServer
+(defprotocol IServer
   (-accept! :- (Maybe TcpResource) [this]))
 
-(defreleasable ^:private TcpServerResource
+(defreleasable TcpServerResource
   "TCP Server resource type."
   [ch :- java.nio.channels.ServerSocketChannel,
    batch-size :- Integer+, config :- {},

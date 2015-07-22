@@ -87,11 +87,11 @@
 
 ;;;; Implementation details
 
-(defn ^:private unpacked-fn
+(defn unpacked-fn
   [f]
   (fn [val a b] (f val (pair a b))))
 
-(def+ ^:private left-node-method :- java.lang.reflect.Method
+(def+ left-node-method :- java.lang.reflect.Method
   (doto (.getDeclaredMethod
          clojure.lang.PersistentTreeMap$Node
          "left" nil)
@@ -101,7 +101,7 @@
   [x :- clojure.lang.PersistentTreeMap$Node]
   (.invoke left-node-method x nil))
 
-(def+ ^:private right-node-method :- java.lang.reflect.Method
+(def+ right-node-method :- java.lang.reflect.Method
   (doto (.getDeclaredMethod
          clojure.lang.PersistentTreeMap$Node
          "right" nil)
@@ -111,7 +111,7 @@
   [x :- clojure.lang.PersistentTreeMap$Node]
   (.invoke right-node-method x nil))
 
-(defn ^:private range-check :- Boolean+
+(defn range-check :- Boolean+
   [comparator :- java.util.Comparator, key :- Any,
    ascending? :- Boolean+, begin :- Any, end :- Any]
   (if ascending?
@@ -183,7 +183,7 @@
       init
       (af (reducef init (.key node) (.val node)) node buf))))
 
-(defn ^:private reduce-rbt [tree reducef init]
+(defn reduce-rbt [tree reducef init]
   (let [af (fn af [ret act buf :- java.util.ArrayDeque]
              (cond
               (reduced? ret) ret

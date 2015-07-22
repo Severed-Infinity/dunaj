@@ -73,7 +73,7 @@
 
 (defsentinel nothing)
 
-(def+ ^:private ^:dynamic *max-lazy-level-limit* 200)
+(def+ ^:dynamic *max-lazy-level-limit* 200)
 
 
 ;;;; Public API
@@ -379,13 +379,13 @@
 
 ;; string literal tokenizer machine
 
-(defn ^:private get-next-unicode :- Int
+(defn get-next-unicode :- Int
   [unicode :- Int, x :- Int]
   (when-not (ihexa? x)
     (perror "invalid character in unicode sequence " (char x)))
   (iadd (i<< unicode 4) (ihexa->int x)))
 
-(defn ^:private get-next-octal :- Int
+(defn get-next-octal :- Int
   [octal :- Int, x :- Int]
   (when-not (ioctal? x)
     (perror "invalid character in octal sequence " (char x)))

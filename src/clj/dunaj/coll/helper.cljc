@@ -64,7 +64,7 @@
 
 ;;;; Implementation details
 
-(defn ^:private unpacked-fn [f] (fn [val xs] (apply f val xs)))
+(defn unpacked-fn [f] (fn [val xs] (apply f val xs)))
 
 ;; injected in dunaj.coll.recipe
 (defn mapcat
@@ -76,7 +76,7 @@
   ([requested-type size-hint] (not-implemented))
   ([requested-type size-hint coll] (not-implemented)))
 
-(defn ^:private item-types-match? :- Boolean+
+(defn item-types-match? :- Boolean+
   "Returns `true` if item types match, `false` otherwise."
   [requested-type :- (U nil Class+ Type),
    available-type :- (U nil Class+ Type)]

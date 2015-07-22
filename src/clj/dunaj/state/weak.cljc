@@ -40,16 +40,16 @@
 
 ;;;; Implementation details
 
-(defonce ^:private reference-queue :- java.lang.ref.ReferenceQueue
+(defonce reference-queue :- java.lang.ref.ReferenceQueue
   (java.lang.ref.ReferenceQueue.))
 
-(defonce ^:private reference-map :- java.util.Map
+(defonce reference-map :- java.util.Map
   (java.util.Collections/synchronizedMap (java.util.WeakHashMap.)))
 
-(defonce ^:private reference-handler? :- (I IReference IAtomic)
+(defonce reference-handler? :- (I IReference IAtomic)
   (atom nil))
 
-(defn ^:private spin-up! :- nil
+(defn spin-up! :- nil
   []
   (when (cas! reference-handler? nil true)
     (thread

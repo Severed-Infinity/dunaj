@@ -147,7 +147,7 @@
   (-fold [coll reduce-fn pool n combinef reducef]
     (fold-sectionable coll reduce-fn pool n combinef reducef)))
 
-(defn ^:private immutable-buffer
+(defn immutable-buffer
   [am :- ArrayManager, arr :- AnyArray, begin :- Int, end :- Int]
   (let [end (if (and (izero? end) (not (izero? begin)))
               (.count am arr)

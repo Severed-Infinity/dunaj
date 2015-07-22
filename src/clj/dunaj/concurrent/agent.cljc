@@ -70,13 +70,13 @@
 
 ;;;; Implementation details
 
-(def+ ^:dynamic ^:private *default-send-off-executor* :- IExecutor
+(def+ ^:dynamic *default-send-off-executor* :- IExecutor
   clojure.lang.Agent/soloExecutor)
 
-(def+ ^:dynamic ^:private *default-send-executor* :- IExecutor
+(def+ ^:dynamic *default-send-executor* :- IExecutor
   clojure.lang.Agent/pooledExecutor)
 
-(defn ^:private shutdown-pool! :- nil
+(defn shutdown-pool! :- nil
   "Initiates a shutsdown of a given `_pool_`. Returns nil."
   [pool :- Any]
   (when (class-instance? java.util.concurrent.ExecutorService pool)

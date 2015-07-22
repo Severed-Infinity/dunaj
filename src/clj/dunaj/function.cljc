@@ -58,7 +58,7 @@
 
 ;;;; Implementation details
 
-(def+ ^:private ^:dynamic *default-memoization-factory* nil)
+(def+ ^:dynamic *default-memoization-factory* nil)
 
 
 ;;;; Public API

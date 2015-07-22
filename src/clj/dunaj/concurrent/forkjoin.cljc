@@ -44,18 +44,18 @@
 
 ;;;; Implementation details
 
-(def+ ^:dynamic ^:private *default-fold-size* :- Integer+
+(def+ ^:dynamic *default-fold-size* :- Integer+
   512)
 
-(def+ ^:dynamic ^:private *default-fold-pool*
+(def+ ^:dynamic *default-fold-pool*
   :- java.util.concurrent.ForkJoinPool
   ;;(java.util.concurrent.ForkJoinPool.)
   @clojure.core.reducers/pool)
 
-(def+ ^:private reducing-function :- AnyFn
+(def+ reducing-function :- AnyFn
   @#'dunaj.coll/reducing-function)
 
-(def+ ^:private reduce* :- AnyFn
+(def+ reduce* :- AnyFn
   @#'dunaj.coll/reduce*)
 
 
@@ -211,7 +211,7 @@
   ([combinef :- AnyFn, reducef :- AnyFn]
    (->Folding combinef reducef)))
 
-(defn ^:private fold* :- Any
+(defn fold* :- Any
   "Like fold, but with customizable `_pool_` and `_reduce-fn_`."
   ([coll :- [], reduce-fn :- AnyFn, pool :- ForkJoinPool,
     n :- Integer+, combinef :- AnyFn, reducef :- AnyFn]
@@ -225,7 +225,7 @@
            (coll-fold coll n combinef reducef)
            (throw (java.lang.UnsupportedOperationException.))))))
 
-(defn ^:private fold-augmented* :- Any
+(defn fold-augmented* :- Any
   "Returns a result of the folding of `_coll_` with `_reduce-fn_`
   as a reduction function taking `_coll_` `reducef` `init` in that
   order, and with the augmented reducing function `_r_`.
@@ -239,7 +239,7 @@
     (->> (fold* coll reduce-fn pool n combinef reducef)
          (._finish r))))
 
-(defn ^:private transfold* :- Any
+(defn transfold* :- Any
   ([coll :- IRed, reduce-fn, :- AnyFn, pool :- ForkJoinPool,
     n :- Integer+, xform :- AnyFn, reducef :- AnyFn]
    (fold-augmented*

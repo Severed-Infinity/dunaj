@@ -61,16 +61,16 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-pipe-batch-size :- Integer+
+(def+ default-pipe-batch-size :- Integer+
   "Default size for pipe batch."
   8192)
 
-(defn ^:private provide-pipe-batch-size :- Integer+
+(defn provide-pipe-batch-size :- Integer+
   "Returns pipe batch size taking into account given batch size hint."
   [size-hint :- (Maybe Integer+)]
   (max (or size-hint 0) default-pipe-batch-size))
 
-(defreleasable ^:private SourceResource
+(defreleasable SourceResource
   "Source pipe resource type."
   [ch :- java.nio.channels.ReadableByteChannel,
    batch-size :- Integer+, config :- {},
@@ -94,7 +94,7 @@
   (-read! [this]
     (readable-resource-recipe this ch batch-size (current-thread))))
 
-(defreleasable ^:private SinkResource
+(defreleasable SinkResource
   "Sink pipe resource type."
   [ch :- java.nio.channels.WritableByteChannel,
    batch-size :- Integer+, config :- {}, ^:volatile-mutable,

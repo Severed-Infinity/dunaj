@@ -83,11 +83,11 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-datagram-batch-size :- Integer+
+(def+ default-datagram-batch-size :- Integer+
   "Default size for datagram batch."
   2048)
 
-(defn ^:private provide-datagram-batch-size :- Integer+
+(defn provide-datagram-batch-size :- Integer+
   "Returns datagram batch size taking into account given
   batch size hint."
   [size-hint :- (Maybe Integer+)]
@@ -155,7 +155,7 @@
                 :else ret))]
       (af init false))))
 
-(deftype ^:private UdpResourceReader
+(deftype UdpResourceReader
   "Reads from an opened connected UDP socket.
   Passable thread local. Supports non blocking mode."
   [ch :- java.nio.channels.DatagramChannel,
@@ -199,7 +199,7 @@
                               false)))]
       (af init false))))
 
-(defn ^:private get-query-map :- {Keyword String+}
+(defn get-query-map :- {Keyword String+}
   "Returns map of parsed query params from a given uri `x`."
   [x :- (U Uri String+)]
   (let [x (uri x)
@@ -208,10 +208,10 @@
     (reduce #(assoc % (keyword (second %2)) (or (nth %2 3) "true"))
             {} params)))
 
-(def+ ^:private boolean-map :- {String+ Boolean+}
+(def+ boolean-map :- {String+ Boolean+}
   {"0" false "1" true "F" false "T" true "false" false "true" true})
 
-(defn ^:private uri->map* :- KeywordMap
+(defn uri->map* :- KeywordMap
   "Common config uri for UDP resources."
   [qm :- {Keyword String+}]
   (let [toi #(when-let [x (qm %)]
@@ -229,7 +229,7 @@
      :multicast-ttl (toi :ttl)
      :multicast-loop  (boolean-map (:loop qm))}))
 
-(defn ^:private bare-uri->map :- KeywordMap
+(defn bare-uri->map :- KeywordMap
   "Returns settings map based on a given uri `x`."
   [x :- (U String+ Uri)]
   (let [x (uri x)
@@ -248,7 +248,7 @@
             :reuse? (boolean-map (:reuse qm))
             :broadcast? (boolean-map (:broadcast qm))})))
 
-(defn ^:private uri->map :- KeywordMap
+(defn uri->map :- KeywordMap
   "Returns settings map based on a given uri `x`."
   [x :- (U String+ Uri)]
   (let [x (uri x)
@@ -271,7 +271,7 @@
             :reuse? (boolean-map (:reuse qm))
             :broadcast? (boolean-map (:broadcast qm))})))
 
-(defn ^:private multicast-uri->map :- KeywordMap
+(defn multicast-uri->map :- KeywordMap
   "Returns settings map based on a given multicast uri `x`."
   [x :- (U String+ Uri)]
   (let [x (uri x)
@@ -302,7 +302,7 @@
 (declare multicast-udp-factory)
 (declare udp-factory)
 
-(defn ^:private socket-address :- java.net.InetSocketAddress
+(defn socket-address :- java.net.InetSocketAddress
   "Returns instance of socket address."
   [address :- (Maybe String+), port :- (Maybe Integer+)]
   (let [port (or port 0)
@@ -311,7 +311,7 @@
     (java.net.InetSocketAddress.
      ^java.net.InetAddress address (iint port))))
 
-(defn ^:private map->uri* :- IRed
+(defn map->uri* :- IRed
   [map :- KeywordMap]
   (let [{:keys [protocol-family batch-size non-blocking?
                 tos in-buffer-size out-buffer-size
@@ -331,7 +331,7 @@
      (when multicast-ttl (->str "ttl=" multicast-ttl))
      (when (false? multicast-loop) (->str "loop=false"))]))
 
-(defn ^:private map->bare-uri :- Uri
+(defn map->bare-uri :- Uri
   "Returns canonical UDP uri based on given `map`."
   [map :- KeywordMap]
   (let [{:keys [local-address local-port reuse? broadcast?]} map
@@ -344,7 +344,7 @@
     (java.net.URI. "bare-udp" nil local-address (or local-port -1)
                    nil (when-not (empty? params) params) nil)))
 
-(defn ^:private map->uri :- Uri
+(defn map->uri :- Uri
   "Returns canonical UDP uri based on given `map`."
   [map :- KeywordMap]
   (let [{:keys [local-address local-port remote-address remote-port
@@ -364,7 +364,7 @@
      remote-address remote-port nil
      (when-not (empty? params) params) nil)))
 
-(defn ^:private map->multicast-uri :- Uri
+(defn map->multicast-uri :- Uri
   "Returns canonical multicast UDP uri based on given `map`."
   [map :- KeywordMap]
   (let [{:keys [local-port multicast-group sources network-interface]}
@@ -380,10 +380,10 @@
      multicast-group -1 nil
      (when-not (empty? params) params) nil)))
 
-(def+ ^:private bbm :- BatchManager
+(def+ bbm :- BatchManager
   (batch-manager (keyword->class :byte)))
 
-(defn ^:private provide-batch :- (Batch java.lang.Byte)
+(defn provide-batch :- (Batch java.lang.Byte)
   "Provides input data in `x` as one host batch."
   [x :- (U AnyBatch IRed), bm :- BatchManager, batch :- AnyBatch]
   ;; x is batch, batchable coll or just coll
@@ -399,7 +399,7 @@
         (let [rf (fn cf [^java.nio.Buffer to val] (.put bm to val))]
           (.flip ^java.nio.Buffer (reduce rf (.clear batch) x)))))
 
-(defreleasable ^:private BareUdpResource
+(defreleasable BareUdpResource
   "Connectionless UDP resource type."
   [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException),
@@ -437,7 +437,7 @@
                    (iinc ret))))]
       (reduce af (i0) coll))))
 
-(defreleasable ^:private UdpResource
+(defreleasable UdpResource
   "Connected UDP resource type."
   [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException),
@@ -472,11 +472,11 @@
                    (iinc ret))))]
       (reduce af (i0) coll))))
 
-(defprotocol ^:private IMulticast
+(defprotocol IMulticast
   (-block! :- nil [this address :- String+])
   (-unblock! :- nil [this address :- String+]))
 
-(defreleasable ^:private MulticastResource
+(defreleasable MulticastResource
   "Multicast UDP resource type."
   [ch :- java.nio.channels.DatagramChannel, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable error :- (Maybe IException),
@@ -537,7 +537,7 @@
         membership-key (java.net.InetAddress/getByName address)))
       nil)))
 
-(defn ^:private pf->dc :- java.net.StandardProtocolFamily
+(defn pf->dc :- java.net.StandardProtocolFamily
   "Returns protocol family."
   [x :- Keyword]
   (cond (identical? :inet x) java.net.StandardProtocolFamily/INET
@@ -679,7 +679,7 @@
            (socket-address multicast-group local-port)))
         (catch java.lang.Exception e (.close ch) (throw e))))))
 
-(defn ^:private payload->array-coll :- IRed
+(defn payload->array-coll :- IRed
   "Returns reducible coll from a given payload batch."
   [batch :- java.nio.ByteBuffer]
   (let [arr (byte-array (.remaining batch))]

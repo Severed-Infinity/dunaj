@@ -51,19 +51,19 @@
 
 ;;;; Public API
 
-(def+ ^:private br :- java.lang.reflect.Field
+(def+ br :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.PersistentQueue "r")
     (.setAccessible true)))
 
-(defn ^:private get-br
+(defn get-br
   [v :- clojure.lang.PersistentQueue]
   (.get br v))
 
-(def+ ^:private bf :- java.lang.reflect.Field
+(def+ bf :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.PersistentQueue "f")
     (.setAccessible true)))
 
-(defn ^:private get-bf
+(defn get-bf
   [v :- clojure.lang.PersistentQueue]
   (.get bf v))
 
@@ -106,7 +106,7 @@
 
 ;;; Factory
 
-(def+ ^:private qc :- java.lang.reflect.Constructor
+(def+ qc :- java.lang.reflect.Constructor
   (doto (.getDeclaredConstructor
          clojure.lang.PersistentQueue
          (dunaj.host.array/array
@@ -117,7 +117,7 @@
            clojure.lang.PersistentVector]))
     (.setAccessible true)))
 
-(defn ^:private invoke-qc :- clojure.lang.PersistentQueue
+(defn invoke-qc :- clojure.lang.PersistentQueue
   [meta cnt s]
   (.newInstance qc (dunaj.host.array/array java.lang.Object
                                            [meta cnt s nil])))

@@ -184,7 +184,7 @@
   (equals [this other] (if (identical-type? this other) true false))
   (toString [this] "𝕌"))
 
-(defn ^:private ccat :- #{}
+(defn ccat :- #{}
   [x :- ComplementSet, other :- Any]
   (let [cf #(if (empty? %)
               (assoc-meta U (meta x))
@@ -199,13 +199,13 @@
           (cf (cs/difference (.-excluded x) other))
           (throw (illegal-argument "Not of similar type.")))))
 
-(defn ^:private cequiv :- Boolean+
+(defn cequiv :- Boolean+
   [x :- ComplementSet, other :- Any]
   (if (identical-type? x other)
     (= (.-excluded x) (.-excluded ^dunaj.set.ComplementSet other))
     false))
 
-(defn ^:private cequals :- Boolean+
+(defn cequals :- Boolean+
   [x :- ComplementSet, other :- Any]
   (if (identical-type? x other)
     (clojure.lang.Util/equals

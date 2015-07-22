@@ -69,14 +69,14 @@
 (def+ Base64Batch :- Signature
   (Batch java.lang.Byte))
 
-(defn ^:private get-decoder :- java.util.Base64$Decoder
+(defn get-decoder :- java.util.Base64$Decoder
   "Returns new decoder instance based on given input args."
   [mode :- Keyword]
   (if (identical? :safe mode)
     (java.util.Base64/getUrlDecoder)
     (java.util.Base64/getDecoder)))
 
-(defn ^:private get-encoder :- java.util.Base64$Encoder
+(defn get-encoder :- java.util.Base64$Encoder
   "Returns new encoder instance based on given input args."
   [mode :- Keyword, padding :- Boolean+]
   (let [enc (if (identical? :safe mode)
@@ -84,7 +84,7 @@
               (java.util.Base64/getEncoder))]
     (if padding enc (.withoutPadding enc))))
 
-(defn ^:private get-coder
+(defn get-coder
   :- (U java.util.Base64$Encoder
         java.util.Base64$Decoder)
   "Returns encoder or decoder based on given input args."

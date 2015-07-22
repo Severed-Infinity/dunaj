@@ -65,15 +65,15 @@
 
 ;;;; Implementation details
 
-(def+ ^:dynamic ^:private *default-malformed-mode* :- Keyword
+(def+ ^:dynamic *default-malformed-mode* :- Keyword
   "Default malformed mode."
   :replace)
 
-(def+ ^:dynamic ^:private *default-unmappable-mode* :- Keyword
+(def+ ^:dynamic *default-unmappable-mode* :- Keyword
   "Default unmappable mode."
   :replace)
 
-(defn ^:private coding-error-action
+(defn coding-error-action
   :- (Maybe java.nio.charset.CodingErrorAction)
   "Returns host coding error action instance for a given coder
   error `mode`, which can be one of :replace, :ignore or :report."
@@ -83,17 +83,17 @@
     :ignore java.nio.charset.CodingErrorAction/IGNORE
     :report java.nio.charset.CodingErrorAction/REPORT))
 
-(defn ^:private get-from-type :- Class+
+(defn get-from-type :- Class+
   "Returns item type for from coll for a given `code-mode`."
   [code-mode :- Keyword]
   (keyword->class (if (identical? :encode code-mode) :char :byte)))
 
-(defn ^:private get-to-type :- Class+
+(defn get-to-type :- Class+
   "Returns item type for to coll for a given `code-mode`."
   [code-mode :- Keyword]
   (keyword->class (if (identical? :encode code-mode) :byte :char)))
 
-(defn ^:private get-decoder :- java.nio.charset.CharsetDecoder
+(defn get-decoder :- java.nio.charset.CharsetDecoder
   "Returns new decoder instance based on given input args."
   [charset :- java.nio.charset.Charset,
    replacement :- (Maybe String+), malformed-mode :- (Maybe Keyword),
@@ -108,7 +108,7 @@
     (when replacement (.replaceWith decoder replacement))
     decoder))
 
-(defn ^:private get-encoder :- java.nio.charset.CharsetEncoder
+(defn get-encoder :- java.nio.charset.CharsetEncoder
   "Returns new encoder instance based on given input args."
   [charset :- java.nio.charset.Charset,
    replacement :- (Maybe String+), malformed-mode :- (Maybe Keyword),
@@ -132,7 +132,7 @@
     (when arr (.replaceWith encoder arr))
     encoder))
 
-(defn ^:private get-coder
+(defn get-coder
   :- (U java.nio.charset.CharsetDecoder
         java.nio.charset.CharsetEncoder)
   "Returns encoder or decoder based on given input args."
@@ -142,7 +142,7 @@
   ((if (identical? :encode code-mode) get-encoder get-decoder)
    charset replacement malformed-mode unmappable-mode))
 
-(defn ^:private get-flush-fn :- Function
+(defn get-flush-fn :- Function
   "Returns flush function based on given input args."
   [code-mode :- Keyword, coder :- (U java.nio.charset.CharsetDecoder
                                      java.nio.charset.CharsetEncoder)]
@@ -150,7 +150,7 @@
     #(.flush ^java.nio.charset.CharsetEncoder coder %)
     #(.flush ^java.nio.charset.CharsetDecoder coder %)))
 
-(defn ^:private get-code-fn :- Function
+(defn get-code-fn :- Function
   "Returns encode or decode function based on given input args."
   [code-mode :- Keyword, coder :- (U java.nio.charset.CharsetDecoder
                                      java.nio.charset.CharsetEncoder)]
@@ -158,13 +158,13 @@
     #(.encode ^java.nio.charset.CharsetEncoder coder %1 %2 %3)
     #(.decode ^java.nio.charset.CharsetDecoder coder %1 %2 %3)))
 
-(defn ^:private compute-capacity :- Integer+
+(defn compute-capacity :- Integer+
   "Returns capacity based on requested capacity and default formatter
   batch sizes."
   [requested-capacity :- (Maybe Integer+)]
   (max @default-formatter-batch-size (or requested-capacity 0)))
 
-(defn ^:private check-result :- nil
+(defn check-result :- nil
   "Returns nil and throws with `message` if `res` is not UNDERFLOW or
   OVERFLOW coder result."
   [res :- Any, message :- String+]
@@ -173,12 +173,12 @@
           (identical? res java.nio.charset.CoderResult/OVERFLOW))
     (throw (ex-info message {:result res}))))
 
-(defn ^:private overflow? :- Boolean+
+(defn overflow? :- Boolean+
   "Returns true if res is OVERFLOW."
   [res :- Any]
   (identical? res java.nio.charset.CoderResult/OVERFLOW))
 
-(defn ^:private cache-unread! :- nil
+(defn cache-unread! :- nil
   "Moves unread data from `batch` into `cache`,
   or wipes `cache` if no unread data is present. Returns nil."
   [bm :- BatchManager, batch :- AnyBatch, cache :- AnyBatch]
@@ -207,7 +207,7 @@
                            unread-batch to-batch))
    :else (->CCWrap ret code-fn flush-fn unread-batch to-batch)))
 
-(defn ^:private prepare-to-batch :- AnyBatch
+(defn prepare-to-batch :- AnyBatch
   [tbm :- BatchManager,
    to-batch :- (Maybe AnyBatch), from-batch :- AnyBatch]
   (cond from-batch
@@ -405,7 +405,7 @@
                              malformed-mode unmappable-mode :encode)
       (recipe (-print this) coll))))
 
-(defn ^:private charset-formatter* :- CharsetFormatterFactory
+(defn charset-formatter* :- CharsetFormatterFactory
   "Returns charset formatter factory for a given `charser` host
   charset and `opts` map."
   [charset :- java.nio.charset.Charset, opts :- {}]

@@ -93,11 +93,11 @@
 
 ;;;; Implementation details
 
-(defn ^:private wrap-fn
+(defn wrap-fn
   [f]
   (fn [val a b] (f val a)))
 
-(def+ ^:private ^java.lang.reflect.Field impl-field
+(def+ ^java.lang.reflect.Field impl-field
   (doto (.getDeclaredField clojure.lang.APersistentSet "impl")
     (.setAccessible true)))
 
@@ -106,7 +106,7 @@
 
 (declare flipped-rbt-sorted-set rbt-sorted-set-section)
 
-(defn ^:private range-check :- Boolean+
+(defn range-check :- Boolean+
   [comparator :- java.util.Comparator key ascending? begin end]
   (if ascending?
     (and (or (nil? begin) (npos? (.compare comparator begin key)))
@@ -330,7 +330,7 @@
   java.lang.Iterable
   (iterator [this] (coll->iterator this)))
 
-(defn ^:private flipped-rbt-sorted-set
+(defn flipped-rbt-sorted-set
   [coll]
   (when-not (empty? coll)
     (->FlippedRbtSortedSet coll)))

@@ -78,16 +78,16 @@
 
 ;;;; Implementation details
 
-(defn ^:private unpacked-fn
+(defn unpacked-fn
   [f]
   (fn [val a b] (f val (pair a b))))
 
-(defn ^:private realize-map! :- nil
+(defn realize-map! :- nil
   [this :- IUnpackedRed]
   (reduce-unpacked* this nop nil)
   nil)
 
-(defn ^:private get-coll :- {}
+(defn get-coll :- {}
   "Returns map from the given `data-ref` reference."
   [data-ref :- IReference]
   (key @data-ref))

@@ -209,7 +209,7 @@
   "Record for unknown tagged literal."
   [tag val])
 
-(defn ^:private default-tag-reader
+(defn default-tag-reader
   "Returns new instance of UnknownTaggedLiteral"
   [tag val]
   (->UnknownTaggedLiteral tag val))
@@ -347,7 +347,7 @@
 
 ;;; string literal
 
-(defn ^:private from-escape :- Char
+(defn from-escape :- Char
   "Returns character which is represented by an escape character with
   Unicode code point `x`.
   Throws if escape character is not recognized."
@@ -494,7 +494,7 @@
   [x :- Int]
   (or (i== x (iMINUS)) (i== x (iPLUS)) (i== x (iDOT))))
 
-(defn ^:private valid-symbol? :- Boolean+
+(defn valid-symbol? :- Boolean+
   "Returns true if string `s` is a valid EDN symbol, otherwise
   returns false."
   [s]
@@ -522,7 +522,7 @@
               6 (if (edn-strict-symbol-item? x) 6 fail))))]
     (not (== 4 (reduce cf 0 s)))))
 
-(defn ^:private valid-keyword? :- Boolean+
+(defn valid-keyword? :- Boolean+
   "Returns true if string `s` is a valid EDN keyword, otherwise
   returns false."
   ([s] (valid-keyword? s true))
@@ -719,9 +719,9 @@
 
 ;;; printing strings
 
-(def+ ^:private zeroes "0000")
+(def+ zeroes "0000")
 
-(defn ^:private to-escape
+(defn to-escape
   "Returns batch containing escape sequence or nil, if no
   escape sequence is needed."
   [config x]
@@ -739,7 +739,7 @@
                (->str "\\u" (.substring ^java.lang.String zeroes
                                         (count ns)) ns)))))))
 
-(defn ^:private to-char-escape
+(defn to-char-escape
   "Returns batch containing escape sequence or nil, if no
   escape sequence is needed."
   [config x]
@@ -836,9 +836,9 @@
 
 ;;; instant printer
 
-(def+ ^:private tludf @#'clojure.instant/thread-local-utc-date-format)
+(def+ tludf @#'clojure.instant/thread-local-utc-date-format)
 
-(def+ ^:private tlutf
+(def+ tlutf
   @#'clojure.instant/thread-local-utc-timestamp-format)
 
 (extend-protocol! IEdnPrinter
@@ -903,7 +903,7 @@
     follows IPrinterMachineFactory/-dispatch-printer rules."
     [this config state bm batch parents]))
 
-(defn ^:private edn-pretty-mode
+(defn edn-pretty-mode
   "Returns true if `coll` should be printed indented in multiple
   lines, otherwise returns false."
   [config coll]

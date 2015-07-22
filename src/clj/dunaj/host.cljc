@@ -447,7 +447,7 @@
    :see '[Batch BatchManager dunaj.host.batch/batch-manager]}
   java.nio.Buffer) ;; JVM HOST
 
-(def+ ^:private batch-sigs :- {Any Signature}
+(def+ batch-sigs :- {Any Signature}
   ;; JVM HOST
   {'byte java.nio.ByteBuffer
    'short java.nio.ShortBuffer
@@ -497,7 +497,7 @@
    :see '[Batch AnyBatch dunaj.host.batch/batch-manager]}
   dunaj.host.BatchManager)
 
-(defmacro ^:private mk-bm [ts bts ets]
+(defmacro mk-bm [ts bts ets]
   (let [gbuf (gensym)
         tgbuf (with-meta gbuf {:tag bts})
         gdst (gensym)
@@ -520,7 +520,7 @@
        (copy [_ ~gbuf ~garr offset# length#]
          (.get ~tgbuf ~tgarr offset# length#)))))
 
-(def+ ^:private bms :- {Class BatchManager}
+(def+ bms :- {Class BatchManager}
   {java.lang.Byte/TYPE
    (mk-bm byte java.nio.ByteBuffer java.lang.Byte/TYPE)
    java.lang.Character/TYPE
@@ -560,10 +560,10 @@
   IHintedSignature
   (-type-hint [this] type-hint))
 
-(def+ ^:private any-array-hint :- TypeHint
+(def+ any-array-hint :- TypeHint
   'objects) ;; JVM HOST
 
-(def+ ^:private array-hints :- {Any TypeHint}
+(def+ array-hints :- {Any TypeHint}
   ;; JVM HOST
   {'byte 'bytes
    'short 'shorts
@@ -615,7 +615,7 @@
    :see '[Array AnyArray dunaj.host.array/array-manager]}
   dunaj.host.ArrayManager)
 
-(defmacro ^:private mk-am [ts ets bts]
+(defmacro mk-am [ts ets bts]
   (let [garr (gensym)
         tgarr (with-meta garr {:tag (symbol (str ts "s"))})
         gval (gensym)
@@ -640,7 +640,7 @@
        (sort [_ ~garr]
          (java.util.Arrays/sort ~tgarr)))))
 
-(def+ ^:private ams :- {Class ArrayManager}
+(def+ ams :- {Class ArrayManager}
   {java.lang.Byte/TYPE
    (mk-am byte java.lang.Byte/TYPE java.nio.ByteBuffer)
    java.lang.Character/TYPE

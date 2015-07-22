@@ -94,15 +94,15 @@
 
 ;;;; Implementation details
 
-(defn ^:private tlrng :- java.util.concurrent.ThreadLocalRandom
+(defn tlrng :- java.util.concurrent.ThreadLocalRandom
   "Returns a ThreadLocalRandom instance for the current thread."
   []
   (java.util.concurrent.ThreadLocalRandom/current))
 
-(def+ ^:dynamic ^:private *default-rng-batch-size* :- Integer+
+(def+ ^:dynamic *default-rng-batch-size* :- Integer+
   32)
 
-(defn ^:private reduce-batched-rng
+(defn reduce-batched-rng
   "Performs batched reduce with batches backed by array, filled in
   with nextf in each iteration."
   [nextf this requested-type size-hint reducef init]
@@ -129,7 +129,7 @@
   [ret :- Any, pval :- Integer+, left :- Int,
    obatch :- Any, other :- Any])
 
-(defn ^:private r-advance :- Any
+(defn r-advance :- Any
   [ret :- Any, pval :- Integer+, left :- Int, other :- Any]
   (cond (reduced? ret) (reduced (->RWrap @ret pval left other))
         (postponed? ret)
@@ -139,7 +139,7 @@
         :else (->RWrap ret pval left other)))
 
 ;; ported from JDK sources
-(defn ^:private iprocess
+(defn iprocess
   [f ret val begin end]
   (cond (nil? end) (f ret val)
         :let [bound (long end)
@@ -158,21 +158,21 @@
         (neg? (mu/add u (long (mu/subtract m xr)))) ret
         :else (f ret (mu/add origin xr))))
 
-(def+ ^:private double-unit :- java.lang.reflect.Field
+(def+ double-unit :- java.lang.reflect.Field
   "Makes internal DOUBLE_UNIT field public. >= JDK8 only"
   (doto (.getDeclaredField java.util.Random "DOUBLE_UNIT")
     (.setAccessible true)))
 
-(defn ^:private get-double-unit :- Float+
+(defn get-double-unit :- Float+
   "Returns DOUBLE_UNIT value"
   []
   (.get double-unit nil))
 
-(def+ ^:private DOUBLE_UNIT
+(def+ DOUBLE_UNIT
   (get-double-unit))
 
 ;; ported from JDK sources
-(defn ^:private fprocess
+(defn fprocess
   [f ret val begin end]
   (cond (and (nil? end) (nil? begin)) (f ret val)
         :let [bound (double (or end 1.0))

@@ -65,22 +65,22 @@
 
 ;;;; Implementation details
 
-(def+ ^:private bms :- {Class+ BatchManager} @#'dunaj.host/bms)
+(def+ bms :- {Class+ BatchManager} @#'dunaj.host/bms)
 
-(def+ ^:private ^:dynamic *default-batch-size* 32)
+(def+ ^:dynamic *default-batch-size* 32)
 
-(def+ ^:private ^:dynamic *max-batch-size* 8192)
+(def+ ^:dynamic *max-batch-size* 8192)
 
-(def+ ^:private default-item-type :- Class+
+(def+ default-item-type :- Class+
   "A default item type used when no concrete type is specified
   in the batch creation process."
   java.lang.Byte/TYPE)
 
-(def+ ^:private mark-field :- java.lang.reflect.Field
+(def+ mark-field :- java.lang.reflect.Field
   (doto (.getDeclaredField java.nio.Buffer "mark")
     (.setAccessible true)))
 
-(defn ^:private get-mark :- Int
+(defn get-mark :- Int
   [x :- java.nio.Buffer]
   (iint (.get mark-field x)))
 
@@ -193,7 +193,7 @@
 (deftype BatchWrap [ret :- Any, batch :- (Maybe AnyBatch),
                     other :- (Maybe AnyBatch)])
 
-(defn ^:private batch-advance
+(defn batch-advance
   [ret :- Any, batch :- (Maybe AnyBatch), other :- (Maybe AnyBatch)]
   (cond (reduced? ret) (reduced (->BatchWrap @ret nil nil))
         (postponed? ret)

@@ -70,21 +70,21 @@
 
 ;;;; Implementation details
 
-(def+ ^:private batch-overhead :- Int
+(def+ batch-overhead :- Int
   "Default overhead size for TLS batches."
   (iint 100))
 
-(defn ^:private round-size :- Int
+(defn round-size :- Int
   "Returns buffer size rounded to nearest power of 2."
   [size :- Int]
   (loop [i 8192] (if (i< i size) (recur (i<< i (i1))) i)))
 
-(defn ^:private app-batch-size :- Int
+(defn app-batch-size :- Int
   "Returns minimum size for app batch processed with SSL `eng`ine."
   [eng :- javax.net.ssl.SSLEngine]
   (.getApplicationBufferSize (.getSession eng)))
 
-(defn ^:private net-batch-size :- Int
+(defn net-batch-size :- Int
   "Returns minimum size for net batch processed with SSL `eng`ine."
   [eng :- javax.net.ssl.SSLEngine]
   (.getPacketBufferSize (.getSession eng)))
@@ -98,7 +98,7 @@
   [& xs]
   `(clojure.core/println ~@xs))
 
-(defn ^:private provide-byte-batch :- (Batch java.lang.Byte)
+(defn provide-byte-batch :- (Batch java.lang.Byte)
   "Returns byte batch with given `size`, which may be a direct batch,
   based on value of `direct?`. Returns `batch` if it is not nil and
   if it's capacity is at least `size`, otherwise copies contents
@@ -117,7 +117,7 @@
            (nil? batch) b
            :else (.put b ^java.nio.ByteBuffer (.flip batch))))))
 
-(defprotocol ^:private ITls
+(defprotocol ITls
   (-tls-process! :- nil [this])
   (-reduce-batched* :- Any [this size-hint :- (Maybe Integer+),
                             reducef :- AnyFn, init :- Any])
@@ -141,16 +141,16 @@
       (throw (illegal-argument "item types do not match")))
     (-reduce-batched* resource size-hint reducef init)))
 
-(defn ^:private execute-delegated-tasks :- nil
+(defn execute-delegated-tasks :- nil
   "Executes all delegated tasks from ssl `eng`ine in a current thread,
   returning nil."
   [eng :- javax.net.ssl.SSLEngine]
   (loop [] (when-let [t (.getDelegatedTask eng)] (.run t) (recur))))
 
-(def+ ^:private nh
+(def+ nh
   javax.net.ssl.SSLEngineResult$HandshakeStatus/NOT_HANDSHAKING)
 
-(defreleasable ^:private SecureResource
+(defreleasable SecureResource
   "A TLS resource type."
   [transport :- (I IOpenAware IReadable IWritable),
    eng :- javax.net.ssl.SSLEngine,

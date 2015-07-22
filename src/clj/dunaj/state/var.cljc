@@ -42,7 +42,7 @@
 
 ;;;; Implementation details
 
-(defn ^:private mname :- (Maybe String+)
+(defn mname :- (Maybe String+)
   [x :- Any]
   (when x (name x)))
 

@@ -32,17 +32,17 @@
 
 ;;;; Implementation details
 
-(def+ ^:private cha :- java.lang.reflect.Field
+(def+ cha :- java.lang.reflect.Field
   "Makes internal String char array public."
   (doto (.getDeclaredField java.lang.String "value")
     (.setAccessible true)))
 
-(defn ^:private get-cha :- (Array Char)
+(defn get-cha :- (Array Char)
   "Returns char array from a string."
   [s :- String+]
   (.get cha s))
 
-(def+ ^:private cam :- ArrayManager
+(def+ cam :- ArrayManager
   (array-manager (keyword->class :char)))
 
 

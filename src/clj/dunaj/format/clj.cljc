@@ -251,17 +251,17 @@
 
 ;; straightforward implementation based on LispReader.java
 
-(defn ^:private unquote?
+(defn unquote?
   [form]
   (and (list? form) (= 'clojure.core/unquote (first form))))
 
-(defn ^:private unquote-splicing?
+(defn unquote-splicing?
   [form]
   (and (list? form) (= 'clojure.core/unquote-splicing (first form))))
 
 (declare syntax-quote)
 
-(defn ^:private sq-expand-list
+(defn sq-expand-list
   [s gensyms-ref cns]
   (let [mf (fn [x]
              (cond (unquote? x) (->lst 'clojure.core/list (second x))
@@ -270,13 +270,13 @@
                                 (syntax-quote x gensyms-ref cns))))]
     (seq (map mf s))))
 
-(defn ^clojure.lang.Namespace ^:private namespace-for
+(defn ^clojure.lang.Namespace namespace-for
   [sym ^clojure.lang.Namespace cns]
   (let [nssym (symbol (namespace sym))
         n (.lookupAlias cns nssym)]
     (if (nil? n) (clojure.lang.Namespace/find nssym) n)))
 
-(defn ^:private resolve-symbol
+(defn resolve-symbol
   [sym ^clojure.lang.Namespace cns]
   (let [sn (name sym)]
     (if (index-of sn \.)
@@ -299,7 +299,7 @@
             sym
             (symbol nns (name sym))))))))
 
-(defn ^:private syntax-quote-symbol
+(defn syntax-quote-symbol
   [sym gensyms-ref ^clojure.lang.Namespace cns]
   (cond
    (and (nil? (namespace sym)) (= \# (last (name sym))))
@@ -323,7 +323,7 @@
    (symbol (.getName ^java.lang.Class mc) (name sym))
    :else (resolve-symbol sym cns)))
 
-(defn ^:private syntax-quote-collection
+(defn syntax-quote-collection
   [coll gensyms-ref cns]
   (let [wfn
         (fn [x y]
@@ -341,7 +341,7 @@
      (if (seq coll) (wfn nil coll) ())
      :else (perror "unknown collection type in syntax quote"))))
 
-(defn ^:private syntax-quote
+(defn syntax-quote
   [form gensyms-ref cns]
   (let [ret (cond (clojure.core/special-symbol? form)
                   (->lst `quote
@@ -490,7 +490,7 @@
 
 ;;; string literal
 
-(defn ^:private from-escape :- Char
+(defn from-escape :- Char
   "Returns character which is represented by an escape character with
   Unicode code point `x`.
   Throws if escape character is not recognized."
@@ -540,7 +540,7 @@
   [x :- Int]
   (or (clj-nondigit-symbol-item? x) (java.lang.Character/isDigit x)))
 
-(defn ^:private valid-symbol? :- Boolean+
+(defn valid-symbol? :- Boolean+
   "Returns true if string `s` is a valid CLJ symbol, otherwise
   returns false."
   [s]
@@ -577,7 +577,7 @@
         res (reduce cf 0 s)]
     (not (or (== 4 res) (== 66 res) (== 22 res)))))
 
-(defn ^:private valid-keyword? :- Boolean+
+(defn valid-keyword? :- Boolean+
   "Returns true if string `s` is a valid CLJ keyword, otherwise
   returns false."
   ([s] (valid-keyword? s true))
@@ -804,9 +804,9 @@
 (def+ clj-backspace-batch (string-to-batch! "\\backspace"))
 (def+ clj-formfeed-batch (string-to-batch! "\\formfeed"))
 
-(def+ ^:private zeroes "0000")
+(def+ zeroes "0000")
 
-(defn ^:private to-escape
+(defn to-escape
   "Returns batch containing escape sequence or nil, if no
   escape sequence is needed."
   [config x]
@@ -826,7 +826,7 @@
                (->str "\\u" (.substring ^java.lang.String zeroes
                                         (count ns)) ns)))))))
 
-(defn ^:private to-char-escape
+(defn to-char-escape
   "Returns batch containing escape sequence or nil, if no
   escape sequence is needed."
   [config x]
@@ -916,7 +916,7 @@
     follows IPrinterMachineFactory/-dispatch-printer rules."
     [this config state bm batch parents]))
 
-(defn ^:private clj-pretty-mode
+(defn clj-pretty-mode
   [config coll]
   (let [x (if (satisfies? ICljPrettyCount coll)
             (-pretty-count-clj coll)
@@ -965,7 +965,7 @@
   (-print-after! [this bm batch parents])
   (-print-between! [this bm batch parents]))
 
-(defn ^:private prepare-meta
+(defn prepare-meta
   [config state m]
   (let [t (:tag m)
         t (when (or (symbol? t) (class? t)) t)
@@ -1004,7 +1004,7 @@
   (-print-after! [this bm batch parents])
   (-print-between! [this bm batch parents]))
 
-(defn ^:private in-quoted?
+(defn in-quoted?
   "Returns true if one of parents printers is a quote printer."
   [parents]
   ;; massive hack
@@ -1065,11 +1065,11 @@
               (set! indent-left (dec indent-left)))
             (print! batch bm state \space))))))
 
-(defn ^:private resolve-local
+(defn resolve-local
   [state sym]
   (when-let [rm (::local-bindings @state)] (rm sym)))
 
-(defn ^:private anon-fn?
+(defn anon-fn?
   [coll]
   (let [anon-arg #(and (symbol? %)
                        (or (= "&" (name %))
@@ -1166,7 +1166,7 @@
 
 ;; TODO: support for printing sugared type sigs (:- Foo)
 
-(defn ^:private special-list-printer
+(defn special-list-printer
   [config state coll]
   (when (double? coll)
     (let [f (first coll)]
@@ -1180,14 +1180,14 @@
             (->CljPrefixPrettyPrinter
              config state (string-to-batch! "@") 1 (rest coll))))))
 
-(defn ^:private alias-ns
+(defn alias-ns
   [^clojure.lang.Namespace cns nsn]
   (let [find-alias (fn [_ [alias ^clojure.lang.Namespace ns]]
                      (when (= (name (.-name ns)) nsn)
                        (reduced (name alias))))]
     (reduce find-alias nil (.getAliases cns))))
 
-(defn ^:private resolve-ns
+(defn resolve-ns
   [^clojure.lang.Namespace cns sym]
   (let [ons (namespace sym)]
     (if-let [r (clojure.core/ns-resolve cns sym)]
@@ -1198,7 +1198,7 @@
         ons)
       ons)))
 
-(defn ^:private resolve-name
+(defn resolve-name
   [sym state cns]
   (let [n (name sym)
         ns (namespace sym)
@@ -1208,7 +1208,7 @@
           (nil? nns) (->str n)
           :else (->str nns \/ n))))
 
-(defn ^:private resolve-color
+(defn resolve-color
   [sym state cns]
   (let [n (name sym)
         ns (namespace sym)
@@ -1327,7 +1327,7 @@
                       (color config state :regex :string)
                       \# \" b \"))))
 
-(defn ^:private helper-container?
+(defn helper-container?
   [p]
   (or (entry-container? p)
       (class-instance? dunaj.format.clj.CljAnnotatedPrettyPrinter p)

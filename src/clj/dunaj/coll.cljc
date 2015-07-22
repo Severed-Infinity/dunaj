@@ -269,7 +269,7 @@
    :see '[Reduced reduced? dunaj.coll.helper/provide-reduced
          dunaj.coll.helper/strip-reduced]})
 
-(defmacro ^:private advance-fn
+(defmacro advance-fn
   [fname-or-args & cond-body]
   (let [fname? (not (clojure.core/vector? fname-or-args))
         fname (if fname? fname-or-args (gensym "fname"))
@@ -375,19 +375,19 @@
     (throw (java.lang.IllegalArgumentException.)))
   coll)
 
-(defn ^:private strip-reduced :- Any
+(defn strip-reduced :- Any
   [x :- Any]
   (if (reduced? x) @x x))
 
-(defn ^:private reduce* :- Any
+(defn reduce* :- Any
   [coll :- [], reducef :- AnyFn, init :- Any]
   (if (nil? coll) init (-reduce coll reducef init)))
 
-(defn ^:private reduce-unpacked* :- Any
+(defn reduce-unpacked* :- Any
   [coll :- [], reducef :- AnyFn, init :- Any]
   (if (nil? coll) init (-reduce-unpacked coll reducef init)))
 
-(defn ^:private reduce-batched* :- Any
+(defn reduce-batched* :- Any
   ([coll :- [], reducef :- AnyFn, init :- Any]
    (if (nil? coll) init (-reduce-batched coll nil nil reducef init)))
   ([item-type :- (U nil Class+ Type), size-hint :- (Maybe Integer+),
@@ -569,7 +569,7 @@
   ([reducef :- AnyFn, init :- Any]
    (->Reducing reducef init)))
 
-(defn ^:private reducing-function :- AnyFn
+(defn reducing-function :- AnyFn
   "Returns a reducing function created from augmented reducing
   function `_r_`."
   [r :- IReducing]
@@ -583,7 +583,7 @@
     ([wrap val val2 val3 val4 & more]
      (._step r wrap val val2 val3 val4 more))))
 
-(defn ^:private finish-advance :- Any
+(defn finish-advance :- Any
   [ret :- Any, r :- IReducing]
   (if (postponed? ret)
     (postponed (._unwrap r @ret)
@@ -591,7 +591,7 @@
                #(finish-advance (unsafe-advance! ret) r))
     (._finish r ret)))
 
-(defn ^:private reduced-advance :- Any
+(defn reduced-advance :- Any
   ([ret :- Any]
    (cond (reduced? ret) ret
          (postponed? ret)
@@ -609,7 +609,7 @@
          was-reduced? (reduced ret)
          :else ret)))
 
-(defn ^:private unwrap-advance :- Any
+(defn unwrap-advance :- Any
   [wrap :- Any, r :- IReducing]
   (cond (reduced? wrap) (reduced (._unwrap r @wrap))
         (postponed? wrap)
@@ -618,7 +618,7 @@
                    #(unwrap-advance (unsafe-advance! wrap) r))
         :else (._unwrap r wrap)))
 
-(defn ^:private reduce-augmented*
+(defn reduce-augmented*
   "Returns a result of the reduction of `_coll_` with `_reduce-fn_`
   function taking `coll reducef init` in that order, and with the
   augmented reducing function `_r_` and with initial value `_init_`,
@@ -658,7 +658,7 @@
        (finish-advance r)
        strip-reduced)))
 
-(defn ^:private transduce* :- Any
+(defn transduce* :- Any
   "Returns a result of the reduction of `_coll_` with `_reduce-fn_`
   function and with the classic reducing function `_reducef_`,
   initial value `_init_` (which defaults to `(_reducef_)` if not
@@ -746,7 +746,7 @@
    :see '[rest reduce next dunaj.coll.util/sequence]
    :category "Seqs"})
 
-(defn ^:private ^clojure.lang.ISeq red->seq*
+(defn ^clojure.lang.ISeq red->seq*
   "Returns a lazy seq from a given one-step intermediate."
   [ret]
   (if (class-instance? dunaj.coll.Postponed ret)

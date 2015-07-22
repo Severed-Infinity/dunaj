@@ -38,7 +38,7 @@
 ;;;; Implementation details
 
 ;; taken from Clojure
-(defn ^:private binding-conveyor-fn
+(defn binding-conveyor-fn
   [f]
   (let [frame (clojure.lang.Var/cloneThreadBindingFrame)]
     (fn
@@ -134,7 +134,7 @@
          (catch java.util.concurrent.TimeoutException e
            timeout-val))))
 
-(def+ ^:dynamic ^:private *default-future-executor* :- ITaskExecutor
+(def+ ^:dynamic *default-future-executor* :- ITaskExecutor
   clojure.lang.Agent/soloExecutor)
 
 (def+ default-future-executor :- clojure.lang.Var

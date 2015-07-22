@@ -71,15 +71,15 @@
 
 (defsentinel nothing)
 
-(defn ^:private unpacked-fn [f] (fn [val xs] (apply f val xs)))
+(defn unpacked-fn [f] (fn [val xs] (apply f val xs)))
 
 ;; injected in dunaj.coll.recipe
-(defn ^:private zip
+(defn zip
   ([a b] (not-implemented))
   ([a b c] (not-implemented))
   ([a b c & colls] (not-implemented)))
 
-(defn ^:private seq*
+(defn seq*
   [coll]
   (lazy-seq (red->seq* (-reduce coll #(postponed %2) nil))))
 
@@ -656,7 +656,7 @@
    :see '[sequence dunaj.coll/transduce]}
   dunaj.coll.helper/recipe)
 
-(defn ^:private macroexpand-all :- Any
+(defn macroexpand-all :- Any
   "Recursively performs all possible macroexpansions in form."
   {:added v1}
   [form :- Any]

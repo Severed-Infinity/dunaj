@@ -10,7 +10,7 @@
   :source-paths ["../src/clj"]
   :java-source-paths ["../src/jvm"]
   :main ^:skip-aot dunaj.main
-  :aot [dunaj.coll dunaj.coll.helper dunaj.state dunaj.buffer dunaj.state.basic dunaj.concurrent.port dunaj.core dunaj.main] ;; see CLJ-1650
+  :aot [dunaj.core dunaj.main] ;; see CLJ-1650
 ;  :aot :all
 ;  :clean-non-project-classes true
   :auto-clean false

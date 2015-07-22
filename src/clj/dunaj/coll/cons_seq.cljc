@@ -48,7 +48,7 @@
 
 ;;;; Implementation details
 
-(defn ^:private cons? :- Boolean+
+(defn cons? :- Boolean+
   [x :- Any]
   (class-instance? clojure.lang.Cons x))
 

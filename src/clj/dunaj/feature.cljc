@@ -49,7 +49,7 @@
   [x :- IValidator]
   (-validator x))
 
-(deftype ^:private Validator4IRef
+(deftype Validator4IRef
   [^clojure.lang.IRef x]
   IReference
   (-deref [this] (.getValidator x))
@@ -119,7 +119,7 @@
   [x :- IMutableMeta]
   (-meta-ref x))
 
-(deftype ^:private MutableMeta4IReference
+(deftype MutableMeta4IReference
   [^clojure.lang.IReference x]
   IReference
   (-deref [this] (.meta x))

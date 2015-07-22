@@ -74,7 +74,7 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-loopback-size :- Integer+
+(def+ default-loopback-size :- Integer+
   "Default size for loopback buffer."
   8192)
 

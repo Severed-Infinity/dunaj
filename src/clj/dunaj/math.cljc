@@ -683,7 +683,7 @@
 
 ;;; Rounding
 
-(def+ ^:private rounding-mode :- {clojure.lang.Keyword RoundingMode}
+(def+ rounding-mode :- {clojure.lang.Keyword RoundingMode}
   "A translation map for rounding modes."
   {:ceiling RoundingMode/CEILING
    :floor RoundingMode/FLOOR
@@ -712,13 +712,13 @@
     (MathContext. (or (:precision config) 0)
                   (rounding-mode (or (:mode config) :half-up)))))
 
-(defn ^:private set-scale :- BigDecimal
+(defn set-scale :- BigDecimal
   "Returns bigdecimal number `x` rounded to `p` decimal digits,
   using `rm` RoundingMode configuration."
   [x :- BigDecimal, p :- Integer+, rm :- RoundingMode]
   (.setScale x (iint p) rm))
 
-(defn ^:private round-bigdec :- BigDecimal
+(defn round-bigdec :- BigDecimal
   "Returns rounded BigDecimal based on given config."
   [x :- BigDecimal, config :- PrecisionConfig]
   (if (= :decimal (:type config))

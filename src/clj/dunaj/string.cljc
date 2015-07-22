@@ -77,23 +77,23 @@
 
 ;;;; Implementation details
 
-(def+ ^:private cha :- java.lang.reflect.Field
+(def+ cha :- java.lang.reflect.Field
   "Makes internal String char array public."
   (doto (.getDeclaredField java.lang.String "value")
     (.setAccessible true)))
 
-(defn ^:private get-cha :- (Array Char)
+(defn get-cha :- (Array Char)
   "Returns char array from a string."
   [s :- java.lang.String]
   (.get cha s))
 
-(def+ ^:private sbcha :- java.lang.reflect.Field
+(def+ sbcha :- java.lang.reflect.Field
   "Makes internal StringBuilder char array public."
   {:added v1}
   (doto (.getDeclaredField java.lang.AbstractStringBuilder "value")
     (.setAccessible true)))
 
-(defn ^:private get-sbcha :- (Array Char)
+(defn get-sbcha :- (Array Char)
   "Returns char array from a mutable string"
   {:added v1}
   [s :- java.lang.AbstractStringBuilder]
@@ -111,7 +111,7 @@
    :on-interface java.lang.CharSequence
    :forbid-extensions true})
 
-(defn ^:private ensure-char-sequence :- java.lang.String
+(defn ensure-char-sequence :- java.lang.String
   "Returns `_x_`, throwing if it is not a char sequence."
   [x :- ICharSequence]
   (when-not (char-sequence? x)
@@ -269,7 +269,7 @@
   (charAt [this index] (aget arr (isub (idec end) index)))
   (length [this] (isub end begin)))
 
-(defn ^:private reversed-string-section :- ReversedStringSection
+(defn reversed-string-section :- ReversedStringSection
   "Returns instance of ReversedStringSection with delayed hashes."
   [arr :- (Array Char), begin :- Int, end :- Int]
   (let [begin (iint begin)]
@@ -405,7 +405,7 @@
   (charAt [this index] (aget arr (iadd begin index)))
   (length [this] (isub end begin)))
 
-(defn ^:private string-section :- StringSection
+(defn string-section :- StringSection
   "Returns instance of StringSection with delayed hashes."
   [arr :- (Array Char), begin :- Int, end :- Int]
   (let [begin (iint begin)]
@@ -590,7 +590,7 @@
   ;; Abstract type protocols
   ICharSequence)
 
-(defn ^:private cat-batch! :- MutableString
+(defn cat-batch! :- MutableString
   "Returns the catenation of mutable string `ms` with the
   [`begin`, end) section of a `batch`, using array in `state`
   reference as a intermediate array in cases where `batch` is not
@@ -625,7 +625,7 @@
 
 ;;; Factory
 
-(defn ^:private sn [x] (if (nil? x) "" x))
+(defn sn [x] (if (nil? x) "" x))
 
 (defrecord StringFactory
   "A factory record for strings."
@@ -892,12 +892,12 @@
     (->StringPartition arr partitionf (i0) (.length string))))
 
 ;; injected in dunaj.coll.recipe
-(defn ^:private map
+(defn map
   [f coll]
   (not-implemented))
 
 ;; injected in dunaj.coll.recipe
-(defn ^:private remove
+(defn remove
   [f coll]
   (not-implemented))
 

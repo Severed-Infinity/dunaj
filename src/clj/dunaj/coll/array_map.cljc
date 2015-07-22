@@ -82,7 +82,7 @@
 
 ;;;; Implementation details
 
-(def+ ^:private array-field :- java.lang.reflect.Field
+(def+ array-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.PersistentArrayMap "array")
     (.setAccessible true)))
 
@@ -90,7 +90,7 @@
   [x :- clojure.lang.PersistentArrayMap]
   (.get array-field x))
 
-(defn ^:private reduce-unpacked-array-map :- Any
+(defn reduce-unpacked-array-map :- Any
   "Reduce section of Array map."
   [arr :- AnyArray, reducef :- AnyFn, init :- Any,
    begin :- Int, end :- Int]
@@ -107,11 +107,11 @@
 
 (declare array-map-section-section)
 
-(defn ^:private unpacked-fn
+(defn unpacked-fn
   [f]
   (fn [val a b] (f val (pair a b))))
 
-(deftype ^:private ArrayMapSection
+(deftype ArrayMapSection
   [arr :- AnyArray, begin :- Int, end :- Int]
   IRed
   (-reduce [this reducef init]
@@ -126,13 +126,13 @@
   ICounted
   (-count [this] (isub end begin)))
 
-(defn ^:private array-map-section :- ArrayMapSection
+(defn array-map-section :- ArrayMapSection
   [m :- clojure.lang.PersistentArrayMap, begin :- Int, end :- Int]
   (let [arr (get-array m)
         end (or end (idiv (acount arr) (i2)))]
     (->ArrayMapSection arr begin end)))
 
-(defn ^:private array-map-section-section :- ArrayMapSection
+(defn array-map-section-section :- ArrayMapSection
   [ms :- ArrayMapSection, begin :- Int, end :- Int]
   (let [offset (.-begin ms)
         end (or end (count ms))]

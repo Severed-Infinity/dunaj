@@ -114,11 +114,11 @@
   "Registered resource providers."
   {})
 
-(def+ ^:dynamic ^:private *scope*
+(def+ ^:dynamic *scope*
   "Dynamic Var for current scope."
   nil)
 
-(def+ ^:dynamic ^:private *scope-thread*
+(def+ ^:dynamic *scope-thread*
   "Dynamic Var for current scope home thread."
   nil)
 
@@ -148,18 +148,18 @@
 
 ;;; Scopes
 
-(defn ^:private deref-scope! :- Any
+(defn deref-scope! :- Any
   "Returns `_scope_` if it is map, safely nilify and deref if
   `_scope_` is an atomic reference."
   [scope :- Any]
   (if (atomic? scope) (switch! scope nil) scope))
 
-(defn ^:private merge-ex! :- java.lang.Throwable
+(defn merge-ex! :- java.lang.Throwable
   "Merge exceptions with the help of a supressed feature."
   [old-ex :- (Maybe java.lang.Throwable), ex :- java.lang.Throwable]
   (if old-ex (do (.addSuppressed old-ex ex) old-ex) ex))
 
-(defmacro ^:private release-throw
+(defmacro release-throw
   ([s val opts]
    `(throw
      (dunaj.error/ex-info ~s {:value ~val :opts ~opts})))
@@ -168,7 +168,7 @@
      (dunaj.error/ex-info
       ~s {:value ~val :opts ~opts :cause ~cause}))))
 
-(defn ^:private release-releasable! :- nil
+(defn release-releasable! :- nil
   "Releases a releasable `val`. Returns nil."
   [val :- IReleasable, opts :- {}]
   (let [t (:timeout opts)]
@@ -195,7 +195,7 @@
           ;; releasing has finished or failed
           (not (identical? :done v)) (throw v))))
 
-(defn ^:private release-item! :- nil
+(defn release-item! :- nil
   "Releases one scope item and returns nil. May throw."
   [val :- Any, opts :- {}, exr :- IAtomic]
   (loop [val val]
@@ -813,7 +813,7 @@
      (-write! [this coll]
        (-write! resource (recipe write-xform coll))))))
 
-(defn ^:private deps* :- {}
+(defn deps* :- {}
   "Returns generated dependency map for a given factory."
   [factory :- {}]
   (reduce (fn [m kv] (if (nil? (val kv)) (conj m kv) m))

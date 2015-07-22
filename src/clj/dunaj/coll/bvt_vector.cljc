@@ -87,7 +87,7 @@
 
 ;;;; Implementation details
 
-(defn ^:private reduce-vector :- Any
+(defn reduce-vector :- Any
   "Reduce section of BVT Vector."
   [vec :- clojure.lang.PersistentVector,
    reducef :- AnyFn init :- Any, begin :- Int, end :- Int]
@@ -113,16 +113,16 @@
       (af init (.arrayFor vec begin)
           (iinc (idiv begin (i32))) (iand begin (i31))))))
 
-(def+ ^:private mt :- java.lang.reflect.Field
+(def+ mt :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.lang.PersistentVector$TransientVector "tail")
     (.setAccessible true)))
 
-(defn ^:private get-mt :- AnyArray
+(defn get-mt :- AnyArray
   [v :- clojure.lang.PersistentVector$TransientVector]
   (.get mt v))
 
-(def+ ^:private maf :- java.lang.reflect.Method
+(def+ maf :- java.lang.reflect.Method
   (doto (.getDeclaredMethod
          clojure.lang.PersistentVector$TransientVector
          "arrayFor"
@@ -130,11 +130,11 @@
                                  [java.lang.Integer/TYPE]))
     (.setAccessible true)))
 
-(defn ^:private invoke-maf :- AnyArray
+(defn invoke-maf :- AnyArray
   [v :- clojure.lang.PersistentVector$TransientVector, i :- Int]
   (.invoke maf v (dunaj.host.array/array [i])))
 
-(defn ^:private reduce-mutable-vector :- Any
+(defn reduce-mutable-vector :- Any
   "Reduce section of a mutable BVT Vector."
   [vec :- clojure.lang.PersistentVector$TransientVector,
    reducef :- AnyFn init :- Any, begin :- Int, end :- Int]
@@ -163,7 +163,7 @@
                   :clj (invoke-maf vec begin))
           (iinc (idiv begin (i32))) (iand begin (i31))))))
 
-(defn ^:private reversed-reduce-vector :- Any
+(defn reversed-reduce-vector :- Any
   "Reduce section of a reversed BVT Vector."
   [vec :- clojure.lang.PersistentVector,
    reducef :- AnyFn init :- Any, begin :- Int, end :- Int]
@@ -191,29 +191,29 @@
       (af init (.arrayFor vec nend)
           (idec (idiv nend (i32))) (iand nend (i31))))))
 
-(def+ ^:private oam (array-manager java.lang.Object))
+(def+ oam (array-manager java.lang.Object))
 
-(def+ ^:private aca :- java.lang.reflect.Field
+(def+ aca :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.ArrayChunk "array")
     (.setAccessible true)))
 
-(def+ ^:private aco :- java.lang.reflect.Field
+(def+ aco :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.ArrayChunk "off")
     (.setAccessible true)))
 
-(def+ ^:private ace :- java.lang.reflect.Field
+(def+ ace :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.ArrayChunk "end")
     (.setAccessible true)))
 
-(defn ^:private get-aca :- AnyArray
+(defn get-aca :- AnyArray
   [v :- clojure.lang.ArrayChunk]
   (.get aca v))
 
-(defn ^:private get-aco :- Int
+(defn get-aco :- Int
   [v :- clojure.lang.ArrayChunk]
   (.get aco v))
 
-(defn ^:private get-ace :- Int
+(defn get-ace :- Int
   [v :- clojure.lang.ArrayChunk]
   (.get ace v))
 

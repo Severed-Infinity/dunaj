@@ -110,30 +110,30 @@
                   (isub i (aget rngs (idec idx))))]
           (recur i (aget arr idx) (isub shift (i5))))))))
 
-(def+ ^:private rshift :- java.lang.reflect.Field
+(def+ rshift :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.core.rrb_vector.rrbt.Transient "shift")
     (.setAccessible true)))
 
-(defn ^:private get-rshift :- Int
+(defn get-rshift :- Int
   [v :- clojure.core.rrb_vector.rrbt.Transient]
   (.get rshift v))
 
-(def+ ^:private rtail :- java.lang.reflect.Field
+(def+ rtail :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.core.rrb_vector.rrbt.Transient "tail")
     (.setAccessible true)))
 
-(defn ^:private get-rtail
+(defn get-rtail
   [v :- clojure.core.rrb_vector.rrbt.Transient]
   (.get rtail v))
 
-(def+ ^:private rroot :- java.lang.reflect.Field
+(def+ rroot :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.core.rrb_vector.rrbt.Transient "root")
     (.setAccessible true)))
 
-(defn ^:private get-rroot
+(defn get-rroot
   [v :- clojure.core.rrb_vector.rrbt.Transient]
   (.get rroot v))
 
@@ -163,7 +163,7 @@
                   (isub i (aget rngs (idec idx))))]
           (recur i (aget arr idx) (isub shift (i5))))))))
 
-(defn ^:private reduce-vector :- Any
+(defn reduce-vector :- Any
   "Reduce section of Rrbt Vector."
   [vec :- clojure.core.rrb_vector.rrbt.Vector,
    reducef :- AnyFn, init :- Any, begin :- Int, end :- Int]
@@ -186,7 +186,7 @@
           (iadd
            oi (imin (isub (.alength am arr) oi) (isub end begin)))))))
 
-(defn ^:private reduce-transient-vector :- Any
+(defn reduce-transient-vector :- Any
   "Reduce section of transient Rrbt Vector."
   [vec :- clojure.core.rrb_vector.rrbt.Transient,
    reducef :- AnyFn, init :- Any, begin :- Int, end :- Int]
@@ -209,7 +209,7 @@
           (iadd
            oi (imin (isub (.alength am arr) oi) (isub end begin)))))))
 
-(defn ^:private reversed-reduce-vector :- Any
+(defn reversed-reduce-vector :- Any
   "Reduce reversed section of Rrbt Vector."
   [vec :- clojure.core.rrb_vector.rrbt.Vector,
    reducef :- AnyFn, init :- Any, begin :- Int, end :- Int]

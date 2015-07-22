@@ -110,7 +110,7 @@
 
 ;;;; Implementation details
 
-(defn ^:private reduce-batched-section
+(defn reduce-batched-section
   [vec :- clojure.core.rrb_vector.rrbt.Vector, reducef :- AnyFn,
    init :- Any, begin :- Int, end :- Int]
   (let [am ^clojure.core.ArrayManager (.-am vec)]
@@ -129,7 +129,7 @@
             oi (offset vec begin)]
         (af init (isub begin oi) oi)))))
 
-(defn ^:private reduce-batched-mutable-section
+(defn reduce-batched-mutable-section
   [vec :- clojure.core.rrb_vector.rrbt.Transient, reducef :- AnyFn,
    init :- Any, begin :- Int, end :- Int]
   (let [am ^clojure.core.ArrayManager (.-am vec)]
@@ -462,7 +462,7 @@
   (subList [this begin end] (.subList vec begin end))
   java.util.RandomAccess)
 
-(defn ^:private cat-helper :- clojure.core.rrb_vector.rrbt.Vector
+(defn cat-helper :- clojure.core.rrb_vector.rrbt.Vector
   [vec :- clojure.core.rrb_vector.rrbt.Vector
    other :- PrimitiveVector]
   (.splicev vec (.-vec other)))
@@ -502,7 +502,7 @@
   IInvocable
   (-invoke [this x] (.invoke mvec x)))
 
-(defn ^:private class->keyword
+(defn class->keyword
   [c]
   (condp identical? c
     java.lang.Byte/TYPE :byte

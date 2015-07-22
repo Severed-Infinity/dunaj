@@ -65,9 +65,9 @@
 
 ;;;; Implementation details
 
-(deftype ^:private PMapWrap [ret :- Any, q :- []])
+(deftype PMapWrap [ret :- Any, q :- []])
 
-(defn ^:private pmap-advance :- Any
+(defn pmap-advance :- Any
   [ret :- Any, q :- []]
   (cond (reduced? ret)
         (reduced (->PMapWrap @ret nil))
@@ -128,10 +128,10 @@
         (pmap-advance (._step r ret @(peek nq)) (pop nq))
         (->PMapWrap ret nq)))))
 
-(deftype ^:private UPMapWrap
+(deftype UPMapWrap
   [ret :- Any, ich :- Any, och :- (Maybe ICloseablePort), tl :- Any])
 
-(defn ^:private upmap-advance :- Any
+(defn upmap-advance :- Any
   [ret :- Any, ich :- Any, och :- ICloseablePort, tl :- Any]
   (cond (reduced? ret)
         (do (close! och)
@@ -142,7 +142,7 @@
          #(upmap-advance (unsafe-advance! ret) ich och tl))
         :else (->UPMapWrap ret ich och tl)))
 
-(defn ^:private pf :- nil
+(defn pf :- nil
   [f :- AnyFn, ich :- ISourcePort, och :- ITargetPort]
   (loop [val (<!! ich)]
     (when val

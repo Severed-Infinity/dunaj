@@ -91,16 +91,16 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-http-batch-size :- Integer+
+(def+ default-http-batch-size :- Integer+
   "Default size for http batch."
   8192)
 
-(defn ^:private provide-http-batch-size :- Integer+
+(defn provide-http-batch-size :- Integer+
   "Returns http batch size taking into account given batch size hint."
   [size-hint :- (Maybe Integer+)]
   (provide-batch-size (max (or size-hint 0) default-http-batch-size)))
 
-(defn ^:private socket-address :- java.net.InetSocketAddress
+(defn socket-address :- java.net.InetSocketAddress
   "Returns an instance of a socket address."
   [address :- (Maybe String+), port :- (Maybe Integer+)]
   (let [port (or port 0)
@@ -167,7 +167,7 @@
                 :else (recur (reducef ret (.flip batch)))))]
       (af init))))
 
-(defreleasable ^:private HttpResource
+(defreleasable HttpResource
   "Connected HTTP resource type."
   [c :- java.net.URLConnection, batch-size :- Integer+,
    config :- {}, ^:volatile-mutable thread :- (Maybe Thread+),

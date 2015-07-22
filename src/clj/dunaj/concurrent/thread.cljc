@@ -45,7 +45,7 @@
 
 ;;;; Implementation details
 
-(def+ ^:private state->keyword :- {Any Keyword}
+(def+ state->keyword :- {Any Keyword}
   {java.lang.Thread$State/NEW :new
    java.lang.Thread$State/BLOCKED :blocked
    java.lang.Thread$State/RUNNABLE :runnable
@@ -53,7 +53,7 @@
    java.lang.Thread$State/TIMED_WAITING :timed-waiting
    java.lang.Thread$State/WAITING :waiting})
 
-(defn ^:private opts-body :- [{} []]
+(defn opts-body :- [{} []]
   [body :- []]
   (let [opts (when (several? body)
                (let [f (first body)]

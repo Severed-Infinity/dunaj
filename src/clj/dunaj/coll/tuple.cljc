@@ -111,7 +111,7 @@
 
 (def+ revlist clojure.core/reverse)
 
-(defn ^:private walk
+(defn walk
   "Like `clojure.walk/walk`, but preserves metadata."
   [inner outer form]
   (let [x (cond
@@ -125,24 +125,24 @@
       (assoc-meta x (meta form))
       x)))
 
-(defn ^:private postwalk
+(defn postwalk
   "Like `clojure.walk/postwalk`, but preserves metadata."
   [f form]
   (walk (partial postwalk f) f form))
 
-(def+ ^:private gensym-regex
+(def+ gensym-regex
   #"(_|[a-zA-Z0-9\-\'\*]+)#?_+(\d+_*#?)+(auto__)?$")
 
-(def+ ^:private unified-gensym-regex
+(def+ unified-gensym-regex
   #"([a-zA-Z0-9\-\'\*]+)#__\d+__auto__$")
 
-(defn ^:private unified-gensym? [s]
+(defn unified-gensym? [s]
   (and (symbol? s) (re-find unified-gensym-regex (->str s))))
 
-(defn ^:private un-gensym [s]
+(defn un-gensym [s]
   (second (re-find gensym-regex (->str s))))
 
-(defn ^:private unify-gensyms
+(defn unify-gensyms
   "All gensyms defined using two hash symbols are unified to the same
   value, even if they were defined within different syntax-quote
   scopes."
@@ -157,11 +157,11 @@
 
 (declare conj-tuple empty-tuple ->Tuple2 ->Tuple2M)
 
-(defn ^:private throw-arity [actual]
+(defn throw-arity [actual]
   (throw (illegal-argument
           (->str "Wrong number of args (" actual ")"))))
 
-(defmacro ^:private def-tuple [cardinality mc meta?]
+(defmacro def-tuple [cardinality mc meta?]
   (let [fields (map #(symbol (->str "e" %)) (range cardinality))
         M (when meta? "M")
         Mfield (when meta? [`meta##])
@@ -415,7 +415,7 @@
                 (getKey [_] ~(first fields))
                 (getValue [_] ~(second fields)))))))))
 
-(defmacro ^:private def-tuples
+(defmacro def-tuples
   [max]
   `(do ~@(map #(list `def-tuple % 6 true) (range (inc max)))
        ~@(map #(list `def-tuple % 6 false) (range (inc max)))))

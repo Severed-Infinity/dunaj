@@ -51,48 +51,48 @@
 
 ;;;; Implementation details
 
-(defonce ^:private out-w-scope
+(defonce out-w-scope
   (-> (writer clojure.core/*out* :keep-open? true)
       acquire!
       (pass! nil)
       grab-scope))
 
-(def+ ^:private ^:dynamic *out* :- IWritable
+(def+ ^:dynamic *out* :- IWritable
   (key out-w-scope))
 
-(defonce ^:private err-w-scope
+(defonce err-w-scope
   (-> (writer clojure.core/*err* :keep-open? true)
       acquire!
       (pass! nil)
       grab-scope))
 
-(def+ ^:private ^:dynamic *err* :- IWritable
+(def+ ^:dynamic *err* :- IWritable
   (key err-w-scope))
 
-(defonce ^:private in-w-scope
+(defonce in-w-scope
   (-> (reader clojure.core/*in* :keep-open? true)
       acquire!
       (pass! nil)
       grab-scope))
 
-(def+ ^:private ^:dynamic *in* :- IWritable
+(def+ ^:dynamic *in* :- IWritable
   (key in-w-scope))
 
-(def+ ^:private ^:dynamic *color* :- Boolean+
+(def+ ^:dynamic *color* :- Boolean+
   false)
 
-(def+ ^:private ^:dynamic *meta* :- Boolean+
+(def+ ^:dynamic *meta* :- Boolean+
   false)
 
-(def+ ^:private ^:dynamic *default-printer* :- IPrinterFactory
+(def+ ^:dynamic *default-printer* :- IPrinterFactory
   clj)
 
-(def+ ^:private ^:dynamic *default-pretty-printer* :- IPrinterFactory
+(def+ ^:dynamic *default-pretty-printer* :- IPrinterFactory
   pretty-clj)
 
 (declare host-newline)
 
-(defn ^:private newline! :- nil
+(defn newline! :- nil
   "Writes a platform-specific newline to *out*"
   {:added v1}
   []

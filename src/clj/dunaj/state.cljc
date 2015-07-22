@@ -36,7 +36,7 @@
 
 ;;;; Implementation details
 
-(def+ ^:private ^:dynamic *io-thread* nil)
+(def+ ^:dynamic *io-thread* nil)
 
 
 ;;;; Public API

@@ -39,7 +39,7 @@
 
 ;;;; Implementation details
 
-(defn ^:private strip-colon :- String+
+(defn strip-colon :- String+
   [x :- String+]
   (if (i== (iCOLON) (iint (.charAt x (i0)))) (.substring x (i1)) x))
 

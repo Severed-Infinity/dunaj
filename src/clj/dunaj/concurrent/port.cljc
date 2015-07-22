@@ -53,7 +53,7 @@
 
 ;; TODO: should we put all default executors in Dunaj as delays
 ;;       in order to be more lazy with these pools?
-(def+ ^:dynamic ^:private *default-port-executor* :- IExecutor
+(def+ ^:dynamic *default-port-executor* :- IExecutor
   @clojure.core.async.impl.dispatch/executor)
 
 
@@ -762,16 +762,16 @@
 
 ;; Support taps for all c.l.IRef objects
 
-(defn ^:private wfn
+(defn wfn
   [master key ref old new]
   ;; BUG in core.async: mult processing loop holds onto last value
   ;; (put! master [ref old new])
   (put! master [nil old new]))
 
-(def+ ^:private reference-mults :- java.util.Map
+(def+ reference-mults :- java.util.Map
   (java.util.Collections/synchronizedMap (java.util.WeakHashMap.)))
 
-(defn ^:private provide-mult!
+(defn provide-mult!
   [r]
   (if-let [[m s :as ms] (.get reference-mults r)]
     ms
@@ -784,14 +784,14 @@
       (.put reference-mults r ms)
       ms)))
 
-(defn ^:private tap!*
+(defn tap!*
   [r ch close?]
   (locking reference-mults
     (let [[mult s] (provide-mult! r)]
       (-tap! mult ch close?)
       (.put reference-mults r [mult (conj s ch)]))))
 
-(defn ^:private untap!*
+(defn untap!*
   [r ch]
   (locking reference-mults
     (let [[mult s] (provide-mult! r)
@@ -801,7 +801,7 @@
         (remove-watch r ::mult)
         (.remove reference-mults r)))))
 
-(defn ^:private untap-all!*
+(defn untap-all!*
   [r]
   (locking reference-mults
     (let [[mult _] (provide-mult! r)]

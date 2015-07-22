@@ -76,9 +76,9 @@
 
 ;;;; Implementation details
 
-(def+ ^:private ams :- {Class+ ArrayManager} @#'dunaj.host/ams)
+(def+ ams :- {Class+ ArrayManager} @#'dunaj.host/ams)
 
-(defn ^:private array?* :- Predicate
+(defn array?* :- Predicate
   [arrf :- Any]
   (let [arr-class :- Class+ (class (arrf 0))]
     (fn f :- Boolean+ [x :- Any] (class-instance? arr-class x))))
@@ -645,7 +645,7 @@
   (listIterator [this i] (coll->list-iterator this i))
   (subList [this begin end] (-section this begin end)))
 
-(defn ^:private reversed-array-coll :- ReversedArrayColl
+(defn reversed-array-coll :- ReversedArrayColl
   "Returns instance of ReversedArrayColl with delayed hashes."
   [am :- ArrayManager, arr :- AnyArray, begin :- Int, end :- Int]
   (let [begin (iint begin)]
@@ -902,7 +902,7 @@
   (listIterator [this i] (coll->list-iterator this i))
   (subList [this begin end] (-section this begin end)))
 
-(defn ^:private array-coll :- (U ArrayColl BatchableArrayColl)
+(defn array-coll :- (U ArrayColl BatchableArrayColl)
   "Returns instance of ArrayColl with delayed hashes."
   [am :- ArrayManager, arr :- AnyArray, begin :- Int, end :- Int]
   (let [end (iint end)

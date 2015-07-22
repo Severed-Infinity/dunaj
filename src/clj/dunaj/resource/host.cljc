@@ -72,17 +72,17 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-host-batch-size :- Integer+
+(def+ default-host-batch-size :- Integer+
   "Default size for host batch."
   8192)
 
-(defn ^:private provide-host-batch-size :- Integer+
+(defn provide-host-batch-size :- Integer+
   "Returns host batch size taking into account given batch
   size hint."
   [size-hint :- (Maybe Integer+)]
   (provide-batch-size (max (or size-hint 0) default-host-batch-size)))
 
-(defn ^:private classpath-channel
+(defn classpath-channel
   :- java.nio.channels.ReadableByteChannel
   "Returns NIO ReadableByteChannel based on given `class-loader`
   and `x`."
@@ -99,7 +99,7 @@
        (java.lang.ClassLoader/getSystemResourceAsStream p)
        (.getResourceAsStream class-loader p)))))
 
-(defn ^:private classpath-uri :- Uri
+(defn classpath-uri :- Uri
   "Returns URI based on given `class-loader` and `x`."
   [class-loader :- (Maybe java.lang.ClassLoader),
    x :- (U String+ Uri)]
@@ -161,7 +161,7 @@
                     (recur (reducef ret (.flip batch))))))]
       (af init))))
 
-(defreleasable ^:private ClasspathResource
+(defreleasable ClasspathResource
   "Classpath resource type. Passable thread local."
   [^:volatile-mutable rch
    :- (Maybe java.nio.channels.ReadableByteChannel),
@@ -210,7 +210,7 @@
          :class-loader class-loader)
        (current-thread) nil))))
 
-(defreleasable ^:private OStreamResource
+(defreleasable OStreamResource
   "OutputStream backed resource type. Passable thread local."
   [wch :- (Maybe java.nio.channels.WritableByteChannel),
    stream :- java.io.OutputStream, batch-size :- (Maybe Integer+),
@@ -252,7 +252,7 @@
        wch stream batch-size (assoc this :batch-size batch-size)
        keep-open? (current-thread) nil))))
 
-(defreleasable ^:private IStreamResource
+(defreleasable IStreamResource
   "InputStream backed resource type. Passable thread local."
   [rch :- (Maybe java.nio.channels.ReadableByteChannel),
    batch-size :- (Maybe Integer+), config :- {}, keep-open? :- Boolean+,
@@ -290,7 +290,7 @@
        rch batch-size (assoc this :batch-size batch-size)
        keep-open? (current-thread) nil))))
 
-(defreleasable ^:private WriterResource
+(defreleasable WriterResource
   "Writer backed resource type. Passable thread local."
   [writer :- java.io.Writer, batch-size :- (Maybe Integer+),
    config :- {}, keep-open? :- Boolean+,
@@ -379,7 +379,7 @@
                 :else (recur (reducef ret (.flip batch)))))]
       (af init))))
 
-(defreleasable ^:private ReaderResource
+(defreleasable ReaderResource
   "Reader backed resource type. Passable thread local."
   [reader :- java.io.Reader, batch-size :- (Maybe Integer+),
    config :- {}, keep-open? :- Boolean+,

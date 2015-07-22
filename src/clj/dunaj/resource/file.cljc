@@ -59,23 +59,23 @@
 
 ;;;; Implementation details
 
-(def+ ^:private default-file-batch-size :- Integer+
+(def+ default-file-batch-size :- Integer+
   "Default size for file batch."
   8192)
 
-(defn ^:private provide-file-batch-size :- Integer+
+(defn provide-file-batch-size :- Integer+
   "Returns file batch size taking into account given batch size hint."
   [size-hint :- (Maybe Integer+)]
   (provide-batch-size (max (or size-hint 0) default-file-batch-size)))
 
-(defn ^:private get-fs :- java.nio.file.FileSystem
+(defn get-fs :- java.nio.file.FileSystem
   "Returns filesystem based on `x`."
   [x :- Any]
   (cond (class-instance? java.nio.file.FileSystem x) x
         (nil? x) (java.nio.file.FileSystems/getDefault)
         :else (java.nio.file.FileSystems/getFileSystem (uri x))))
 
-(defn ^:private to-path :- java.nio.file.Path
+(defn to-path :- java.nio.file.Path
   "Returns NIO Path object based on given string or uri `x`.
   Relative paths are resolved in the current working directory."
   [fs :- java.nio.file.FileSystem, x :- (U String+ Uri),
@@ -89,7 +89,7 @@
                       rp (.getPath fs (.toString wduri) ea)]
                   (.resolve rp (.toString x))))))
 
-(def+ ^:private oom :- KeywordMap
+(def+ oom :- KeywordMap
   "A Keyword -> OpenOption translation map."
   {:append java.nio.file.StandardOpenOption/APPEND
    :create java.nio.file.StandardOpenOption/CREATE
@@ -102,13 +102,13 @@
    :truncate java.nio.file.StandardOpenOption/TRUNCATE_EXISTING
    :write java.nio.file.StandardOpenOption/WRITE})
 
-(defn ^:private translate-oos :- AnyArray
+(defn translate-oos :- AnyArray
   "Returns array of OpenOption objects based on given collection of
   keyword modes in `coll`."
   [coll :- IRed]
   (array java.nio.file.OpenOption (keep #(or (oom %) %) coll)))
 
-(defn ^:private file-channel :- java.nio.channels.FileChannel
+(defn file-channel :- java.nio.channels.FileChannel
   "Returns NIO FileChannel based on given `path` and open `mode`s."
   [path :- java.nio.file.Path, mode :- IRed]
   (java.nio.channels.FileChannel/open
@@ -175,7 +175,7 @@
     returning `nil`."
     [this size :- Integer+]))
 
-(defreleasable ^:private FileResource
+(defreleasable FileResource
   "File resource type. Passable thread local."
   [fch :- java.nio.channels.FileChannel,
    batch-size :- (Maybe Integer+), config :- {},

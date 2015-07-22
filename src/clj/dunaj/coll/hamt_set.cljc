@@ -76,15 +76,15 @@
 
 ;;;; Implementation details
 
-(defn ^:private wrap-fn
+(defn wrap-fn
   [f]
   (fn [val a b] (f val a)))
 
-(defn ^:private unwrap-fn
+(defn unwrap-fn
   [f]
   (fn [val p :- java.util.Map$Entry] (f val (key p))))
 
-(def+ ^:private impl-field :- java.lang.reflect.Field
+(def+ impl-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.APersistentSet "impl")
     (.setAccessible true)))
 
@@ -92,7 +92,7 @@
   [x :- clojure.lang.APersistentSet]
   (.get impl-field x))
 
-(def+ ^:private mutable-impl-field :- java.lang.reflect.Field
+(def+ mutable-impl-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.ATransientSet "impl")
     (.setAccessible true)))
 

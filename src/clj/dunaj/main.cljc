@@ -179,7 +179,7 @@
           clojure.core/*read-eval*)]
      ~@body))
 
-(defn ^:private repl
+(defn repl
   "Generic, reusable, read-eval-print loop. By default, reads from
   *in*, writes to *out*, and prints exception summaries to *err*.
   If you use the default :read hook, *in* must either be an instance
@@ -285,7 +285,7 @@
             (flush))
           (recur))))))
 
-(defn ^:private load-script
+(defn load-script
   "Loads Clojure source from a file or resource given its path. Paths
   beginning with @ or @/ are considered relative to classpath."
   [path :-  String+]
@@ -294,18 +294,18 @@
      (.substring path (if (.startsWith path "@/") 2 1)))
     (clojure.lang.Compiler/loadFile path)))
 
-(defn ^:private init-opt
+(defn init-opt
   "Loads a script."
   [path]
   (load-script path))
 
-(defn ^:private eval-opt
+(defn eval-opt
   "Evals expressions in str, prints each non-nil result using prn."
   [str]
   (dored [form (parse (assoc @default-printer :read-eval true) str)]
          (when-let [val (eval form)] (prn! val))))
 
-(defn ^:private init-dispatch
+(defn init-dispatch
   "Returns the handler associated with an init opt."
   [opt]
   ({"-i"     init-opt
@@ -313,7 +313,7 @@
     "-e"     eval-opt
     "--eval" eval-opt} opt))
 
-(defn ^:private initialize
+(defn initialize
   "Common initialize routine for repl, script, and null opts."
   [args inits]
   (dunaj.env/in-ns 'dunaj.user)
@@ -321,7 +321,7 @@
   (doseq [[opt arg] inits]
     ((init-dispatch opt) arg)))
 
-(defn ^:private main-opt
+(defn main-opt
   "Calls the -main function from a namespace with string arguments
   from the command line."
   [[_ main-ns & args] inits]
@@ -329,7 +329,7 @@
     (initialize args inits)
     (apply (resolve (doto (symbol main-ns) require!) '-main) args)))
 
-(defn ^:private repl-opt
+(defn repl-opt
   "Starts a repl with args and inits.
   Prints greeting if no eval options were present."
   [[_ & args] inits]
@@ -342,7 +342,7 @@
   (prn!)
   (java.lang.System/exit 0))
 
-(defn ^:private script-opt
+(defn script-opt
   "Runs a script from a file, resource, or standard in with
   args and inits"
   [[path & args] inits]
@@ -352,18 +352,18 @@
       (clojure.core/load-reader clojure.core/*in*)
       (load-script path))))
 
-(defn ^:private null-opt
+(defn null-opt
   "No repl or script opt present, just binds args and run inits."
   [args inits]
   (with-bindings
     (initialize args inits)))
 
-(defn ^:private help-opt :- nil
+(defn help-opt :- nil
   "Prints help text for main."
   [_ _]
   (println! (:doc (meta (var main)))))
 
-(defn ^:private main-dispatch :- AnyFn
+(defn main-dispatch :- AnyFn
   "Returns the handler associated with a main option."
   [opt :- (Maybe String+)]
   (or

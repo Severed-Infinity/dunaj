@@ -153,13 +153,13 @@
 
 ;;; string literal
 
-(defn ^:private invalid-json-string-element? :- Boolean+
+(defn invalid-json-string-element? :- Boolean+
   "Returns true if `x` is a Unicode code point of an invalid character
   inside a string literal, otherwise returns false."
   [x :- Int]
   (i< x (iSPACE)))
 
-(defn ^:private from-escape :- Char
+(defn from-escape :- Char
   "Returns character which is represented by an escape character with
   Unicode code point `x`.
   Throws if escape character is not recognized."
@@ -300,9 +300,9 @@
 
 ;;; printing strings
 
-(def+ ^:private zeroes :- String+ "0000")
+(def+ zeroes :- String+ "0000")
 
-(defn ^:private to-escape
+(defn to-escape
   "Returns batch containing escape sequence or nil, if no
   escape sequence is needed."
   [config x]
@@ -378,7 +378,7 @@
     follows IPrinterMachineFactory/-dispatch-printer rules."
     [this config state bm batch parents]))
 
-(defn ^:private json-pretty-mode
+(defn json-pretty-mode
   "Returns true if `coll` should be printed indented in multiple
   lines, otherwise returns false."
   [config coll]

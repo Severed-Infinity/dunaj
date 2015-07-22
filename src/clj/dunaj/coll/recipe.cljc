@@ -92,14 +92,14 @@
 
 (defsentinel nothing)
 
-(defn ^:private count-nth-num
+(defn count-nth-num
   [n l]
   (if (npos? l)
     0
     (let [x (long (quot l n))]
       (if (== l (mu/multiply x n)) x (mu/inc x)))))
 
-(defn ^:private unpacked-fn
+(defn unpacked-fn
   [f]
   (fn
     ([val a b] (f val (pair a b)))
@@ -214,7 +214,7 @@
           rf #(reduce-batched* dt size-hint %2 reducef %)]
       (reduce* colls rf init))))
 
-(defn ^:private concat? :- Boolean+
+(defn concat? :- Boolean+
   [coll :- Any]
   (and (class-instance? dunaj.coll.helper.IRedAdapter coll)
        (class-instance? dunaj.coll.recipe.Concat (-inner-coll coll))))
@@ -520,13 +520,13 @@
     (fold-sectionable this reduce-fn  pool n combinef reducef
                       interleave-section interleave-count)))
 
-(defn ^:private interleave-count
+(defn interleave-count
   [x]
   (apply min
          (clojure.core/map
           count (.-colls ^dunaj.coll.recipe.FoldableInterleave x))))
 
-(defn ^:private interleave-section
+(defn interleave-section
   [il nb ne]
   (let [l (interleave-count il)
         ne (prepare-ordered-section nb ne l)]
@@ -1338,18 +1338,18 @@
                      t2 (fork (fc tail))]
                  (combinef (f1) (join t2)))))))
 
-(defn ^:private append? :- Boolean+
+(defn append? :- Boolean+
   [coll :- []]
   (and (class-instance? dunaj.coll.helper.IRedAdapter coll)
        (class-instance? dunaj.coll.recipe.AppendColl
                         (dunaj.coll.helper/-inner-coll coll))))
 
-(defn ^:private get-tail :- IRed
+(defn get-tail :- IRed
   [coll :- IRed]
   (.-tail ^dunaj.coll.recipe.AppendColl
           (dunaj.coll.helper/-inner-coll coll)))
 
-(defn ^:private get-coll :- IRed
+(defn get-coll :- IRed
   [coll :- IRed]
   (.-coll ^dunaj.coll.recipe.AppendColl
           (dunaj.coll.helper/-inner-coll coll)))
@@ -1484,7 +1484,7 @@
 
 (deftype ObjectWrap [ret :- Any, x :- Any])
 
-(defn ^:private int-advance :- IntWrap
+(defn int-advance :- IntWrap
   [ret :- Any, i :- Int]
   (cond (reduced? ret) (reduced (->IntWrap @ret i))
         (postponed? ret)
@@ -1493,7 +1493,7 @@
                    #(int-advance (unsafe-advance! ret) i))
         :else (->IntWrap ret i)))
 
-(defn ^:private reduced-int-advance :- IntWrap
+(defn reduced-int-advance :- IntWrap
   [ret :- Any, i :- Int]
   (cond (reduced? ret) (reduced (->IntWrap @ret i))
         (postponed? ret)
@@ -1512,7 +1512,7 @@
                    #(cloning-advance (unsafe-advance! ret) x))
         :else (->ObjectWrap ret x)))
 
-(defn ^:private passing-advance :- ObjectWrap
+(defn passing-advance :- ObjectWrap
   [ret :- Any, x :- Any]
   (cond (reduced? ret)
         (reduced (->ObjectWrap @ret x))
@@ -1745,18 +1745,18 @@
                      t2 (fork (fc coll))]
                  (combinef (f1) (join t2)))))))
 
-(defn ^:private prepend? :- Boolean+
+(defn prepend? :- Boolean+
   [coll :- []]
   (and (class-instance? dunaj.coll.helper.IRedAdapter coll)
        (class-instance? dunaj.coll.recipe.PrependColl
                         (dunaj.coll.helper/-inner-coll coll))))
 
-(defn ^:private get-head :- IRed
+(defn get-head :- IRed
   [coll :- IRed]
   (.-head ^dunaj.coll.recipe.PrependColl
           (dunaj.coll.helper/-inner-coll coll)))
 
-(defn ^:private get-pcoll :- IRed
+(defn get-pcoll :- IRed
   [coll :- IRed]
   (.-coll ^dunaj.coll.recipe.PrependColl
           (dunaj.coll.helper/-inner-coll coll)))
@@ -1974,13 +1974,13 @@
   (hashCode [this] (.hashCode ^java.lang.Object vals))
   (equals [this other] (equals-packed this other)))
 
-(defn ^:private equiv-packed :- Boolean+
+(defn equiv-packed :- Boolean+
   [this :- Packed, other :- Any]
   (if (class-instance? dunaj.coll.recipe.Packed other)
     (= (.-vals this) (.-vals ^dunaj.coll.recipe.Packed other))
     false))
 
-(defn ^:private equals-packed :- Boolean+
+(defn equals-packed :- Boolean+
   [this :- Packed, other :- Any]
   (if (class-instance? dunaj.coll.recipe.Packed other)
     (.equals (.-vals this) (.-vals ^dunaj.coll.recipe.Packed other))
@@ -2578,7 +2578,7 @@
   :section false
   :fold false)
 
-(defn ^:private reductions-advance :- ObjectWrap
+(defn reductions-advance :- ObjectWrap
   [ret :- Any, x :- Any]
   (cond (reduced? ret)
         (reduced (->ObjectWrap @ret nothing))
@@ -2656,7 +2656,7 @@
 (deftype PartitionWrap
   [ret :- Any, items :- ISettleable, idx :- Int])
 
-(defn ^:private partition-advance :- PartitionWrap
+(defn partition-advance :- PartitionWrap
   [ret :- Any, items :- ISettleable, idx :- Int]
   (cond (reduced? ret)
         (reduced (->PartitionWrap @ret nil idx))
@@ -2991,7 +2991,7 @@
 
 (deftype SPBWrap [ret :- Any, fval :- Any, part :- Any])
 
-(defn ^:private spb-advance :- SPBWrap
+(defn spb-advance :- SPBWrap
   [ret :- Any, fval :- Any, part :- Any]
   (cond (reduced? ret)
         (reduced (->SPBWrap @ret fval nothing))
@@ -3113,7 +3113,7 @@
        (->SectionablePartitionBy coll f ir)
        (->PartitionBy coll f ir)))))
 
-(defn ^:private newline? :- Boolean+
+(defn newline? :- Boolean+
   [i :- Int]
   (or (i== i (iLF)) (i== i (iCR))))
 
@@ -3153,7 +3153,7 @@
   :section false
   :unpack false)
 
-(defn ^:private count-nl
+(defn count-nl
   [s]
   (let [cfn (fn [[p l] c]
               (if (and (i== (iint c) (iLF)) (i== (iint p) (iCR)))
@@ -3193,16 +3193,16 @@
     (transfold*
      coll reduce* pool n (foldable-lines) combinef reducef)))
 
-(def+ ^:private lbm :- BatchManager
+(def+ lbm :- BatchManager
   (batch-manager (keyword->class :char)))
 
-(def+ ^:private lam :- ArrayManager
+(def+ lam :- ArrayManager
   (array-manager (keyword->class :char)))
 
 (deftype BLWrap
   [ret :- Any, arr-ref :- IReference, fval :- Any, part :- Any])
 
-(defn ^:private bl-advance :- BLWrap
+(defn bl-advance :- BLWrap
   [ret :- Any, arr-ref :- IReference, fval :- Any, part :- Any]
   (cond (reduced? ret)
         (reduced (->BLWrap @ret nil fval nil))
@@ -3213,10 +3213,10 @@
          #(bl-advance (unsafe-advance! ret) arr-ref fval part))
         :else (->BLWrap ret arr-ref fval part)))
 
-(def+ ^:dynamic ^:private *default-lines-batch-size*
+(def+ ^:dynamic *default-lines-batch-size*
   32)
 
-(defn ^:private provide-capacity! :- nil
+(defn provide-capacity! :- nil
   [am :- ArrayManager, arr-ref :- IReference, capacity :- Int]
   (let [capacity (max *default-lines-batch-size* capacity)]
     (when (or (nil? @arr-ref)
@@ -3224,7 +3224,7 @@
       (reset! arr-ref (.allocate am capacity)))
     nil))
 
-(defn ^:private append-part
+(defn append-part
   [part :- java.lang.StringBuilder, am :- ArrayManager,
    arr-ref :- IReference, bm :- BatchManager
    batch :- AnyBatch, begin :- Int, end :- Int]

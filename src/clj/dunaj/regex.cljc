@@ -43,7 +43,7 @@
 
 ;;;; Implementation details
 
-(deftype ^:private RegexParser
+(deftype RegexParser
   [pattern :- java.util.regex.Pattern, coll :- ICharSequence]
   #?@(:dunaj [] :clj [ISeqable (-seq [this] (red-to-seq this))])
   IRed

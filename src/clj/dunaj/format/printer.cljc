@@ -340,7 +340,7 @@
 ;; :invalid
 ;; :default
 
-(def+ ^:private default-colorer-map :- KeywordMap
+(def+ default-colorer-map :- KeywordMap
   "Default colorer map for ANSI compatible outputs."
   {:identifier magenta
    :string green
@@ -398,7 +398,7 @@
                #(bs-advance (unsafe-advance! ret) step prev batch))
     :else (->BSWrap ret step prev batch)))
 
-(defn ^:private provide-capacity :- AnyBatch
+(defn provide-capacity :- AnyBatch
   "Returns new batch if `_batch_` is small,
   otherwise returns `_batch_`."
   [bm :- BatchManager, batch :- AnyBatch, size-hint :- Integer+]
@@ -489,7 +489,7 @@
         (throw? config) (perror "item not supported " (type item))
         :else ((:invalid-item config) batch bm state item parents)))
 
-(defn ^:private alt-batch! :- AnyBatch
+(defn alt-batch! :- AnyBatch
   "Returns alternative batch from a given `_state_` reference,
   creating it if not present."
   ([bm :- BatchManager, state :- IReference]
@@ -503,7 +503,7 @@
        (reset! state (assoc @state :alt-batch nbatch))
        nbatch))))
 
-(defn ^:private alt-batch-grow! :- AnyBatch
+(defn alt-batch-grow! :- AnyBatch
   "Sets `_batch_` as the new alternative batch in the `_state_`
   state reference. Returns `_batch_`."
   ([bm :- BatchManager, state :- IReference]

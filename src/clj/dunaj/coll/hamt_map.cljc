@@ -79,13 +79,13 @@
 
 ;;;; Implementation details
 
-(defn ^:private unpacked-fn
+(defn unpacked-fn
   [f]
   (fn [val a b] (f val (pair a b))))
 
 ;;; PersistentHashMap
 
-(def+ ^:private root-field :- java.lang.reflect.Field
+(def+ root-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.PersistentHashMap "root")
     (.setAccessible true)))
 
@@ -93,7 +93,7 @@
   [x :- clojure.lang.PersistentHashMap]
   (.get root-field x))
 
-(def+ ^:private has-null-field :- java.lang.reflect.Field
+(def+ has-null-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.PersistentHashMap "hasNull")
     (.setAccessible true)))
 
@@ -101,7 +101,7 @@
   [x :- clojure.lang.PersistentHashMap]
   (boolean (.get has-null-field x)))
 
-(def+ ^:private null-value-field :- java.lang.reflect.Field
+(def+ null-value-field :- java.lang.reflect.Field
   (doto (.getDeclaredField clojure.lang.PersistentHashMap "nullValue")
     (.setAccessible true)))
 
@@ -111,7 +111,7 @@
 
 ;;; TransientHashMap
 
-(def+ ^:private mutable-root-field :- java.lang.reflect.Field
+(def+ mutable-root-field :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$TransientHashMap "root")
     (.setAccessible true)))
@@ -120,7 +120,7 @@
   [x :- clojure.lang.PersistentHashMap$TransientHashMap]
   (.get mutable-root-field x))
 
-(def+ ^:private mutable-has-null-field :- java.lang.reflect.Field
+(def+ mutable-has-null-field :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$TransientHashMap
          "hasNull")
@@ -130,7 +130,7 @@
   [x :- clojure.lang.PersistentHashMap$TransientHashMap]
   (boolean (.get mutable-has-null-field x)))
 
-(def+ ^:private mutable-null-value-field :- java.lang.reflect.Field
+(def+ mutable-null-value-field :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$TransientHashMap
          "nullValue")
@@ -142,7 +142,7 @@
 
 ;;; ArrayNode
 
-(def+ ^:private an-array-field :- java.lang.reflect.Field
+(def+ an-array-field :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$ArrayNode "array")
     (.setAccessible true)))
@@ -151,7 +151,7 @@
   [x :- clojure.lang.PersistentHashMap$ArrayNode]
   (.get an-array-field x))
 
-(def+ ^:private oam :- ArrayManager
+(def+ oam :- ArrayManager
   (array-manager java.lang.Object))
 
 (deftype ArrayNode
@@ -171,7 +171,7 @@
 
 ;;; BitmapIndexedNode
 
-(def+ ^:private bi-array-field :- java.lang.reflect.Field
+(def+ bi-array-field :- java.lang.reflect.Field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$BitmapIndexedNode
          "array")
@@ -206,7 +206,7 @@
 
 ;;; HashCollisionNode
 
-(def+ ^:private ^java.lang.reflect.Field hc-array-field
+(def+ ^java.lang.reflect.Field hc-array-field
   (doto (.getDeclaredField
          clojure.lang.PersistentHashMap$HashCollisionNode "array")
     (.setAccessible true)))

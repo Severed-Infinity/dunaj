@@ -61,7 +61,7 @@
 
 ;;;; Implementation details
 
-(defn ^:private selector-key->map :- {}
+(defn selector-key->map :- {}
   [sk :- java.nio.channels.SelectionKey]
   (let [ready-flag (.readyOps sk)
         ready ()
@@ -128,7 +128,7 @@
   (-select :- Integer+ [this timeout-ms :- Integer+])
   (-select-now :- Integer+ [this]))
 
-(defreleasable ^:private SelectorResource
+(defreleasable SelectorResource
   "Selector resource type."
   [sel :- java.nio.channels.Selector,
    config :- {},
@@ -167,14 +167,14 @@
           r (assoc this :selector-provider sp)]
       (->SelectorResource sel r nil))))
 
-(def+ ^:const ^:private ALL_OPTS
+(def+ ^:const ALL_OPTS
   (iint
    (bit/or java.nio.channels.SelectionKey/OP_READ
            java.nio.channels.SelectionKey/OP_WRITE
            java.nio.channels.SelectionKey/OP_ACCEPT
            java.nio.channels.SelectionKey/OP_CONNECT)))
 
-(defn ^:private interests->selector-opts :- Int
+(defn interests->selector-opts :- Int
   "Returns host specific selector opts based on interest collection."
   [ch :- java.nio.channels.SelectableChannel, interests :- IRed]
   (let [rf (fn [ret val]
