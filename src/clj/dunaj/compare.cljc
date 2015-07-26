@@ -339,7 +339,6 @@
              [Boolean+ Any Any]
              [Boolean+ Any Any (Va Any)])})
 
-
 ;;;; Testing
 
 (clojure.core/require

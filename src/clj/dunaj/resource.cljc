@@ -390,7 +390,7 @@
    :category "Configuration"}
   (-autoconf :- []
     "Returns collection of maps that specifies how individual
-    fields should be configured. Example: 
+    fields should be configured. Example:
     `[{:key :field-name :path [:path :in :cfg] :type ValueType}]`
     When no type is specified, configuration framework should use
     field's type signature for that. Can return just path instead, if
