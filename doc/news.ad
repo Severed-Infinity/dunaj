@@ -1,3 +1,14 @@
+2015/07/XX ::
+Dunaj v0.7.0 has been released. Dunaj lite has been updated too.
++
+* Built on top of Clojure 1.7.0
+* Made more compatible with existing Clojure AOT code
+* Supports http://boot-clj.com/[Boot] (see https://github.com/boot-clj/boot/pull/252[respective pull request])
+* Unified codebase between Dunaj and Dunaj lite, with the help of
+  reader conditionals
+** Dunaj (non-lite) now matches `:dunaj` reader conditional feature
+* Small bugfixes
+
 2015/06/22 ::
 Dunaj v0.6.0 has been released. Dunaj lite has been updated too.
 +
@@ -15,11 +26,7 @@ Dunaj v0.6.0 has been released. Dunaj lite has been updated too.
 * Dropping plan to support Java 7
 
 2015/06/20 ::
-New blog post:
-http://blog.wagjo.com/jwt.html[Handling JSON Web Tokens in Dunaj]
-
-2015/06/15 ::
-2 new blog posts:
+2 New blog posts:
 http://blog.wagjo.com/factory.html[Idiomatic Factory Pattern] and
 http://blog.wagjo.com/jwt.html[Handling JSON Web Tokens in Dunaj]
 

@@ -2,6 +2,8 @@
 .lein-plugins
 .lein-repl-history
 .nrepl-port
+.nrepl-history
+/target-lite
 pom.xml
 pom.xml.*
 /*.json

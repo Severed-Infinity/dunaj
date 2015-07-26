@@ -17,6 +17,16 @@ code in other namespaces.
 IMPORTANT: Dunaj requires Oracle JDK 8. Also note that so far Dunaj
 has only been tested under Linux.
 
+== Using Boot
+
+While Dunaj lite can be used as any other Clojure library,
+Dunaj requires boot `2.1.3` or higher.
+
+To use Dunaj correctly, your project must set `BOOT_CLOJURE_NAME` and
+`BOOT_CLOJURE_VERSION` environment variables to Dunaj's Clojure
+fork. The recommended way is to do it through a custom
+`boot.properties` file. Look at https://github.com/dunaj-project/dunaj/blob/master/boot.properties[this example file].
+
 == Using Leiningen
 
 To start using Dunaj, include following dependency in your leiningen
