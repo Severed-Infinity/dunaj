@@ -27,6 +27,15 @@ To use Dunaj correctly, your project must set `BOOT_CLOJURE_NAME` and
 fork. The recommended way is to do it through a custom
 `boot.properties` file. Look at https://github.com/dunaj-project/dunaj/blob/master/boot.properties[this example file].
 
+After that, include following dependency in your `build.boot` file:
+
+`*[org.dunaj/dunaj "{current-version}"]*`
+
+You also need to exclude any Clojure dependency, e.g. with:
+
+`(set-env! :exclusions '[org.clojure/clojure])`
+
+
 == Using Leiningen
 
 To start using Dunaj, include following dependency in your leiningen

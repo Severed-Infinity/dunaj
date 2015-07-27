@@ -902,7 +902,7 @@
                 %
                 (assoc % :path (conj dpath (:key %))))]
      (if (map? (first autoconf))
-       (map apf (map amf autoconf))
+       (map apf map amf)
        (map mf fields)))))
 
 (defn autoconf

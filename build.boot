@@ -2,18 +2,20 @@
 
 ;;; Configuration
 
-(def version "0.7.0-SNAPSHOT")
+(def version "0.7.0")
 
-;;; Boot scripts
+;;; Boot script
 
 (require 'clojure.edn)
-
 (require 'boot.repl)
+
 (swap! boot.repl/*default-dependencies*
-       concat '[[cider/cider-nrepl "0.10.0-SNAPSHOT"]])
+       concat '[[cider/cider-nrepl "0.10.0-SNAPSHOT"]
+                [refactor-nrepl "1.1.0-SNAPSHOT"]])
 
 (swap! boot.repl/*default-middleware*
-       conj 'cider.nrepl/cider-middleware)
+       concat '[cider.nrepl/cider-middleware
+                refactor-nrepl.middleware/wrap-refactor])
 
 (def lite? (get (System/getenv) "DUNAJ_LITE"))
 
@@ -70,6 +72,11 @@
   "Dunaj build"
   []
   (comp (pom) (aot) (jar)))
+
+(deftask uberjar
+  "Dunaj uberjar"
+  []
+  (comp (pom) (aot) (uber) (jar)))
 
 (deftask install
   "Dunaj install"

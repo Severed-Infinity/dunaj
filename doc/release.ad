@@ -9,25 +9,28 @@ ITERNAL TODO:
 == Update dependencies:
 
 * git checkout master, git pull parent master
-* git checkout dunaj, git merge master
+* git checkout dunaj/lite, git merge master
 * in project.clj, bump version
 * lein jar, lein deploy clojars (lein install)
 
 in that order:
 
-* clojure
-* core.async
-* core.rrb-vector
+* clojure (dunaj branch)
+* core.rrb-vector (dunaj branch)
+* core.async (dunaj branch)
+* core.async (lite branch)
 
 == New version release:
 
-* bump number in project.clj
+* bump number in build.boot
 * bump number in clojure/bootstrap.clj
-* bump dependency in dunaj-starter
+* bump dependency in dunaj-starter and dunaj-lite-starter
 
 == Dunaj deploy:
 
-* lein uberjar, copy to release/dunaj-latest.jar
-* lein deploy clojars
+* ./boot uberjar
+** copy to release/dunaj-latest.jar
+* ./boot clojars
+* ./boot-lite clojars
 * generate documentation
 ** upload to https://github.com/dunaj-project/dunaj-project.github.io
