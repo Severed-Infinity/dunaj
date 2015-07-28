@@ -1,9 +1,13 @@
-2015/07/XX ::
-Dunaj v0.7.0 has been released. Dunaj lite has been updated too.
+2015/07/28 ::
+Dunaj v0.7.0 has been released, together with Dunaj lite.
+Also announcing https://github.com/dunaj-project/dunaj.doc[dunaj.doc],
+an open source library that has been used to generate Dunaj's
+documentation from Asciidoc sources.
 +
 * Built on top of Clojure 1.7.0
 * Made more compatible with existing Clojure AOT code
 * Supports http://boot-clj.com/[Boot] (see https://github.com/boot-clj/boot/pull/252[respective pull request])
+** Boot has replaced Leningen internally to build Dunaj
 * Unified codebase between Dunaj and Dunaj lite, with the help of
   reader conditionals
 ** Dunaj (non-lite) now matches `:dunaj` reader conditional feature
