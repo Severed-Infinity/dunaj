@@ -336,6 +336,7 @@
 (defmacro dunaj-ns
   "Loads Dunaj. To be used in Dunaj lite, and in cases where
   given ns won't be AOT compiled."
+  {:added v1}
   [& decls]
   (let [gen-decl
         (fn [[kn & args]]
@@ -354,7 +355,6 @@
 
 (defmacro dunaj-api!
   "Loads Dunaj API. To be used in Dunaj lite."
-  {:added v1}
   [& decls]
   (let [gen-decl
         (fn [[kn & args]]

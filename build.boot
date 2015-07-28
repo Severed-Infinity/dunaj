@@ -2,7 +2,7 @@
 
 ;;; Configuration
 
-(def version "0.7.0")
+(def version "0.8.0-SNAPSHOT")
 
 ;;; Boot script
 

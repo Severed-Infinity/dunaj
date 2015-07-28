@@ -40,7 +40,7 @@
 
 (def v1 "1.0")
 
-(def vc "0.7.0")
+(def vc "0.8.0")
 
 ;;; Helpers
 
