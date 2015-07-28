@@ -6,7 +6,6 @@
 
 ;;; Boot script
 
-(require 'clojure.edn)
 (require 'boot.repl)
 
 (swap! boot.repl/*default-dependencies*
@@ -54,7 +53,7 @@
         :url "http://www.dunaj.org"
         :scm {:url "https://github.com/dunaj-project/dunaj"}
         :license {"Eclipse Public License - v 1.0" "http://www.eclipse.org/legal/epl-v10.html"}})
- aot {:namespace '[bare.core dunaj.core dunaj.main]}
+ aot {:namespace '#{bare.core dunaj.core dunaj.main clojure.core.reducers}}
  push {:gpg-sign true
        :gpg-user-id "Jozef Wagner (Dunaj Project) <wagjo@wagjo.com>"
        :gpg-keyring "/home/wagjo/.gnupg/secring.gpg"

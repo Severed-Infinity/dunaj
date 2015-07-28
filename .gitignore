@@ -13,5 +13,6 @@ pom.xml.*
 /lib
 /target
 /out
+/classes
 /gh-pages
 /checkouts
